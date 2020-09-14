@@ -19,8 +19,15 @@ Route::get('/', function () {
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::group(['middleware' => 'admin_routes', 'prefix' => 'admin'], function()
+{
+    Auth::routes();
+    Route::match(['get', 'post'], '/', 'AdminController@index')->name('admin');
+    // Route::get('/admin', 'AdminController@index')->name('admin');
+});
+
 Route::get('/user', 'UserController@index')->name('user');
-Route::get('/admin', 'AdminController@index')->name('admin');
+
 Route::get('/superadmin', 'SuperAdminController@index')->name('superadmin');
 Route::get('/observer', 'ObserverController@index')->name('observer');
 Auth::routes();

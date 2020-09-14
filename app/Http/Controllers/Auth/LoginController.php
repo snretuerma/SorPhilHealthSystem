@@ -24,13 +24,6 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = RouteServiceProvider::HOME;
-
-    /**
      * Create a new controller instance.
      *
      * @return void
@@ -53,7 +46,7 @@ class LoginController extends Controller
             'password' => 'required',
         ]);
 
-        $fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
+        $fieldType = filter_var($request->username, FILTER_FLAG_STRIP_LOW ) ? 'username' : null;
         if(auth()->attempt(array($fieldType => $input['username'], 'password' => $input['password']))) {
             switch(\Auth::user()->role->name) {
                 case 'superadmin': 

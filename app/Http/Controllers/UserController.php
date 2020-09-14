@@ -8,7 +8,7 @@ class UserController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'user_routes']);
     }
 
     public function index()
