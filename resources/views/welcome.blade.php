@@ -8,7 +8,7 @@
         <!-- CSRF Token -->
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-        <title>Laravel {{ app()->version() }}</title>
+        <title>SorPhilHealth System</title>
 
         <!-- Fonts -->
         <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
@@ -16,6 +16,7 @@
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
+        {{-- TODO Edit style here and format for mobile viewports --}}
         <!-- Styles -->
         <style>
             html, body {
@@ -52,7 +53,7 @@
             }
 
             .title {
-                font-size: 84px;
+                font-size: 80px;
             }
 
             .links > a {
@@ -92,38 +93,23 @@
                         <a href="{{ url('/home') }}">Home</a>
                     @else
                         <a href="{{ url('/login') }}">Login</a>
-                        <a href="{{ url('/register') }}">Register</a>
                     @endif
                 </div>
             @endif
-
-            <div class="content">
-                <div class="title m-b-md">
-                    Laravel
-                    <p class="versioninfo">Laravel Version {{ app()->version() }}</p>
-                </div>
-
-                <div class="links">
-                    <a href="https://laravel.com/docs">Documentation</a>
-                    <a href="https://laracasts.com">Laracasts</a>
-                    <a href="https://laravel-news.com">News</a>
-                    <a href="https://forge.laravel.com">Forge</a>
-                    <a href="https://github.com/laravel/laravel">GitHub</a>
-                </div>
-
-                <div class="foundation_button_test">
-                    <p class="framwork_title">Bulma v0.8.0</p>
-                    <p class="framwork_title">Bulma Extension v6.2.7</p>
-
-                    <div class="block">
-                        <a class="button is-primary">Primary</a>
-                        <a class="button is-info">Info</a>
-                        <a class="button is-success">Success</a>
-                        <a class="button is-warning">Warning</a>
-                        <a class="button is-danger">Danger</a>
+            <section class="section">
+                <div class="container">
+                    <div class="columns is-vcentered">
+                        <div class="column is-one-third is-pulled-right">
+                            <figure class="image is-4by4 is-fullwidth">
+                                <img src="{{asset('images/provincial_logo.png')}}">
+                            </figure>
+                        </div>
+                        <div class="column is-three-quarters has-text-centered">
+                            <h1 class="title">SorPhilHealth Information System</h1>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     </body>
 </html>

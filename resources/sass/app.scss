@@ -2,5 +2,8 @@
 // Fonts
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
 
+$fa-font-path: "../webfonts";
+
 // Variables
 @import "bulma";
+@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
