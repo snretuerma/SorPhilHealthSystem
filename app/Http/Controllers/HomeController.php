@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Spatie\Permission\Models\Role;
 
 class HomeController extends Controller
 {
@@ -23,6 +24,14 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        if(Auth::user()->hasRole('admin')) {
+            return redirect('/admin');
+        }
+        if(Auth::user()->hasRole('user')) {
+            return redirect('/user');
+        }
+        if(Auth::user()->hasRole('observer')) {
+            return redirect('/observer');
+        }
     }
 }

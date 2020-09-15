@@ -16,19 +16,18 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
 Auth::routes();
+Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
+    Route::get('/', 'AdminController@index')->name('admin');
+});
+Route::group(['prefix' => 'user', 'middleware' => 'auth'], function() {
+    Route::get('/', 'UserController@index')->name('user');
+});
+Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function() {
+    Route::get('/', 'ObserverController@index')->name('observer');
+});
 Route::get('/home', 'HomeController@index')->name('home');
 
-Route::group(['middleware' => 'admin_routes', 'prefix' => 'admin'], function()
-{
-    Auth::routes();
-    Route::match(['get', 'post'], '/', 'AdminController@index')->name('admin');
-    // Route::get('/admin', 'AdminController@index')->name('admin');
-});
-
-Route::get('/user', 'UserController@index')->name('user');
-
-Route::get('/superadmin', 'SuperAdminController@index')->name('superadmin');
-Route::get('/observer', 'ObserverController@index')->name('observer');
 Auth::routes();
 

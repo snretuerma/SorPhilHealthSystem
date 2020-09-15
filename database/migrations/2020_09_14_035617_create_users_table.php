@@ -17,7 +17,6 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('username')->unique();
             $table->string('password');
-            $table->foreignId('role_id')->constrained('roles');
             $table->foreignId('hospital_id')->nullable()->constrained('hospitals');
             $table->rememberToken();
             $table->timestamps();
@@ -32,8 +31,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        $table->dropForeign(['role_id']);
-        $table->dropColumn('role_id');
         $table->dropForeign(['hospital_id']);
         $table->dropColumn('hospital_id');
         Schema::dropIfExists('users');
