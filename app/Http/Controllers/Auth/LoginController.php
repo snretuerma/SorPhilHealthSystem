@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Auth;
+use Spatie\Permission\Models\Role;
 
 class LoginController extends Controller
 {
@@ -24,13 +25,6 @@ class LoginController extends Controller
     use AuthenticatesUsers;
 
     /**
-     * Where to redirect users after login.
-     *
-     * @var string
-     */
-    protected $redirectTo = RouteServiceProvider::HOME;
-
-    /**
      * Create a new controller instance.
      *
      * @return void
@@ -39,53 +33,22 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
-
-    /**
-     * Override default Laravel login
-     *
-     * @return void
-     */
-    protected function login(Request $request)
+    
+    public function username()
     {
-        $input = $request->all();
-        $this->validate($request, [
-            'username' => 'required',
-            'password' => 'required',
-        ]);
-
-        $fieldType = filter_var($request->username, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
-        if(auth()->attempt(array($fieldType => $input['username'], 'password' => $input['password']))) {
-            switch(\Auth::user()->role->name) {
-                case 'superadmin': 
-                    return redirect('/superadmin');
-                break;
-                case 'admin': 
-                    return redirect('/admin');
-                break;
-                case 'hospital_admin': 
-                    return redirect('/user');
-                break;
-                case 'observer': 
-                    return redirect('/observer');
-                break;
-                default: return redirect()->route('login')->with('error','Role not initialized.');
-            }
-        } 
-        else {
-            return redirect()->route('login')
-            ->with('error','Email-Address And Password Are Wrong.');
-        }
+        return 'username';
     }
 
-    // protected function authenticated(Request $request, $user)
-    // {
-    //     if($user->role('superadministrator')){
-    //         return redirect('/admin');
-    //     }
-        
-    //     if($user->role('user')){
-    //         return redirect('/user');
-    //     }
-    // }
-
+    protected function authenticated(Request $request, $user)
+    {
+        if($user->hasRole('admin')){
+            return redirect('/admin');
+        }
+        if($user->hasRole('user')){
+            return redirect('/user');
+        }
+        if($user->hasRole('observer')){
+            return redirect('/observer');
+        }
+    }
 }
