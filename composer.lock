@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3c70a459a7cb88669e39e91421321c49",
+    "content-hash": "ffb7784d0d56400a59c582e52bd3cac5",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -740,49 +740,6 @@
             "time": "2019-07-01T23:21:34+00:00"
         },
         {
-            "name": "laravel-7-frontend-presets/bulma",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/Norbertho/laravel-7-bulma-frontend-preset.git",
-                "reference": "b12ed2cfa3a6ee821ed96e56a5c658e340335cee"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/Norbertho/laravel-7-bulma-frontend-preset/zipball/b12ed2cfa3a6ee821ed96e56a5c658e340335cee",
-                "reference": "b12ed2cfa3a6ee821ed96e56a5c658e340335cee",
-                "shasum": ""
-            },
-            "require": {
-                "laravel/framework": "^7.0",
-                "laravel/ui": "^2.0"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "LaravelFrontendPresets\\BulmaPreset\\BulmaPresetServiceProvider"
-                    ]
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "LaravelFrontendPresets\\BulmaPreset\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Bulma Frontend Preset For Laravel Framework 7",
-            "keywords": [
-                "bulma",
-                "laravel 7",
-                "preset"
-            ],
-            "time": "2020-03-31T17:59:19+00:00"
-        },
-        {
             "name": "laravel/framework",
             "version": "v7.28.1",
             "source": {
@@ -1006,16 +963,16 @@
         },
         {
             "name": "laravel/ui",
-            "version": "v2.0.0",
+            "version": "v2.4.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/ui.git",
-                "reference": "ec838c75ba1886d014c5465b1ecc79b2071f46c7"
+                "reference": "f5398544a9cd4804a42d09ce51735e37cd51ea2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/ui/zipball/ec838c75ba1886d014c5465b1ecc79b2071f46c7",
-                "reference": "ec838c75ba1886d014c5465b1ecc79b2071f46c7",
+                "url": "https://api.github.com/repos/laravel/ui/zipball/f5398544a9cd4804a42d09ce51735e37cd51ea2d",
+                "reference": "f5398544a9cd4804a42d09ce51735e37cd51ea2d",
                 "shasum": ""
             },
             "require": {
@@ -1057,7 +1014,7 @@
                 "laravel",
                 "ui"
             ],
-            "time": "2020-03-03T13:43:00+00:00"
+            "time": "2020-09-11T15:31:52+00:00"
         },
         {
             "name": "league/commonmark",
@@ -6739,9 +6696,7 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": {
-        "laravel-7-frontend-presets/bulma": 20
-    },
+    "stability-flags": [],
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
