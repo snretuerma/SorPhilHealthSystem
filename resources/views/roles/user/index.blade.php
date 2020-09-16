@@ -18,7 +18,7 @@
 
                 <div class="w-full p-6">
                     <p class="text-gray-700">
-                        You are logged in as a user! <i class="fas fa-align-center"></i>
+                        You are logged in as a user!
                     </p>
                 </div>
             </div>

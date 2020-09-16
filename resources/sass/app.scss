@@ -1,9 +1,8 @@
-
 // Fonts
-@import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
-
-$fa-font-path: "../webfonts";
+@import url('https://fonts.googleapis.com/css?family=Nunito');
 
 // Variables
-@import "bulma";
-@import "~@fortawesome/fontawesome-free/scss/fontawesome.scss";
+@import 'variables';
+
+// Bootstrap
+@import '~bootstrap/scss/bootstrap';
