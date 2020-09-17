@@ -16,100 +16,78 @@
         <!-- Styles -->
         <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 
-        {{-- TODO Edit style here and format for mobile viewports --}}
+        {{-- TODO clean this and move to separate stylesheet --}}
         <!-- Styles -->
         <style>
-            html, body {
-                background-color: #fff;
-                color: #636b6f;
-                font-family: 'Raleway', sans-serif;
-                font-weight: 100;
-                height: 100vh;
-                margin: 0;
+            @media only screen and (max-width: 600px) {
+                #landing_image {
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    width: 250px;
+                    height: 250px;
+                    margin-top: 15px;
+                }
             }
-
-            .full-height {
-                height: 100vh;
+            @media only screen and (min-width: 601px) and (max-width: 992px){
+                #landing_image {
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    width: 50%;
+                    margin-top: 15px;
+                }
             }
-
-            .flex-center {
-                align-items: center;
-                display: flex;
-                justify-content: center;
+            @media only screen and (min-width: 993px) and (max-width: 1200px){
+                #landing_image {
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    width: 45%;
+                    margin-top: 20px;
+                }
             }
-
-            .position-ref {
-                position: relative;
-            }
-
-            .top-right {
-                position: absolute;
-                right: 10px;
-                top: 18px;
-            }
-
-            .content {
-                text-align: center;
-            }
-
-            .title {
-                font-size: 80px;
-            }
-
-            .links > a {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 12px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-                text-transform: uppercase;
-            }
-
-            .versioninfo {
-                color: #636b6f;
-                padding: 0 25px;
-                font-size: 12px;
-                font-weight: 600;
-                letter-spacing: .1rem;
-                text-decoration: none;
-            }
-
-            .framwork_title {
-                font-weight: 600;
-                padding-top: 20px;
-            }
-
-            .m-b-md {
-                margin-bottom: 30px;
+            @media only screen and (min-width: 1201px) {
+                #landing_image {
+                    display: block;
+                    margin-left: auto;
+                    margin-right: auto;
+                    width: 45%;
+                    margin-top: 30px;
+                }
             }
         </style>
     </head>
     <body>
-        <div class="flex-center position-ref full-height">
-            @if (Route::has('login'))
-                <div class="top-right links">
-                    @if (Auth::check())
-                        <a href="{{ url('/home') }}">Home</a>
-                    @else
-                        <a href="{{ url('/login') }}">Login</a>
-                    @endif
+        <nav>
+            <div class="nav-wrapper">
+                <a href="#" class="brand-logo center">Logo</a>
+                <ul id="nav-mobile" class=" hide-on-med-and-down">
+                </ul>
+            </div>
+        </nav>
+        <main class="container">
+        <div class="row">
+                <div class="col s12 m12 l12">
+                    <img id="landing_image" src="{{asset('images/provincial_logo.png')}}">
                 </div>
-            @endif
-            <section class="section">
-                <div class="container">
-                    <div class="columns is-vcentered">
-                        <div class="column is-one-third is-pulled-right">
-                            <figure class="image is-4by4 is-fullwidth">
-                                <img src="{{asset('images/provincial_logo.png')}}">
-                            </figure>
-                        </div>
-                        <div class="column is-three-quarters has-text-centered">
-                            <h1 class="title">SorPhilHealth Information System</h1>
-                        </div>
+                <div class="col s12 m12 l12">
+                    <h1 class="center-align">Sorsogon PhilHealth System</h1>
+                </div>
+                <div class="row">
+                    <div class="col s12 m12 l12 center">
+                        @if (Route::has('login'))
+                            <div class="top-right links">
+                                @if (Auth::check())
+                                    <a class="waves-effect waves-light btn" href="{{ url('/home') }}">Home</a>
+                                @else
+                                    <a class="waves-effect waves-light btn" href="{{ url('/login') }}">Login</a>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </div>
-            </section>
-        </div>
+            </div>
+        </main>
     </body>
 </html>
