@@ -9,7 +9,7 @@ class Record extends Model
 {
     use SoftDeletes;
     protected $fillable = [
-        'patient_first_name', 'patient_middle_name', 'patient_last_name', 
+        'patient_first_name', 'patient_middle_name', 'patient_last_name',
         'is_credited', 'patient_in', 'patient_out', 'total_pf',
     ];
 
@@ -34,6 +34,6 @@ class Record extends Model
 
     public function budgets()
     {
-        return $this->belongsToMany('App\Models\Budget');
+        return $this->belongsToMany('App\Models\Budget', 'budgets_records');
     }
 }

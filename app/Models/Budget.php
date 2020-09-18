@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Budget extends Model
 {
     use SoftDeletes;
-    
+
     protected $guarded = [
         'hospital_id', 'total', 'start_date', 'end_date'
     ];
@@ -20,6 +20,6 @@ class Budget extends Model
 
     public function records()
     {
-        return $this->belongsToMany('App\Models\Record');
+        return $this->belongsToMany('App\Models\Record', 'budgets_records');
     }
 }
