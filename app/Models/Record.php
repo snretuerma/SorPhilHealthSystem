@@ -26,4 +26,14 @@ class Record extends Model
     {
         return $this->belongsToMany('App\Models\Physician');
     }
+
+    public function complaints()
+    {
+        return $this->hasMany('App\Models\Complaint');
+    }
+
+    public function budgets()
+    {
+        return $this->belongsToMany('App\Models\Budget');
+    }
 }

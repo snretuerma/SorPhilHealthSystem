@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
             HospitalSeeder::class,
             RolesAndPermissionsSeeder::class,
             UserSeeder::class,
+            ParticipationTypeSeeder::class,
+            BudgetSeeder::class,
         ]);   
     }
 }

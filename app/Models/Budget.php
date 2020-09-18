@@ -10,7 +10,7 @@ class Budget extends Model
     use SoftDeletes;
     
     protected $guarded = [
-        'hospital_id', 'total', 'budget_start_date'
+        'hospital_id', 'total', 'start_date', 'end_date'
     ];
 
     public function hospital()
@@ -18,8 +18,8 @@ class Budget extends Model
         return $this->belongsTo('App\Models\Hospital');
     }
 
-    public function physicians()
+    public function records()
     {
-        return $this->belongsToMany('App\Models\Physician');
+        return $this->belongsToMany('App\Models\Record');
     }
 }

@@ -28,8 +28,8 @@ class Physician extends Model
         return $this->belongsToMany('App\Models\Record');
     }
 
-    public function budgets()
+    public function complaints()
     {
-        return $this->belongsToMany('App\Models\Budget');
+        return $this->hasMany('App\Models\Complaint');
     }
 }

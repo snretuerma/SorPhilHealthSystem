@@ -17,7 +17,8 @@ class CreateBudgetsTable extends Migration
             $table->id();
             $table->foreignId('hospital_id')->constrained('hospitals');
             $table->decimal('total', 19, 4);
-            $table->date('start_date');
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
