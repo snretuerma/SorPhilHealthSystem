@@ -70,7 +70,7 @@
         </div>
     </div>
 </div> --}}
-    <div class="container">
+    <div class="container center">
         <div class="row valign-wrapper">
             <div id="login_card" class="col s12 m12 l7 offset-l2 valign">
                 <div class="card">

@@ -15,12 +15,12 @@
 
     <body>
         <div>
-            <nav>
-                <div class="nav-wrapper blue">
+            <nav class="blue">
+                <div class="nav-wrapper">
                     <a href="{{ url('user') }}" class="brand-logo" style="padding-left: 20px">PF Management System</a>
                     <ul id="nav-mobile" class="right">
                         <li><a href="{{ route('logout') }}" onclick="event.preventDefault();
-                            document.getElementById('logout-form').submit();">Logout
+                            document.getElementById('logout-form').submit();"><i class="material-icons tooltipped" data-position="bottom" data-tooltip="Logout">power_settings_new</i>
                             </a>
                         <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                             @csrf
@@ -31,17 +31,20 @@
 
             <ul class="sidenav sidenav-fixed">
                 <li><div class="user-view">
-                    <div class="background">
-                      <img height="200" width="400" src="https://picsum.photos/200/300">
+                    <div class="background center">
+                      <img height="170" width="200" src="{{asset('images/provincial_logo.png')}}">
                     </div>
+                    
+                    <a href="#"><span class="white-text name">&nbsp;</span></a>
                     <a href="#user"><img class="circle" src="https://picsum.photos/200/300"></a>
-                    <a href="#name"><span class="white-text name">{{ Auth::user()->username }}</span></a>
+                    <a href="#name"><span class="black-text name">&nbsp;{{ Auth::user()->username }}</span></a>
                   </div></li>
-                <li><a href="{{ url('budget') }}"><span class="fas fa-fw fa-coins"></span>  Budget</a></li>
                 <li><div class="divider"></div></li>
-                <li><a href="{{ url('physician') }}"><span class="fas fa-user-md"></span>  Physician</a></li>
+                <li><a href="{{ url('budget') }}"><i class="material-icons">attach_money</i>Budget</a></li>
                 <li><div class="divider"></div></li>
-                <li><a href="{{ url('records') }}"><span class="fas fa-file-medical"></span> Records</a></li>
+                <li><a href="{{ url('physician') }}"><i class="material-icons">account_circle</i>Physician</a></li>
+                <li><div class="divider"></div></li>
+                <li><a href="{{ url('records') }}"><i class="material-icons">insert_drive_file</i>Records</a></li>
                 <li><div class="divider"></div></li>
             </ul>
 
@@ -52,5 +55,17 @@
 
       <!--JavaScript at end of body for optimized loading-->
       <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          var elems = document.querySelectorAll('.tooltipped');
+          var instances = M.Tooltip.init(elems, options);
+        });
+
+        // Or with jQuery
+
+        $(document).ready(function(){
+          $('.tooltipped').tooltip();
+        });
+      </script>
     </body>
   </html>
