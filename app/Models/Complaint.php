@@ -3,20 +3,23 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Complaint extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = [
-        '*',
+        'description', 'resolution_date'
     ];
-    
-    public function record()
+
+    public function personnels()
     {
-        return $this->belongsTo('App\Models\Record');
+        return $this->belongsTo('App\Models\Personnel');
     }
-    
-    public function physicians()
+
+    public function medical_records()
     {
-        return $this->belongsToMany('App\Models\Physician');
+        return $this->belongsTo('App\Models\MedicalRecord');
     }
 }

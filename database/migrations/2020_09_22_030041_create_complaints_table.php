@@ -15,10 +15,9 @@ class CreateComplaintsTable extends Migration
     {
         Schema::create('complaints', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->foreignId('record_id')->nullable()->constrained('records');
-            $table->foreignId('physician_id')->nullable()->constrained('physicians');
-            $table->boolean('is_resolved');
+            $table->foreignId('personnel_id')->nullable()->constrained('personnels');
+            $table->foreignId('record_id')->nullable()->constrained('medical_records');
+            $table->string('description');
             $table->date('resolution_date');
             $table->timestamps();
         });
@@ -33,8 +32,8 @@ class CreateComplaintsTable extends Migration
     {
         $table->dropForeign(['record_id']);
         $table->dropColumn('record_id');
-        $table->dropForeign(['physician_id']);
-        $table->dropColumn('physician_id');
+        $table->dropForeign(['personnel_id']);
+        $table->dropColumn('personnel_id');
         Schema::dropIfExists('complaints');
     }
 }

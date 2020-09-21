@@ -5,17 +5,22 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Budget extends Model
+class Contribution extends Model
 {
     use SoftDeletes;
 
     protected $guarded = [
-        'hospital_id', 'total', 'start_date', 'end_date'
+        'type', 'contribution', 'credit', 'status'
     ];
 
-    public function hospital()
+    public function records()
     {
-        return $this->belongsTo('App\Models\Hospital');
+
+    }
+
+    public function personnels()
+    {
+
     }
 
 }
