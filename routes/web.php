@@ -33,10 +33,3 @@ Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function() {
 });
 Route::get('/home', 'HomeController@index')->name('home');
 
-<<<<<<< HEAD
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-=======
->>>>>>> 6e0b81e8909d244bda30b2b7ebb9f750ff729a3a
