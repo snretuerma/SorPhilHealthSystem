@@ -10,15 +10,15 @@ class MedicalRecord extends Model
     use SoftDeletes;
 
     protected $guarded = [
-        'patient_id', 'total_pf', 'admission_date',
-        'discharge_date', 'final_diagnosis', 'record_type',
+        'patient_id', 'admission_date', 'discharge_date',
+        'final_diagnosis', 'record_type'
     ];
 
     public function complaints()
     {
         return $this->hasMany('App\Models\Complaint');
-    }
 
+    }
     public function patient()
     {
         return $this->belongsTo('App\Models\Patient');
@@ -26,11 +26,11 @@ class MedicalRecord extends Model
 
     public function personnels()
     {
-        return $this->belongsToMany('App\Models\Personnel');
+        return $this->belongsToMany('App\Models\Personnel', 'records_personnels')->withPivot('personnel_id');
     }
 
     public function contributions()
     {
-        return $this->hasMany('App\Models\Contribution');
+        return $this->belongsToMany('App\Models\Contribution', 'records_personnels')->withPivot('contribution_id');
     }
 }

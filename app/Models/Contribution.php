@@ -10,17 +10,17 @@ class Contribution extends Model
     use SoftDeletes;
 
     protected $guarded = [
-        'type', 'contribution', 'credit', 'status'
+        'type', 'contribution', 'credit', 'status', 'is_private'
     ];
 
     public function records()
     {
-
+        return $this->belongsToMany('App\Models\MedicalRecord', 'records_personnels')->withPivot('medical_record_id');
     }
 
     public function personnels()
     {
-
+        return $this->belongsTo('App\Models\Personnel');
     }
 
 }

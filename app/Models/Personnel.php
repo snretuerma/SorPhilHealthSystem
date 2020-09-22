@@ -21,7 +21,7 @@ class Personnel extends Model
 
     public function medical_record()
     {
-        return $this->belongsToMany('App\Models\MedicalRecord');
+        return $this->belongsToMany('App\Models\MedicalRecord', 'records_personnels')->withPivot('medical_record_id');
     }
 
     public function contribution()

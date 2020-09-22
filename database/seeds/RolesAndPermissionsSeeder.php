@@ -13,7 +13,6 @@ class RolesAndPermissionsSeeder extends Seeder
      */
     public function run()
     {
-        // TODO Clean this
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         // Create all permissions
@@ -58,72 +57,33 @@ class RolesAndPermissionsSeeder extends Seeder
         Permission::create(['name' => 'delete user']);
 
         // Create role and assign permissions to role
-        $admin = Role::create(['name' => 'admin']);
-        // $admin->givePermissionTo('view budget');
-        // $admin->givePermissionTo('add budget');
-        // $admin->givePermissionTo('edit budget');
-        // $admin->givePermissionTo('delete budget');
+        Role::create(['name' => 'admin'])
+        ->givePermissionTo(
+            [
+                'view hospital', 'add hospital', 'edit hospital', 'delete hospital',
+                'view user', 'add user', 'edit user', 'delete user'
+            ]
+        );
 
-        $admin->givePermissionTo('view hospital');
-        $admin->givePermissionTo('add hospital');
-        $admin->givePermissionTo('edit hospital');
-        $admin->givePermissionTo('delete hospital');
-
-        // $admin->givePermissionTo('view medical_record');
-        // $admin->givePermissionTo('add medical_record');
-        // $admin->givePermissionTo('edit medical_record');
-        // $admin->givePermissionTo('delete medical_record');
-
-        // $admin->givePermissionTo('view physician');
-        // $admin->givePermissionTo('add physician');
-        // $admin->givePermissionTo('edit physician');
-        // $admin->givePermissionTo('delete physician');
-
-        $admin->givePermissionTo('view user');
-        $admin->givePermissionTo('add user');
-        $admin->givePermissionTo('edit user');
-        $admin->givePermissionTo('delete user');
-
-        $user = Role::create(['name' => 'user']);
-        $user->givePermissionTo('view budget');
-        $user->givePermissionTo('add budget');
-        $user->givePermissionTo('edit budget');
-        $user->givePermissionTo('delete budget');
-
-        $user->givePermissionTo('view contribution');
-        $user->givePermissionTo('add contribution');
-        $user->givePermissionTo('edit contribution');
-        $user->givePermissionTo('delete contribution');
-
-        $user->givePermissionTo('view hospital');
-        $user->givePermissionTo('add hospital');
-        $user->givePermissionTo('edit hospital');
-        $user->givePermissionTo('delete hospital');
-
-        $user->givePermissionTo('view medical_record');
-        $user->givePermissionTo('add medical_record');
-        $user->givePermissionTo('edit medical_record');
-        $user->givePermissionTo('delete medical_record');
-
-        $user->givePermissionTo('view patient');
-        $user->givePermissionTo('add patient');
-        $user->givePermissionTo('edit patient');
-        $user->givePermissionTo('delete patient');
-
-        $user->givePermissionTo('view personnel');
-        $user->givePermissionTo('add personnel');
-        $user->givePermissionTo('edit personnel');
-        $user->givePermissionTo('delete personnel');
+        Role::create(['name' => 'user'])
+        ->givePermissionTo(
+            [
+                'view budget', 'add budget', 'edit budget', 'delete budget',
+                'view contribution', 'add contribution', 'edit contribution', 'delete contribution',
+                'view hospital', 'add hospital', 'edit hospital', 'delete hospital',
+                'view medical_record', 'add medical_record', 'edit medical_record', 'delete medical_record',
+                'view patient', 'add patient', 'edit patient', 'delete patient',
+                'view personnel', 'add personnel', 'edit personnel', 'delete personnel'
+            ]
+        );
 
         // observer permissions
-        $observer = Role::create(['name' => 'observer']);
-        $observer->givePermissionTo('view budget');
-        $observer->givePermissionTo('view complaint');
-        $observer->givePermissionTo('view contribution');
-        $observer->givePermissionTo('view hospital');
-        $observer->givePermissionTo('view medical_record');
-        $observer->givePermissionTo('view patient');
-        $observer->givePermissionTo('view personnel');
-        $observer->givePermissionTo('view user');
+        Role::create(['name' => 'observer'])
+        ->givePermissionTo(
+            [
+                'view budget', 'view complaint', 'view contribution', 'view hospital',
+                'view medical_record', 'view patient', 'view personnel', 'view user'
+            ]
+        );
     }
 }

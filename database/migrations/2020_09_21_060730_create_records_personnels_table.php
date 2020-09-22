@@ -15,7 +15,7 @@ class CreateRecordsPersonnelsTable extends Migration
     {
         Schema::create('records_personnels', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('record_id')->nullable()->constrained('medical_records');
+            $table->foreignId('medical_record_id')->nullable()->constrained('medical_records');
             $table->foreignId('personnel_id')->nullable()->constrained('personnels');
             $table->foreignId('contribution_id')->nullable()->constrained('contributions');
         });

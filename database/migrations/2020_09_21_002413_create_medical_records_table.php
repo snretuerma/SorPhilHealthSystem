@@ -18,8 +18,9 @@ class CreateMedicalRecordsTable extends Migration
             $table->id();
             $table->foreignId('patient_id')->nullable()->constrained('patients');
             $table->date('admission_date');
-            $table->date('discharge_date');
+            $table->date('discharge_date')->nullable();
             $table->string('final_diagnosis');
+            $table->string('record_type');
             $table->timestamps();
             $table->softDeletes();
         });
