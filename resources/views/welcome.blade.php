@@ -59,35 +59,29 @@
         </style>
     </head>
     <body>
-        <nav>
-            <div class="nav-wrapper">
-                <a href="#" class="brand-logo center">Logo</a>
-                <ul id="nav-mobile" class=" hide-on-med-and-down">
+        <div>
+            <nav class="navbar navbar-expand-md navbar-light bg-white shadow-sm">
+                <ul class="navbar-nav mr-auto">
+                   <li><h4>PF Management System</h4></li>
                 </ul>
-            </div>
-        </nav>
-        <main class="container">
-        <div class="row">
-                <div class="col s12 m12 l12">
-                    <img id="landing_image" src="{{asset('images/provincial_logo.png')}}">
-                </div>
-                <div class="col s12 m12 l12">
-                    <h1 class="center-align">Sorsogon PhilHealth System</h1>
-                </div>
-                <div class="row">
-                    <div class="col s12 m12 l12 center">
+
+                <ul class="navbar-nav ml-auto">
+                    <li>
                         @if (Route::has('login'))
-                            <div class="top-right links">
+                            <div>
                                 @if (Auth::check())
-                                    <a class="waves-effect waves-light btn" href="{{ url('/home') }}">Home</a>
+                                    <a class="navbar-brand" href="{{ url('/home') }}">Home</a>
                                 @else
-                                    <a class="waves-effect waves-light btn" href="{{ url('/login') }}">Login</a>
+                                    <a class="navbar-brand"  href="{{ url('/login') }}">Login</a>
                                 @endif
                             </div>
                         @endif
-                    </div>
-                </div>
-            </div>
-        </main>
+                    </li>
+                </ul>
+            </nav> 
+            
+            <img src="{{asset('images/provincial_logo.png')}}" class="rounded mx-auto d-block" alt="Responsive image" height="500px" width="500px">
+        
+        </div>
     </body>
 </html>
