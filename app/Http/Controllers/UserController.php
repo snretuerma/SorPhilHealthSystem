@@ -16,4 +16,10 @@ class UserController extends Controller
     {
         return view('roles.user.index');
     }
+
+    public function patients()
+    {
+        return view('roles.user.patients');
+    }
+
 }

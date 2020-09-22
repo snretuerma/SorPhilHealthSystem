@@ -26,6 +26,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function() {
 });
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function() {
     Route::get('/', 'UserController@index')->name('user');
+    Route::get('/patients', 'UserController@patients')->name('patients');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function() {
     Route::get('/', 'ObserverController@index')->name('observer');

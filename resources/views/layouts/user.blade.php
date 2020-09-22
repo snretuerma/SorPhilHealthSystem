@@ -40,11 +40,11 @@
                     <a href="#name"><span class="black-text name">&nbsp;{{ Auth::user()->username }}</span></a>
                   </div></li>
                 <li><div class="divider"></div></li>
-                <li><a href="{{ url('budget') }}"><i class="material-icons">attach_money</i>Budget</a></li>
+                <li><a href="{{ url('budget') }}" class="waves-effect waves-teal"><i class="material-icons">attach_money</i>Budget</a></li>
                 <li><div class="divider"></div></li>
-                <li><a href="{{ url('physician') }}"><i class="material-icons">account_circle</i>Physician</a></li>
+                <li><a href="{{ url('physician') }}" class="waves-effect waves-teal"><i class="material-icons">account_circle</i>Physician</a></li>
                 <li><div class="divider"></div></li>
-                <li><a href="{{ url('records') }}"><i class="material-icons">insert_drive_file</i>Records</a></li>
+                <li><a href="{{ url('records') }}" class="waves-effect waves-teal"><i class="material-icons">insert_drive_file</i>Records</a></li>
                 <li><div class="divider"></div></li>
             </ul>
 
