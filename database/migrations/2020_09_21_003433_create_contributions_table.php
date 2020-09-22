@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateBudgetsTable extends Migration
+class CreateContributionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateBudgetsTable extends Migration
      */
     public function up()
     {
-        Schema::create('budgets', function (Blueprint $table) {
+        Schema::create('contributions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('hospital_id')->constrained('hospitals');
-            $table->decimal('total', 19, 4);
-            $table->date('start_date')->nullable();
-            $table->date('end_date')->nullable();
+            $table->string('type');
+            $table->string('contribution')->nullable();
+            $table->boolean('is_private')->nullable();
+            $table->decimal('credit', 19, 4);
+            $table->string('status');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -31,8 +32,6 @@ class CreateBudgetsTable extends Migration
      */
     public function down()
     {
-        $table->dropForeign(['hospital_id']);
-        $table->dropColumn('hospital_id');
-        Schema::dropIfExists('budgets');
+        Schema::dropIfExists('contributions');
     }
 }

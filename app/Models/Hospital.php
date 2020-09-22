@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Hospital extends Model
 {
     use SoftDeletes;
-    
+
     protected $guarded = [
-        '*',
+        'name', 'address', 'hospital_code'
     ];
 
     public function users()
@@ -18,18 +18,23 @@ class Hospital extends Model
         return $this->hasMany('App\Models\User');
     }
 
-    public function physicians()
-    {
-        return $this->hasMany('App\Models\Physician');
-    }
-
     public function budgets()
     {
         return $this->hasMany('App\Models\Budget');
     }
 
-    public function records()
+    public function personnels()
     {
-        return $this->hasMany('App\Models\Record');
+        return $this->hasMany('App\Models\Personnel');
+    }
+
+    public function patients()
+    {
+        return $this->hasMany('App\Models\Patient');
+    }
+
+    public function medical_records()
+    {
+        return $this->hasMany('App\Models\MedicalRecord');
     }
 }

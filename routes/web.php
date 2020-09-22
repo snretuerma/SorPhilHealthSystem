@@ -16,7 +16,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Auth::routes();
 Auth::routes([
     'register' => false,
     'reset' => false,
@@ -33,15 +32,3 @@ Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function() {
 });
 Route::get('/home', 'HomeController@index')->name('home');
 
-Auth::routes();
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
-
-Auth::routes();
-
-Route::get('/home', 'HomeController@index')->name('home');
