@@ -8,7 +8,7 @@
 
       <link href="{{ asset('css/app.css') }}" rel="stylesheet">
       <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
-      
+
 
       <title>PF Management System</title>
 
@@ -43,14 +43,14 @@
                   </span>
                 </div>
               </div>
-              
+
               <!-- sidebar-search  -->
               <div class="sidebar-menu">
                 <ul>
                   <li class="header-menu">
                     <span>General</span>
                   </li>
-                  
+
                   <li class="sidebar li">
                     <a href="">
                       <i class="fa fa-coins"></i><span>Budget</span>
@@ -59,6 +59,11 @@
                   <li class="sidebar li">
                     <a href="">
                       <i class="fa fa-user-md"></i><span>Physician</span>
+                    </a>
+                  </li>
+                  <li class="sidebar li">
+                    <a href="{{route('patients')}}">
+                    <i class="fa fa-file-medical-alt"></i><span>Patients</span>
                     </a>
                   </li>
                   <li class="sidebar li">
@@ -81,15 +86,14 @@
               </form>
             </div>
           </nav>
-          
+
 
           <!-- sidebar-wrapper  -->
           <main class="page-content">
             <div class="container-fluid">
-              <h2>Pro Sidebar</h2>
-              <hr>
-
+              <div id="app">
                 @yield('content')
+              </div>
               <footer class="text-center">
                 footer
               </footer>
@@ -98,6 +102,5 @@
           <!-- page-content" -->
         </div>
             <script src="{{asset('js/app.js')}}"></script>
-            
     </body>
   </html>
