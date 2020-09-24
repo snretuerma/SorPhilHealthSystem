@@ -1,16 +1,8 @@
 <template>
   <div>
-    <div style="margin-bottom: 10px">
-      <el-row>
-        <el-col :span="10">
-          <el-input v-model="filters[0].value" placeholder="Search"></el-input>
-        </el-col>
-      </el-row>
-    </div>
     <data-tables
       :data="data"
       :page-size="10"
-      :filters="filters"
       :pagination-props="{ pageSizes: [10, 20, 50] }"
       :action-col="actionCol"
     >
@@ -25,6 +17,75 @@
       </el-table-column>
       <p slot="append"></p>
     </data-tables>
+    <el-dialog title="Patient Details" :visible.sync="dialogFormVisible">
+      <!-- <el-form :model="form">
+                <el-form-item label="Firstname" :label-width="formLabelWidth">
+                <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="Lastname" :label-width="formLabelWidth">
+                <el-select v-model="form.region" placeholder="Please select a zone">
+                    <el-option label="Zone No.1" value="shanghai"></el-option>
+                    <el-option label="Zone No.2" value="beijing"></el-option>
+                </el-select>
+                </el-form-item>
+            </el-form> -->
+      <el-table :data="gridData">
+        <el-table-column
+          property="name"
+          label="Name"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          property="sex"
+          label="Sex"
+          width="100"
+        ></el-table-column>
+        <el-table-column
+          property="birthdate"
+          label="Birthdate"
+          width="formLabelWidth"
+        ></el-table-column>
+        <el-table-column
+          property="marital_status"
+          label="Marital Status"
+          width="formLabelWidth"
+        ></el-table-column>
+        <el-table-column
+          property="philhealth_number"
+          label="PhilHealth No."
+          width="formLabelWidth"
+        ></el-table-column>
+      </el-table>
+
+      <!-- <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false"
+          >Confirm</el-button
+        >
+      </span> -->
+    </el-dialog>
+    <!-- <div id="sample" class="modal" tabindex="-1" role="dialog" >
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Patient Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <el-table :data="gridData">
+              <el-table-column property="name" label="Name" width="formLabelWidth"></el-table-column>
+              <el-table-column property="sex" label="Sex" width="formLabelWidth"></el-table-column>
+              <el-table-column property="birthdate" label="Birthdate" width="formLabelWidth"></el-table-column>
+              <el-table-column property="marital_status" label="Marital Status" width="formLabelWidth"></el-table-column>
+              <el-table-column property="philhealth_number" label="PhilHealth No." width="formLabelWidth"></el-table-column>
+            </el-table>
+                </div>
+                
+                </div>
+            </div>
+        </div> -->
   </div>
 </template>
 
@@ -56,11 +117,14 @@ export default {
           label: "PhilHealth #",
         },
       ],
-      filters: [
+      gridData: [
         {
-          prop: ['last_name', 'first_name', 'philhealth_number'],
-          value: ''
-        }
+          name: "",
+          sex: "",
+          birthdate: "",
+          marital_status: "",
+          philhealth_number: "",
+        },
       ],
       actionCol: {
         label: "Actions",
@@ -75,10 +139,20 @@ export default {
               circle: true,
             },
             handler: (row) => {
-              this.$message("View clicked");
-              row.flow_no = "hello word" + Math.random();
-              row.content = Math.random() > 0.5 ? "Water flood" : "Lock broken";
-              row.flow_type = Math.random() > 0.5 ? "Repair" : "Help";
+              // $('#sample').modal();
+              this.dialogFormVisible = true;
+              this.gridData[0].name = this.buildName(
+                row.first_name,
+                row.middle_name,
+                row.last_name,
+                
+                
+                row.name_suffix
+              );
+              this.gridData[0].sex = row.sex;
+              this.gridData[0].birthdate = row.birthdate;
+              this.gridData[0].marital_status = row.marital_status;
+              this.gridData[0].philhealth_number = row.philhealth_number;
             },
           },
           {
@@ -88,10 +162,7 @@ export default {
               circle: true,
             },
             handler: (row) => {
-              this.$message("Edit clicked");
-              row.flow_no = "hello word" + Math.random();
-              row.content = Math.random() > 0.5 ? "Water flood" : "Lock broken";
-              row.flow_type = Math.random() > 0.5 ? "Repair" : "Help";
+              this.form.id = row.id;
             },
           },
           {
@@ -107,6 +178,20 @@ export default {
         ],
       },
       layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      form: {
+        id: "",
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
+        delivery: false,
+        type: [],
+        resource: "",
+        desc: "",
+      },
+      formLabelWidth: "120px",
     };
   },
   methods: {

@@ -3566,6 +3566,67 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3590,9 +3651,12 @@ __webpack_require__.r(__webpack_exports__);
         prop: "philhealth_number",
         label: "PhilHealth #"
       }],
-      filters: [{
-        prop: ['last_name', 'first_name', 'philhealth_number'],
-        value: ''
+      gridData: [{
+        name: "",
+        sex: "",
+        birthdate: "",
+        marital_status: "",
+        philhealth_number: ""
       }],
       actionCol: {
         label: "Actions",
@@ -3606,11 +3670,13 @@ __webpack_require__.r(__webpack_exports__);
             circle: true
           },
           handler: function handler(row) {
-            _this.$message("View clicked");
-
-            row.flow_no = "hello word" + Math.random();
-            row.content = Math.random() > 0.5 ? "Water flood" : "Lock broken";
-            row.flow_type = Math.random() > 0.5 ? "Repair" : "Help";
+            // $('#sample').modal();
+            _this.dialogFormVisible = true;
+            _this.gridData[0].name = _this.buildName(row.first_name, row.middle_name, row.last_name, row.name_suffix);
+            _this.gridData[0].sex = row.sex;
+            _this.gridData[0].birthdate = row.birthdate;
+            _this.gridData[0].marital_status = row.marital_status;
+            _this.gridData[0].philhealth_number = row.philhealth_number;
           }
         }, {
           props: {
@@ -3619,11 +3685,7 @@ __webpack_require__.r(__webpack_exports__);
             circle: true
           },
           handler: function handler(row) {
-            _this.$message("Edit clicked");
-
-            row.flow_no = "hello word" + Math.random();
-            row.content = Math.random() > 0.5 ? "Water flood" : "Lock broken";
-            row.flow_type = Math.random() > 0.5 ? "Repair" : "Help";
+            _this.form.id = row.id;
           }
         }, {
           props: {
@@ -3636,7 +3698,21 @@ __webpack_require__.r(__webpack_exports__);
           }
         }]
       },
-      layout: "pagination, table"
+      layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      form: {
+        id: "",
+        name: "",
+        region: "",
+        date1: "",
+        date2: "",
+        delivery: false,
+        type: [],
+        resource: "",
+        desc: ""
+      },
+      formLabelWidth: "120px"
     };
   },
   methods: {
@@ -100314,43 +100390,11 @@ var render = function() {
     "div",
     [
       _c(
-        "div",
-        { staticStyle: { "margin-bottom": "10px" } },
-        [
-          _c(
-            "el-row",
-            [
-              _c(
-                "el-col",
-                { attrs: { span: 10 } },
-                [
-                  _c("el-input", {
-                    attrs: { placeholder: "Search" },
-                    model: {
-                      value: _vm.filters[0].value,
-                      callback: function($$v) {
-                        _vm.$set(_vm.filters[0], "value", $$v)
-                      },
-                      expression: "filters[0].value"
-                    }
-                  })
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c(
         "data-tables",
         {
           attrs: {
             data: _vm.data,
             "page-size": 10,
-            filters: _vm.filters,
             "pagination-props": { pageSizes: [10, 20, 50] },
             "action-col": _vm.actionCol
           }
@@ -100374,6 +100418,59 @@ var render = function() {
           _c("p", { attrs: { slot: "append" }, slot: "append" })
         ],
         2
+      ),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: { title: "Patient Details", visible: _vm.dialogFormVisible },
+          on: {
+            "update:visible": function($event) {
+              _vm.dialogFormVisible = $event
+            }
+          }
+        },
+        [
+          _c(
+            "el-table",
+            { attrs: { data: _vm.gridData } },
+            [
+              _c("el-table-column", {
+                attrs: { property: "name", label: "Name", width: "200" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { property: "sex", label: "Sex", width: "100" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: {
+                  property: "birthdate",
+                  label: "Birthdate",
+                  width: "formLabelWidth"
+                }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: {
+                  property: "marital_status",
+                  label: "Marital Status",
+                  width: "formLabelWidth"
+                }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: {
+                  property: "philhealth_number",
+                  label: "PhilHealth No.",
+                  width: "formLabelWidth"
+                }
+              })
+            ],
+            1
+          )
+        ],
+        1
       )
     ],
     1
