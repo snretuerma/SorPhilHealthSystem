@@ -3555,87 +3555,159 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
+    var _this = this;
+
     return {
       data: [],
       titles: [{
-        prop: 'first_name',
-        label: 'First Name'
+        prop: "name",
+        label: "Name"
       }, {
-        prop: 'middle_name',
-        label: 'Middle Name'
+        prop: "sex",
+        label: "Sex"
       }, {
-        prop: 'last_name',
-        label: 'Last Name'
+        prop: "birthdate",
+        label: "Birthdate"
       }, {
-        prop: 'name_suffix',
-        label: 'Suffix'
+        prop: "marital_status",
+        label: "Marital Status"
       }, {
-        prop: 'sex',
-        label: 'Sex'
-      }, {
-        prop: 'birthdate',
-        label: 'Birthdate'
-      }, {
-        prop: 'marital_status',
-        label: 'Marital Status'
-      }, {
-        prop: 'philhealth_number',
-        label: 'PhilHealth #'
+        prop: "philhealth_number",
+        label: "PhilHealth #"
       }],
-      layout: 'pagination, table'
+      filters: [{
+        prop: ['last_name', 'first_name', 'philhealth_number'],
+        value: ''
+      }],
+      actionCol: {
+        label: "Actions",
+        props: {
+          align: "center"
+        },
+        buttons: [{
+          props: {
+            type: "info",
+            icon: "el-icon-info",
+            circle: true
+          },
+          handler: function handler(row) {
+            _this.$message("View clicked");
+
+            row.flow_no = "hello word" + Math.random();
+            row.content = Math.random() > 0.5 ? "Water flood" : "Lock broken";
+            row.flow_type = Math.random() > 0.5 ? "Repair" : "Help";
+          }
+        }, {
+          props: {
+            type: "primary",
+            icon: "el-icon-edit",
+            circle: true
+          },
+          handler: function handler(row) {
+            _this.$message("Edit clicked");
+
+            row.flow_no = "hello word" + Math.random();
+            row.content = Math.random() > 0.5 ? "Water flood" : "Lock broken";
+            row.flow_type = Math.random() > 0.5 ? "Repair" : "Help";
+          }
+        }, {
+          props: {
+            type: "danger",
+            icon: "el-icon-delete",
+            circle: true
+          },
+          handler: function handler(row) {
+            _this.data.splice(_this.data.indexOf(row), 1);
+          }
+        }]
+      },
+      layout: "pagination, table"
     };
   },
   methods: {
+    buildName: function buildName(first_name, middle_name, last_name, suffix) {
+      return (last_name + " " + suffix + ", " + first_name + " " + middle_name.slice(0, 1) + ".").trim();
+    },
+    assignSex: function assignSex(sex_value) {
+      var sex;
+
+      switch (sex_value) {
+        case 1:
+          sex = "Male";
+          break;
+
+        case 2:
+          sex = "Female";
+          break;
+
+        case 9:
+          sex = "Not Applicable";
+          break;
+
+        default:
+          sex = "Not Known";
+      }
+
+      return sex;
+    },
+    assignMaritalStatus: function assignMaritalStatus(marital_status_value) {
+      var marital_status;
+
+      switch (marital_status_value) {
+        case 0:
+          marital_status = "Single";
+          break;
+
+        case 1:
+          marital_status = "Married";
+          break;
+
+        case 2:
+          marital_status = "Divorced";
+          break;
+
+        case 2:
+          marital_status = "Widowed";
+          break;
+
+        default:
+          marital_status = "Others/Prefer Not to Say";
+      }
+
+      return marital_status;
+    },
+    buildPatientData: function buildPatientData(element) {
+      if (element.name_suffix == undefined) {
+        element.name_suffix = "";
+      }
+
+      element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
+      element.sex = this.assignSex(element.sex);
+      element.marital_status = this.assignMaritalStatus(element.marital_status);
+    },
     getPatients: function getPatients() {
-      var _this = this;
+      var _this2 = this;
 
-      axios.get('patients_get').then(function (response) {
+      axios.get("patients_get").then(function (response) {
         response.data.forEach(function (element) {
-          if (element.name_suffix == undefined) {
-            element.name_suffix = 'None';
-          }
-
-          switch (element.sex) {
-            case 1:
-              element.sex = "Male";
-              break;
-
-            case 2:
-              element.sex = "Female";
-              break;
-
-            case 9:
-              element.sex = "Not Applicable";
-              break;
-
-            default:
-              element.sex = "Not Known";
-          }
-
-          switch (element.marital_status) {
-            case 0:
-              element.marital_status = "Single";
-              break;
-
-            case 1:
-              element.marital_status = "Married";
-              break;
-
-            case 2:
-              element.marital_status = "Divorced";
-              break;
-
-            case 2:
-              element.marital_status = "Widowed";
-              break;
-
-            default:
-              element.marital_status = "Others/Prefer Not to Say";
-          }
+          _this2.buildPatientData(element);
         });
-        _this.data = response.data;
+        _this2.data = response.data;
       })["catch"](function (error) {});
     }
   },
@@ -100242,12 +100314,45 @@ var render = function() {
     "div",
     [
       _c(
+        "div",
+        { staticStyle: { "margin-bottom": "10px" } },
+        [
+          _c(
+            "el-row",
+            [
+              _c(
+                "el-col",
+                { attrs: { span: 10 } },
+                [
+                  _c("el-input", {
+                    attrs: { placeholder: "Search" },
+                    model: {
+                      value: _vm.filters[0].value,
+                      callback: function($$v) {
+                        _vm.$set(_vm.filters[0], "value", $$v)
+                      },
+                      expression: "filters[0].value"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
         "data-tables",
         {
           attrs: {
             data: _vm.data,
-            "page-size": 1,
-            "pagination-props": { pageSizes: [10, 20, 50] }
+            "page-size": 10,
+            filters: _vm.filters,
+            "pagination-props": { pageSizes: [10, 20, 50] },
+            "action-col": _vm.actionCol
           }
         },
         [

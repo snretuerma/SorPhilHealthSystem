@@ -5,7 +5,7 @@
 <hr>
 
 <div class="card">
-    <div class="card-body">     
+    <div class="card-body">
         <patient-component></patient-component>
     </div>
 </div>
