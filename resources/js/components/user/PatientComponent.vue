@@ -3,7 +3,7 @@
     <data-tables
       :data="data"
       :page-size="10"
-      :pagination-props="{ pageSizes: [10, 20, 50] }"
+      :pagination-props="{ pageSizes: [10, 20, 40] }"
       :action-col="actionCol"
     >
       <div slot="empty">Table Empty</div>
@@ -89,6 +89,7 @@
   </div>
 </template>
 
+
 <script>
 "use strict";
 export default {
@@ -137,6 +138,7 @@ export default {
               type: "info",
               icon: "el-icon-info",
               circle: true,
+              size: "mini"
             },
             handler: (row) => {
               // $('#sample').modal();
@@ -145,8 +147,6 @@ export default {
                 row.first_name,
                 row.middle_name,
                 row.last_name,
-                
-                
                 row.name_suffix
               );
               this.gridData[0].sex = row.sex;
@@ -160,6 +160,7 @@ export default {
               type: "primary",
               icon: "el-icon-edit",
               circle: true,
+              size: "mini"
             },
             handler: (row) => {
               this.form.id = row.id;
@@ -170,9 +171,22 @@ export default {
               type: "danger",
               icon: "el-icon-delete",
               circle: true,
+              size: "mini"
             },
             handler: (row) => {
-              this.data.splice(this.data.indexOf(row), 1);
+              //console.log(row.id);//this.data.splice(this.data.indexOf(row), 1);
+
+              var data = this.data;
+             /* function res(res_value){
+                  if(res_value){
+                    data.splice(data.indexOf(row), 1);
+                  }
+              };*/
+              this.deletePatients(row.id, (res_value) => {
+                  if(res_value){
+                    data.splice(data.indexOf(row), 1);
+                  }
+              });
             },
           },
         ],
@@ -267,6 +281,52 @@ export default {
           this.data = response.data;
         })
         .catch(function (error) {});
+    },
+    deletePatients: function (id, res){
+
+          this.$confirm('Are you sure you want to delete?', 'Confirm Delete', {
+            distinguishCancelAndClose: true,
+            confirmButtonText: 'Delete',
+            cancelButtonText: 'Cancel',
+            type: 'warning'
+          })
+          .then(() => {
+            var _this = this;
+            axios
+                .post('patients_delete/' + id)
+                .then(function(response){
+                  if(response.status > 199 && response.status < 203){
+                    _this.$message({
+                      type: 'warning',
+                      message: 'Succesfully! Deleted'
+                  });
+                  res(id);
+                  }
+            });
+          })
+          .catch(action => {
+            this.$message({
+              type: 'success',
+              message: action === 'cancel'
+                ? 'Canceled'
+                : 'No changes'
+            })
+          });
+
+          
+
+
+        /* var r = confirm("Confirm delete");
+        if (r == true) {
+            alert("Confirm (Not working error found) == data not safe: "+ id);
+         axios
+            .post('patients_delete/' + id)
+            .then(function(response){
+                this.getItems();
+            });
+        } else {
+            alert("Canceled == data safe: " + id);
+        }*/
     },
   },
   mounted() {

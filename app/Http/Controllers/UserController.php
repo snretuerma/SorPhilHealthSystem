@@ -28,4 +28,13 @@ class UserController extends Controller
     {
         return Patient::where('hospital_id', Auth::user()->hospital_id)->get();
     }
+
+    public function deletePatients(Request $req)
+    {
+        //$data = Data::find($req->iid)->delete();
+         return Patient::where('id', $req->id)->delete();
+        //return $req->id;
+        //return Patient::where('hospital_id', Auth::user()->hospital_id)->get();
+    }
+
 }

@@ -28,6 +28,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function() {
     Route::get('/', 'UserController@index')->name('user');
     Route::get('/patients', 'UserController@patients')->name('patients');
     Route::get('patients_get', 'UserController@getPatients');
+    Route::post('patients_delete/{id}', 'UserController@deletePatients');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function() {
     Route::get('/', 'ObserverController@index')->name('observer');
