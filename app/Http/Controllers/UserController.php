@@ -53,13 +53,11 @@ class UserController extends Controller
 
     public function editPatient(Request $request)
     {
-
         $patient = Patient::where('id', $request->id)->first();
     }
 
     public function deletePatients(Request $req)
     {
-
         return Patient::where('id', $req->id)->delete();
     }
 }
