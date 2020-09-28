@@ -279,7 +279,7 @@ export default {
     },
     editPatient: function () {
       axios
-        .post("edit_patient/" + this.form.id)
+        .post("edit_patient" , this.form)
         .then((response) => {
           response.data.forEach((element) => {
             this.buildPatientData(element);

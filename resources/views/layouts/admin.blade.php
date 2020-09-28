@@ -73,6 +73,11 @@
                 <i class="fa fa-file-medical-alt"></i><span>Records</span>
               </a>
             </li>
+            <li class="sidebar li">
+              <a href="">
+                <i class="fa fa-file-medical-alt"></i><span>Users</span>
+              </a>
+            </li>
           </ul>
         </div>
         <!-- sidebar-menu  -->
