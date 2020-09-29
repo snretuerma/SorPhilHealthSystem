@@ -158,6 +158,21 @@ export default {
           align: "center",
         },
         buttons: [
+           {
+            props: {
+              type: "info",
+              icon: "el-icon-info",
+              circle: true,
+              size: "mini",
+            },
+            handler: (row) => {
+              this.dialogTableVisible = true;
+              this.gridData[0].start_date = row.start_date;
+              this.gridData[0].total = row.total;
+              this.gridData[0].end_date = row.end_date;
+              
+            },
+          },
           {
             props: {
               type: "primary",

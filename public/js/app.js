@@ -3777,6 +3777,20 @@ __webpack_require__.r(__webpack_exports__);
         },
         buttons: [{
           props: {
+            type: "info",
+            icon: "el-icon-info",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            _this2.dialogTableVisible = true;
+            _this2.gridData[0].start_date = row.start_date;
+            _this2.gridData[0].total = row.total;
+            _this2.gridData[0].end_date = row.end_date;
+            _this2.gridData[0].hospital_code = row.hospital_code;
+          }
+        }, {
+          props: {
             type: "primary",
             icon: "el-icon-edit",
             circle: true,
@@ -4372,6 +4386,19 @@ __webpack_require__.r(__webpack_exports__);
           align: "center"
         },
         buttons: [{
+          props: {
+            type: "info",
+            icon: "el-icon-info",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            _this2.dialogTableVisible = true;
+            _this2.gridData[0].start_date = row.start_date;
+            _this2.gridData[0].total = row.total;
+            _this2.gridData[0].end_date = row.end_date;
+          }
+        }, {
           props: {
             type: "primary",
             icon: "el-icon-edit",
