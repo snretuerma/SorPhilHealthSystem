@@ -3,6 +3,6 @@
 @section('content')
 
 <x-alert />
-<patient-component></patient-component>
+<personnel-component></personnel-component>
 
 @endsection

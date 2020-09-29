@@ -3,14 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Patient;
+use App\Models\Personnel;
 use App\Models\Hospital;
 use Auth;
 use DB;
 use Dotenv\Store\File\Paths;;
-
-use Carbon\Carbon;
-
 use Illuminate\Http\Request;
+use Carbon\Carbon;
+use App\Http\Requests\addPatientRequest;
+use App\Http\Requests\addPersonnelRequest;
 
 class UserController extends Controller
 {
@@ -24,6 +25,41 @@ class UserController extends Controller
     {
         return view('roles.user.index');
     }
+    //Budget
+    public function budget()
+    {
+        return view('roles.user.budget');
+    }
+    //Staffs
+    public function personnel()
+    {
+        return view('roles.user.personnel');
+    }
+
+    public function getPersonnel()
+    {
+        return Personnel::where('hospital_id', Auth::user()->hospital_id)->get();
+    }
+
+    public function addPersonnel(addPersonnelRequest $request)
+    {
+        $date = Carbon::parse($request->birthdate)->format('Y-m-d');
+        $personnel = new Personnel;
+        $personnel->first_name = $request->first_name;
+        $personnel->middle_name = $request->middle_name;
+        $personnel->last_name = $request->last_name;
+        $personnel->name_suffix = $request->name_suffix;
+        $personnel->sex = $request->sex;
+        $personnel->birthdate = $date;
+        $personnel->hospital()->associate(Hospital::find(1)->id);
+        $personnel->save();
+    }
+
+    public function deletePersonnel(Request $req)
+    {
+        return Personnel::where('id', $req->id)->delete();
+    }
+    //Patients
 
     public function patients()
     {
@@ -59,5 +95,10 @@ class UserController extends Controller
     public function deletePatients(Request $req)
     {
         return Patient::where('id', $req->id)->delete();
+    }
+    //Records
+    public function records()
+    {
+        return view('roles.user.records');
     }
 }

@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="row">
       <div class="col-sm-12">
-        <h2>Patient List</h2>
+        <h2>Staffs List</h2>
       </div>
     </div>
     <hr />
@@ -58,26 +58,38 @@
         </data-tables>
         <!-- Data table ends -->
 
-        <!-- Add Patient form -->
+        <!-- Add Personnel form -->
         <el-dialog
-          title="Add Patient"
+          title="Add Staff"
           :visible.sync="dialogFormVisible"
           top="0vh"
         >
           <el-form :model="form" :rules="rules" ref="form">
-            <el-form-item label="Lastname" :label-width="formLabelWidth" prop="last_name">
+            <el-form-item
+              label="Lastname"
+              :label-width="formLabelWidth"
+              prop="last_name"
+            >
               <el-input v-model="form.last_name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Firstname" :label-width="formLabelWidth" prop="first_name">
+            <el-form-item
+              label="Firstname"
+              :label-width="formLabelWidth"
+              prop="first_name"
+            >
               <el-input v-model="form.first_name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Middlename" :label-width="formLabelWidth" prop="middle_name">
+            <el-form-item
+              label="Middlename"
+              :label-width="formLabelWidth"
+              prop="middle_name"
+            >
               <el-input
                 v-model="form.middle_name"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
-            <el-form-item label="Suffix" :label-width="formLabelWidth" prop="name_suffix">
+            <el-form-item label="Suffix" :label-width="formLabelWidth">
               <el-input
                 v-model="form.name_suffix"
                 autocomplete="off"
@@ -89,7 +101,11 @@
                 <el-option label="Female" value="2"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="Birthdate" :label-width="formLabelWidth" prop="birthdate">
+            <el-form-item
+              label="Birthdate"
+              :label-width="formLabelWidth"
+              prop="birthdate"
+            >
               <el-date-picker
                 type="date"
                 placeholder="Pick a date"
@@ -98,37 +114,24 @@
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
-            <el-form-item label="Marital Status" :label-width="formLabelWidth" prop="marital_status">
-              <el-select
-                v-model="form.marital_status"
-                placeholder="Please select"
-              >
-                <el-option label="Single" value="0"></el-option>
-                <el-option label="Married" value="1"></el-option>
-                <el-option label="Divorced" value="2"></el-option>
-                <el-option label="Widowed" value="3"></el-option>
-                <el-option
-                  label="Others/Prefer Not to Say"
-                  value="4"
-                ></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="PhilHealth No." :label-width="formLabelWidth" prop="philhealth_number">
-              <el-input
-                v-model="form.philhealth_number"
-                autocomplete="off"
-              ></el-input>
-            </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="addPatient()">Confirm</el-button>
+            <el-button
+              @click="
+                dialogFormVisible = false;
+                resetForm('form');
+              "
+              >Cancel</el-button
+            >
+            <el-button type="primary" @click="addPersonnel('form')"
+              >Confirm</el-button
+            >
           </span>
         </el-dialog>
-        <!-- Add Patient form ends here-->
+        <!-- Add Personnel form ends here-->
 
-        <!-- Show Patient Details -->
-        <el-dialog title="Patient Details" :visible.sync="dialogTableVisible">
+        <!-- Show Personnel Details -->
+        <el-dialog title="Staffs Details" :visible.sync="dialogTableVisible">
           <el-table :data="gridData">
             <el-table-column
               property="name"
@@ -138,39 +141,28 @@
             <el-table-column
               property="sex"
               label="Sex"
-              width="100"
+              width="300"
             ></el-table-column>
             <el-table-column
               property="birthdate"
               label="Birthdate"
-              width="formLabelWidth"
-            ></el-table-column>
-            <el-table-column
-              property="marital_status"
-              label="Marital Status"
-              width="formLabelWidth"
-            ></el-table-column>
-            <el-table-column
-              property="philhealth_number"
-              label="PhilHealth No."
-              width="formLabelWidth"
+              width="100"
             ></el-table-column>
           </el-table>
         </el-dialog>
-        <!-- Show Patient Details -->
+        <!-- Show Personnel Details -->
+
       </div>
     </div>
     <!-- Card ends here -->
   </div>
 </template>
 
-
 <script>
 "use strict";
 export default {
-  data() {
-    return {
-      // Validation
+  data(){
+    return{
       rules: {
         last_name: [
           { required: true, message: "Lastname is required.", trigger: "blur" },
@@ -200,27 +192,12 @@ export default {
             trigger: "change",
           },
         ],
-        marital_status: [
-          {
-            required: true,
-            message: "Marital Status is required.",
-            trigger: "change",
-          },
-        ],
-        philhealth_number: [
-          {
-            required: true,
-            message: "PhilHealth No. is required.",
-            trigger: "blur",
-          },
-        ],
       },
       data: [],
-      patientinfo: [],
-      // Searchbox Filters
+      personnelinfo: [],
       filters: [
         {
-          prop: ["first_name", "last_name", "philhealth_number", "middle_name"],
+          prop: ["first_name", "last_name", "middle_name"],
           value: "",
         },
       ],
@@ -237,26 +214,14 @@ export default {
           prop: "birthdate",
           label: "Birthdate",
         },
-        {
-          prop: "marital_status",
-          label: "Marital Status",
-        },
-        {
-          prop: "philhealth_number",
-          label: "PhilHealth #",
-        },
       ],
-      // Show details data
       gridData: [
         {
           name: "",
           sex: "",
           birthdate: "",
-          marital_status: "",
-          philhealth_number: "",
         },
       ],
-      //Action buttons
       actionCol: {
         label: "Actions",
         props: {
@@ -280,8 +245,6 @@ export default {
               );
               this.gridData[0].sex = row.sex;
               this.gridData[0].birthdate = row.birthdate;
-              this.gridData[0].marital_status = row.marital_status;
-              this.gridData[0].philhealth_number = row.philhealth_number;
             },
           },
           {
@@ -292,7 +255,7 @@ export default {
               size: "mini",
             },
             handler: (row) => {
-              this.form.id = row.id;
+              
             },
           },
           {
@@ -305,7 +268,7 @@ export default {
             handler: (row) => {
               var data = this.data;
 
-              this.deletePatients(row.id, (res_value) => {
+              this.deletePersonnel(row.id, (res_value) => {
                 if (res_value) {
                   data.splice(data.indexOf(row), 1);
                 }
@@ -314,7 +277,6 @@ export default {
           },
         ],
       },
-      // Datatable Layout
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
@@ -326,17 +288,15 @@ export default {
         name_suffix: "",
         sex: "",
         birthdate: "",
-        marital_status: "",
-        philhealth_number: "",
         name: "",
       },
       formLabelWidth: "120px",
     };
   },
   methods: {
-    addPatient: async function () {
+    addPersonnel: async function () {
       axios
-        .post("add_patient", this.form)
+        .post("add_personnel", this.form)
         .then((response) => {
           if (this.form.sex == 1) {
             this.form.sex = "Male";
@@ -346,17 +306,6 @@ export default {
             this.form.sex = "Not Applicable";
           } else {
             this.form.sex = "Not Known";
-          }
-          if (this.form.marital_status == 0) {
-            this.form.marital_status = "Single";
-          } else if (this.form.marital_status == 1) {
-            this.form.marital_status = "Married";
-          } else if (this.form.marital_status == 2) {
-            this.form.marital_status = "Divorced";
-          } else if (this.form.marital_status == 3) {
-            this.form.marital_status = "Widowed";
-          } else {
-            this.form.marital_status = "Others/Prefer Not to Say";
           }
           this.form.name =
             this.form.last_name +
@@ -369,13 +318,17 @@ export default {
             ". ";
           this.data.push(this.form);
 
+          console.log(this.form.name_suffix);
           this.dialogFormVisible = false;
         })
         .catch(function (error) {});
     },
+    resetForm(addPersonnelForm) {
+      this.$refs[addPersonnelForm].resetFields();
+    },
     editPatient: function () {
       axios
-        .post("edit_patient", this.form)
+        .post("edit_patient/" + this.form.id)
         .then((response) => {
           response.data.forEach((element) => {
             this.buildPatientData(element);
@@ -384,18 +337,6 @@ export default {
           console.log(response.data);
         })
         .catch(function (error) {});
-    },
-    buildName: function (first_name, middle_name, last_name, suffix) {
-      return (
-        last_name +
-        " " +
-        suffix +
-        ", " +
-        first_name +
-        " " +
-        middle_name.slice(0, 1) +
-        "."
-      ).trim();
     },
     assignSex: function (sex_value) {
       var sex;
@@ -414,27 +355,19 @@ export default {
       }
       return sex;
     },
-    assignMaritalStatus: function (marital_status_value) {
-      var marital_status;
-      switch (marital_status_value) {
-        case 0:
-          marital_status = "Single";
-          break;
-        case 1:
-          marital_status = "Married";
-          break;
-        case 2:
-          marital_status = "Divorced";
-          break;
-        case 2:
-          marital_status = "Widowed";
-          break;
-        default:
-          marital_status = "Others/Prefer Not to Say";
-      }
-      return marital_status;
+    buildName: function (first_name, middle_name, last_name, suffix) {
+      return (
+        last_name +
+        " " +
+        suffix +
+        ", " +
+        first_name +
+        " " +
+        middle_name.slice(0, 1) +
+        "."
+      ).trim();
     },
-    buildPatientData: function (element) {
+    buildPersonnelData: function (element) {
       if (element.name_suffix == undefined) {
         element.name_suffix = "";
       }
@@ -445,20 +378,19 @@ export default {
         element.name_suffix
       );
       element.sex = this.assignSex(element.sex);
-      element.marital_status = this.assignMaritalStatus(element.marital_status);
     },
-    getPatients: function () {
+    getPersonnel: function () {
       axios
-        .get("patients_get")
+        .get("personnel_get")
         .then((response) => {
           response.data.forEach((element) => {
-            this.buildPatientData(element);
+            this.buildPersonnelData(element);
           });
           this.data = response.data;
         })
         .catch(function (error) {});
     },
-    deletePatients: function (id, res) {
+    deletePersonnel: function (id, res) {
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
         confirmButtonText: "Delete",
@@ -467,7 +399,7 @@ export default {
       })
         .then(() => {
           var _this = this;
-          axios.post("patients_delete/" + id).then(function (response) {
+          axios.post("personnel_delete/" + id).then(function (response) {
             if (response.status > 199 && response.status < 203) {
               _this.$message({
                 type: "success",
@@ -486,7 +418,7 @@ export default {
     },
   },
   mounted() {
-    this.getPatients();
+    this.getPersonnel();
   },
 };
 </script>
