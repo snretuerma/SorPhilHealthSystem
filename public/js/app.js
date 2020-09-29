@@ -4683,8 +4683,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 
 
 
@@ -4797,7 +4795,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             size: "mini"
           },
           handler: function handler(row) {
+            _this2.resetForm();
+
             _this2.form.id = row.id;
+            _this2.form.formmode = "edit_data";
+            _this2.form.last_name = row.last_name;
+            _this2.form.first_name = row.first_name;
+            _this2.form.middle_name = row.middle_name;
+            _this2.form.name_suffix = row.name_suffix;
+            _this2.form.sex = row.sex;
+            _this2.form.birthdate = row.birthdate;
+            _this2.form.marital_status = row.marital_status;
+            _this2.form.philhealth_number = row.philhealth_number;
+            _this2.form.edit_object_index = _this2.data.indexOf(row);
+            _this2.form_check.last_name = row.last_name, _this2.form_check.first_name = row.first_name, _this2.form_check.middle_name = row.middle_name, _this2.form_check.name_suffix = row.name_suffix, _this2.form_check.sex = row.sex, _this2.form_check.birthdate = row.birthdate, _this2.form_check.marital_status = row.marital_status, _this2.form_check.philhealth_number = row.philhealth_number, _this2.form_check.name = _this2.form_check.last_name + ", " + _this2.form_check.name_suffix + " " + _this2.form_check.first_name + " " + _this2.form_check.middle_name.slice(0, 1) + ". ";
+
+            _this2.formDialog('edit_data');
           }
         }, {
           props: {
@@ -4823,6 +4836,19 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       dialogFormVisible: false,
       form: {
         id: "",
+        last_name: "",
+        first_name: "",
+        middle_name: "",
+        name_suffix: "",
+        sex: "",
+        birthdate: "",
+        marital_status: "",
+        philhealth_number: "",
+        name: "",
+        formmode: "",
+        edit_object_index: ""
+      },
+      form_check: {
         last_name: "",
         first_name: "",
         middle_name: "",
@@ -4889,16 +4915,115 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return addPatient;
     }(),
+    resetForm: function resetForm() {
+      this.form.last_name = "";
+      this.form.first_name = "";
+      this.form.middle_name = "";
+      this.form.name_suffix = "";
+      this.form.sex = "";
+      this.form.birthdate = "";
+      this.form.marital_status = "";
+      this.form.philhealth_number = "";
+    },
+    formDialog: function formDialog(id) {
+      if (id == "insert_data") {
+        this.form.formmode = "insert_data";
+        this.resetForm();
+        this.dialogFormVisible = true;
+      } else if (id == "edit_data") {
+        this.dialogFormVisible = true;
+      }
+    },
+    open_notif: function open_notif(status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      }
+    },
     editPatient: function editPatient() {
       var _this4 = this;
 
-      axios.post("edit_patient", this.form).then(function (response) {
-        response.data.forEach(function (element) {
-          _this4.buildPatientData(element);
-        });
-        _this4.patientinfo = response.data;
-        console.log(response.data);
-      })["catch"](function (error) {});
+      var _this = this;
+
+      if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate && this.form.marital_status == this.form_check.marital_status && this.form.philhealth_number == this.form_check.philhealth_number) {
+        _this.open_notif('info', 'Message', 'No Changes');
+      } else {
+        if (this.form.sex == "Male") {
+          this.form.sex = 1;
+        } else if (this.form.sex == "Female") {
+          this.form.sex = 2;
+        }
+
+        if (this.form.marital_status == "Single") {
+          this.form.marital_status = 0;
+        } else if (this.form.marital_status == "Married") {
+          this.form.marital_status = 1;
+        } else if (this.form.marital_status == "Divorced") {
+          this.form.marital_status = 2;
+        } else if (this.form.marital_status == "Widowed") {
+          this.form.marital_status = 3;
+        } else if (this.form.marital_status == "Others/Prefer Not to Say") {
+          this.form.marital_status = 4;
+        }
+
+        _this.form.name = _this.form.last_name + ", " + _this.form.name_suffix + " " + _this.form.first_name + " " + _this.form.middle_name.slice(0, 1) + ". ";
+        axios.post("patients_edit/" + this.form.id, this.form).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this.open_notif('success', 'Success', 'Changes has been saved');
+
+            _this4.dialogFormVisible = false;
+
+            if (_this.form.sex == 1) {
+              _this.form.sex = "Male";
+            } else if (_this.form.sex == 2) {
+              _this.form.sex = "Female";
+            }
+
+            if (_this.form.marital_status == 0) {
+              _this.form.marital_status = "Single";
+            } else if (_this.form.marital_status == 1) {
+              _this.form.marital_status = "Married";
+            } else if (_this.form.marital_status == 2) {
+              _this.form.marital_status = "Divorced";
+            } else if (_this.form.marital_status == 3) {
+              _this.form.marital_status = "Widowed";
+            } else if (_this.form.marital_status == 4) {
+              _this.form.marital_status = "Others/Prefer Not to Say";
+            }
+
+            _this.data[parseInt(_this.form.edit_object_index)].last_name = _this.form.last_name;
+            _this.data[parseInt(_this.form.edit_object_index)].first_name = _this.form.first_name;
+            _this.data[parseInt(_this.form.edit_object_index)].middle_name = _this.form.middle_name;
+            _this.data[parseInt(_this.form.edit_object_index)].name_suffix = _this.form.name_suffix;
+            _this.data[parseInt(_this.form.edit_object_index)].sex = _this.form.sex;
+            _this.data[parseInt(_this.form.edit_object_index)].birthdate = _this.form.birthdate;
+            _this.data[parseInt(_this.form.edit_object_index)].marital_status = _this.form.marital_status;
+            _this.data[parseInt(_this.form.edit_object_index)].philhealth_number = _this.form.philhealth_number;
+            _this.data[parseInt(_this.form.edit_object_index)].name = _this.form.name;
+          }
+        })["catch"](function (error) {});
+      }
     },
     buildName: function buildName(first_name, middle_name, last_name, suffix) {
       return (last_name + " " + suffix + ", " + first_name + " " + middle_name.slice(0, 1) + ".").trim();
@@ -4941,7 +5066,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           marital_status = "Divorced";
           break;
 
-        case 2:
+        case 3:
           marital_status = "Widowed";
           break;
 
@@ -103938,7 +104063,7 @@ var render = function() {
               attrs: { type: "primary" },
               on: {
                 click: function($event) {
-                  _vm.dialogFormVisible = true
+                  return _vm.formDialog("insert_data")
                 }
               }
             },
@@ -104266,18 +104391,35 @@ var render = function() {
                     [_vm._v("Cancel")]
                   ),
                   _vm._v(" "),
-                  _c(
-                    "el-button",
-                    {
-                      attrs: { type: "primary" },
-                      on: {
-                        click: function($event) {
-                          return _vm.addPatient()
-                        }
-                      }
-                    },
-                    [_vm._v("Confirm")]
-                  )
+                  this.form.formmode == "insert_data"
+                    ? _c(
+                        "el-button",
+                        {
+                          attrs: { type: "primary" },
+                          on: {
+                            click: function($event) {
+                              return _vm.addPatient()
+                            }
+                          }
+                        },
+                        [_vm._v("Save")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  this.form.formmode == "edit_data"
+                    ? _c(
+                        "el-button",
+                        {
+                          attrs: { type: "primary" },
+                          on: {
+                            click: function($event) {
+                              return _vm.editPatient()
+                            }
+                          }
+                        },
+                        [_vm._v("Save Changes")]
+                      )
+                    : _vm._e()
                 ],
                 1
               )
@@ -117428,8 +117570,8 @@ jQuery(function ($) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\REDAS\Desktop\kevz\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\REDAS\Desktop\kevz\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\xampp\htdocs\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

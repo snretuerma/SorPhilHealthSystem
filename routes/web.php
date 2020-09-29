@@ -47,7 +47,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('patients_get', 'UserController@getPatients');
     Route::post('add_patient', 'UserController@addPatient');
     Route::post('patients_delete/{id}', 'UserController@deletePatients');
-    Route::post('/edit_patient/{id}', 'UserController@editPatient');
+    Route::post('patients_edit/{id}', 'UserController@editPatients');
     //Records
     Route::get('/records', 'UserController@records')->name('records');
     
