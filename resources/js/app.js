@@ -30,7 +30,11 @@ Vue.use(VueDataTables);
  */
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('patient-component', require('./components/user/PatientComponent.vue').default);
+
 Vue.component('budget-component', require('./components/user/BudgetComponent.vue').default);
+
+Vue.component('adminbudget-component', require('./components/admin/BudgetComponent.vue').default);
+Vue.component('users-component', require('./components/admin/UserComponent.vue').default);
 
 const app = new Vue({
     el: '#app'

@@ -24,6 +24,10 @@ Auth::routes([
 ]);
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/', 'AdminController@index')->name('admin');
+    Route::get('/adminbudget', 'AdminController@budget')->name('adminbudget');
+    Route::get('adminbudget_get', 'AdminController@getBudget');
+
+    Route::post('/adminedit_budget/{id}', 'AdminController@editBudget');
 });
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('user');

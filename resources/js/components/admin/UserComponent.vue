@@ -110,6 +110,7 @@
 <script>
 "use strict";
 export default {
+  
   data() {
     return {
       data: [],
@@ -274,6 +275,7 @@ export default {
   },
   mounted() {
     this.getBudget();
+  
   },
 };
 </script>

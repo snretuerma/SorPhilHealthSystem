@@ -54,7 +54,7 @@
             </li>
 
             <li class="sidebar li">
-              <a href="budget">
+              <a href="{{route('budget')}}">
                 <i class="fa fa-coins"></i><span>Budget</span>
               </a>
             </li>

@@ -23,7 +23,7 @@
     <nav id="sidebar" class="sidebar-wrapper">
       <div class="sidebar-content">
         <div class="sidebar-brand">
-          <a href="{{ url('user') }}">PF Management System</a>
+          <a href="{{ url('admin') }}">PF Management System</a>
           <div id="close-sidebar">
             <i class="fas fa-times"></i>
           </div>
@@ -54,7 +54,7 @@
             </li>
 
             <li class="sidebar li">
-              <a href="budget">
+              <a href="{{route('adminbudget')}}">
                 <i class="fa fa-coins"></i><span>Budget</span>
               </a>
             </li>
@@ -64,7 +64,7 @@
               </a>
             </li>
             <li class="sidebar li">
-              <a href="{{route('patients')}}">
+              <a href="">
                 <i class="fa fa-file-medical-alt"></i><span>Patients</span>
               </a>
             </li>

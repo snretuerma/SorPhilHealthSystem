@@ -56,7 +56,7 @@ class UserController extends Controller
         $patient->birthdate = $date;
         $patient->marital_status = $request->marital_status;
         $patient->philhealth_number = $request->philhealth_number;
-        $patient->hospital()->associate(Hospital::find(1)->id);
+        $patient->hospital()->associate(Hospital::find($request->id)->id);
         $patient->save();
     }
     public function addBudget(Request $request)
@@ -67,7 +67,7 @@ class UserController extends Controller
         $budget->start_date=$startdate;
         $budget->total = $request->total;
         $budget->end_date=$enddate;
-        $budget->hospital()->associate(Hospital::find(1)->id);
+        $budget->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $budget->save();
     }
 
