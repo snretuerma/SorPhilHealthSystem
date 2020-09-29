@@ -1,12 +1,16 @@
 <template>
   <div>
+    <!-- Header -->
     <div class="row">
       <div class="col-sm-12">
         <h2>Patient List</h2>
       </div>
     </div>
     <hr />
+    <!-- End Header -->
+
     <div class="row">
+      <!-- Search Box -->
       <div class="col-sm-10" align="left">
         <div style="margin-bottom: 10px">
           <el-row>
@@ -19,14 +23,21 @@
           </el-row>
         </div>
       </div>
+      <!-- End Search Box -->
+
+      <!-- Add Button -->
       <div class="col-sm-2" align="right">
         <el-button type="primary" @click="formDialog('insert_data')"
           >Add</el-button
         >
       </div>
+      <!-- End Button -->
     </div>
+
+    <!-- Card Begins Here -->
     <div class="card">
       <div class="card-body">
+        <!-- Data table -->
         <data-tables
           :data="data"
           :page-size="10"
@@ -45,37 +56,40 @@
           </el-table-column>
           <p slot="append"></p>
         </data-tables>
+        <!-- Data table ends -->
+
+        <!-- Add Patient form -->
         <el-dialog
-          title="Patient Details"
+          title="Add Patient"
           :visible.sync="dialogFormVisible"
           top="0vh"
         >
-          <el-form :model="form">
-            <el-form-item label="Lastname" :label-width="formLabelWidth">
+          <el-form :model="form" :rules="rules" ref="form">
+            <el-form-item label="Lastname" :label-width="formLabelWidth" prop="last_name">
               <el-input v-model="form.last_name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Firstname" :label-width="formLabelWidth">
+            <el-form-item label="Firstname" :label-width="formLabelWidth" prop="first_name">
               <el-input v-model="form.first_name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Middlename" :label-width="formLabelWidth">
+            <el-form-item label="Middlename" :label-width="formLabelWidth" prop="middle_name">
               <el-input
                 v-model="form.middle_name"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
-            <el-form-item label="Suffix" :label-width="formLabelWidth">
+            <el-form-item label="Suffix" :label-width="formLabelWidth" prop="name_suffix">
               <el-input
                 v-model="form.name_suffix"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
-            <el-form-item label="Sex" :label-width="formLabelWidth">
+            <el-form-item label="Sex" :label-width="formLabelWidth" prop="sex">
               <el-select v-model="form.sex" placeholder="Please select">
                 <el-option label="Male" value="1"></el-option>
                 <el-option label="Female" value="2"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="Birthdate" :label-width="formLabelWidth">
+            <el-form-item label="Birthdate" :label-width="formLabelWidth" prop="birthdate">
               <el-date-picker
                 type="date"
                 placeholder="Pick a date"
@@ -84,7 +98,7 @@
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
-            <el-form-item label="Marital Status" :label-width="formLabelWidth">
+            <el-form-item label="Marital Status" :label-width="formLabelWidth" prop="marital_status">
               <el-select
                 v-model="form.marital_status"
                 placeholder="Please select"
@@ -96,7 +110,7 @@
                 <el-option label="Others/Prefer Not to Say" value="4"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="PhilHealth No." :label-width="formLabelWidth">
+            <el-form-item label="PhilHealth No." :label-width="formLabelWidth" prop="philhealth_number">
               <el-input
                 v-model="form.philhealth_number"
                 autocomplete="off"
@@ -109,8 +123,42 @@
             <el-button v-if="this.form.formmode == 'edit_data'" type="primary" @click="editPatient()">Save Changes</el-button>
           </span>
         </el-dialog>
+        <!-- Add Patient form ends here-->
+
+        <!-- Show Patient Details -->
+        <el-dialog title="Patient Details" :visible.sync="dialogTableVisible">
+          <el-table :data="gridData">
+            <el-table-column
+              property="name"
+              label="Name"
+              width="200"
+            ></el-table-column>
+            <el-table-column
+              property="sex"
+              label="Sex"
+              width="100"
+            ></el-table-column>
+            <el-table-column
+              property="birthdate"
+              label="Birthdate"
+              width="formLabelWidth"
+            ></el-table-column>
+            <el-table-column
+              property="marital_status"
+              label="Marital Status"
+              width="formLabelWidth"
+            ></el-table-column>
+            <el-table-column
+              property="philhealth_number"
+              label="PhilHealth No."
+              width="formLabelWidth"
+            ></el-table-column>
+          </el-table>
+        </el-dialog>
+        <!-- Show Patient Details -->
       </div>
     </div>
+    <!-- Card ends here -->
   </div>
 </template>
 
@@ -120,8 +168,54 @@
 export default {
   data() {
     return {
+      // Validation
+      rules: {
+        last_name: [
+          { required: true, message: "Lastname is required.", trigger: "blur" },
+        ],
+        first_name: [
+          {
+            required: true,
+            message: "Firstname is required.",
+            trigger: "blur",
+          },
+        ],
+        middle_name: [
+          {
+            required: true,
+            message: "Middlename is required.",
+            trigger: "blur",
+          },
+        ],
+        sex: [
+          { required: true, message: "Sex is required.", trigger: "change" },
+        ],
+        birthdate: [
+          {
+            // type: "date",
+            required: true,
+            message: "Please pick a date",
+            trigger: "change",
+          },
+        ],
+        marital_status: [
+          {
+            required: true,
+            message: "Marital Status is required.",
+            trigger: "change",
+          },
+        ],
+        philhealth_number: [
+          {
+            required: true,
+            message: "PhilHealth No. is required.",
+            trigger: "blur",
+          },
+        ],
+      },
       data: [],
       patientinfo: [],
+      // Searchbox Filters
       filters: [
         {
           prop: ["first_name", "last_name", "philhealth_number", "middle_name"],
@@ -150,6 +244,7 @@ export default {
           label: "PhilHealth #",
         },
       ],
+      // Show details data
       gridData: [
         {
           name: "",
@@ -159,6 +254,7 @@ export default {
           philhealth_number: "",
         },
       ],
+      //Action buttons
       actionCol: {
         label: "Actions",
         props: {
@@ -173,7 +269,7 @@ export default {
               size: "mini",
             },
             handler: (row) => {
-              this.dialogFormVisible = true;
+              this.dialogTableVisible = true;
               this.gridData[0].name = this.buildName(
                 row.first_name,
                 row.middle_name,
@@ -249,6 +345,7 @@ export default {
           },
         ],
       },
+      // Datatable Layout
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
@@ -316,7 +413,6 @@ export default {
             ". ";
           this.data.push(this.form);
 
-          console.log(this.form.name_suffix);
           this.dialogFormVisible = false;
         })
         .catch(function (error) {});
@@ -525,7 +621,7 @@ export default {
           axios.post("patients_delete/" + id).then(function (response) {
             if (response.status > 199 && response.status < 203) {
               _this.$message({
-                type: "warning",
+                type: "success",
                 message: "Succesfully! Deleted",
               });
               res(id);
