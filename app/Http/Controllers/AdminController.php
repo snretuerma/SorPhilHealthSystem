@@ -29,9 +29,6 @@ class AdminController extends Controller
     }
     public function getBudget()
     {
-        // $budget=Budget::find(1)->first();
-        // return $budget->hospital()->name;
-        // return Budget::where('hospital_id', '<>', '')->get(); // is not null
         $budget = DB::table('budgets')
             ->join('hospitals', 'budgets.hospital_id', '=', 'hospitals.id')
             ->select('budgets.*', 'hospitals.hospital_code')
