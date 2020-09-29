@@ -4610,6 +4610,54 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4623,8 +4671,48 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var _this2 = this;
 
     return {
+      // Validation
+      rules: {
+        last_name: [{
+          required: true,
+          message: "Lastname is required.",
+          trigger: "blur"
+        }],
+        first_name: [{
+          required: true,
+          message: "Firstname is required.",
+          trigger: "blur"
+        }],
+        middle_name: [{
+          required: true,
+          message: "Middlename is required.",
+          trigger: "blur"
+        }],
+        sex: [{
+          required: true,
+          message: "Sex is required.",
+          trigger: "change"
+        }],
+        birthdate: [{
+          // type: "date",
+          required: true,
+          message: "Please pick a date",
+          trigger: "change"
+        }],
+        marital_status: [{
+          required: true,
+          message: "Marital Status is required.",
+          trigger: "change"
+        }],
+        philhealth_number: [{
+          required: true,
+          message: "PhilHealth No. is required.",
+          trigger: "blur"
+        }]
+      },
       data: [],
       patientinfo: [],
+      // Searchbox Filters
       filters: [{
         prop: ["first_name", "last_name", "philhealth_number", "middle_name"],
         value: ""
@@ -4645,6 +4733,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         prop: "philhealth_number",
         label: "PhilHealth #"
       }],
+      // Show details data
       gridData: [{
         name: "",
         sex: "",
@@ -4652,6 +4741,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         marital_status: "",
         philhealth_number: ""
       }],
+      //Action buttons
       actionCol: {
         label: "Actions",
         props: {
@@ -4665,7 +4755,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             size: "mini"
           },
           handler: function handler(row) {
-            _this2.dialogFormVisible = true;
+            _this2.dialogTableVisible = true;
             _this2.gridData[0].name = _this2.buildName(row.first_name, row.middle_name, row.last_name, row.name_suffix);
             _this2.gridData[0].sex = row.sex;
             _this2.gridData[0].birthdate = row.birthdate;
@@ -4700,6 +4790,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }]
       },
+      // Datatable Layout
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
@@ -4754,7 +4845,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   _this3.data.push(_this3.form);
 
-                  console.log(_this3.form.name_suffix);
                   _this3.dialogFormVisible = false;
                 })["catch"](function (error) {});
 
@@ -4866,7 +4956,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         axios.post("patients_delete/" + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             _this.$message({
-              type: "warning",
+              type: "success",
               message: "Succesfully! Deleted"
             });
 
@@ -4883,6 +4973,433 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   mounted: function mounted() {
     this.getPatients();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    var _this2 = this;
+
+    return {
+      rules: {
+        last_name: [{
+          required: true,
+          message: "Lastname is required.",
+          trigger: "blur"
+        }],
+        first_name: [{
+          required: true,
+          message: "Firstname is required.",
+          trigger: "blur"
+        }],
+        middle_name: [{
+          required: true,
+          message: "Middlename is required.",
+          trigger: "blur"
+        }],
+        sex: [{
+          required: true,
+          message: "Sex is required.",
+          trigger: "change"
+        }],
+        birthdate: [{
+          // type: "date",
+          required: true,
+          message: "Please pick a date",
+          trigger: "change"
+        }]
+      },
+      data: [],
+      personnelinfo: [],
+      filters: [{
+        prop: ["first_name", "last_name", "middle_name"],
+        value: ""
+      }],
+      titles: [{
+        prop: "name",
+        label: "Name"
+      }, {
+        prop: "sex",
+        label: "Sex"
+      }, {
+        prop: "birthdate",
+        label: "Birthdate"
+      }],
+      gridData: [{
+        name: "",
+        sex: "",
+        birthdate: ""
+      }],
+      actionCol: {
+        label: "Actions",
+        props: {
+          align: "center"
+        },
+        buttons: [{
+          props: {
+            type: "info",
+            icon: "el-icon-info",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            _this2.dialogTableVisible = true;
+            _this2.gridData[0].name = _this2.buildName(row.first_name, row.middle_name, row.last_name, row.name_suffix);
+            _this2.gridData[0].sex = row.sex;
+            _this2.gridData[0].birthdate = row.birthdate;
+          }
+        }, {
+          props: {
+            type: "primary",
+            icon: "el-icon-edit",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {}
+        }, {
+          props: {
+            type: "danger",
+            icon: "el-icon-delete",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            var data = _this2.data;
+
+            _this2.deletePersonnel(row.id, function (res_value) {
+              if (res_value) {
+                data.splice(data.indexOf(row), 1);
+              }
+            });
+          }
+        }]
+      },
+      layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      form: {
+        id: "",
+        last_name: "",
+        first_name: "",
+        middle_name: "",
+        name_suffix: "",
+        sex: "",
+        birthdate: "",
+        name: ""
+      },
+      formLabelWidth: "120px"
+    };
+  },
+  methods: {
+    addPersonnel: function () {
+      var _addPersonnel = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var _this3 = this;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                axios.post("add_personnel", this.form).then(function (response) {
+                  if (_this3.form.sex == 1) {
+                    _this3.form.sex = "Male";
+                  } else if (_this3.form.sex == 2) {
+                    _this3.form.sex = "Female";
+                  } else if (_this3.form.sex == 3) {
+                    _this3.form.sex = "Not Applicable";
+                  } else {
+                    _this3.form.sex = "Not Known";
+                  }
+
+                  _this3.form.name = _this3.form.last_name + ", " + _this3.form.name_suffix + " " + _this3.form.first_name + " " + _this3.form.middle_name.slice(0, 1) + ". ";
+
+                  _this3.data.push(_this3.form);
+
+                  console.log(_this3.form.name_suffix);
+                  _this3.dialogFormVisible = false;
+                })["catch"](function (error) {});
+
+              case 1:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function addPersonnel() {
+        return _addPersonnel.apply(this, arguments);
+      }
+
+      return addPersonnel;
+    }(),
+    resetForm: function resetForm(addPersonnelForm) {
+      this.$refs[addPersonnelForm].resetFields();
+    },
+    editPatient: function editPatient() {
+      var _this4 = this;
+
+      axios.post("edit_patient/" + this.form.id).then(function (response) {
+        response.data.forEach(function (element) {
+          _this4.buildPatientData(element);
+        });
+        _this4.patientinfo = response.data;
+        console.log(response.data);
+      })["catch"](function (error) {});
+    },
+    assignSex: function assignSex(sex_value) {
+      var sex;
+
+      switch (sex_value) {
+        case 1:
+          sex = "Male";
+          break;
+
+        case 2:
+          sex = "Female";
+          break;
+
+        case 9:
+          sex = "Not Applicable";
+          break;
+
+        default:
+          sex = "Not Known";
+      }
+
+      return sex;
+    },
+    buildName: function buildName(first_name, middle_name, last_name, suffix) {
+      return (last_name + " " + suffix + ", " + first_name + " " + middle_name.slice(0, 1) + ".").trim();
+    },
+    buildPersonnelData: function buildPersonnelData(element) {
+      if (element.name_suffix == undefined) {
+        element.name_suffix = "";
+      }
+
+      element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
+      element.sex = this.assignSex(element.sex);
+    },
+    getPersonnel: function getPersonnel() {
+      var _this5 = this;
+
+      axios.get("personnel_get").then(function (response) {
+        response.data.forEach(function (element) {
+          _this5.buildPersonnelData(element);
+        });
+        _this5.data = response.data;
+      })["catch"](function (error) {});
+    },
+    deletePersonnel: function deletePersonnel(id, res) {
+      var _this6 = this;
+
+      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(function () {
+        var _this = _this6;
+        axios.post("personnel_delete/" + id).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this.$message({
+              type: "success",
+              message: "Succesfully! Deleted"
+            });
+
+            res(id);
+          }
+        });
+      })["catch"](function (action) {
+        _this6.$message({
+          type: "success",
+          message: action === "cancel" ? "Canceled" : "No changes"
+        });
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.getPersonnel();
   }
 });
 
@@ -103446,7 +103963,7 @@ var render = function() {
             "el-dialog",
             {
               attrs: {
-                title: "Patient Details",
+                title: "Add Patient",
                 visible: _vm.dialogFormVisible,
                 top: "0vh"
               },
@@ -103459,14 +103976,15 @@ var render = function() {
             [
               _c(
                 "el-form",
-                { attrs: { model: _vm.form } },
+                { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
                 [
                   _c(
                     "el-form-item",
                     {
                       attrs: {
                         label: "Lastname",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "last_name"
                       }
                     },
                     [
@@ -103489,7 +104007,8 @@ var render = function() {
                     {
                       attrs: {
                         label: "Firstname",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "first_name"
                       }
                     },
                     [
@@ -103512,7 +104031,8 @@ var render = function() {
                     {
                       attrs: {
                         label: "Middlename",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "middle_name"
                       }
                     },
                     [
@@ -103535,7 +104055,8 @@ var render = function() {
                     {
                       attrs: {
                         label: "Suffix",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "name_suffix"
                       }
                     },
                     [
@@ -103556,7 +104077,11 @@ var render = function() {
                   _c(
                     "el-form-item",
                     {
-                      attrs: { label: "Sex", "label-width": _vm.formLabelWidth }
+                      attrs: {
+                        label: "Sex",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "sex"
+                      }
                     },
                     [
                       _c(
@@ -103591,7 +104116,8 @@ var render = function() {
                     {
                       attrs: {
                         label: "Birthdate",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "birthdate"
                       }
                     },
                     [
@@ -103619,7 +104145,8 @@ var render = function() {
                     {
                       attrs: {
                         label: "Marital Status",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "marital_status"
                       }
                     },
                     [
@@ -103670,7 +104197,8 @@ var render = function() {
                     {
                       attrs: {
                         label: "PhilHealth No.",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "philhealth_number"
                       }
                     },
                     [
@@ -103728,6 +104256,62 @@ var render = function() {
               )
             ],
             1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-dialog",
+            {
+              attrs: {
+                title: "Patient Details",
+                visible: _vm.dialogTableVisible
+              },
+              on: {
+                "update:visible": function($event) {
+                  _vm.dialogTableVisible = $event
+                }
+              }
+            },
+            [
+              _c(
+                "el-table",
+                { attrs: { data: _vm.gridData } },
+                [
+                  _c("el-table-column", {
+                    attrs: { property: "name", label: "Name", width: "200" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: { property: "sex", label: "Sex", width: "100" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: {
+                      property: "birthdate",
+                      label: "Birthdate",
+                      width: "formLabelWidth"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: {
+                      property: "marital_status",
+                      label: "Marital Status",
+                      width: "formLabelWidth"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: {
+                      property: "philhealth_number",
+                      label: "PhilHealth No.",
+                      width: "formLabelWidth"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
           )
         ],
         1
@@ -103743,6 +104327,404 @@ var staticRenderFns = [
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-sm-12" }, [
         _c("h2", [_vm._v("Patient List")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4& ***!
+  \**************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+        _c(
+          "div",
+          { staticStyle: { "margin-bottom": "10px" } },
+          [
+            _c(
+              "el-row",
+              [
+                _c(
+                  "el-col",
+                  { attrs: { span: 10 } },
+                  [
+                    _c("el-input", {
+                      attrs: { placeholder: "Search" },
+                      model: {
+                        value: _vm.filters[0].value,
+                        callback: function($$v) {
+                          _vm.$set(_vm.filters[0], "value", $$v)
+                        },
+                        expression: "filters[0].value"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-sm-2", attrs: { align: "right" } },
+        [
+          _c(
+            "el-button",
+            {
+              attrs: { type: "primary" },
+              on: {
+                click: function($event) {
+                  _vm.dialogFormVisible = true
+                }
+              }
+            },
+            [_vm._v("Add")]
+          )
+        ],
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "card" }, [
+      _c(
+        "div",
+        { staticClass: "card-body" },
+        [
+          _c(
+            "data-tables",
+            {
+              attrs: {
+                data: _vm.data,
+                "page-size": 10,
+                filters: _vm.filters,
+                "pagination-props": { pageSizes: [10, 20, 50] },
+                "action-col": _vm.actionCol
+              }
+            },
+            [
+              _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
+                _vm._v("Table Empty")
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.titles, function(title) {
+                return _c("el-table-column", {
+                  key: title.label,
+                  attrs: {
+                    prop: title.prop,
+                    label: title.label,
+                    sortable: "custom"
+                  }
+                })
+              }),
+              _vm._v(" "),
+              _c("p", { attrs: { slot: "append" }, slot: "append" })
+            ],
+            2
+          ),
+          _vm._v(" "),
+          _c(
+            "el-dialog",
+            {
+              attrs: {
+                title: "Add Staff",
+                visible: _vm.dialogFormVisible,
+                top: "0vh"
+              },
+              on: {
+                "update:visible": function($event) {
+                  _vm.dialogFormVisible = $event
+                }
+              }
+            },
+            [
+              _c(
+                "el-form",
+                { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
+                [
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Lastname",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "last_name"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.last_name,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "last_name", $$v)
+                          },
+                          expression: "form.last_name"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Firstname",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "first_name"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.first_name,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "first_name", $$v)
+                          },
+                          expression: "form.first_name"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Middlename",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "middle_name"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.middle_name,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "middle_name", $$v)
+                          },
+                          expression: "form.middle_name"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Suffix",
+                        "label-width": _vm.formLabelWidth
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.name_suffix,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "name_suffix", $$v)
+                          },
+                          expression: "form.name_suffix"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Sex",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "sex"
+                      }
+                    },
+                    [
+                      _c(
+                        "el-select",
+                        {
+                          attrs: { placeholder: "Please select" },
+                          model: {
+                            value: _vm.form.sex,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "sex", $$v)
+                            },
+                            expression: "form.sex"
+                          }
+                        },
+                        [
+                          _c("el-option", {
+                            attrs: { label: "Male", value: "1" }
+                          }),
+                          _vm._v(" "),
+                          _c("el-option", {
+                            attrs: { label: "Female", value: "2" }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Birthdate",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "birthdate"
+                      }
+                    },
+                    [
+                      _c("el-date-picker", {
+                        staticStyle: { width: "100%" },
+                        attrs: {
+                          type: "date",
+                          placeholder: "Pick a date",
+                          "value-format": "yyyy-MM-dd"
+                        },
+                        model: {
+                          value: _vm.form.birthdate,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "birthdate", $$v)
+                          },
+                          expression: "form.birthdate"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  staticClass: "dialog-footer",
+                  attrs: { slot: "footer" },
+                  slot: "footer"
+                },
+                [
+                  _c(
+                    "el-button",
+                    {
+                      on: {
+                        click: function($event) {
+                          _vm.dialogFormVisible = false
+                          _vm.resetForm("form")
+                        }
+                      }
+                    },
+                    [_vm._v("Cancel")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: {
+                        click: function($event) {
+                          return _vm.addPersonnel("form")
+                        }
+                      }
+                    },
+                    [_vm._v("Confirm")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-dialog",
+            {
+              attrs: {
+                title: "Staffs Details",
+                visible: _vm.dialogTableVisible
+              },
+              on: {
+                "update:visible": function($event) {
+                  _vm.dialogTableVisible = $event
+                }
+              }
+            },
+            [
+              _c(
+                "el-table",
+                { attrs: { data: _vm.gridData } },
+                [
+                  _c("el-table-column", {
+                    attrs: { property: "name", label: "Name", width: "200" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: { property: "sex", label: "Sex", width: "300" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: {
+                      property: "birthdate",
+                      label: "Birthdate",
+                      width: "100"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-12" }, [
+        _c("h2", [_vm._v("Staffs List")])
       ])
     ])
   }
@@ -115967,6 +116949,7 @@ Vue.component('patient-component', __webpack_require__(/*! ./components/user/Pat
 Vue.component('budget-component', __webpack_require__(/*! ./components/user/BudgetComponent.vue */ "./resources/js/components/user/BudgetComponent.vue")["default"]);
 Vue.component('adminbudget-component', __webpack_require__(/*! ./components/admin/BudgetComponent.vue */ "./resources/js/components/admin/BudgetComponent.vue")["default"]);
 Vue.component('users-component', __webpack_require__(/*! ./components/admin/UserComponent.vue */ "./resources/js/components/admin/UserComponent.vue")["default"]);
+Vue.component('personnel-component', __webpack_require__(/*! ./components/user/PersonnelComponent.vue */ "./resources/js/components/user/PersonnelComponent.vue")["default"]);
 var app = new Vue({
   el: '#app'
 });
@@ -116289,6 +117272,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PatientComponent_vue_vue_type_template_id_41400221___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PatientComponent_vue_vue_type_template_id_41400221___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/user/PersonnelComponent.vue":
+/*!*************************************************************!*\
+  !*** ./resources/js/components/user/PersonnelComponent.vue ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PersonnelComponent.vue?vue&type=template&id=82b802b4& */ "./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4&");
+/* harmony import */ var _PersonnelComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PersonnelComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _PersonnelComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/user/PersonnelComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./PersonnelComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4& ***!
+  \********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./PersonnelComponent.vue?vue&type=template&id=82b802b4& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

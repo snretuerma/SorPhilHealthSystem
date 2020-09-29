@@ -31,19 +31,26 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 });
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('user');
-    Route::get('/patients', 'UserController@patients')->name('patients');
-
-    
-    Route::get('patients_get', 'UserController@getPatients');
-    Route::post('add_patient', 'UserController@addPatient');
-    Route::post('patients_delete/{id}', 'UserController@deletePatients');
-    Route::post('/edit_patient/{id}', 'UserController@editPatient');
-
+    //Budget
     Route::get('/budget', 'UserController@budget')->name('budget');
     Route::get('budget_get', 'UserController@getBudget');
     Route::post('add_budget', 'UserController@addBudget');
     Route::post('/edit_budget/{id}', 'UserController@editBudget');
     Route::post('delete_budget/{id}', 'UserController@deleteBudget');
+    //Staffs
+    Route::get('/personnel', 'UserController@personnel')->name('personnel');
+    Route::get('personnel_get', 'UserController@getPersonnel');
+    Route::post('add_personnel', 'UserController@addPersonnel');
+    Route::post('personnel_delete/{id}', 'UserController@deletePersonnel');
+    //Patients
+    Route::get('/patients', 'UserController@patients')->name('patients');
+    Route::get('patients_get', 'UserController@getPatients');
+    Route::post('add_patient', 'UserController@addPatient');
+    Route::post('patients_delete/{id}', 'UserController@deletePatients');
+    Route::post('/edit_patient/{id}', 'UserController@editPatient');
+    //Records
+    Route::get('/records', 'UserController@records')->name('records');
+    
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');
