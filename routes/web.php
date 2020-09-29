@@ -31,7 +31,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('add_patient', 'UserController@addPatient');
     Route::get('patients_get', 'UserController@getPatients');
     Route::post('patients_delete/{id}', 'UserController@deletePatients');
-    Route::post('/edit_patient/{id}', 'UserController@editPatient');
+    Route::post('patients_edit/{id}', 'UserController@editPatients');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');

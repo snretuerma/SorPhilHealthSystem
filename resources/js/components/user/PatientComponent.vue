@@ -20,7 +20,7 @@
         </div>
       </div>
       <div class="col-sm-2" align="right">
-        <el-button type="primary" @click="dialogFormVisible = true"
+        <el-button type="primary" @click="formDialog('insert_data')"
           >Add</el-button
         >
       </div>
@@ -93,10 +93,7 @@
                 <el-option label="Married" value="1"></el-option>
                 <el-option label="Divorced" value="2"></el-option>
                 <el-option label="Widowed" value="3"></el-option>
-                <el-option
-                  label="Others/Prefer Not to Say"
-                  value="4"
-                ></el-option>
+                <el-option label="Others/Prefer Not to Say" value="4"></el-option>
               </el-select>
             </el-form-item>
             <el-form-item label="PhilHealth No." :label-width="formLabelWidth">
@@ -108,7 +105,8 @@
           </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="addPatient()">Confirm</el-button>
+            <el-button v-if="this.form.formmode == 'insert_data'" type="primary" @click="addPatient()">Save</el-button>
+            <el-button v-if="this.form.formmode == 'edit_data'" type="primary" @click="editPatient()">Save Changes</el-button>
           </span>
         </el-dialog>
       </div>
@@ -196,7 +194,40 @@ export default {
               size: "mini",
             },
             handler: (row) => {
+              this.resetForm();
               this.form.id = row.id;
+              this.form.formmode = "edit_data";
+
+              this.form.last_name = row.last_name;
+              this.form.first_name = row.first_name;
+              this.form.middle_name = row.middle_name;
+              this.form.name_suffix = row.name_suffix;
+              this.form.sex = row.sex;
+              this.form.birthdate = row.birthdate;
+              this.form.marital_status = row.marital_status;
+              this.form.philhealth_number = row.philhealth_number;
+
+              this.form.edit_object_index = this.data.indexOf(row);
+
+              this.form_check.last_name = row.last_name,
+              this.form_check.first_name = row.first_name,
+              this.form_check.middle_name = row.middle_name,
+              this.form_check.name_suffix = row.name_suffix,
+              this.form_check.sex = row.sex,
+              this.form_check.birthdate = row.birthdate,
+              this.form_check.marital_status = row.marital_status,
+              this.form_check.philhealth_number = row.philhealth_number,
+
+              this.form_check.name =
+                  this.form_check.last_name +
+                  ", " +
+                  this.form_check.name_suffix +
+                  " " +
+                  this.form_check.first_name +
+                  " " +
+                  this.form_check.middle_name.slice(0, 1) +
+                  ". ";
+              this.formDialog('edit_data');
             },
           },
           {
@@ -232,6 +263,19 @@ export default {
         marital_status: "",
         philhealth_number: "",
         name: "",
+        formmode: "",
+        edit_object_index: ""
+      },
+      form_check: {
+        last_name: "",
+        first_name: "",
+        middle_name: "",
+        name_suffix: "",
+        sex: "",
+        birthdate: "",
+        marital_status: "",
+        philhealth_number: "",
+        name: ""
       },
       formLabelWidth: "120px",
     };
@@ -277,17 +321,124 @@ export default {
         })
         .catch(function (error) {});
     },
+    resetForm: function (){
+        this.form.last_name = "";
+        this.form.first_name = "";
+        this.form.middle_name = "";
+        this.form.name_suffix = "";
+        this.form.sex = "";
+        this.form.birthdate = "";
+        this.form.marital_status = "";
+        this.form.philhealth_number = "";
+    },
+    formDialog: function (id) {
+      if(id == "insert_data"){
+        this.form.formmode = "insert_data";
+        this.resetForm();
+        this.dialogFormVisible = true;
+      }else if(id == "edit_data"){
+        this.dialogFormVisible = true;
+      }
+    },
+    open_notif: function (status, title, message) {
+        if(status == "success"){
+            this.$notify.success({
+              title: title,
+              message: message,
+              offset: 0
+            });
+        }else if(status == "error"){
+            this.$notify.error({
+              title: title,
+              message: message,
+              offset: 0
+            });
+        }else if(status == "info"){
+            this.$notify.info({
+              title: title,
+              message: message,
+              offset: 0
+            });
+        }else if(status == "warning"){
+            this.$notify.warning({
+              title: title,
+              message: message,
+              offset: 0
+            });
+        }
+    },
     editPatient: function () {
-      axios
-        .post("edit_patient/" + this.form.id)
-        .then((response) => {
-          response.data.forEach((element) => {
-            this.buildPatientData(element);
-          });
-          this.patientinfo = response.data;
-          console.log(response.data);
-        })
-        .catch(function (error) {});
+        var _this = this;
+        if(this.form.last_name == this.form_check.last_name && 
+          this.form.first_name == this.form_check.first_name && 
+          this.form.middle_name == this.form_check.middle_name && 
+          this.form.name_suffix == this.form_check.name_suffix && 
+          this.form.sex == this.form_check.sex &&
+          this.form.birthdate == this.form_check.birthdate && 
+          this.form.marital_status == this.form_check.marital_status &&
+          this.form.philhealth_number == this.form_check.philhealth_number){
+          _this.open_notif('info', 'Message', 'No Changes');
+        }else{
+            if(this.form.sex=="Male"){
+              this.form.sex=1;
+            }else if(this.form.sex=="Female"){
+              this.form.sex=2;
+            }
+            if(this.form.marital_status=="Single"){
+              this.form.marital_status=0;
+            }else if(this.form.marital_status=="Married"){
+              this.form.marital_status=1;
+            }else if(this.form.marital_status=="Divorced"){
+              this.form.marital_status=2;
+            }else if(this.form.marital_status=="Widowed"){
+              this.form.marital_status=3;
+            }else if(this.form.marital_status=="Others/Prefer Not to Say"){
+              this.form.marital_status=4;
+            }
+            _this.form.name =
+                _this.form.last_name +
+                ", " +
+                _this.form.name_suffix +
+                " " +
+                _this.form.first_name +
+                " " +
+                _this.form.middle_name.slice(0, 1) +
+                ". ";
+            axios
+              .post("patients_edit/" + this.form.id , this.form)
+              .then((response) => {
+                if (response.status > 199 && response.status < 203) {
+                    _this.open_notif('success', 'Success', 'Changes has been saved');
+                    this.dialogFormVisible = false;
+                    if(_this.form.sex == 1){
+                      _this.form.sex = "Male";
+                    }else if(_this.form.sex == 2){
+                      _this.form.sex = "Female";
+                    }
+                    if(_this.form.marital_status==0){
+                      _this.form.marital_status="Single";
+                    }else if(_this.form.marital_status==1){
+                      _this.form.marital_status="Married";
+                    }else if(_this.form.marital_status==2){
+                      _this.form.marital_status="Divorced";
+                    }else if(_this.form.marital_status==3){
+                      _this.form.marital_status="Widowed";
+                    }else if(_this.form.marital_status==4){
+                      _this.form.marital_status="Others/Prefer Not to Say";
+                    }
+                    _this.data[parseInt(_this.form.edit_object_index)].last_name = _this.form.last_name;
+                    _this.data[parseInt(_this.form.edit_object_index)].first_name = _this.form.first_name;
+                    _this.data[parseInt(_this.form.edit_object_index)].middle_name = _this.form.middle_name;
+                    _this.data[parseInt(_this.form.edit_object_index)].name_suffix = _this.form.name_suffix;
+                    _this.data[parseInt(_this.form.edit_object_index)].sex = _this.form.sex;
+                    _this.data[parseInt(_this.form.edit_object_index)].birthdate = _this.form.birthdate;
+                    _this.data[parseInt(_this.form.edit_object_index)].marital_status = _this.form.marital_status;
+                    _this.data[parseInt(_this.form.edit_object_index)].philhealth_number = _this.form.philhealth_number;
+                    _this.data[parseInt(_this.form.edit_object_index)].name = _this.form.name;
+                }
+              })
+              .catch(function (error) {});
+        }
     },
     buildName: function (first_name, middle_name, last_name, suffix) {
       return (
@@ -330,7 +481,7 @@ export default {
         case 2:
           marital_status = "Divorced";
           break;
-        case 2:
+        case 3:
           marital_status = "Widowed";
           break;
         default:

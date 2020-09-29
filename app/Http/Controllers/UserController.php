@@ -51,13 +51,24 @@ class UserController extends Controller
         $patient->save();
     }
 
-    public function editPatient(Request $request)
+    public function editPatients(Request $request)
     {
         $patient = Patient::where('id', $request->id)->first();
+        $date = Carbon::parse($request->birthdate)->format('Y-m-d');
+        $patient->first_name = $request->first_name;
+        $patient->middle_name = $request->middle_name;
+        $patient->last_name = $request->last_name;
+        $patient->name_suffix = $request->name_suffix;
+        $patient->sex = $request->sex;
+        $patient->birthdate = $date;
+        $patient->marital_status = $request->marital_status;
+        $patient->philhealth_number = $request->philhealth_number;
+        return $patient->save();
     }
 
     public function deletePatients(Request $req)
     {
         return Patient::where('id', $req->id)->delete();
     }
+
 }
