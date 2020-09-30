@@ -257,6 +257,7 @@ export default {
               this.form.start_date = row.start_date;
               this.form.total = row.total;
               this.form.end_date = row.end_date;
+
               if (row.hospital_code == "DFBDSMH") {
                 this.form.codeholder = 1;
               } else if (row.hospital_code == "DDH") {

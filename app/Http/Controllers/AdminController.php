@@ -18,14 +18,17 @@ class AdminController extends Controller
         $this->middleware('auth');
         $this->middleware('role:admin');
     }
+
     public function index()
     {
         return view('roles.admin.index');
     }
+
     public function budget()
     {
         return view('roles.admin.budget');
     }
+
     public function getBudget()
     {
         $budget = DB::table('budgets')
@@ -36,6 +39,7 @@ class AdminController extends Controller
             ->get();
         return $budget;
     }
+
     public function addBudget(Request $request)
     {
         $budget = new Budget;
@@ -48,6 +52,7 @@ class AdminController extends Controller
         $budget->save();
         return $budget;
     }
+
     public function editBudget(Request $request)
     {
         $budget = Budget::find($request->id);
@@ -57,4 +62,5 @@ class AdminController extends Controller
         $budget->end_date = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
         return $budget->save();
     }
+    
 }
