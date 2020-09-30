@@ -72,7 +72,7 @@ class UserController extends Controller
     }
     public function getBudget()
     {
-        return Budget::where('hospital_id', Auth::userc()->hospital_id)->orderby('start_date','desc')->get();
+        return Budget::where('hospital_id', Auth::user()->hospital_id)->orderby('start_date','desc')->get();
     }
 
     public function addPatient(Request $request)
