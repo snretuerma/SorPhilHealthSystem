@@ -68,6 +68,7 @@ class UserController extends Controller
         $budget->end_date=$enddate;
         $budget->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $budget->save();
+        return $budget;
     }
     public function editPatient(Request $request)
     {
