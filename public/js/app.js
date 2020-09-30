@@ -117738,8 +117738,8 @@ jQuery(function ($) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\REDAS\Desktop\kevz\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\REDAS\Desktop\kevz\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\SystemAnalyst\Desktop\Git\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\SystemAnalyst\Desktop\Git\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
