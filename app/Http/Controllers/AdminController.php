@@ -23,10 +23,12 @@ class AdminController extends Controller
     {
         return view('roles.admin.index');
     }
+
     public function budget()
     {
         return view('roles.admin.budget');
     }
+
     public function getBudget()
     {
         $budget = DB::table('budgets')
@@ -37,6 +39,7 @@ class AdminController extends Controller
             ->get();
         return $budget;
     }
+
     public function addBudget(Request $request)
     {
         $budget = new Budget;
@@ -48,8 +51,8 @@ class AdminController extends Controller
         $budget->hospital_id=$request->codeholder;
         $budget->save();
         return $budget;
-
     }
+
     public function editBudget(Request $request)
     {
         $budget = Budget::find($request->id);
@@ -58,6 +61,6 @@ class AdminController extends Controller
         $budget->start_date = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
         $budget->end_date = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
         return $budget->save();
-        
     }
+    
 }
