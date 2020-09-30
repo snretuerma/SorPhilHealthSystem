@@ -3710,18 +3710,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3944,7 +3932,6 @@ __webpack_require__.r(__webpack_exports__);
             this.open_notif("info", "Message", "All field required!");
           } else {
             axios.post("adminadd_budget", this.form).then(function (response) {
-              // this.getBudget();
               if (response.status > 199 && response.status < 203) {
                 _this5.data.push(response.data);
 
@@ -3960,7 +3947,6 @@ __webpack_require__.r(__webpack_exports__);
           break;
 
         case "edit":
-          // alert('edit');
           if (this.form.hospital_code == "DFBDSMH") {
             this.form.codeholder = 1;
           } else if (this.form.hospital_code == "DDH") {
@@ -3979,15 +3965,12 @@ __webpack_require__.r(__webpack_exports__);
             this.form.codeholder = 8;
           } else if (this.form.hospital_code == "PDMH") {
             this.form.codeholder = 9;
-          } // this.form.codeholder=this.codeholder;
-          // this.form.hospital_code=this.options.indexOf(this.age)
-
+          }
 
           if (this.form.start_date == this.form_check.start_date && this.form.end_date == this.form_check.end_date && this.form.total == this.form_check.total && this.form.codeholder == this.form_check.codeholder) {
-            this.open_notif('info', 'Message', 'No changes');
+            this.open_notif("info", "Message", "No changes");
           } else {
             axios.post("adminedit_budget/" + this.form.id, this.form).then(function (response) {
-              // this.getBudget();
               _this5.data[parseInt(_this5.form.edit_object_index)].start_date = _this5.form.start_date;
               _this5.data[parseInt(_this5.form.edit_object_index)].total = _this5.form.total;
               _this5.data[parseInt(_this5.form.edit_object_index)].end_date = _this5.form.end_date;
@@ -4014,7 +3997,7 @@ __webpack_require__.r(__webpack_exports__);
 
               _this5.dialogFormVisible = false;
 
-              _this5.open_notif('success', 'Message', 'Successfully change!');
+              _this5.open_notif("success", "Message", "Successfully change!");
             })["catch"](function (error) {});
           }
 
@@ -4434,6 +4417,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -4508,7 +4515,7 @@ __webpack_require__.r(__webpack_exports__);
             _this2.clearfield();
 
             _this2.form.id = row.id;
-            _this2.form.formmode = 'edit';
+            _this2.form.formmode = "edit";
             _this2.dialogFormVisible = true;
             _this2.form.start_date = row.start_date;
             _this2.form.total = row.total;
@@ -4626,13 +4633,11 @@ __webpack_require__.r(__webpack_exports__);
       var _this5 = this;
 
       switch (mode) {
-        case 'add':
-          // alert('add');
+        case "add":
           if (this.form.start_date == "" || this.form.end_date == "" || this.form.total == "") {
             this.open_notif("info", "Message", "All field required!");
           } else {
             axios.post("add_budget", this.form).then(function (response) {
-              // this.getBudget();
               _this5.data.push(response.data);
 
               _this5.dialogFormVisible = false;
@@ -4647,20 +4652,18 @@ __webpack_require__.r(__webpack_exports__);
 
           break;
 
-        case 'edit':
-          // alert('edit');
+        case "edit":
           if (this.form.start_date == this.form_check.start_date && this.form.end_date == this.form_check.end_date && this.form.total == this.form_check.total) {
-            this.open_notif('info', 'Message', 'No changes');
+            this.open_notif("info", "Message", "No changes");
           } else {
             axios.post("edit_budget/" + this.form.id, this.form).then(function (response) {
-              // this.getBudget();
               if (response.status > 199 && response.status < 203) {
                 _this5.data[parseInt(_this5.form.edit_object_index)].start_date = _this5.form.start_date;
                 _this5.data[parseInt(_this5.form.edit_object_index)].total = _this5.form.total;
                 _this5.data[parseInt(_this5.form.edit_object_index)].end_date = _this5.form.end_date;
                 _this5.dialogFormVisible = false;
 
-                _this5.open_notif('success', 'Message', 'Successfully change!');
+                _this5.open_notif("success", "Message", "Successfully change!");
               }
             })["catch"](function (error) {});
           }

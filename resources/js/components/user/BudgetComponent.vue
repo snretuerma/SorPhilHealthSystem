@@ -20,7 +20,13 @@
         </div>
       </div>
       <div class="col-sm-2" align="right">
-        <el-button type="primary" @click="dialogFormVisible = true;form.formmode='add';clearfield();"
+        <el-button
+          type="primary"
+          @click="
+            dialogFormVisible = true;
+            form.formmode = 'add';
+            clearfield();
+          "
           >Add</el-button
         >
       </div>
@@ -51,7 +57,11 @@
           top="0vh"
         >
           <el-form :model="form" :rules="rules" ref="form">
-             <el-form-item label="Start date" :label-width="formLabelWidth"  prop="start_date">
+            <el-form-item
+              label="Start date"
+              :label-width="formLabelWidth"
+              prop="start_date"
+            >
               <el-date-picker
                 type="date"
                 placeholder="Pick a date"
@@ -60,10 +70,18 @@
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
-            <el-form-item label="Amount" :label-width="formLabelWidth" prop="total">
-              <el-input v-model="form.total" autocomplete="off" ></el-input>
+            <el-form-item
+              label="Amount"
+              :label-width="formLabelWidth"
+              prop="total"
+            >
+              <el-input v-model="form.total" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="End date" :label-width="formLabelWidth"  prop="end_date">
+            <el-form-item
+              label="End date"
+              :label-width="formLabelWidth"
+              prop="end_date"
+            >
               <el-date-picker
                 type="date"
                 placeholder="Pick a date"
@@ -75,9 +93,18 @@
           </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">Cancel</el-button>
-            <el-button v-if="form.formmode=='add'" type="primary" @click="addBudget('add')">Save</el-button>
-            
-            <el-button v-if="form.formmode=='edit'"  type="primary" @click="addBudget('edit')">Save changes</el-button>
+            <el-button
+              v-if="form.formmode == 'add'"
+              type="primary"
+              @click="addBudget('add')"
+              >Save</el-button
+            >
+            <el-button
+              v-if="form.formmode == 'edit'"
+              type="primary"
+              @click="addBudget('edit')"
+              >Save changes</el-button
+            >
           </span>
         </el-dialog>
       </div>
@@ -104,10 +131,7 @@
       <!-- Show Patient Details -->
     </div>
   </div>
-</template>
-
-
-<script>
+</template><script>
 "use strict";
 export default {
   data() {
@@ -116,7 +140,11 @@ export default {
       budgetInfo: [],
       rules: {
         start_date: [
-          { required: true, message: "Start date is required.", trigger: "blur" },
+          {
+            required: true,
+            message: "Start date is required.",
+            trigger: "blur",
+          },
         ],
         total: [
           { required: true, message: "Amount is required.", trigger: "blur" },
@@ -158,7 +186,7 @@ export default {
           align: "center",
         },
         buttons: [
-           {
+          {
             props: {
               type: "info",
               icon: "el-icon-info",
@@ -170,7 +198,6 @@ export default {
               this.gridData[0].start_date = row.start_date;
               this.gridData[0].total = row.total;
               this.gridData[0].end_date = row.end_date;
-              
             },
           },
           {
@@ -183,11 +210,11 @@ export default {
             handler: (row) => {
               this.clearfield();
               this.form.id = row.id;
-              this.form.formmode='edit';
+              this.form.formmode = "edit";
               this.dialogFormVisible = true;
-              this.form.start_date=row.start_date;
-              this.form.total=row.total;
-              this.form.end_date=row.end_date;
+              this.form.start_date = row.start_date;
+              this.form.total = row.total;
+              this.form.end_date = row.end_date;
               this.form.edit_object_index = this.data.indexOf(row);
               this.form_check.start_date = row.start_date;
               this.form_check.total = row.total;
@@ -221,19 +248,19 @@ export default {
         start_date: "",
         total: "",
         end_date: "",
-        formmode:"",
-        edit_object_index:""
+        formmode: "",
+        edit_object_index: "",
       },
       form_check: {
         start_date: "",
         total: "",
-        end_date: ""
+        end_date: "",
       },
       formLabelWidth: "120px",
     };
   },
   methods: {
-     open_notif: function (status, title, message) {
+    open_notif: function (status, title, message) {
       if (status == "success") {
         this.$notify.success({
           title: title,
@@ -294,27 +321,24 @@ export default {
         })
         .catch(function (error) {});
     },
-    clearfield:function(){
-      this.form.start_date="";
-      this.form.total="";
-      this.form.end_date="";
-    }
-    ,
-    addBudget:  function (mode) {
+    clearfield: function () {
+      this.form.start_date = "";
+      this.form.total = "";
+      this.form.end_date = "";
+    },
+    addBudget: function (mode) {
       switch (mode) {
-        case 'add':
-          // alert('add');
+        case "add":
           if (
             this.form.start_date == "" ||
             this.form.end_date == "" ||
             this.form.total == ""
           ) {
-           this.open_notif("info", "Message", "All field required!");  
-          }else{
-             axios
+            this.open_notif("info", "Message", "All field required!");
+          } else {
+            axios
               .post("add_budget", this.form)
               .then((response) => {
-                // this.getBudget();
                 this.data.push(response.data);
                 this.dialogFormVisible = false;
                 if (response.status > 199 && response.status < 203) {
@@ -326,28 +350,32 @@ export default {
               .catch(function (error) {});
           }
           break;
-        case 'edit':
-          // alert('edit');
-          if(this.form.start_date==this.form_check.start_date
-          && this.form.end_date==this.form_check.end_date
-          && this.form.total==this.form_check.total){
-            this.open_notif('info','Message','No changes');
-          }else{
+        case "edit":
+          if (
+            this.form.start_date == this.form_check.start_date &&
+            this.form.end_date == this.form_check.end_date &&
+            this.form.total == this.form_check.total
+          ) {
+            this.open_notif("info", "Message", "No changes");
+          } else {
             axios
-            .post("edit_budget/" + this.form.id, this.form)
-            .then((response)=>{
-              // this.getBudget();
-              if(response.status >199 && response.status <203){
-                  this.data[parseInt(this.form.edit_object_index)].start_date = this.form.start_date;
-                    this.data[parseInt(this.form.edit_object_index)].total= this.form.total;
-                    this.data[parseInt(this.form.edit_object_index)].end_date = this.form.end_date;
-              this.dialogFormVisible = false;
-              this.open_notif('success','Message','Successfully change!');
-              }
-             
-            })
-            .catch(function (error) {});
-          
+              .post("edit_budget/" + this.form.id, this.form)
+              .then((response) => {
+                if (response.status > 199 && response.status < 203) {
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].start_date = this.form.start_date;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].total = this.form.total;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].end_date = this.form.end_date;
+                  this.dialogFormVisible = false;
+                  this.open_notif("success", "Message", "Successfully change!");
+                }
+              })
+              .catch(function (error) {});
           }
           break;
       }

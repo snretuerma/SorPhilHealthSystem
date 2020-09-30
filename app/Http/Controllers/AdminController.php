@@ -18,7 +18,6 @@ class AdminController extends Controller
         $this->middleware('auth');
         $this->middleware('role:admin');
     }
-
     public function index()
     {
         return view('roles.admin.index');
@@ -48,7 +47,6 @@ class AdminController extends Controller
         $budget->hospital_id=$request->codeholder;
         $budget->save();
         return $budget;
-
     }
     public function editBudget(Request $request)
     {
@@ -58,6 +56,5 @@ class AdminController extends Controller
         $budget->start_date = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
         $budget->end_date = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
         return $budget->save();
-        
     }
 }
