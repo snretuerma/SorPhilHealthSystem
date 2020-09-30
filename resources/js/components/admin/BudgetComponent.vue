@@ -104,7 +104,11 @@
                   :value="item.value">
                 </el-option>
               </el-select> -->
-              <el-select v-model='form.hospital_code'  @change="onChange(form.hospital_code)" placeholder="Please select">
+              <el-select
+                v-model="form.hospital_code"
+                @change="onChange(form.hospital_code)"
+                placeholder="Please select"
+              >
                 <el-option label="DFBDSMH" value="1"></el-option>
                 <el-option label="DDH" value="2"></el-option>
                 <el-option label="IDH" value="3"></el-option>
@@ -263,6 +267,7 @@ export default {
               this.form.start_date = row.start_date;
               this.form.total = row.total;
               this.form.end_date = row.end_date;
+
               if (row.hospital_code == "DFBDSMH") {
                 this.form.codeholder = 1;
               } else if (row.hospital_code == "DDH") {
@@ -283,9 +288,13 @@ export default {
                 this.form.codeholder = 9;
               }
               this.form.hospital_code = row.hospital_code;
+              this.form.edit_object_index = this.data.indexOf(row);
+              this.form_check.start_date = row.start_date;
+              this.form_check.total = row.total;
+              this.form_check.end_date = row.end_date;
+              this.form_check.codeholder = this.form.codeholder;
             },
           },
-          
         ],
       },
       layout: "pagination, table",
@@ -299,13 +308,47 @@ export default {
         formmode: "",
         hospital_code: "",
         codeholder: "",
+        edit_object_index:""
+      },
+      form_check: {
+        start_date: "",
+        total: "",
+        end_date: "",
+        codeholder: "",
       },
       formLabelWidth: "120px",
     };
   },
   methods: {
+    open_notif: function (status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      }
+    },
     onChange: function (event) {
-      this.form.codeholder=event;
+      this.form.codeholder = event;
     },
     deletePatients: function (id, res) {
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
@@ -349,11 +392,29 @@ export default {
     addBudget: function (mode) {
       switch (mode) {
         case "add":
-          // alert('add');
-          this.axios
-            .post("adminadd_budget", this.form)
-            .then(this.getBudget(), (this.dialogFormVisible = false))
-            .catch(function (error) {});
+          if (
+            this.form.start_date != "" ||
+            this.form.end_date != "" ||
+            this.form.total != "" ||
+            this.form.codeholder != ""
+          ) {
+            axios
+              .post("adminadd_budget", this.form)
+              .then((response) => {
+                // this.getBudget();
+                this.data.push(response.data);
+                this.dialogFormVisible = false;
+                if (response.status > 199 && response.status < 203) {
+                  this.open_notif("success", "Message", "Successfully added!");
+                } else {
+                  this.open_notif("error", "Message", "Record failed to add!");
+                }
+              })
+              .catch(function (error) {});
+          }else{
+            this.open_notif("info", "Message", "All field required!");
+               
+          }
           break;
         case "edit":
           // alert('edit');
@@ -378,10 +439,47 @@ export default {
           // }
           // this.form.codeholder=this.codeholder;
           // this.form.hospital_code=this.options.indexOf(this.age)
-          axios
+          
+          if(this.form.start_date==this.form_check.start_date
+          && this.form.end_date==this.form_check.end_date
+          && this.form.total==this.form_check.total
+          && this.form.codeholder==this.form_check.codeholder){
+            this.open_notif('info','Message','No changes');
+          }else{
+            axios
             .post("adminedit_budget/" + this.form.id, this.form)
-            .then(this.getBudget(), (this.dialogFormVisible = false))
+            .then((response)=>{
+              // this.getBudget();
+              this.data[parseInt(this.form.edit_object_index)].start_date = this.form.start_date;
+              this.data[parseInt(this.form.edit_object_index)].total= this.form.total;
+              this.data[parseInt(this.form.edit_object_index)].end_date = this.form.end_date;
+
+              if (this.form.hospital_code == "1") {
+             this.data[parseInt(this.form.edit_object_index)].hospital_code="DFBDSMH";
+          } else if (this.form.hospital_code == "2") {
+             this.data[parseInt(this.form.edit_object_index)].hospital_code="DDH";
+          } else if (this.form.hospital_code == "3") {
+             this.data[parseInt(this.form.edit_object_index)].hospital_code="IDH";
+          } else if (this.form.hospital_code == "4") {
+             this.data[parseInt(this.form.edit_object_index)].hospital_code="SREDH";
+          } else if (this.form.hospital_code == "5") {
+            this.data[parseInt(this.form.edit_object_index)].hospital_code="VLPMDH";
+          } else if (this.form.hospital_code == "6") {
+             this.data[parseInt(this.form.edit_object_index)].hospital_code="MagMCH";
+          } else if (this.form.hospital_code == "7") {
+             this.data[parseInt(this.form.edit_object_index)].hospital_code="MatMCH";
+          } else if (this.form.hospital_code == "8") {
+             this.data[parseInt(this.form.edit_object_index)].hospital_code="PGGMH";
+          } else if (this.form.hospital_code == "9") {
+             this.data[parseInt(this.form.edit_object_index)].hospital_code="PDMH";
+          }
+             
+              this.dialogFormVisible = false;
+              this.open_notif('success','Message','Successfully change!');
+            })
             .catch(function (error) {});
+          
+          }
           break;
       }
     },

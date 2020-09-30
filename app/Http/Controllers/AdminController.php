@@ -35,6 +35,18 @@ class AdminController extends Controller
             ->get();
         return $budget;
     }
+    public function addBudget(Request $request){
+        $budget = new Budget;
+        $startdate = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
+        $enddate= Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
+        $budget->start_date=$startdate;
+        $budget->total = $request->total;
+        $budget->end_date=$enddate;
+        $budget->hospital_id=$request->codeholder;
+        $budget->save();
+        return $budget;
+
+    }
     public function editBudget(Request $request)
     {
         $budget = Budget::find($request->id);
@@ -42,7 +54,7 @@ class AdminController extends Controller
         $budget->total = $request->total;
         $budget->start_date = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
         $budget->end_date = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
-        $budget->save();
+        return $budget->save();
         
     }
 }

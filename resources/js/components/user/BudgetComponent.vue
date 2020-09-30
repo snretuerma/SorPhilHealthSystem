@@ -188,6 +188,10 @@ export default {
               this.form.start_date=row.start_date;
               this.form.total=row.total;
               this.form.end_date=row.end_date;
+              this.form.edit_object_index = this.data.indexOf(row);
+              this.form_check.start_date = row.start_date;
+              this.form_check.total = row.total;
+              this.form_check.end_date = row.end_date;
             },
           },
           {
@@ -218,11 +222,44 @@ export default {
         total: "",
         end_date: "",
         formmode:"",
+        edit_object_index:""
+      },
+      form_check: {
+        start_date: "",
+        total: "",
+        end_date: ""
       },
       formLabelWidth: "120px",
     };
   },
   methods: {
+     open_notif: function (status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      }
+    },
     deletePatients: function (id, res) {
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
@@ -267,21 +304,52 @@ export default {
       switch (mode) {
         case 'add':
           // alert('add');
-          axios
-            .post("add_budget", this.form)
-            .then(
-              this.getBudget(),this.dialogFormVisible=false
-            )
-            .catch(function (error) {});
+          if (
+            this.form.start_date != "" ||
+            this.form.end_date != "" ||
+            this.form.total != ""
+          ) {
+            axios
+              .post("add_budget", this.form)
+              .then((response) => {
+                // this.getBudget();
+                this.data.push(response.data);
+                this.dialogFormVisible = false;
+                if (response.status > 199 && response.status < 203) {
+                  this.open_notif("success", "Message", "Successfully added!");
+                } else {
+                  this.open_notif("error", "Message", "Record failed to add!");
+                }
+              })
+              .catch(function (error) {});
+              
+          }else{
+            this.open_notif("info", "Message", "All field required!");  
+          }
           break;
         case 'edit':
           // alert('edit');
-          axios
-            .post("edit_budget/"+this.form.id, this.form)
-            .then(
-              this.getBudget(),this.dialogFormVisible=false
-              )
+          if(this.form.start_date==this.form_check.start_date
+          && this.form.end_date==this.form_check.end_date
+          && this.form.total==this.form_check.total){
+            this.open_notif('info','Message','No changes');
+          }else{
+            axios
+            .post("edit_budget/" + this.form.id, this.form)
+            .then((response)=>{
+              // this.getBudget();
+              if(response.status >199 && response.status <203){
+                  this.data[parseInt(this.form.edit_object_index)].start_date = this.form.start_date;
+                    this.data[parseInt(this.form.edit_object_index)].total= this.form.total;
+                    this.data[parseInt(this.form.edit_object_index)].end_date = this.form.end_date;
+              this.dialogFormVisible = false;
+              this.open_notif('success','Message','Successfully change!');
+              }
+             
+            })
             .catch(function (error) {});
+          
+          }
           break;
       }
     },

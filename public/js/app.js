@@ -3716,6 +3716,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3827,6 +3831,11 @@ __webpack_require__.r(__webpack_exports__);
             }
 
             _this2.form.hospital_code = row.hospital_code;
+            _this2.form.edit_object_index = _this2.data.indexOf(row);
+            _this2.form_check.start_date = row.start_date;
+            _this2.form_check.total = row.total;
+            _this2.form_check.end_date = row.end_date;
+            _this2.form_check.codeholder = _this2.form.codeholder;
           }
         }]
       },
@@ -3840,12 +3849,46 @@ __webpack_require__.r(__webpack_exports__);
         end_date: "",
         formmode: "",
         hospital_code: "",
+        codeholder: "",
+        edit_object_index: ""
+      },
+      form_check: {
+        start_date: "",
+        total: "",
+        end_date: "",
         codeholder: ""
       },
       formLabelWidth: "120px"
     };
   },
   methods: {
+    open_notif: function open_notif(status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      }
+    },
     onChange: function onChange(event) {
       this.form.codeholder = event;
     },
@@ -3889,10 +3932,27 @@ __webpack_require__.r(__webpack_exports__);
       this.form.end_date = "";
     },
     addBudget: function addBudget(mode) {
+      var _this5 = this;
+
       switch (mode) {
         case "add":
-          // alert('add');
-          this.axios.post("adminadd_budget", this.form).then(this.getBudget(), this.dialogFormVisible = false)["catch"](function (error) {});
+          if (this.form.start_date != "" || this.form.end_date != "" || this.form.total != "" || this.form.codeholder != "") {
+            axios.post("adminadd_budget", this.form).then(function (response) {
+              // this.getBudget();
+              _this5.data.push(response.data);
+
+              _this5.dialogFormVisible = false;
+
+              if (response.status > 199 && response.status < 203) {
+                _this5.open_notif("success", "Message", "Successfully added!");
+              } else {
+                _this5.open_notif("error", "Message", "Record failed to add!");
+              }
+            })["catch"](function (error) {});
+          } else {
+            this.open_notif("info", "Message", "All field required!");
+          }
+
           break;
 
         case "edit":
@@ -3918,7 +3978,41 @@ __webpack_require__.r(__webpack_exports__);
           // }
           // this.form.codeholder=this.codeholder;
           // this.form.hospital_code=this.options.indexOf(this.age)
-          axios.post("adminedit_budget/" + this.form.id, this.form).then(this.getBudget(), this.dialogFormVisible = false)["catch"](function (error) {});
+          if (this.form.start_date == this.form_check.start_date && this.form.end_date == this.form_check.end_date && this.form.total == this.form_check.total && this.form.codeholder == this.form_check.codeholder) {
+            this.open_notif('info', 'Message', 'No changes');
+          } else {
+            axios.post("adminedit_budget/" + this.form.id, this.form).then(function (response) {
+              // this.getBudget();
+              _this5.data[parseInt(_this5.form.edit_object_index)].start_date = _this5.form.start_date;
+              _this5.data[parseInt(_this5.form.edit_object_index)].total = _this5.form.total;
+              _this5.data[parseInt(_this5.form.edit_object_index)].end_date = _this5.form.end_date;
+
+              if (_this5.form.hospital_code == "1") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "DFBDSMH";
+              } else if (_this5.form.hospital_code == "2") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "DDH";
+              } else if (_this5.form.hospital_code == "3") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "IDH";
+              } else if (_this5.form.hospital_code == "4") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "SREDH";
+              } else if (_this5.form.hospital_code == "5") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "VLPMDH";
+              } else if (_this5.form.hospital_code == "6") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "MagMCH";
+              } else if (_this5.form.hospital_code == "7") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "MatMCH";
+              } else if (_this5.form.hospital_code == "8") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "PGGMH";
+              } else if (_this5.form.hospital_code == "9") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "PDMH";
+              }
+
+              _this5.dialogFormVisible = false;
+
+              _this5.open_notif('success', 'Message', 'Successfully change!');
+            })["catch"](function (error) {});
+          }
+
           break;
       }
     }
@@ -4414,6 +4508,10 @@ __webpack_require__.r(__webpack_exports__);
             _this2.form.start_date = row.start_date;
             _this2.form.total = row.total;
             _this2.form.end_date = row.end_date;
+            _this2.form.edit_object_index = _this2.data.indexOf(row);
+            _this2.form_check.start_date = row.start_date;
+            _this2.form_check.total = row.total;
+            _this2.form_check.end_date = row.end_date;
           }
         }, {
           props: {
@@ -4441,12 +4539,45 @@ __webpack_require__.r(__webpack_exports__);
         start_date: "",
         total: "",
         end_date: "",
-        formmode: ""
+        formmode: "",
+        edit_object_index: ""
+      },
+      form_check: {
+        start_date: "",
+        total: "",
+        end_date: ""
       },
       formLabelWidth: "120px"
     };
   },
   methods: {
+    open_notif: function open_notif(status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      }
+    },
     deletePatients: function deletePatients(id, res) {
       var _this3 = this;
 
@@ -4487,15 +4618,48 @@ __webpack_require__.r(__webpack_exports__);
       this.form.end_date = "";
     },
     addBudget: function addBudget(mode) {
+      var _this5 = this;
+
       switch (mode) {
         case 'add':
           // alert('add');
-          axios.post("add_budget", this.form).then(this.getBudget(), this.dialogFormVisible = false)["catch"](function (error) {});
+          if (this.form.start_date != "" || this.form.end_date != "" || this.form.total != "") {
+            axios.post("add_budget", this.form).then(function (response) {
+              // this.getBudget();
+              _this5.data.push(response.data);
+
+              _this5.dialogFormVisible = false;
+
+              if (response.status > 199 && response.status < 203) {
+                _this5.open_notif("success", "Message", "Successfully added!");
+              } else {
+                _this5.open_notif("error", "Message", "Record failed to add!");
+              }
+            })["catch"](function (error) {});
+          } else {
+            this.open_notif("info", "Message", "All field required!");
+          }
+
           break;
 
         case 'edit':
           // alert('edit');
-          axios.post("edit_budget/" + this.form.id, this.form).then(this.getBudget(), this.dialogFormVisible = false)["catch"](function (error) {});
+          if (this.form.start_date == this.form_check.start_date && this.form.end_date == this.form_check.end_date && this.form.total == this.form_check.total) {
+            this.open_notif('info', 'Message', 'No changes');
+          } else {
+            axios.post("edit_budget/" + this.form.id, this.form).then(function (response) {
+              // this.getBudget();
+              if (response.status > 199 && response.status < 203) {
+                _this5.data[parseInt(_this5.form.edit_object_index)].start_date = _this5.form.start_date;
+                _this5.data[parseInt(_this5.form.edit_object_index)].total = _this5.form.total;
+                _this5.data[parseInt(_this5.form.edit_object_index)].end_date = _this5.form.end_date;
+                _this5.dialogFormVisible = false;
+
+                _this5.open_notif('success', 'Message', 'Successfully change!');
+              }
+            })["catch"](function (error) {});
+          }
+
           break;
       }
     }
@@ -117570,8 +117734,8 @@ jQuery(function ($) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\xampp\htdocs\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\xampp\htdocs\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\REDAS\Desktop\kevz\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\REDAS\Desktop\kevz\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
