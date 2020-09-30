@@ -123,18 +123,7 @@ class UserController extends Controller
         $budget->start_date = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
         $budget->end_date = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
         $budget->save();
-        
     }
-    public function editBudget(Request $request)
-    {
-        $budget =Budget::find($request->id);
-        $budget->total = $request->total;
-        $budget->start_date = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
-        $budget->end_date = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
-        $budget->save();
-        
-    }
-
     public function deletePatients(Request $req)
     {
         return Patient::where('id', $req->id)->delete();
