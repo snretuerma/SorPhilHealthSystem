@@ -55,6 +55,8 @@
           title="Budget Details"
           :visible.sync="dialogFormVisible"
           top="0vh"
+          :close-on-press-escape="false"
+         
         >
           <el-form :model="form" :rules="rules" ref="form">
             <el-form-item
@@ -350,32 +352,32 @@ export default {
       switch (mode) {
         case "add":
           // alert('add');
-          this.axios
+          axios
             .post("adminadd_budget", this.form)
             .then(this.getBudget(), (this.dialogFormVisible = false))
             .catch(function (error) {});
           break;
         case "edit":
           // alert('edit');
-          // if (this.form.hospital_code == "DFBDSMH") {
-          //   this.form.codeholder = 1;
-          // } else if (this.form.hospital_code == "DDH") {
-          //   this.form.codeholder = 2;
-          // } else if (this.form.hospital_code == "IDH") {
-          //   this.form.codeholder = 3;
-          // } else if (this.form.hospital_code == "SREDH") {
-          //   this.form.codeholder = 4;
-          // } else if (this.form.hospital_code == "VLPMDH") {
-          //   this.form.codeholder = 5;
-          // } else if (this.form.hospital_code == "MagMCH") {
-          //   this.form.codeholder = 6;
-          // } else if (this.form.hospital_code == "MatMCH") {
-          //   this.form.codeholder = 7;
-          // } else if (this.form.hospital_code == "PGGMH") {
-          //   this.form.codeholder = 8;
-          // } else if (this.form.hospital_code == "PDMH") {
-          //   this.form.codeholder = 9;
-          // }
+          if (this.form.hospital_code == "DFBDSMH") {
+            this.form.codeholder = 1;
+          } else if (this.form.hospital_code == "DDH") {
+            this.form.codeholder = 2;
+          } else if (this.form.hospital_code == "IDH") {
+            this.form.codeholder = 3;
+          } else if (this.form.hospital_code == "SREDH") {
+            this.form.codeholder = 4;
+          } else if (this.form.hospital_code == "VLPMDH") {
+            this.form.codeholder = 5;
+          } else if (this.form.hospital_code == "MagMCH") {
+            this.form.codeholder = 6;
+          } else if (this.form.hospital_code == "MatMCH") {
+            this.form.codeholder = 7;
+          } else if (this.form.hospital_code == "PGGMH") {
+            this.form.codeholder = 8;
+          } else if (this.form.hospital_code == "PDMH") {
+            this.form.codeholder = 9;
+          }
           // this.form.codeholder=this.codeholder;
           // this.form.hospital_code=this.options.indexOf(this.age)
           axios
