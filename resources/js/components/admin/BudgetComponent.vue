@@ -92,7 +92,7 @@
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
-            <el-form-item label="Hospital code" :label-width="formLabelWidth">
+            <el-form-item label="Hospital code" :label-width="formLabelWidth" prop="hospital_code">
               <!-- <el-select v-model="form.codeholder" @change="selected">
                 <el-option v-for="option in options" :value="option">
                   {{ option }}
@@ -390,32 +390,34 @@ export default {
       this.form.start_date = "";
       this.form.total = "";
       this.form.end_date = "";
+      this.form.codeholder="";
+      this.form.hospital_code="";
     },
     addBudget: function (mode) {
       switch (mode) {
         case "add":
           if (
-            this.form.start_date != "" ||
-            this.form.end_date != "" ||
-            this.form.total != "" ||
-            this.form.codeholder != ""
+            this.form.total == "" ||
+            this.form.start_date == "" ||
+            this.form.end_date == "" ||
+            this.form.codeholder == ""
           ) {
+            this.open_notif("info", "Message", "All field required!");
+          }else{
             axios
               .post("adminadd_budget", this.form)
               .then((response) => {
                 // this.getBudget();
-                this.data.push(response.data);
-                this.dialogFormVisible = false;
+                
                 if (response.status > 199 && response.status < 203) {
+                  this.data.push(response.data);
+                this.dialogFormVisible = false;
                   this.open_notif("success", "Message", "Successfully added!");
                 } else {
                   this.open_notif("error", "Message", "Record failed to add!");
                 }
               })
               .catch(function (error) {});
-          }else{
-            this.open_notif("info", "Message", "All field required!");
-               
           }
           break;
         case "edit":

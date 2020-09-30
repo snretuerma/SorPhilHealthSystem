@@ -305,11 +305,13 @@ export default {
         case 'add':
           // alert('add');
           if (
-            this.form.start_date != "" ||
-            this.form.end_date != "" ||
-            this.form.total != ""
+            this.form.start_date == "" ||
+            this.form.end_date == "" ||
+            this.form.total == ""
           ) {
-            axios
+           this.open_notif("info", "Message", "All field required!");  
+          }else{
+             axios
               .post("add_budget", this.form)
               .then((response) => {
                 // this.getBudget();
@@ -323,8 +325,6 @@ export default {
               })
               .catch(function (error) {});
               
-          }else{
-            this.open_notif("info", "Message", "All field required!");  
           }
           break;
         case 'edit':

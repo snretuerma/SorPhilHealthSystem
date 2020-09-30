@@ -3932,27 +3932,29 @@ __webpack_require__.r(__webpack_exports__);
       this.form.start_date = "";
       this.form.total = "";
       this.form.end_date = "";
+      this.form.codeholder = "";
+      this.form.hospital_code = "";
     },
     addBudget: function addBudget(mode) {
       var _this5 = this;
 
       switch (mode) {
         case "add":
-          if (this.form.start_date != "" || this.form.end_date != "" || this.form.total != "" || this.form.codeholder != "") {
+          if (this.form.total == "" || this.form.start_date == "" || this.form.end_date == "" || this.form.codeholder == "") {
+            this.open_notif("info", "Message", "All field required!");
+          } else {
             axios.post("adminadd_budget", this.form).then(function (response) {
               // this.getBudget();
-              _this5.data.push(response.data);
-
-              _this5.dialogFormVisible = false;
-
               if (response.status > 199 && response.status < 203) {
+                _this5.data.push(response.data);
+
+                _this5.dialogFormVisible = false;
+
                 _this5.open_notif("success", "Message", "Successfully added!");
               } else {
                 _this5.open_notif("error", "Message", "Record failed to add!");
               }
             })["catch"](function (error) {});
-          } else {
-            this.open_notif("info", "Message", "All field required!");
           }
 
           break;
@@ -4626,7 +4628,9 @@ __webpack_require__.r(__webpack_exports__);
       switch (mode) {
         case 'add':
           // alert('add');
-          if (this.form.start_date != "" || this.form.end_date != "" || this.form.total != "") {
+          if (this.form.start_date == "" || this.form.end_date == "" || this.form.total == "") {
+            this.open_notif("info", "Message", "All field required!");
+          } else {
             axios.post("add_budget", this.form).then(function (response) {
               // this.getBudget();
               _this5.data.push(response.data);
@@ -4639,8 +4643,6 @@ __webpack_require__.r(__webpack_exports__);
                 _this5.open_notif("error", "Message", "Record failed to add!");
               }
             })["catch"](function (error) {});
-          } else {
-            this.open_notif("info", "Message", "All field required!");
           }
 
           break;
@@ -103284,7 +103286,8 @@ var render = function() {
                       {
                         attrs: {
                           label: "Hospital code",
-                          "label-width": _vm.formLabelWidth
+                          "label-width": _vm.formLabelWidth,
+                          prop: "hospital_code"
                         }
                       },
                       [
