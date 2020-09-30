@@ -324,7 +324,6 @@ export default {
                 }
               })
               .catch(function (error) {});
-              
           }
           break;
         case 'edit':
