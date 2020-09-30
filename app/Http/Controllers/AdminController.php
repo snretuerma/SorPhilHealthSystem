@@ -37,7 +37,8 @@ class AdminController extends Controller
             ->get();
         return $budget;
     }
-    public function addBudget(Request $request){
+    public function addBudget(Request $request)
+    {
         $budget = new Budget;
         $startdate = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
         $enddate= Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
