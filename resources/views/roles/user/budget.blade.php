@@ -1,5 +1,5 @@
 @extends('layouts.user')
 
 @section('content')
-You're on the budget page
+<budget-component :login-user="{{auth::user()}}"></budget-component>
 @endsection

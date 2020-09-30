@@ -1,12 +1,16 @@
 <template>
   <div>
+    <!-- Header -->
     <div class="row">
       <div class="col-sm-12">
         <h2>Patient List</h2>
       </div>
     </div>
     <hr />
+    <!-- End Header -->
+
     <div class="row">
+      <!-- Search Box -->
       <div class="col-sm-10" align="left">
         <div style="margin-bottom: 10px">
           <el-row>
@@ -19,14 +23,21 @@
           </el-row>
         </div>
       </div>
+      <!-- End Search Box -->
+
+      <!-- Add Button -->
       <div class="col-sm-2" align="right">
-        <el-button type="primary" @click="dialogFormVisible = true"
+        <el-button type="primary" @click="formDialog('insert_data')"
           >Add</el-button
         >
       </div>
+      <!-- End Button -->
     </div>
+
+    <!-- Card Begins Here -->
     <div class="card">
       <div class="card-body">
+        <!-- Data table -->
         <data-tables
           :data="data"
           :page-size="10"
@@ -45,37 +56,40 @@
           </el-table-column>
           <p slot="append"></p>
         </data-tables>
+        <!-- Data table ends -->
+
+        <!-- Add Patient form -->
         <el-dialog
-          title="Patient Details"
+          title="Add Patient"
           :visible.sync="dialogFormVisible"
           top="0vh"
         >
-          <el-form :model="form">
-            <el-form-item label="Lastname" :label-width="formLabelWidth">
+          <el-form :model="form" :rules="rules" ref="form">
+            <el-form-item label="Lastname" :label-width="formLabelWidth" prop="last_name">
               <el-input v-model="form.last_name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Firstname" :label-width="formLabelWidth">
+            <el-form-item label="Firstname" :label-width="formLabelWidth" prop="first_name">
               <el-input v-model="form.first_name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Middlename" :label-width="formLabelWidth">
+            <el-form-item label="Middlename" :label-width="formLabelWidth" prop="middle_name">
               <el-input
                 v-model="form.middle_name"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
-            <el-form-item label="Suffix" :label-width="formLabelWidth">
+            <el-form-item label="Suffix" :label-width="formLabelWidth" prop="name_suffix">
               <el-input
                 v-model="form.name_suffix"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
-            <el-form-item label="Sex" :label-width="formLabelWidth">
+            <el-form-item label="Sex" :label-width="formLabelWidth" prop="sex">
               <el-select v-model="form.sex" placeholder="Please select">
                 <el-option label="Male" value="1"></el-option>
                 <el-option label="Female" value="2"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="Birthdate" :label-width="formLabelWidth">
+            <el-form-item label="Birthdate" :label-width="formLabelWidth" prop="birthdate">
               <el-date-picker
                 type="date"
                 placeholder="Pick a date"
@@ -84,7 +98,7 @@
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
-            <el-form-item label="Marital Status" :label-width="formLabelWidth">
+            <el-form-item label="Marital Status" :label-width="formLabelWidth" prop="marital_status">
               <el-select
                 v-model="form.marital_status"
                 placeholder="Please select"
@@ -93,13 +107,10 @@
                 <el-option label="Married" value="1"></el-option>
                 <el-option label="Divorced" value="2"></el-option>
                 <el-option label="Widowed" value="3"></el-option>
-                <el-option
-                  label="Others/Prefer Not to Say"
-                  value="4"
-                ></el-option>
+                <el-option label="Others/Prefer Not to Say" value="4"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="PhilHealth No." :label-width="formLabelWidth">
+            <el-form-item label="PhilHealth No." :label-width="formLabelWidth" prop="philhealth_number">
               <el-input
                 v-model="form.philhealth_number"
                 autocomplete="off"
@@ -108,11 +119,46 @@
           </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">Cancel</el-button>
-            <el-button type="primary" @click="addPatient()">Confirm</el-button>
+            <el-button v-if="this.form.formmode == 'insert_data'" type="primary" @click="addPatient()">Save</el-button>
+            <el-button v-if="this.form.formmode == 'edit_data'" type="primary" @click="editPatient()">Save Changes</el-button>
           </span>
         </el-dialog>
+        <!-- Add Patient form ends here-->
+
+        <!-- Show Patient Details -->
+        <el-dialog title="Patient Details" :visible.sync="dialogTableVisible">
+          <el-table :data="gridData">
+            <el-table-column
+              property="name"
+              label="Name"
+              width="200"
+            ></el-table-column>
+            <el-table-column
+              property="sex"
+              label="Sex"
+              width="100"
+            ></el-table-column>
+            <el-table-column
+              property="birthdate"
+              label="Birthdate"
+              width="formLabelWidth"
+            ></el-table-column>
+            <el-table-column
+              property="marital_status"
+              label="Marital Status"
+              width="formLabelWidth"
+            ></el-table-column>
+            <el-table-column
+              property="philhealth_number"
+              label="PhilHealth No."
+              width="formLabelWidth"
+            ></el-table-column>
+          </el-table>
+        </el-dialog>
+        <!-- Show Patient Details -->
       </div>
     </div>
+    <!-- Card ends here -->
   </div>
 </template>
 
@@ -122,8 +168,54 @@
 export default {
   data() {
     return {
+      // Validation
+      rules: {
+        last_name: [
+          { required: true, message: "Lastname is required.", trigger: "blur" },
+        ],
+        first_name: [
+          {
+            required: true,
+            message: "Firstname is required.",
+            trigger: "blur",
+          },
+        ],
+        middle_name: [
+          {
+            required: true,
+            message: "Middlename is required.",
+            trigger: "blur",
+          },
+        ],
+        sex: [
+          { required: true, message: "Sex is required.", trigger: "change" },
+        ],
+        birthdate: [
+          {
+            // type: "date",
+            required: true,
+            message: "Please pick a date",
+            trigger: "change",
+          },
+        ],
+        marital_status: [
+          {
+            required: true,
+            message: "Marital Status is required.",
+            trigger: "change",
+          },
+        ],
+        philhealth_number: [
+          {
+            required: true,
+            message: "PhilHealth No. is required.",
+            trigger: "blur",
+          },
+        ],
+      },
       data: [],
       patientinfo: [],
+      // Searchbox Filters
       filters: [
         {
           prop: ["first_name", "last_name", "philhealth_number", "middle_name"],
@@ -152,6 +244,7 @@ export default {
           label: "PhilHealth #",
         },
       ],
+      // Show details data
       gridData: [
         {
           name: "",
@@ -161,6 +254,7 @@ export default {
           philhealth_number: "",
         },
       ],
+      //Action buttons
       actionCol: {
         label: "Actions",
         props: {
@@ -175,7 +269,7 @@ export default {
               size: "mini",
             },
             handler: (row) => {
-              this.dialogFormVisible = true;
+              this.dialogTableVisible = true;
               this.gridData[0].name = this.buildName(
                 row.first_name,
                 row.middle_name,
@@ -196,7 +290,40 @@ export default {
               size: "mini",
             },
             handler: (row) => {
+              this.resetForm();
               this.form.id = row.id;
+              this.form.formmode = "edit_data";
+
+              this.form.last_name = row.last_name;
+              this.form.first_name = row.first_name;
+              this.form.middle_name = row.middle_name;
+              this.form.name_suffix = row.name_suffix;
+              this.form.sex = row.sex;
+              this.form.birthdate = row.birthdate;
+              this.form.marital_status = row.marital_status;
+              this.form.philhealth_number = row.philhealth_number;
+
+              this.form.edit_object_index = this.data.indexOf(row);
+
+              this.form_check.last_name = row.last_name,
+              this.form_check.first_name = row.first_name,
+              this.form_check.middle_name = row.middle_name,
+              this.form_check.name_suffix = row.name_suffix,
+              this.form_check.sex = row.sex,
+              this.form_check.birthdate = row.birthdate,
+              this.form_check.marital_status = row.marital_status,
+              this.form_check.philhealth_number = row.philhealth_number,
+
+              this.form_check.name =
+                  this.form_check.last_name +
+                  ", " +
+                  this.form_check.name_suffix +
+                  " " +
+                  this.form_check.first_name +
+                  " " +
+                  this.form_check.middle_name.slice(0, 1) +
+                  ". ";
+              this.formDialog('edit_data');
             },
           },
           {
@@ -218,6 +345,7 @@ export default {
           },
         ],
       },
+      // Datatable Layout
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
@@ -232,6 +360,19 @@ export default {
         marital_status: "",
         philhealth_number: "",
         name: "",
+        formmode: "",
+        edit_object_index: ""
+      },
+      form_check: {
+        last_name: "",
+        first_name: "",
+        middle_name: "",
+        name_suffix: "",
+        sex: "",
+        birthdate: "",
+        marital_status: "",
+        philhealth_number: "",
+        name: ""
       },
       formLabelWidth: "120px",
     };
@@ -272,22 +413,128 @@ export default {
             ". ";
           this.data.push(this.form);
 
-          console.log(this.form.name_suffix);
           this.dialogFormVisible = false;
         })
         .catch(function (error) {});
     },
+    resetForm: function (){
+        this.form.last_name = "";
+        this.form.first_name = "";
+        this.form.middle_name = "";
+        this.form.name_suffix = "";
+        this.form.sex = "";
+        this.form.birthdate = "";
+        this.form.marital_status = "";
+        this.form.philhealth_number = "";
+    },
+    formDialog: function (id) {
+      if(id == "insert_data"){
+        this.form.formmode = "insert_data";
+        this.resetForm();
+        this.dialogFormVisible = true;
+      }else if(id == "edit_data"){
+        this.dialogFormVisible = true;
+      }
+    },
+    open_notif: function (status, title, message) {
+        if(status == "success"){
+            this.$notify.success({
+              title: title,
+              message: message,
+              offset: 0
+            });
+        }else if(status == "error"){
+            this.$notify.error({
+              title: title,
+              message: message,
+              offset: 0
+            });
+        }else if(status == "info"){
+            this.$notify.info({
+              title: title,
+              message: message,
+              offset: 0
+            });
+        }else if(status == "warning"){
+            this.$notify.warning({
+              title: title,
+              message: message,
+              offset: 0
+            });
+        }
+    },
     editPatient: function () {
-      axios
-        .post("edit_patient/" + this.form.id)
-        .then((response) => {
-          response.data.forEach((element) => {
-            this.buildPatientData(element);
-          });
-          this.patientinfo = response.data;
-          console.log(response.data);
-        })
-        .catch(function (error) {});
+        var _this = this;
+        if(this.form.last_name == this.form_check.last_name && 
+          this.form.first_name == this.form_check.first_name && 
+          this.form.middle_name == this.form_check.middle_name && 
+          this.form.name_suffix == this.form_check.name_suffix && 
+          this.form.sex == this.form_check.sex &&
+          this.form.birthdate == this.form_check.birthdate && 
+          this.form.marital_status == this.form_check.marital_status &&
+          this.form.philhealth_number == this.form_check.philhealth_number){
+          _this.open_notif('info', 'Message', 'No Changes');
+        }else{
+            if(this.form.sex=="Male"){
+              this.form.sex=1;
+            }else if(this.form.sex=="Female"){
+              this.form.sex=2;
+            }
+            if(this.form.marital_status=="Single"){
+              this.form.marital_status=0;
+            }else if(this.form.marital_status=="Married"){
+              this.form.marital_status=1;
+            }else if(this.form.marital_status=="Divorced"){
+              this.form.marital_status=2;
+            }else if(this.form.marital_status=="Widowed"){
+              this.form.marital_status=3;
+            }else if(this.form.marital_status=="Others/Prefer Not to Say"){
+              this.form.marital_status=4;
+            }
+            _this.form.name =
+                _this.form.last_name +
+                ", " +
+                _this.form.name_suffix +
+                " " +
+                _this.form.first_name +
+                " " +
+                _this.form.middle_name.slice(0, 1) +
+                ". ";
+            axios
+              .post("patients_edit/" + this.form.id , this.form)
+              .then((response) => {
+                if (response.status > 199 && response.status < 203) {
+                    _this.open_notif('success', 'Success', 'Changes has been saved');
+                    this.dialogFormVisible = false;
+                    if(_this.form.sex == 1){
+                      _this.form.sex = "Male";
+                    }else if(_this.form.sex == 2){
+                      _this.form.sex = "Female";
+                    }
+                    if(_this.form.marital_status==0){
+                      _this.form.marital_status="Single";
+                    }else if(_this.form.marital_status==1){
+                      _this.form.marital_status="Married";
+                    }else if(_this.form.marital_status==2){
+                      _this.form.marital_status="Divorced";
+                    }else if(_this.form.marital_status==3){
+                      _this.form.marital_status="Widowed";
+                    }else if(_this.form.marital_status==4){
+                      _this.form.marital_status="Others/Prefer Not to Say";
+                    }
+                    _this.data[parseInt(_this.form.edit_object_index)].last_name = _this.form.last_name;
+                    _this.data[parseInt(_this.form.edit_object_index)].first_name = _this.form.first_name;
+                    _this.data[parseInt(_this.form.edit_object_index)].middle_name = _this.form.middle_name;
+                    _this.data[parseInt(_this.form.edit_object_index)].name_suffix = _this.form.name_suffix;
+                    _this.data[parseInt(_this.form.edit_object_index)].sex = _this.form.sex;
+                    _this.data[parseInt(_this.form.edit_object_index)].birthdate = _this.form.birthdate;
+                    _this.data[parseInt(_this.form.edit_object_index)].marital_status = _this.form.marital_status;
+                    _this.data[parseInt(_this.form.edit_object_index)].philhealth_number = _this.form.philhealth_number;
+                    _this.data[parseInt(_this.form.edit_object_index)].name = _this.form.name;
+                }
+              })
+              .catch(function (error) {});
+        }
     },
     buildName: function (first_name, middle_name, last_name, suffix) {
       return (
@@ -330,7 +577,7 @@ export default {
         case 2:
           marital_status = "Divorced";
           break;
-        case 2:
+        case 3:
           marital_status = "Widowed";
           break;
         default:
@@ -374,7 +621,7 @@ export default {
           axios.post("patients_delete/" + id).then(function (response) {
             if (response.status > 199 && response.status < 203) {
               _this.$message({
-                type: "warning",
+                type: "success",
                 message: "Succesfully! Deleted",
               });
               res(id);

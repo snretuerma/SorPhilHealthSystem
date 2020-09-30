@@ -3539,6 +3539,974 @@ function mergeFn (a, b) {
 
 /***/ }),
 
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/BudgetComponent.vue?vue&type=script&lang=js&":
+/*!********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/BudgetComponent.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    var _this2 = this;
+
+    return {
+      data: [],
+      budgetInfo: [],
+      rules: {
+        start_date: [{
+          required: true,
+          message: "Start date is required.",
+          trigger: "blur"
+        }],
+        total: [{
+          required: true,
+          message: "Amount is required.",
+          trigger: "blur"
+        }],
+        end_date: [{
+          required: true,
+          message: "End date is required.",
+          trigger: "blur"
+        }],
+        hospital_code: [{
+          required: true,
+          message: "Hospital code is required.",
+          trigger: "blur"
+        }]
+      },
+      filters: [{
+        prop: ["start_date", "total", "end_date", "hospital_code"],
+        value: ""
+      }],
+      titles: [{
+        prop: "start_date",
+        label: "Start date"
+      }, {
+        prop: "total",
+        label: "Amount"
+      }, {
+        prop: "end_date",
+        label: "End date"
+      }, {
+        prop: "hospital_code",
+        label: "Hospital"
+      }],
+      gridData: [{
+        start_date: "",
+        total: "",
+        end_date: "",
+        hospital_code: ""
+      }],
+      actionCol: {
+        label: "Actions",
+        props: {
+          align: "center"
+        },
+        buttons: [{
+          props: {
+            type: "info",
+            icon: "el-icon-info",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            _this2.dialogTableVisible = true;
+            _this2.gridData[0].start_date = row.start_date;
+            _this2.gridData[0].total = row.total;
+            _this2.gridData[0].end_date = row.end_date;
+            _this2.gridData[0].hospital_code = row.hospital_code;
+          }
+        }, {
+          props: {
+            type: "primary",
+            icon: "el-icon-edit",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            _this2.clearfield();
+
+            _this2.form.id = row.id;
+            _this2.form.formmode = "edit";
+            _this2.dialogFormVisible = true;
+            _this2.form.start_date = row.start_date;
+            _this2.form.total = row.total;
+            _this2.form.end_date = row.end_date;
+
+            if (row.hospital_code == "DFBDSMH") {
+              _this2.form.codeholder = 1;
+            } else if (row.hospital_code == "DDH") {
+              _this2.form.codeholder = 2;
+            } else if (row.hospital_code == "IDH") {
+              _this2.form.codeholder = 3;
+            } else if (row.hospital_code == "SREDH") {
+              _this2.form.codeholder = 4;
+            } else if (row.hospital_code == "VLPMDH") {
+              _this2.form.codeholder = 5;
+            } else if (row.hospital_code == "MagMCH") {
+              _this2.form.codeholder = 6;
+            } else if (row.hospital_code == "MatMCH") {
+              _this2.form.codeholder = 7;
+            } else if (row.hospital_code == "PGGMH") {
+              _this2.form.codeholder = 8;
+            } else if (row.hospital_code == "PDMH") {
+              _this2.form.codeholder = 9;
+            }
+
+            _this2.form.hospital_code = row.hospital_code;
+          }
+        }]
+      },
+      layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      form: {
+        id: "",
+        start_date: "",
+        total: "",
+        end_date: "",
+        formmode: "",
+        hospital_code: "",
+        codeholder: ""
+      },
+      formLabelWidth: "120px"
+    };
+  },
+  methods: {
+    onChange: function onChange(event) {
+      this.form.codeholder = event;
+    },
+    deletePatients: function deletePatients(id, res) {
+      var _this3 = this;
+
+      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(function () {
+        var _this = _this3;
+        axios.post("delete_budget/" + id).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this.$message({
+              type: "warning",
+              message: "Succesfully! Deleted"
+            });
+
+            res(id);
+          }
+        });
+      })["catch"](function (action) {
+        _this3.$message({
+          type: "success",
+          message: action === "cancel" ? "Canceled" : "No changes"
+        });
+      });
+    },
+    getBudget: function getBudget() {
+      var _this4 = this;
+
+      axios.get("adminbudget_get").then(function (response) {
+        _this4.data = response.data;
+      })["catch"](function (error) {});
+    },
+    clearfield: function clearfield() {
+      this.form.start_date = "";
+      this.form.total = "";
+      this.form.end_date = "";
+    },
+    addBudget: function addBudget(mode) {
+      switch (mode) {
+        case "add":
+          // alert('add');
+          this.axios.post("adminadd_budget", this.form).then(this.getBudget(), this.dialogFormVisible = false)["catch"](function (error) {});
+          break;
+
+        case "edit":
+          // alert('edit');
+          // if (this.form.hospital_code == "DFBDSMH") {
+          //   this.form.codeholder = 1;
+          // } else if (this.form.hospital_code == "DDH") {
+          //   this.form.codeholder = 2;
+          // } else if (this.form.hospital_code == "IDH") {
+          //   this.form.codeholder = 3;
+          // } else if (this.form.hospital_code == "SREDH") {
+          //   this.form.codeholder = 4;
+          // } else if (this.form.hospital_code == "VLPMDH") {
+          //   this.form.codeholder = 5;
+          // } else if (this.form.hospital_code == "MagMCH") {
+          //   this.form.codeholder = 6;
+          // } else if (this.form.hospital_code == "MatMCH") {
+          //   this.form.codeholder = 7;
+          // } else if (this.form.hospital_code == "PGGMH") {
+          //   this.form.codeholder = 8;
+          // } else if (this.form.hospital_code == "PDMH") {
+          //   this.form.codeholder = 9;
+          // }
+          // this.form.codeholder=this.codeholder;
+          // this.form.hospital_code=this.options.indexOf(this.age)
+          axios.post("adminedit_budget/" + this.form.id, this.form).then(this.getBudget(), this.dialogFormVisible = false)["catch"](function (error) {});
+          break;
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.getBudget();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/UserComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/UserComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    var _this2 = this;
+
+    return {
+      data: [],
+      budgetInfo: [],
+      rules: {
+        start_date: [{
+          required: true,
+          message: "Start date is required.",
+          trigger: "blur"
+        }],
+        total: [{
+          required: true,
+          message: "Amount is required.",
+          trigger: "blur"
+        }],
+        end_date: [{
+          required: true,
+          message: "End date is required.",
+          trigger: "blur"
+        }]
+      },
+      filters: [{
+        prop: ["start_date", "amount", "end_date"],
+        value: ""
+      }],
+      titles: [{
+        prop: "start_date",
+        label: "Start date"
+      }, {
+        prop: "total",
+        label: "Amount"
+      }, {
+        prop: "end_date",
+        label: "End date"
+      }],
+      gridData: [{
+        start_date: "",
+        total: "",
+        end_date: ""
+      }],
+      actionCol: {
+        label: "Actions",
+        props: {
+          align: "center"
+        },
+        buttons: [{
+          props: {
+            type: "primary",
+            icon: "el-icon-edit",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            _this2.form.id = row.id;
+            _this2.form.formmode = 'edit';
+            _this2.dialogFormVisible = true;
+            _this2.form.start_date = row.start_date;
+            _this2.form.total = row.total;
+            _this2.form.end_date = row.end_date;
+          }
+        }, {
+          props: {
+            type: "danger",
+            icon: "el-icon-delete",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            var data = _this2.data;
+
+            _this2.deletePatients(row.id, function (res_value) {
+              if (res_value) {
+                data.splice(data.indexOf(row), 1);
+              }
+            });
+          }
+        }]
+      },
+      layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      form: {
+        id: "",
+        start_date: "",
+        total: "",
+        end_date: "",
+        formmode: ""
+      },
+      formLabelWidth: "120px"
+    };
+  },
+  methods: {
+    deleteUser: function deleteUser(id, res) {
+      var _this3 = this;
+
+      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(function () {
+        var _this = _this3;
+        axios.post("delete_user/" + id).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this.$message({
+              type: "warning",
+              message: "Succesfully! Deleted"
+            });
+
+            res(id);
+          }
+        });
+      })["catch"](function (action) {
+        _this3.$message({
+          type: "success",
+          message: action === "cancel" ? "Canceled" : "No changes"
+        });
+      });
+    },
+    getUser: function getUser() {
+      var _this4 = this;
+
+      axios.get("user_get").then(function (response) {
+        _this4.data = response.data;
+      })["catch"](function (error) {});
+    },
+    clearfield: function clearfield() {
+      this.form.start_date = "";
+      this.form.total = "";
+      this.form.end_date = "";
+    },
+    addUser: function addUser(mode) {
+      switch (mode) {
+        case 'add':
+          alert('add'); // axios
+          //   .post("add_budget", this.form)
+          //   .then((response) => {
+          //     this.data.push(this.form);
+          //     this.dialogFormVisible = false;
+          //   })
+          //   .catch(function (error) {});
+
+          break;
+
+        case 'edit':
+          alert('edit'); // axios
+          //   .post("edit_budget", this.form)
+          //   .then((response) => {
+          //     this.data.push(this.form);
+          //     this.dialogFormVisible = false;
+          //   })
+          //   .catch(function (error) {});
+
+          break;
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.getBudget();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/BudgetComponent.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/BudgetComponent.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    var _this2 = this;
+
+    return {
+      data: [],
+      budgetInfo: [],
+      rules: {
+        start_date: [{
+          required: true,
+          message: "Start date is required.",
+          trigger: "blur"
+        }],
+        total: [{
+          required: true,
+          message: "Amount is required.",
+          trigger: "blur"
+        }],
+        end_date: [{
+          required: true,
+          message: "End date is required.",
+          trigger: "blur"
+        }]
+      },
+      filters: [{
+        prop: ["start_date", "total", "end_date"],
+        value: ""
+      }],
+      titles: [{
+        prop: "start_date",
+        label: "Start date"
+      }, {
+        prop: "total",
+        label: "Amount"
+      }, {
+        prop: "end_date",
+        label: "End date"
+      }],
+      gridData: [{
+        start_date: "",
+        total: "",
+        end_date: ""
+      }],
+      actionCol: {
+        label: "Actions",
+        props: {
+          align: "center"
+        },
+        buttons: [{
+          props: {
+            type: "info",
+            icon: "el-icon-info",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            _this2.dialogTableVisible = true;
+            _this2.gridData[0].start_date = row.start_date;
+            _this2.gridData[0].total = row.total;
+            _this2.gridData[0].end_date = row.end_date;
+          }
+        }, {
+          props: {
+            type: "primary",
+            icon: "el-icon-edit",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            _this2.clearfield();
+
+            _this2.form.id = row.id;
+            _this2.form.formmode = 'edit';
+            _this2.dialogFormVisible = true;
+            _this2.form.start_date = row.start_date;
+            _this2.form.total = row.total;
+            _this2.form.end_date = row.end_date;
+          }
+        }, {
+          props: {
+            type: "danger",
+            icon: "el-icon-delete",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            var data = _this2.data;
+
+            _this2.deletePatients(row.id, function (res_value) {
+              if (res_value) {
+                data.splice(data.indexOf(row), 1);
+              }
+            });
+          }
+        }]
+      },
+      layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      form: {
+        id: "",
+        start_date: "",
+        total: "",
+        end_date: "",
+        formmode: ""
+      },
+      formLabelWidth: "120px"
+    };
+  },
+  methods: {
+    deletePatients: function deletePatients(id, res) {
+      var _this3 = this;
+
+      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(function () {
+        var _this = _this3;
+        axios.post("delete_budget/" + id).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this.$message({
+              type: "warning",
+              message: "Succesfully! Deleted"
+            });
+
+            res(id);
+          }
+        });
+      })["catch"](function (action) {
+        _this3.$message({
+          type: "success",
+          message: action === "cancel" ? "Canceled" : "No changes"
+        });
+      });
+    },
+    getBudget: function getBudget() {
+      var _this4 = this;
+
+      axios.get("budget_get").then(function (response) {
+        _this4.data = response.data;
+      })["catch"](function (error) {});
+    },
+    clearfield: function clearfield() {
+      this.form.start_date = "";
+      this.form.total = "";
+      this.form.end_date = "";
+    },
+    addBudget: function addBudget(mode) {
+      switch (mode) {
+        case 'add':
+          // alert('add');
+          axios.post("add_budget", this.form).then(this.getBudget(), this.dialogFormVisible = false)["catch"](function (error) {});
+          break;
+
+        case 'edit':
+          // alert('edit');
+          axios.post("edit_budget/" + this.form.id, this.form).then(this.getBudget(), this.dialogFormVisible = false)["catch"](function (error) {});
+          break;
+      }
+    }
+  },
+  mounted: function mounted() {
+    this.getBudget();
+  }
+});
+
+/***/ }),
+
 /***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/PatientComponent.vue?vue&type=script&lang=js&":
 /*!********************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/PatientComponent.vue?vue&type=script&lang=js& ***!
@@ -3550,6 +4518,52 @@ function mergeFn (a, b) {
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -3682,8 +4696,48 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var _this2 = this;
 
     return {
+      // Validation
+      rules: {
+        last_name: [{
+          required: true,
+          message: "Lastname is required.",
+          trigger: "blur"
+        }],
+        first_name: [{
+          required: true,
+          message: "Firstname is required.",
+          trigger: "blur"
+        }],
+        middle_name: [{
+          required: true,
+          message: "Middlename is required.",
+          trigger: "blur"
+        }],
+        sex: [{
+          required: true,
+          message: "Sex is required.",
+          trigger: "change"
+        }],
+        birthdate: [{
+          // type: "date",
+          required: true,
+          message: "Please pick a date",
+          trigger: "change"
+        }],
+        marital_status: [{
+          required: true,
+          message: "Marital Status is required.",
+          trigger: "change"
+        }],
+        philhealth_number: [{
+          required: true,
+          message: "PhilHealth No. is required.",
+          trigger: "blur"
+        }]
+      },
       data: [],
       patientinfo: [],
+      // Searchbox Filters
       filters: [{
         prop: ["first_name", "last_name", "philhealth_number", "middle_name"],
         value: ""
@@ -3704,6 +4758,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         prop: "philhealth_number",
         label: "PhilHealth #"
       }],
+      // Show details data
       gridData: [{
         name: "",
         sex: "",
@@ -3711,6 +4766,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         marital_status: "",
         philhealth_number: ""
       }],
+      //Action buttons
       actionCol: {
         label: "Actions",
         props: {
@@ -3724,7 +4780,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             size: "mini"
           },
           handler: function handler(row) {
-            _this2.dialogFormVisible = true;
+            _this2.dialogTableVisible = true;
             _this2.gridData[0].name = _this2.buildName(row.first_name, row.middle_name, row.last_name, row.name_suffix);
             _this2.gridData[0].sex = row.sex;
             _this2.gridData[0].birthdate = row.birthdate;
@@ -3739,7 +4795,22 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             size: "mini"
           },
           handler: function handler(row) {
+            _this2.resetForm();
+
             _this2.form.id = row.id;
+            _this2.form.formmode = "edit_data";
+            _this2.form.last_name = row.last_name;
+            _this2.form.first_name = row.first_name;
+            _this2.form.middle_name = row.middle_name;
+            _this2.form.name_suffix = row.name_suffix;
+            _this2.form.sex = row.sex;
+            _this2.form.birthdate = row.birthdate;
+            _this2.form.marital_status = row.marital_status;
+            _this2.form.philhealth_number = row.philhealth_number;
+            _this2.form.edit_object_index = _this2.data.indexOf(row);
+            _this2.form_check.last_name = row.last_name, _this2.form_check.first_name = row.first_name, _this2.form_check.middle_name = row.middle_name, _this2.form_check.name_suffix = row.name_suffix, _this2.form_check.sex = row.sex, _this2.form_check.birthdate = row.birthdate, _this2.form_check.marital_status = row.marital_status, _this2.form_check.philhealth_number = row.philhealth_number, _this2.form_check.name = _this2.form_check.last_name + ", " + _this2.form_check.name_suffix + " " + _this2.form_check.first_name + " " + _this2.form_check.middle_name.slice(0, 1) + ". ";
+
+            _this2.formDialog('edit_data');
           }
         }, {
           props: {
@@ -3759,11 +4830,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }]
       },
+      // Datatable Layout
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
       form: {
         id: "",
+        last_name: "",
+        first_name: "",
+        middle_name: "",
+        name_suffix: "",
+        sex: "",
+        birthdate: "",
+        marital_status: "",
+        philhealth_number: "",
+        name: "",
+        formmode: "",
+        edit_object_index: ""
+      },
+      form_check: {
         last_name: "",
         first_name: "",
         middle_name: "",
@@ -3813,7 +4898,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   _this3.data.push(_this3.form);
 
-                  console.log(_this3.form.name_suffix);
                   _this3.dialogFormVisible = false;
                 })["catch"](function (error) {});
 
@@ -3831,16 +4915,115 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return addPatient;
     }(),
+    resetForm: function resetForm() {
+      this.form.last_name = "";
+      this.form.first_name = "";
+      this.form.middle_name = "";
+      this.form.name_suffix = "";
+      this.form.sex = "";
+      this.form.birthdate = "";
+      this.form.marital_status = "";
+      this.form.philhealth_number = "";
+    },
+    formDialog: function formDialog(id) {
+      if (id == "insert_data") {
+        this.form.formmode = "insert_data";
+        this.resetForm();
+        this.dialogFormVisible = true;
+      } else if (id == "edit_data") {
+        this.dialogFormVisible = true;
+      }
+    },
+    open_notif: function open_notif(status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      }
+    },
     editPatient: function editPatient() {
       var _this4 = this;
 
-      axios.post("edit_patient/" + this.form.id).then(function (response) {
-        response.data.forEach(function (element) {
-          _this4.buildPatientData(element);
-        });
-        _this4.patientinfo = response.data;
-        console.log(response.data);
-      })["catch"](function (error) {});
+      var _this = this;
+
+      if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate && this.form.marital_status == this.form_check.marital_status && this.form.philhealth_number == this.form_check.philhealth_number) {
+        _this.open_notif('info', 'Message', 'No Changes');
+      } else {
+        if (this.form.sex == "Male") {
+          this.form.sex = 1;
+        } else if (this.form.sex == "Female") {
+          this.form.sex = 2;
+        }
+
+        if (this.form.marital_status == "Single") {
+          this.form.marital_status = 0;
+        } else if (this.form.marital_status == "Married") {
+          this.form.marital_status = 1;
+        } else if (this.form.marital_status == "Divorced") {
+          this.form.marital_status = 2;
+        } else if (this.form.marital_status == "Widowed") {
+          this.form.marital_status = 3;
+        } else if (this.form.marital_status == "Others/Prefer Not to Say") {
+          this.form.marital_status = 4;
+        }
+
+        _this.form.name = _this.form.last_name + ", " + _this.form.name_suffix + " " + _this.form.first_name + " " + _this.form.middle_name.slice(0, 1) + ". ";
+        axios.post("patients_edit/" + this.form.id, this.form).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this.open_notif('success', 'Success', 'Changes has been saved');
+
+            _this4.dialogFormVisible = false;
+
+            if (_this.form.sex == 1) {
+              _this.form.sex = "Male";
+            } else if (_this.form.sex == 2) {
+              _this.form.sex = "Female";
+            }
+
+            if (_this.form.marital_status == 0) {
+              _this.form.marital_status = "Single";
+            } else if (_this.form.marital_status == 1) {
+              _this.form.marital_status = "Married";
+            } else if (_this.form.marital_status == 2) {
+              _this.form.marital_status = "Divorced";
+            } else if (_this.form.marital_status == 3) {
+              _this.form.marital_status = "Widowed";
+            } else if (_this.form.marital_status == 4) {
+              _this.form.marital_status = "Others/Prefer Not to Say";
+            }
+
+            _this.data[parseInt(_this.form.edit_object_index)].last_name = _this.form.last_name;
+            _this.data[parseInt(_this.form.edit_object_index)].first_name = _this.form.first_name;
+            _this.data[parseInt(_this.form.edit_object_index)].middle_name = _this.form.middle_name;
+            _this.data[parseInt(_this.form.edit_object_index)].name_suffix = _this.form.name_suffix;
+            _this.data[parseInt(_this.form.edit_object_index)].sex = _this.form.sex;
+            _this.data[parseInt(_this.form.edit_object_index)].birthdate = _this.form.birthdate;
+            _this.data[parseInt(_this.form.edit_object_index)].marital_status = _this.form.marital_status;
+            _this.data[parseInt(_this.form.edit_object_index)].philhealth_number = _this.form.philhealth_number;
+            _this.data[parseInt(_this.form.edit_object_index)].name = _this.form.name;
+          }
+        })["catch"](function (error) {});
+      }
     },
     buildName: function buildName(first_name, middle_name, last_name, suffix) {
       return (last_name + " " + suffix + ", " + first_name + " " + middle_name.slice(0, 1) + ".").trim();
@@ -3883,7 +5066,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           marital_status = "Divorced";
           break;
 
-        case 2:
+        case 3:
           marital_status = "Widowed";
           break;
 
@@ -3925,7 +5108,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         axios.post("patients_delete/" + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             _this.$message({
-              type: "warning",
+              type: "success",
               message: "Succesfully! Deleted"
             });
 
@@ -3942,6 +5125,433 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   mounted: function mounted() {
     this.getPatients();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    var _this2 = this;
+
+    return {
+      rules: {
+        last_name: [{
+          required: true,
+          message: "Lastname is required.",
+          trigger: "blur"
+        }],
+        first_name: [{
+          required: true,
+          message: "Firstname is required.",
+          trigger: "blur"
+        }],
+        middle_name: [{
+          required: true,
+          message: "Middlename is required.",
+          trigger: "blur"
+        }],
+        sex: [{
+          required: true,
+          message: "Sex is required.",
+          trigger: "change"
+        }],
+        birthdate: [{
+          // type: "date",
+          required: true,
+          message: "Please pick a date",
+          trigger: "change"
+        }]
+      },
+      data: [],
+      personnelinfo: [],
+      filters: [{
+        prop: ["first_name", "last_name", "middle_name"],
+        value: ""
+      }],
+      titles: [{
+        prop: "name",
+        label: "Name"
+      }, {
+        prop: "sex",
+        label: "Sex"
+      }, {
+        prop: "birthdate",
+        label: "Birthdate"
+      }],
+      gridData: [{
+        name: "",
+        sex: "",
+        birthdate: ""
+      }],
+      actionCol: {
+        label: "Actions",
+        props: {
+          align: "center"
+        },
+        buttons: [{
+          props: {
+            type: "info",
+            icon: "el-icon-info",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            _this2.dialogTableVisible = true;
+            _this2.gridData[0].name = _this2.buildName(row.first_name, row.middle_name, row.last_name, row.name_suffix);
+            _this2.gridData[0].sex = row.sex;
+            _this2.gridData[0].birthdate = row.birthdate;
+          }
+        }, {
+          props: {
+            type: "primary",
+            icon: "el-icon-edit",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {}
+        }, {
+          props: {
+            type: "danger",
+            icon: "el-icon-delete",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            var data = _this2.data;
+
+            _this2.deletePersonnel(row.id, function (res_value) {
+              if (res_value) {
+                data.splice(data.indexOf(row), 1);
+              }
+            });
+          }
+        }]
+      },
+      layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      form: {
+        id: "",
+        last_name: "",
+        first_name: "",
+        middle_name: "",
+        name_suffix: "",
+        sex: "",
+        birthdate: "",
+        name: ""
+      },
+      formLabelWidth: "120px"
+    };
+  },
+  methods: {
+    addPersonnel: function () {
+      var _addPersonnel = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var _this3 = this;
+
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                axios.post("add_personnel", this.form).then(function (response) {
+                  if (_this3.form.sex == 1) {
+                    _this3.form.sex = "Male";
+                  } else if (_this3.form.sex == 2) {
+                    _this3.form.sex = "Female";
+                  } else if (_this3.form.sex == 3) {
+                    _this3.form.sex = "Not Applicable";
+                  } else {
+                    _this3.form.sex = "Not Known";
+                  }
+
+                  _this3.form.name = _this3.form.last_name + ", " + _this3.form.name_suffix + " " + _this3.form.first_name + " " + _this3.form.middle_name.slice(0, 1) + ". ";
+
+                  _this3.data.push(_this3.form);
+
+                  console.log(_this3.form.name_suffix);
+                  _this3.dialogFormVisible = false;
+                })["catch"](function (error) {});
+
+              case 1:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this);
+      }));
+
+      function addPersonnel() {
+        return _addPersonnel.apply(this, arguments);
+      }
+
+      return addPersonnel;
+    }(),
+    resetForm: function resetForm(addPersonnelForm) {
+      this.$refs[addPersonnelForm].resetFields();
+    },
+    editPatient: function editPatient() {
+      var _this4 = this;
+
+      axios.post("edit_patient/" + this.form.id).then(function (response) {
+        response.data.forEach(function (element) {
+          _this4.buildPatientData(element);
+        });
+        _this4.patientinfo = response.data;
+        console.log(response.data);
+      })["catch"](function (error) {});
+    },
+    assignSex: function assignSex(sex_value) {
+      var sex;
+
+      switch (sex_value) {
+        case 1:
+          sex = "Male";
+          break;
+
+        case 2:
+          sex = "Female";
+          break;
+
+        case 9:
+          sex = "Not Applicable";
+          break;
+
+        default:
+          sex = "Not Known";
+      }
+
+      return sex;
+    },
+    buildName: function buildName(first_name, middle_name, last_name, suffix) {
+      return (last_name + " " + suffix + ", " + first_name + " " + middle_name.slice(0, 1) + ".").trim();
+    },
+    buildPersonnelData: function buildPersonnelData(element) {
+      if (element.name_suffix == undefined) {
+        element.name_suffix = "";
+      }
+
+      element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
+      element.sex = this.assignSex(element.sex);
+    },
+    getPersonnel: function getPersonnel() {
+      var _this5 = this;
+
+      axios.get("personnel_get").then(function (response) {
+        response.data.forEach(function (element) {
+          _this5.buildPersonnelData(element);
+        });
+        _this5.data = response.data;
+      })["catch"](function (error) {});
+    },
+    deletePersonnel: function deletePersonnel(id, res) {
+      var _this6 = this;
+
+      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(function () {
+        var _this = _this6;
+        axios.post("personnel_delete/" + id).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this.$message({
+              type: "success",
+              message: "Succesfully! Deleted"
+            });
+
+            res(id);
+          }
+        });
+      })["catch"](function (action) {
+        _this6.$message({
+          type: "success",
+          message: action === "cancel" ? "Canceled" : "No changes"
+        });
+      });
+    }
+  },
+  mounted: function mounted() {
+    this.getPersonnel();
   }
 });
 
@@ -101283,10 +102893,1623 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 /***/ }),
 
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/BudgetComponent.vue?vue&type=template&id=3be151c6&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/BudgetComponent.vue?vue&type=template&id=3be151c6& ***!
+  \************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+        _c(
+          "div",
+          { staticStyle: { "margin-bottom": "10px" } },
+          [
+            _c(
+              "el-row",
+              [
+                _c(
+                  "el-col",
+                  { attrs: { span: 10 } },
+                  [
+                    _c("el-input", {
+                      attrs: { placeholder: "Search" },
+                      model: {
+                        value: _vm.filters[0].value,
+                        callback: function($$v) {
+                          _vm.$set(_vm.filters[0], "value", $$v)
+                        },
+                        expression: "filters[0].value"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-sm-2", attrs: { align: "right" } },
+        [
+          _c(
+            "el-button",
+            {
+              attrs: { type: "primary" },
+              on: {
+                click: function($event) {
+                  _vm.dialogFormVisible = true
+                  _vm.form.formmode = "add"
+                  _vm.clearfield()
+                }
+              }
+            },
+            [_vm._v("Add")]
+          )
+        ],
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "card" },
+      [
+        _c(
+          "div",
+          { staticClass: "card-body" },
+          [
+            _c(
+              "data-tables",
+              {
+                attrs: {
+                  data: _vm.data,
+                  "page-size": 10,
+                  filters: _vm.filters,
+                  "pagination-props": { pageSizes: [10, 20, 50] },
+                  "action-col": _vm.actionCol
+                }
+              },
+              [
+                _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
+                  _vm._v("Table Empty")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.titles, function(title) {
+                  return _c("el-table-column", {
+                    key: title.label,
+                    attrs: {
+                      prop: title.prop,
+                      label: title.label,
+                      sortable: "custom"
+                    }
+                  })
+                }),
+                _vm._v(" "),
+                _c("p", { attrs: { slot: "append" }, slot: "append" })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c(
+              "el-dialog",
+              {
+                attrs: {
+                  title: "Budget Details",
+                  visible: _vm.dialogFormVisible,
+                  top: "0vh"
+                },
+                on: {
+                  "update:visible": function($event) {
+                    _vm.dialogFormVisible = $event
+                  }
+                }
+              },
+              [
+                _c(
+                  "el-form",
+                  { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
+                  [
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Start date",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "start_date"
+                        }
+                      },
+                      [
+                        _c("el-date-picker", {
+                          staticStyle: { width: "100%" },
+                          attrs: {
+                            type: "date",
+                            placeholder: "Pick a date",
+                            "value-format": "yyyy-MM-dd"
+                          },
+                          model: {
+                            value: _vm.form.start_date,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "start_date", $$v)
+                            },
+                            expression: "form.start_date"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Amount",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "total"
+                        }
+                      },
+                      [
+                        _c("el-input", {
+                          attrs: { autocomplete: "off" },
+                          model: {
+                            value: _vm.form.total,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "total", $$v)
+                            },
+                            expression: "form.total"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "End date",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "end_date"
+                        }
+                      },
+                      [
+                        _c("el-date-picker", {
+                          staticStyle: { width: "100%" },
+                          attrs: {
+                            type: "date",
+                            placeholder: "Pick a date",
+                            "value-format": "yyyy-MM-dd"
+                          },
+                          model: {
+                            value: _vm.form.end_date,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "end_date", $$v)
+                            },
+                            expression: "form.end_date"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Hospital code",
+                          "label-width": _vm.formLabelWidth
+                        }
+                      },
+                      [
+                        _c(
+                          "el-select",
+                          {
+                            attrs: { placeholder: "Please select" },
+                            on: {
+                              change: function($event) {
+                                return _vm.onChange(_vm.form.hospital_code)
+                              }
+                            },
+                            model: {
+                              value: _vm.form.hospital_code,
+                              callback: function($$v) {
+                                _vm.$set(_vm.form, "hospital_code", $$v)
+                              },
+                              expression: "form.hospital_code"
+                            }
+                          },
+                          [
+                            _c("el-option", {
+                              attrs: { label: "DFBDSMH", value: "1" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "DDH", value: "2" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "IDH", value: "3" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "SREDH", value: "4" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "VLPMDH", value: "5" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "MagMCH", value: "6" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "MatMCH", value: "7" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "PGGMH", value: "8" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "PDMH", value: "9" }
+                            })
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    staticClass: "dialog-footer",
+                    attrs: { slot: "footer" },
+                    slot: "footer"
+                  },
+                  [
+                    _c(
+                      "el-button",
+                      {
+                        on: {
+                          click: function($event) {
+                            _vm.dialogFormVisible = false
+                          }
+                        }
+                      },
+                      [_vm._v("Cancel")]
+                    ),
+                    _vm._v(" "),
+                    _vm.form.formmode == "add"
+                      ? _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary" },
+                            on: {
+                              click: function($event) {
+                                return _vm.addBudget("add")
+                              }
+                            }
+                          },
+                          [_vm._v("Save")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.form.formmode == "edit"
+                      ? _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary" },
+                            on: {
+                              click: function($event) {
+                                return _vm.addBudget("edit")
+                              }
+                            }
+                          },
+                          [_vm._v("Save changes")]
+                        )
+                      : _vm._e()
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "el-dialog",
+          {
+            attrs: { title: "Budget Details", visible: _vm.dialogTableVisible },
+            on: {
+              "update:visible": function($event) {
+                _vm.dialogTableVisible = $event
+              }
+            }
+          },
+          [
+            _c(
+              "el-table",
+              { attrs: { data: _vm.gridData } },
+              [
+                _c("el-table-column", {
+                  attrs: {
+                    property: "start_date",
+                    label: "Start date",
+                    width: "200"
+                  }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { property: "total", label: "Amount", width: "200" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: {
+                    property: "end_date",
+                    label: "End date",
+                    width: "formLabelWidth"
+                  }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: {
+                    property: "hospital_code",
+                    label: "Hospital",
+                    width: "formLabelWidth"
+                  }
+                })
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-12" }, [
+        _c("h2", [_vm._v("Budget List")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/UserComponent.vue?vue&type=template&id=5689d8d2&":
+/*!**********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/UserComponent.vue?vue&type=template&id=5689d8d2& ***!
+  \**********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+        _c(
+          "div",
+          { staticStyle: { "margin-bottom": "10px" } },
+          [
+            _c(
+              "el-row",
+              [
+                _c(
+                  "el-col",
+                  { attrs: { span: 10 } },
+                  [
+                    _c("el-input", {
+                      attrs: { placeholder: "Search" },
+                      model: {
+                        value: _vm.filters[0].value,
+                        callback: function($$v) {
+                          _vm.$set(_vm.filters[0], "value", $$v)
+                        },
+                        expression: "filters[0].value"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-sm-2", attrs: { align: "right" } },
+        [
+          _c(
+            "el-button",
+            {
+              attrs: { type: "primary" },
+              on: {
+                click: function($event) {
+                  _vm.clearfield()
+                  _vm.dialogFormVisible = true
+                  _vm.form.formmode = "add"
+                }
+              }
+            },
+            [_vm._v("Add")]
+          )
+        ],
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "card" },
+      [
+        _c(
+          "div",
+          { staticClass: "card-body" },
+          [
+            _c(
+              "data-tables",
+              {
+                attrs: {
+                  data: _vm.data,
+                  "page-size": 10,
+                  filters: _vm.filters,
+                  "pagination-props": { pageSizes: [10, 20, 50] },
+                  "action-col": _vm.actionCol
+                }
+              },
+              [
+                _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
+                  _vm._v("Table Empty")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.titles, function(title) {
+                  return _c("el-table-column", {
+                    key: title.label,
+                    attrs: {
+                      prop: title.prop,
+                      label: title.label,
+                      sortable: "custom"
+                    }
+                  })
+                }),
+                _vm._v(" "),
+                _c("p", { attrs: { slot: "append" }, slot: "append" })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c(
+              "el-dialog",
+              {
+                attrs: {
+                  title: "Budget Details",
+                  visible: _vm.dialogFormVisible,
+                  top: "0vh"
+                },
+                on: {
+                  "update:visible": function($event) {
+                    _vm.dialogFormVisible = $event
+                  }
+                }
+              },
+              [
+                _c(
+                  "el-form",
+                  { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
+                  [
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Start date",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "start_date"
+                        }
+                      },
+                      [
+                        _c("el-date-picker", {
+                          staticStyle: { width: "100%" },
+                          attrs: {
+                            type: "date",
+                            placeholder: "Pick a date",
+                            "value-format": "yyyy-MM-dd"
+                          },
+                          model: {
+                            value: _vm.form.start_date,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "start_date", $$v)
+                            },
+                            expression: "form.start_date"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Amount",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "total"
+                        }
+                      },
+                      [
+                        _c("el-input", {
+                          attrs: { autocomplete: "off" },
+                          model: {
+                            value: _vm.form.total,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "total", $$v)
+                            },
+                            expression: "form.total"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "End date",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "end_date"
+                        }
+                      },
+                      [
+                        _c("el-date-picker", {
+                          staticStyle: { width: "100%" },
+                          attrs: {
+                            type: "date",
+                            placeholder: "Pick a date",
+                            "value-format": "yyyy-MM-dd"
+                          },
+                          model: {
+                            value: _vm.form.end_date,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "end_date", $$v)
+                            },
+                            expression: "form.end_date"
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    staticClass: "dialog-footer",
+                    attrs: { slot: "footer" },
+                    slot: "footer"
+                  },
+                  [
+                    _c(
+                      "el-button",
+                      {
+                        on: {
+                          click: function($event) {
+                            _vm.dialogFormVisible = false
+                          }
+                        }
+                      },
+                      [_vm._v("Cancel")]
+                    ),
+                    _vm._v(" "),
+                    _vm.form.formmode == "add"
+                      ? _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary" },
+                            on: {
+                              click: function($event) {
+                                _vm.clearfield()
+                                _vm.addBudget("add")
+                              }
+                            }
+                          },
+                          [_vm._v("Save")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.form.formmode == "edit"
+                      ? _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary" },
+                            on: {
+                              click: function($event) {
+                                _vm.clearfield()
+                                _vm.addBudget("edit")
+                              }
+                            }
+                          },
+                          [_vm._v("Save changes")]
+                        )
+                      : _vm._e()
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "el-dialog",
+          {
+            attrs: { title: "Budget Details", visible: _vm.dialogTableVisible },
+            on: {
+              "update:visible": function($event) {
+                _vm.dialogTableVisible = $event
+              }
+            }
+          },
+          [
+            _c(
+              "el-table",
+              { attrs: { data: _vm.gridData } },
+              [
+                _c("el-table-column", {
+                  attrs: {
+                    property: "start_date",
+                    label: "Start date",
+                    width: "200"
+                  }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { property: "total", label: "Total", width: "200" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: {
+                    property: "end_date",
+                    label: "End date",
+                    width: "formLabelWidth"
+                  }
+                })
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-12" }, [_c("h2", [_vm._v("User List")])])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/BudgetComponent.vue?vue&type=template&id=317b179f&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/BudgetComponent.vue?vue&type=template&id=317b179f& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+        _c(
+          "div",
+          { staticStyle: { "margin-bottom": "10px" } },
+          [
+            _c(
+              "el-row",
+              [
+                _c(
+                  "el-col",
+                  { attrs: { span: 10 } },
+                  [
+                    _c("el-input", {
+                      attrs: { placeholder: "Search" },
+                      model: {
+                        value: _vm.filters[0].value,
+                        callback: function($$v) {
+                          _vm.$set(_vm.filters[0], "value", $$v)
+                        },
+                        expression: "filters[0].value"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-sm-2", attrs: { align: "right" } },
+        [
+          _c(
+            "el-button",
+            {
+              attrs: { type: "primary" },
+              on: {
+                click: function($event) {
+                  _vm.dialogFormVisible = true
+                  _vm.form.formmode = "add"
+                  _vm.clearfield()
+                }
+              }
+            },
+            [_vm._v("Add")]
+          )
+        ],
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "card" },
+      [
+        _c(
+          "div",
+          { staticClass: "card-body" },
+          [
+            _c(
+              "data-tables",
+              {
+                attrs: {
+                  data: _vm.data,
+                  "page-size": 10,
+                  filters: _vm.filters,
+                  "pagination-props": { pageSizes: [10, 20, 50] },
+                  "action-col": _vm.actionCol
+                }
+              },
+              [
+                _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
+                  _vm._v("Table Empty")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.titles, function(title) {
+                  return _c("el-table-column", {
+                    key: title.label,
+                    attrs: {
+                      prop: title.prop,
+                      label: title.label,
+                      sortable: "custom"
+                    }
+                  })
+                }),
+                _vm._v(" "),
+                _c("p", { attrs: { slot: "append" }, slot: "append" })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c(
+              "el-dialog",
+              {
+                attrs: {
+                  title: "Budget Details",
+                  visible: _vm.dialogFormVisible,
+                  top: "0vh"
+                },
+                on: {
+                  "update:visible": function($event) {
+                    _vm.dialogFormVisible = $event
+                  }
+                }
+              },
+              [
+                _c(
+                  "el-form",
+                  { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
+                  [
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Start date",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "start_date"
+                        }
+                      },
+                      [
+                        _c("el-date-picker", {
+                          staticStyle: { width: "100%" },
+                          attrs: {
+                            type: "date",
+                            placeholder: "Pick a date",
+                            "value-format": "yyyy-MM-dd"
+                          },
+                          model: {
+                            value: _vm.form.start_date,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "start_date", $$v)
+                            },
+                            expression: "form.start_date"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Amount",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "total"
+                        }
+                      },
+                      [
+                        _c("el-input", {
+                          attrs: { autocomplete: "off" },
+                          model: {
+                            value: _vm.form.total,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "total", $$v)
+                            },
+                            expression: "form.total"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "End date",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "end_date"
+                        }
+                      },
+                      [
+                        _c("el-date-picker", {
+                          staticStyle: { width: "100%" },
+                          attrs: {
+                            type: "date",
+                            placeholder: "Pick a date",
+                            "value-format": "yyyy-MM-dd"
+                          },
+                          model: {
+                            value: _vm.form.end_date,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "end_date", $$v)
+                            },
+                            expression: "form.end_date"
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    staticClass: "dialog-footer",
+                    attrs: { slot: "footer" },
+                    slot: "footer"
+                  },
+                  [
+                    _c(
+                      "el-button",
+                      {
+                        on: {
+                          click: function($event) {
+                            _vm.dialogFormVisible = false
+                          }
+                        }
+                      },
+                      [_vm._v("Cancel")]
+                    ),
+                    _vm._v(" "),
+                    _vm.form.formmode == "add"
+                      ? _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary" },
+                            on: {
+                              click: function($event) {
+                                return _vm.addBudget("add")
+                              }
+                            }
+                          },
+                          [_vm._v("Save")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    _vm.form.formmode == "edit"
+                      ? _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary" },
+                            on: {
+                              click: function($event) {
+                                return _vm.addBudget("edit")
+                              }
+                            }
+                          },
+                          [_vm._v("Save changes")]
+                        )
+                      : _vm._e()
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "el-dialog",
+          {
+            attrs: { title: "Budget Details", visible: _vm.dialogTableVisible },
+            on: {
+              "update:visible": function($event) {
+                _vm.dialogTableVisible = $event
+              }
+            }
+          },
+          [
+            _c(
+              "el-table",
+              { attrs: { data: _vm.gridData } },
+              [
+                _c("el-table-column", {
+                  attrs: {
+                    property: "start_date",
+                    label: "Start date",
+                    width: "200"
+                  }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { property: "total", label: "Amount", width: "200" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: {
+                    property: "end_date",
+                    label: "End date",
+                    width: "formLabelWidth"
+                  }
+                })
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-12" }, [
+        _c("h2", [_vm._v("Budget List")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/PatientComponent.vue?vue&type=template&id=41400221&":
 /*!************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/PatientComponent.vue?vue&type=template&id=41400221& ***!
   \************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+        _c(
+          "div",
+          { staticStyle: { "margin-bottom": "10px" } },
+          [
+            _c(
+              "el-row",
+              [
+                _c(
+                  "el-col",
+                  { attrs: { span: 10 } },
+                  [
+                    _c("el-input", {
+                      attrs: { placeholder: "Search" },
+                      model: {
+                        value: _vm.filters[0].value,
+                        callback: function($$v) {
+                          _vm.$set(_vm.filters[0], "value", $$v)
+                        },
+                        expression: "filters[0].value"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-sm-2", attrs: { align: "right" } },
+        [
+          _c(
+            "el-button",
+            {
+              attrs: { type: "primary" },
+              on: {
+                click: function($event) {
+                  return _vm.formDialog("insert_data")
+                }
+              }
+            },
+            [_vm._v("Add")]
+          )
+        ],
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _c("div", { staticClass: "card" }, [
+      _c(
+        "div",
+        { staticClass: "card-body" },
+        [
+          _c(
+            "data-tables",
+            {
+              attrs: {
+                data: _vm.data,
+                "page-size": 10,
+                filters: _vm.filters,
+                "pagination-props": { pageSizes: [10, 20, 50] },
+                "action-col": _vm.actionCol
+              }
+            },
+            [
+              _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
+                _vm._v("Table Empty")
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.titles, function(title) {
+                return _c("el-table-column", {
+                  key: title.label,
+                  attrs: {
+                    prop: title.prop,
+                    label: title.label,
+                    sortable: "custom"
+                  }
+                })
+              }),
+              _vm._v(" "),
+              _c("p", { attrs: { slot: "append" }, slot: "append" })
+            ],
+            2
+          ),
+          _vm._v(" "),
+          _c(
+            "el-dialog",
+            {
+              attrs: {
+                title: "Add Patient",
+                visible: _vm.dialogFormVisible,
+                top: "0vh"
+              },
+              on: {
+                "update:visible": function($event) {
+                  _vm.dialogFormVisible = $event
+                }
+              }
+            },
+            [
+              _c(
+                "el-form",
+                { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
+                [
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Lastname",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "last_name"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.last_name,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "last_name", $$v)
+                          },
+                          expression: "form.last_name"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Firstname",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "first_name"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.first_name,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "first_name", $$v)
+                          },
+                          expression: "form.first_name"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Middlename",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "middle_name"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.middle_name,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "middle_name", $$v)
+                          },
+                          expression: "form.middle_name"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Suffix",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "name_suffix"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.name_suffix,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "name_suffix", $$v)
+                          },
+                          expression: "form.name_suffix"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Sex",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "sex"
+                      }
+                    },
+                    [
+                      _c(
+                        "el-select",
+                        {
+                          attrs: { placeholder: "Please select" },
+                          model: {
+                            value: _vm.form.sex,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "sex", $$v)
+                            },
+                            expression: "form.sex"
+                          }
+                        },
+                        [
+                          _c("el-option", {
+                            attrs: { label: "Male", value: "1" }
+                          }),
+                          _vm._v(" "),
+                          _c("el-option", {
+                            attrs: { label: "Female", value: "2" }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Birthdate",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "birthdate"
+                      }
+                    },
+                    [
+                      _c("el-date-picker", {
+                        staticStyle: { width: "100%" },
+                        attrs: {
+                          type: "date",
+                          placeholder: "Pick a date",
+                          "value-format": "yyyy-MM-dd"
+                        },
+                        model: {
+                          value: _vm.form.birthdate,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "birthdate", $$v)
+                          },
+                          expression: "form.birthdate"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Marital Status",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "marital_status"
+                      }
+                    },
+                    [
+                      _c(
+                        "el-select",
+                        {
+                          attrs: { placeholder: "Please select" },
+                          model: {
+                            value: _vm.form.marital_status,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "marital_status", $$v)
+                            },
+                            expression: "form.marital_status"
+                          }
+                        },
+                        [
+                          _c("el-option", {
+                            attrs: { label: "Single", value: "0" }
+                          }),
+                          _vm._v(" "),
+                          _c("el-option", {
+                            attrs: { label: "Married", value: "1" }
+                          }),
+                          _vm._v(" "),
+                          _c("el-option", {
+                            attrs: { label: "Divorced", value: "2" }
+                          }),
+                          _vm._v(" "),
+                          _c("el-option", {
+                            attrs: { label: "Widowed", value: "3" }
+                          }),
+                          _vm._v(" "),
+                          _c("el-option", {
+                            attrs: {
+                              label: "Others/Prefer Not to Say",
+                              value: "4"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "PhilHealth No.",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "philhealth_number"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.philhealth_number,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "philhealth_number", $$v)
+                          },
+                          expression: "form.philhealth_number"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  staticClass: "dialog-footer",
+                  attrs: { slot: "footer" },
+                  slot: "footer"
+                },
+                [
+                  _c(
+                    "el-button",
+                    {
+                      on: {
+                        click: function($event) {
+                          _vm.dialogFormVisible = false
+                        }
+                      }
+                    },
+                    [_vm._v("Cancel")]
+                  ),
+                  _vm._v(" "),
+                  this.form.formmode == "insert_data"
+                    ? _c(
+                        "el-button",
+                        {
+                          attrs: { type: "primary" },
+                          on: {
+                            click: function($event) {
+                              return _vm.addPatient()
+                            }
+                          }
+                        },
+                        [_vm._v("Save")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  this.form.formmode == "edit_data"
+                    ? _c(
+                        "el-button",
+                        {
+                          attrs: { type: "primary" },
+                          on: {
+                            click: function($event) {
+                              return _vm.editPatient()
+                            }
+                          }
+                        },
+                        [_vm._v("Save Changes")]
+                      )
+                    : _vm._e()
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-dialog",
+            {
+              attrs: {
+                title: "Patient Details",
+                visible: _vm.dialogTableVisible
+              },
+              on: {
+                "update:visible": function($event) {
+                  _vm.dialogTableVisible = $event
+                }
+              }
+            },
+            [
+              _c(
+                "el-table",
+                { attrs: { data: _vm.gridData } },
+                [
+                  _c("el-table-column", {
+                    attrs: { property: "name", label: "Name", width: "200" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: { property: "sex", label: "Sex", width: "100" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: {
+                      property: "birthdate",
+                      label: "Birthdate",
+                      width: "formLabelWidth"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: {
+                      property: "marital_status",
+                      label: "Marital Status",
+                      width: "formLabelWidth"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: {
+                      property: "philhealth_number",
+                      label: "PhilHealth No.",
+                      width: "formLabelWidth"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-12" }, [
+        _c("h2", [_vm._v("Patient List")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4& ***!
+  \**************************************************************************************************************************************************************************************************************************/
 /*! exports provided: render, staticRenderFns */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
@@ -101399,7 +104622,7 @@ var render = function() {
             "el-dialog",
             {
               attrs: {
-                title: "Patient Details",
+                title: "Add Staff",
                 visible: _vm.dialogFormVisible,
                 top: "0vh"
               },
@@ -101412,14 +104635,15 @@ var render = function() {
             [
               _c(
                 "el-form",
-                { attrs: { model: _vm.form } },
+                { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
                 [
                   _c(
                     "el-form-item",
                     {
                       attrs: {
                         label: "Lastname",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "last_name"
                       }
                     },
                     [
@@ -101442,7 +104666,8 @@ var render = function() {
                     {
                       attrs: {
                         label: "Firstname",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "first_name"
                       }
                     },
                     [
@@ -101465,7 +104690,8 @@ var render = function() {
                     {
                       attrs: {
                         label: "Middlename",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "middle_name"
                       }
                     },
                     [
@@ -101509,7 +104735,11 @@ var render = function() {
                   _c(
                     "el-form-item",
                     {
-                      attrs: { label: "Sex", "label-width": _vm.formLabelWidth }
+                      attrs: {
+                        label: "Sex",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "sex"
+                      }
                     },
                     [
                       _c(
@@ -101544,7 +104774,8 @@ var render = function() {
                     {
                       attrs: {
                         label: "Birthdate",
-                        "label-width": _vm.formLabelWidth
+                        "label-width": _vm.formLabelWidth,
+                        prop: "birthdate"
                       }
                     },
                     [
@@ -101561,80 +104792,6 @@ var render = function() {
                             _vm.$set(_vm.form, "birthdate", $$v)
                           },
                           expression: "form.birthdate"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Marital Status",
-                        "label-width": _vm.formLabelWidth
-                      }
-                    },
-                    [
-                      _c(
-                        "el-select",
-                        {
-                          attrs: { placeholder: "Please select" },
-                          model: {
-                            value: _vm.form.marital_status,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "marital_status", $$v)
-                            },
-                            expression: "form.marital_status"
-                          }
-                        },
-                        [
-                          _c("el-option", {
-                            attrs: { label: "Single", value: "0" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: { label: "Married", value: "1" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: { label: "Divorced", value: "2" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: { label: "Widowed", value: "3" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: {
-                              label: "Others/Prefer Not to Say",
-                              value: "4"
-                            }
-                          })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "PhilHealth No.",
-                        "label-width": _vm.formLabelWidth
-                      }
-                    },
-                    [
-                      _c("el-input", {
-                        attrs: { autocomplete: "off" },
-                        model: {
-                          value: _vm.form.philhealth_number,
-                          callback: function($$v) {
-                            _vm.$set(_vm.form, "philhealth_number", $$v)
-                          },
-                          expression: "form.philhealth_number"
                         }
                       })
                     ],
@@ -101658,6 +104815,7 @@ var render = function() {
                       on: {
                         click: function($event) {
                           _vm.dialogFormVisible = false
+                          _vm.resetForm("form")
                         }
                       }
                     },
@@ -101670,12 +104828,52 @@ var render = function() {
                       attrs: { type: "primary" },
                       on: {
                         click: function($event) {
-                          return _vm.addPatient()
+                          return _vm.addPersonnel("form")
                         }
                       }
                     },
                     [_vm._v("Confirm")]
                   )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-dialog",
+            {
+              attrs: {
+                title: "Staffs Details",
+                visible: _vm.dialogTableVisible
+              },
+              on: {
+                "update:visible": function($event) {
+                  _vm.dialogTableVisible = $event
+                }
+              }
+            },
+            [
+              _c(
+                "el-table",
+                { attrs: { data: _vm.gridData } },
+                [
+                  _c("el-table-column", {
+                    attrs: { property: "name", label: "Name", width: "200" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: { property: "sex", label: "Sex", width: "300" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: {
+                      property: "birthdate",
+                      label: "Birthdate",
+                      width: "100"
+                    }
+                  })
                 ],
                 1
               )
@@ -101695,7 +104893,7 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-sm-12" }, [
-        _c("h2", [_vm._v("Patient List")])
+        _c("h2", [_vm._v("Staffs List")])
       ])
     ])
   }
@@ -113917,6 +117115,10 @@ Vue.use(vue_data_tables__WEBPACK_IMPORTED_MODULE_4___default.a);
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
 Vue.component('patient-component', __webpack_require__(/*! ./components/user/PatientComponent.vue */ "./resources/js/components/user/PatientComponent.vue")["default"]);
+Vue.component('budget-component', __webpack_require__(/*! ./components/user/BudgetComponent.vue */ "./resources/js/components/user/BudgetComponent.vue")["default"]);
+Vue.component('adminbudget-component', __webpack_require__(/*! ./components/admin/BudgetComponent.vue */ "./resources/js/components/admin/BudgetComponent.vue")["default"]);
+Vue.component('users-component', __webpack_require__(/*! ./components/admin/UserComponent.vue */ "./resources/js/components/admin/UserComponent.vue")["default"]);
+Vue.component('personnel-component', __webpack_require__(/*! ./components/user/PersonnelComponent.vue */ "./resources/js/components/user/PersonnelComponent.vue")["default"]);
 var app = new Vue({
   el: '#app'
 });
@@ -113965,6 +117167,213 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 //     cluster: process.env.MIX_PUSHER_APP_CLUSTER,
 //     forceTLS: true
 // });
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/BudgetComponent.vue":
+/*!***********************************************************!*\
+  !*** ./resources/js/components/admin/BudgetComponent.vue ***!
+  \***********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _BudgetComponent_vue_vue_type_template_id_3be151c6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BudgetComponent.vue?vue&type=template&id=3be151c6& */ "./resources/js/components/admin/BudgetComponent.vue?vue&type=template&id=3be151c6&");
+/* harmony import */ var _BudgetComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BudgetComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/BudgetComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _BudgetComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _BudgetComponent_vue_vue_type_template_id_3be151c6___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _BudgetComponent_vue_vue_type_template_id_3be151c6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/BudgetComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/BudgetComponent.vue?vue&type=script&lang=js&":
+/*!************************************************************************************!*\
+  !*** ./resources/js/components/admin/BudgetComponent.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./BudgetComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/BudgetComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/BudgetComponent.vue?vue&type=template&id=3be151c6&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/admin/BudgetComponent.vue?vue&type=template&id=3be151c6& ***!
+  \******************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_template_id_3be151c6___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./BudgetComponent.vue?vue&type=template&id=3be151c6& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/BudgetComponent.vue?vue&type=template&id=3be151c6&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_template_id_3be151c6___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_template_id_3be151c6___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/UserComponent.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/admin/UserComponent.vue ***!
+  \*********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _UserComponent_vue_vue_type_template_id_5689d8d2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UserComponent.vue?vue&type=template&id=5689d8d2& */ "./resources/js/components/admin/UserComponent.vue?vue&type=template&id=5689d8d2&");
+/* harmony import */ var _UserComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UserComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/admin/UserComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _UserComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _UserComponent_vue_vue_type_template_id_5689d8d2___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _UserComponent_vue_vue_type_template_id_5689d8d2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/admin/UserComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/UserComponent.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/admin/UserComponent.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./UserComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/UserComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UserComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/admin/UserComponent.vue?vue&type=template&id=5689d8d2&":
+/*!****************************************************************************************!*\
+  !*** ./resources/js/components/admin/UserComponent.vue?vue&type=template&id=5689d8d2& ***!
+  \****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserComponent_vue_vue_type_template_id_5689d8d2___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./UserComponent.vue?vue&type=template&id=5689d8d2& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/admin/UserComponent.vue?vue&type=template&id=5689d8d2&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserComponent_vue_vue_type_template_id_5689d8d2___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UserComponent_vue_vue_type_template_id_5689d8d2___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/user/BudgetComponent.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/user/BudgetComponent.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _BudgetComponent_vue_vue_type_template_id_317b179f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./BudgetComponent.vue?vue&type=template&id=317b179f& */ "./resources/js/components/user/BudgetComponent.vue?vue&type=template&id=317b179f&");
+/* harmony import */ var _BudgetComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./BudgetComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/user/BudgetComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _BudgetComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _BudgetComponent_vue_vue_type_template_id_317b179f___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _BudgetComponent_vue_vue_type_template_id_317b179f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/user/BudgetComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/user/BudgetComponent.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/user/BudgetComponent.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./BudgetComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/BudgetComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/user/BudgetComponent.vue?vue&type=template&id=317b179f&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/user/BudgetComponent.vue?vue&type=template&id=317b179f& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_template_id_317b179f___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./BudgetComponent.vue?vue&type=template&id=317b179f& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/BudgetComponent.vue?vue&type=template&id=317b179f&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_template_id_317b179f___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_template_id_317b179f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
 
 /***/ }),
 
@@ -114037,6 +117446,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/user/PersonnelComponent.vue":
+/*!*************************************************************!*\
+  !*** ./resources/js/components/user/PersonnelComponent.vue ***!
+  \*************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PersonnelComponent.vue?vue&type=template&id=82b802b4& */ "./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4&");
+/* harmony import */ var _PersonnelComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PersonnelComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _PersonnelComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/user/PersonnelComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************!*\
+  !*** ./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./PersonnelComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/PersonnelComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4&":
+/*!********************************************************************************************!*\
+  !*** ./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4& ***!
+  \********************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./PersonnelComponent.vue?vue&type=template&id=82b802b4& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/PersonnelComponent.vue?vue&type=template&id=82b802b4&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/custom.js":
 /*!********************************!*\
   !*** ./resources/js/custom.js ***!
@@ -114092,8 +117570,13 @@ jQuery(function ($) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
+<<<<<<< HEAD
 __webpack_require__(/*! C:\Users\REDAS\Desktop\kevz\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
 module.exports = __webpack_require__(/*! C:\Users\REDAS\Desktop\kevz\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
+=======
+__webpack_require__(/*! C:\xampp\htdocs\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\xampp\htdocs\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
+>>>>>>> 3ea1396aea537eb5e8f155250b10f1d7ae05360a
 
 
 /***/ })
