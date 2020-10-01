@@ -27,7 +27,13 @@
 
       <!-- Add Button -->
       <div class="col-sm-2" align="right">
-        <el-button type="primary" @click="formDialog('insert_data')"
+        <el-button
+          type="primary"
+          @click="
+            dialogFormVisible = true;
+            form.formmode = 'add';
+            clearfield();
+          "
           >Add</el-button
         >
       </div>
@@ -103,15 +109,15 @@
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">Cancel</el-button>
             <el-button
-              v-if="this.form.formmode == 'insert_data'"
+              v-if="form.formmode == 'add'"
               type="primary"
-              @click="addBudget()"
+              @click="addBudget('add')"
               >Save</el-button
             >
             <el-button
-              v-if="this.form.formmode == 'edit_data'"
+              v-if="form.formmode == 'edit'"
               type="primary"
-              @click="editBudget()"
+              @click="addBudget('edit')"
               >Save changes</el-button
             >
           </span>
@@ -141,10 +147,7 @@
       <!-- Show Patient Details -->
     </div>
   </div>
-</template>
-
-
-<script>
+</template><script>
 "use strict";
 export default {
   data() {
@@ -254,18 +257,15 @@ export default {
             handler: (row) => {
               this.clearfield();
               this.form.id = row.id;
-              this.form.formmode = "edit_data";
-
+              this.form.formmode = "edit";
+              this.dialogFormVisible = true;
               this.form.start_date = row.start_date;
               this.form.total = row.total;
               this.form.end_date = row.end_date;
-
               this.form.edit_object_index = this.data.indexOf(row);
-
-              (this.form_check.start_date = row.start_date),
-              (this.form_check.total = row.total),
-              (this.form_check.end_date = row.end_date);
-              this.formDialog("edit_data");
+              this.form_check.start_date = row.start_date;
+              this.form_check.total = row.total;
+              this.form_check.end_date = row.end_date;
             },
           },
           {
@@ -399,6 +399,60 @@ export default {
       this.form.start_date = "";
       this.form.total = "";
       this.form.end_date = "";
+    },
+    addBudget: function (mode) {
+      switch (mode) {
+        case "add":
+          if (
+            this.form.start_date == "" ||
+            this.form.end_date == "" ||
+            this.form.total == ""
+          ) {
+            this.open_notif("info", "Message", "All field required!");
+          } else {
+            axios
+              .post("add_budget", this.form)
+              .then((response) => {
+                this.data.push(response.data);
+                this.dialogFormVisible = false;
+                if (response.status > 199 && response.status < 203) {
+                  this.open_notif("success", "Message", "Successfully added!");
+                } else {
+                  this.open_notif("error", "Message", "Record failed to add!");
+                }
+              })
+              .catch(function (error) {});
+          }
+          break;
+        case "edit":
+          if (
+            this.form.start_date == this.form_check.start_date &&
+            this.form.end_date == this.form_check.end_date &&
+            this.form.total == this.form_check.total
+          ) {
+            this.open_notif("info", "Message", "No changes");
+          } else {
+            axios
+              .post("edit_budget/" + this.form.id, this.form)
+              .then((response) => {
+                if (response.status > 199 && response.status < 203) {
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].start_date = this.form.start_date;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].total = this.form.total;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].end_date = this.form.end_date;
+                  this.dialogFormVisible = false;
+                  this.open_notif("success", "Message", "Successfully change!");
+                }
+              })
+              .catch(function (error) {});
+          }
+          break;
+      }
     },
   },
   mounted() {

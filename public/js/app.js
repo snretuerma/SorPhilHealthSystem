@@ -3710,14 +3710,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -3829,6 +3821,11 @@ __webpack_require__.r(__webpack_exports__);
             }
 
             _this2.form.hospital_code = row.hospital_code;
+            _this2.form.edit_object_index = _this2.data.indexOf(row);
+            _this2.form_check.start_date = row.start_date;
+            _this2.form_check.total = row.total;
+            _this2.form_check.end_date = row.end_date;
+            _this2.form_check.codeholder = _this2.form.codeholder;
           }
         }]
       },
@@ -3842,12 +3839,46 @@ __webpack_require__.r(__webpack_exports__);
         end_date: "",
         formmode: "",
         hospital_code: "",
+        codeholder: "",
+        edit_object_index: ""
+      },
+      form_check: {
+        start_date: "",
+        total: "",
+        end_date: "",
         codeholder: ""
       },
       formLabelWidth: "120px"
     };
   },
   methods: {
+    open_notif: function open_notif(status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      }
+    },
     onChange: function onChange(event) {
       this.form.codeholder = event;
     },
@@ -3889,16 +3920,33 @@ __webpack_require__.r(__webpack_exports__);
       this.form.start_date = "";
       this.form.total = "";
       this.form.end_date = "";
+      this.form.codeholder = "";
+      this.form.hospital_code = "";
     },
     addBudget: function addBudget(mode) {
+      var _this5 = this;
+
       switch (mode) {
         case "add":
-          // alert('add');
-          axios.post("adminadd_budget", this.form).then(this.getBudget(), this.dialogFormVisible = false)["catch"](function (error) {});
+          if (this.form.total == "" || this.form.start_date == "" || this.form.end_date == "" || this.form.codeholder == "") {
+            this.open_notif("info", "Message", "All field required!");
+          } else {
+            axios.post("adminadd_budget", this.form).then(function (response) {
+              if (response.status > 199 && response.status < 203) {
+                _this5.data.push(response.data);
+
+                _this5.dialogFormVisible = false;
+
+                _this5.open_notif("success", "Message", "Successfully added!");
+              } else {
+                _this5.open_notif("error", "Message", "Record failed to add!");
+              }
+            })["catch"](function (error) {});
+          }
+
           break;
 
         case "edit":
-          // alert('edit');
           if (this.form.hospital_code == "DFBDSMH") {
             this.form.codeholder = 1;
           } else if (this.form.hospital_code == "DDH") {
@@ -3917,11 +3965,42 @@ __webpack_require__.r(__webpack_exports__);
             this.form.codeholder = 8;
           } else if (this.form.hospital_code == "PDMH") {
             this.form.codeholder = 9;
-          } // this.form.codeholder=this.codeholder;
-          // this.form.hospital_code=this.options.indexOf(this.age)
+          }
 
+          if (this.form.start_date == this.form_check.start_date && this.form.end_date == this.form_check.end_date && this.form.total == this.form_check.total && this.form.codeholder == this.form_check.codeholder) {
+            this.open_notif("info", "Message", "No changes");
+          } else {
+            axios.post("adminedit_budget/" + this.form.id, this.form).then(function (response) {
+              _this5.data[parseInt(_this5.form.edit_object_index)].start_date = _this5.form.start_date;
+              _this5.data[parseInt(_this5.form.edit_object_index)].total = _this5.form.total;
+              _this5.data[parseInt(_this5.form.edit_object_index)].end_date = _this5.form.end_date;
 
-          axios.post("adminedit_budget/" + this.form.id, this.form).then(this.getBudget(), this.dialogFormVisible = false)["catch"](function (error) {});
+              if (_this5.form.hospital_code == "1") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "DFBDSMH";
+              } else if (_this5.form.hospital_code == "2") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "DDH";
+              } else if (_this5.form.hospital_code == "3") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "IDH";
+              } else if (_this5.form.hospital_code == "4") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "SREDH";
+              } else if (_this5.form.hospital_code == "5") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "VLPMDH";
+              } else if (_this5.form.hospital_code == "6") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "MagMCH";
+              } else if (_this5.form.hospital_code == "7") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "MatMCH";
+              } else if (_this5.form.hospital_code == "8") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "PGGMH";
+              } else if (_this5.form.hospital_code == "9") {
+                _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = "PDMH";
+              }
+
+              _this5.dialogFormVisible = false;
+
+              _this5.open_notif("success", "Message", "Successfully change!");
+            })["catch"](function (error) {});
+          }
+
           break;
       }
     }
@@ -4377,9 +4456,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 
 
 
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
 
@@ -4481,14 +4565,15 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             _this2.clearfield();
 
             _this2.form.id = row.id;
-            _this2.form.formmode = "edit_data";
+            _this2.form.formmode = "edit";
+            _this2.dialogFormVisible = true;
             _this2.form.start_date = row.start_date;
             _this2.form.total = row.total;
             _this2.form.end_date = row.end_date;
             _this2.form.edit_object_index = _this2.data.indexOf(row);
-            _this2.form_check.start_date = row.start_date, _this2.form_check.total = row.total, _this2.form_check.end_date = row.end_date;
-
-            _this2.formDialog("edit_data");
+            _this2.form_check.start_date = row.start_date;
+            _this2.form_check.total = row.total;
+            _this2.form_check.end_date = row.end_date;
           }
         }, {
           props: {
@@ -4510,7 +4595,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     };
   },
-  methods: {
+  methods: _defineProperty({
     addBudget: function () {
       var _addBudget = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
         var _this3 = this;
@@ -4633,7 +4718,48 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.form.total = "";
       this.form.end_date = "";
     }
-  },
+  }, "addBudget", function addBudget(mode) {
+    var _this7 = this;
+
+    switch (mode) {
+      case "add":
+        if (this.form.start_date == "" || this.form.end_date == "" || this.form.total == "") {
+          this.open_notif("info", "Message", "All field required!");
+        } else {
+          axios.post("add_budget", this.form).then(function (response) {
+            _this7.data.push(response.data);
+
+            _this7.dialogFormVisible = false;
+
+            if (response.status > 199 && response.status < 203) {
+              _this7.open_notif("success", "Message", "Successfully added!");
+            } else {
+              _this7.open_notif("error", "Message", "Record failed to add!");
+            }
+          })["catch"](function (error) {});
+        }
+
+        break;
+
+      case "edit":
+        if (this.form.start_date == this.form_check.start_date && this.form.end_date == this.form_check.end_date && this.form.total == this.form_check.total) {
+          this.open_notif("info", "Message", "No changes");
+        } else {
+          axios.post("edit_budget/" + this.form.id, this.form).then(function (response) {
+            if (response.status > 199 && response.status < 203) {
+              _this7.data[parseInt(_this7.form.edit_object_index)].start_date = _this7.form.start_date;
+              _this7.data[parseInt(_this7.form.edit_object_index)].total = _this7.form.total;
+              _this7.data[parseInt(_this7.form.edit_object_index)].end_date = _this7.form.end_date;
+              _this7.dialogFormVisible = false;
+
+              _this7.open_notif("success", "Message", "Successfully change!");
+            }
+          })["catch"](function (error) {});
+        }
+
+        break;
+    }
+  }),
   mounted: function mounted() {
     this.getBudget();
   }
@@ -103344,7 +103470,8 @@ var render = function() {
                       {
                         attrs: {
                           label: "Hospital code",
-                          "label-width": _vm.formLabelWidth
+                          "label-width": _vm.formLabelWidth,
+                          prop: "hospital_code"
                         }
                       },
                       [
@@ -103948,7 +104075,9 @@ var render = function() {
               attrs: { type: "primary" },
               on: {
                 click: function($event) {
-                  return _vm.formDialog("insert_data")
+                  _vm.dialogFormVisible = true
+                  _vm.form.formmode = "add"
+                  _vm.clearfield()
                 }
               }
             },
@@ -104124,14 +104253,14 @@ var render = function() {
                       [_vm._v("Cancel")]
                     ),
                     _vm._v(" "),
-                    this.form.formmode == "insert_data"
+                    _vm.form.formmode == "add"
                       ? _c(
                           "el-button",
                           {
                             attrs: { type: "primary" },
                             on: {
                               click: function($event) {
-                                return _vm.addBudget()
+                                return _vm.addBudget("add")
                               }
                             }
                           },
@@ -104139,14 +104268,14 @@ var render = function() {
                         )
                       : _vm._e(),
                     _vm._v(" "),
-                    this.form.formmode == "edit_data"
+                    _vm.form.formmode == "edit"
                       ? _c(
                           "el-button",
                           {
                             attrs: { type: "primary" },
                             on: {
                               click: function($event) {
-                                return _vm.editBudget()
+                                return _vm.addBudget("edit")
                               }
                             }
                           },

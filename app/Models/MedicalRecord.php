@@ -11,7 +11,7 @@ class MedicalRecord extends Model
 
     protected $guarded = [
         'patient_id', 'admission_date', 'discharge_date',
-        'final_diagnosis', 'record_type'
+        'final_diagnosis', 'record_type', 'total_fee'
     ];
 
     public function complaints()

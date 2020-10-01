@@ -129,6 +129,7 @@ class UserController extends Controller
         return $patient;
     }
     
+    
     public function editPatient(Request $request)
     {
         $patient = Patient::where('id', $request->id)->first();

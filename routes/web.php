@@ -29,7 +29,6 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
     Route::post('adminedit_budget/{id}', 'AdminController@editBudget');
     Route::post('adminadd_budget', 'AdminController@addBudget');
-    
 });
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('user');

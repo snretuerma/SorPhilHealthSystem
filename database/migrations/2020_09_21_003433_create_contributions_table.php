@@ -17,7 +17,6 @@ class CreateContributionsTable extends Migration
             $table->id();
             $table->string('type');
             $table->string('contribution')->nullable();
-            $table->boolean('is_private')->nullable();
             $table->decimal('credit', 19, 4);
             $table->string('status');
             $table->timestamps();
