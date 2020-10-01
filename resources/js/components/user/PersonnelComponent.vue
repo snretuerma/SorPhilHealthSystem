@@ -60,8 +60,9 @@
 
         <!-- Add Personnel form -->
         <el-dialog
-          title="Add Staff"
+          title="Staff Details"
           :visible.sync="dialogFormVisible"
+          :before-close="handleClose"
           top="0vh"
         >
           <el-form :model="form" :rules="rules" ref="form">
@@ -116,53 +117,62 @@
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">Cancel</el-button>
             <el-button
-              @click="
-                dialogFormVisible = false;
-                resetForm('form');
-              "
-              >Cancel</el-button
+              v-if="this.form.formmode == 'insert_data'"
+              type="primary"
+              @click="addPersonnel()"
+              >Save</el-button
             >
-            <el-button type="primary" @click="addPersonnel('form')"
-              >Confirm</el-button
+            <el-button
+              v-if="this.form.formmode == 'edit_data'"
+              type="primary"
+              @click="editPersonnel()"
+              >Save Changes</el-button
             >
           </span>
         </el-dialog>
         <!-- Add Personnel form ends here-->
-
-        <!-- Show Personnel Details -->
-        <el-dialog title="Staffs Details" :visible.sync="dialogTableVisible">
-          <el-table :data="gridData">
-            <el-table-column
-              property="name"
-              label="Name"
-              width="200"
-            ></el-table-column>
-            <el-table-column
-              property="sex"
-              label="Sex"
-              width="300"
-            ></el-table-column>
-            <el-table-column
-              property="birthdate"
-              label="Birthdate"
-              width="100"
-            ></el-table-column>
-          </el-table>
-        </el-dialog>
-        <!-- Show Personnel Details -->
-
       </div>
     </div>
     <!-- Card ends here -->
+
+    <!-- Show Personnel Details -->
+    <el-dialog title="Staffs Info" :visible.sync="dialogTableVisible">
+      <el-table :data="gridData">
+        <el-table-column
+          property="name"
+          label="Name"
+          width="200"
+        ></el-table-column>
+        <el-table-column
+          property="sex"
+          label="Sex"
+          width="300"
+        ></el-table-column>
+        <el-table-column
+          property="birthdate"
+          label="Birthdate"
+          width="100"
+        ></el-table-column>
+      </el-table>
+    </el-dialog>
+    <!-- Show Personnel Details -->
   </div>
 </template>
 
 <script>
 "use strict";
 export default {
-  data(){
-    return{
+  data() {
+    return {
+      data: [],
+      personnelinfo: [],
+      layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      formLabelWidth: "120px",
+      // Validation
       rules: {
         last_name: [
           { required: true, message: "Lastname is required.", trigger: "blur" },
@@ -193,14 +203,14 @@ export default {
           },
         ],
       },
-      data: [],
-      personnelinfo: [],
+      // Searchbox Filter
       filters: [
         {
           prop: ["first_name", "last_name", "middle_name"],
           value: "",
         },
       ],
+
       titles: [
         {
           prop: "name",
@@ -215,6 +225,33 @@ export default {
           label: "Birthdate",
         },
       ],
+
+      // Add form
+      form: {
+        id: "",
+        last_name: "",
+        first_name: "",
+        middle_name: "",
+        name_suffix: "",
+        sex: "",
+        birthdate: "",
+        name: "",
+        formmode: "",
+        edit_object_index: "",
+      },
+
+      // Edit form check
+      form_check: {
+        last_name: "",
+        first_name: "",
+        middle_name: "",
+        name_suffix: "",
+        sex: "",
+        birthdate: "",
+        name: "",
+      },
+
+      // View info data
       gridData: [
         {
           name: "",
@@ -222,11 +259,15 @@ export default {
           birthdate: "",
         },
       ],
+
+      //Actiom Column
       actionCol: {
         label: "Actions",
         props: {
           align: "center",
         },
+
+        //Action Buttons
         buttons: [
           {
             props: {
@@ -255,7 +296,35 @@ export default {
               size: "mini",
             },
             handler: (row) => {
-              
+              this.clearFields();
+              this.form.id = row.id;
+              this.form.formmode = "edit_data";
+
+              this.form.last_name = row.last_name;
+              this.form.first_name = row.first_name;
+              this.form.middle_name = row.middle_name;
+              this.form.name_suffix = row.name_suffix;
+              this.form.sex = row.sex;
+              this.form.birthdate = row.birthdate;
+
+              this.form.edit_object_index = this.data.indexOf(row);
+
+              (this.form_check.last_name = row.last_name),
+              (this.form_check.first_name = row.first_name),
+              (this.form_check.middle_name = row.middle_name),
+              (this.form_check.name_suffix = row.name_suffix),
+              (this.form_check.sex = row.sex),
+              (this.form_check.birthdate = row.birthdate),
+              (this.form_check.name =
+                this.form_check.last_name +
+                ", " +
+                this.form_check.name_suffix +
+                " " +
+                this.form_check.first_name +
+                " " +
+                this.form_check.middle_name.slice(0, 1) +
+                ". ");
+              this.formDialog("edit_data");
             },
           },
           {
@@ -277,20 +346,8 @@ export default {
           },
         ],
       },
-      layout: "pagination, table",
-      dialogTableVisible: false,
-      dialogFormVisible: false,
-      form: {
-        id: "",
-        last_name: "",
-        first_name: "",
-        middle_name: "",
-        name_suffix: "",
-        sex: "",
-        birthdate: "",
-        name: "",
-      },
-      formLabelWidth: "120px",
+      
+      
     };
   },
   methods: {
@@ -298,45 +355,117 @@ export default {
       axios
         .post("add_personnel", this.form)
         .then((response) => {
-          if (this.form.sex == 1) {
-            this.form.sex = "Male";
-          } else if (this.form.sex == 2) {
-            this.form.sex = "Female";
-          } else if (this.form.sex == 3) {
-            this.form.sex = "Not Applicable";
+          if (response.data.sex == 1) {
+            response.data.sex = "Male";
+          } else if (response.data.sex == 2) {
+            response.data.sex = "Female";
+          } else if (response.data.sex == 3) {
+            response.data.sex = "Not Applicable";
           } else {
-            this.form.sex = "Not Known";
+            response.data.sex = "Not Known";
           }
-          this.form.name =
-            this.form.last_name +
-            ", " +
-            this.form.name_suffix +
-            " " +
-            this.form.first_name +
-            " " +
-            this.form.middle_name.slice(0, 1) +
-            ". ";
-          this.data.push(this.form);
 
-          console.log(this.form.name_suffix);
+          response.data.name =
+            response.data.last_name +
+            ", " +
+            response.data.name_suffix +
+            " " +
+            response.data.first_name +
+            " " +
+            response.data.middle_name.slice(0, 1) +
+            ". ";
+
+          this.data.push(response.data);
+
           this.dialogFormVisible = false;
         })
         .catch(function (error) {});
     },
-    resetForm(addPersonnelForm) {
-      this.$refs[addPersonnelForm].resetFields();
+    open_notif: function (status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      }
     },
-    editPatient: function () {
+    clearFields: function () {
+      this.form.last_name = "";
+      this.form.first_name = "";
+      this.form.middle_name = "";
+      this.form.name_suffix = "";
+      this.form.sex = "";
+      this.form.birthdate = "";
+    },
+    formDialog: function (id) {
+      if (id == "insert_data") {
+        this.form.formmode = "insert_data";
+        this.clearFields();
+        this.dialogFormVisible = true;
+      } else if (id == "edit_data") {
+        this.dialogFormVisible = true;
+      }
+    },
+    handleClose(done) {
+      this.$confirm("Are you sure to close this?")
+        .then((_) => {
+          done();
+        })
+        .catch((_) => {});
+    },
+    editPersonnel: function () {
+      var _this = this;
+      if (
+        this.form.last_name == this.form_check.last_name &&
+        this.form.first_name == this.form_check.first_name &&
+        this.form.middle_name == this.form_check.middle_name &&
+        this.form.name_suffix == this.form_check.name_suffix &&
+        this.form.sex == this.form_check.sex &&
+        this.form.birthdate == this.form_check.birthdate
+      ) {
+        _this.open_notif("info", "Message", "No Changes");
+      } else {
       axios
-        .post("edit_patient/" + this.form.id)
+        .post("edit_personnel/" + this.form.id, this.form)
         .then((response) => {
-          response.data.forEach((element) => {
-            this.buildPatientData(element);
-          });
-          this.patientinfo = response.data;
-          console.log(response.data);
+          if (response.status > 199 && response.status < 203) {
+              _this.open_notif("success", "Success", "Changes has been saved");
+              this.dialogFormVisible = false;
+              _this.data[parseInt(_this.form.edit_object_index)].last_name =
+                _this.form.last_name;
+              _this.data[parseInt(_this.form.edit_object_index)].first_name =
+                _this.form.first_name;
+              _this.data[parseInt(_this.form.edit_object_index)].middle_name =
+                _this.form.middle_name;
+              _this.data[parseInt(_this.form.edit_object_index)].name_suffix =
+                _this.form.name_suffix;
+              _this.data[parseInt(_this.form.edit_object_index)].sex =
+                _this.form.sex;
+              _this.data[parseInt(_this.form.edit_object_index)].birthdate =
+                _this.form.birthdate;
+            }
         })
         .catch(function (error) {});
+      }
     },
     assignSex: function (sex_value) {
       var sex;

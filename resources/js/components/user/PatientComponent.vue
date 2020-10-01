@@ -382,37 +382,38 @@ export default {
       axios
         .post("add_patient", this.form)
         .then((response) => {
-          if (this.form.sex == 1) {
-            this.form.sex = "Male";
-          } else if (this.form.sex == 2) {
-            this.form.sex = "Female";
-          } else if (this.form.sex == 3) {
-            this.form.sex = "Not Applicable";
-          } else {
-            this.form.sex = "Not Known";
-          }
-          if (this.form.marital_status == 0) {
-            this.form.marital_status = "Single";
-          } else if (this.form.marital_status == 1) {
-            this.form.marital_status = "Married";
-          } else if (this.form.marital_status == 2) {
-            this.form.marital_status = "Divorced";
-          } else if (this.form.marital_status == 3) {
-            this.form.marital_status = "Widowed";
-          } else {
-            this.form.marital_status = "Others/Prefer Not to Say";
-          }
-          this.form.name =
-            this.form.last_name +
-            ", " +
-            this.form.name_suffix +
-            " " +
-            this.form.first_name +
-            " " +
-            this.form.middle_name.slice(0, 1) +
-            ". ";
-          this.data.push(this.form);
-
+            if (response.data.sex == 1) {
+              response.data.sex = "Male";
+            } else if (response.data.sex == 2) {
+              response.data.sex = "Female";
+            } else if (response.data.sex == 3) {
+              response.data.sex = "Not Applicable";
+            } else {
+              response.data.sex = "Not Known";
+            }
+            
+            if (response.data.marital_status == 0) {
+              response.data.marital_status = "Single";
+            } else if (response.data.marital_status == 1) {
+              response.data.marital_status = "Married";
+            } else if (response.data.marital_status == 2) {
+              response.data.marital_status = "Divorced";
+            } else if (response.data.marital_status == 3) {
+              response.data.marital_status = "Widowed";
+            } else {
+              response.data.marital_status = "Others/Prefer Not to Say";
+            }
+            
+            response.data.name =
+              response.data.last_name +
+              ", " +
+              response.data.name_suffix +
+              " " +
+              response.data.first_name +
+              " " +
+              response.data.middle_name.slice(0, 1) +
+              ". ";
+          this.data.push(response.data);
           this.dialogFormVisible = false;
         })
         .catch(function (error) {});

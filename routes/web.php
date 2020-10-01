@@ -43,13 +43,14 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/personnel', 'UserController@personnel')->name('personnel');
     Route::get('personnel_get', 'UserController@getPersonnel');
     Route::post('add_personnel', 'UserController@addPersonnel');
+    Route::post('/edit_personnel/{id}', 'UserController@editPersonnel');
     Route::post('personnel_delete/{id}', 'UserController@deletePersonnel');
     //Patients
     Route::get('/patients', 'UserController@patients')->name('patients');
     Route::get('patients_get', 'UserController@getPatients');
     Route::post('add_patient', 'UserController@addPatient');
-    Route::post('patients_delete/{id}', 'UserController@deletePatients');
-    Route::post('patients_edit/{id}', 'UserController@editPatients');
+    Route::post('patient_delete/{id}', 'UserController@deletePatient');
+    Route::post('patient_edit/{id}', 'UserController@editPatient');
     //Records
     Route::get('/records', 'UserController@records')->name('records');
     
