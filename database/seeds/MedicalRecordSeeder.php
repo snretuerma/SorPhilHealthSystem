@@ -56,7 +56,6 @@ class MedicalRecordSeeder extends Seeder
             $contribution->contribution = 'admitting';
             $contribution->credit = rand(1000,9999);
             $contribution->status = 'paid';
-            $contribution->is_private = false;
             $contribution->save();
             $record->personnels()->attach(Personnel::find(rand(0,10)), ['contribution_id' => $contribution->id]);
         }

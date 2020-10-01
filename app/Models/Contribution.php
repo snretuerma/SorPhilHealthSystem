@@ -10,7 +10,7 @@ class Contribution extends Model
     use SoftDeletes;
 
     protected $guarded = [
-        'type', 'contribution', 'credit', 'status', 'is_private'
+        'type', 'contribution', 'credit', 'status',
     ];
 
     public function records()
