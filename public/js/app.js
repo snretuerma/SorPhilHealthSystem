@@ -4943,6 +4943,49 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4956,6 +4999,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     var _this2 = this;
 
     return {
+      loading: true,
+      data: [],
+      patientinfo: [],
+      layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      formLabelWidth: "120px",
       // Validation
       rules: {
         last_name: [{
@@ -4995,8 +5045,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           trigger: "blur"
         }]
       },
-      data: [],
-      patientinfo: [],
       // Searchbox Filters
       filters: [{
         prop: ["first_name", "last_name", "philhealth_number", "middle_name"],
@@ -5018,7 +5066,34 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         prop: "philhealth_number",
         label: "PhilHealth #"
       }],
-      // Show details data
+      // Add form
+      form: {
+        id: "",
+        last_name: "",
+        first_name: "",
+        middle_name: "",
+        name_suffix: "",
+        sex: "",
+        birthdate: "",
+        marital_status: "",
+        philhealth_number: "",
+        name: "",
+        formmode: "",
+        edit_object_index: ""
+      },
+      // Edit form check
+      form_check: {
+        last_name: "",
+        first_name: "",
+        middle_name: "",
+        name_suffix: "",
+        sex: "",
+        birthdate: "",
+        marital_status: "",
+        philhealth_number: "",
+        name: ""
+      },
+      // View Info data
       gridData: [{
         name: "",
         sex: "",
@@ -5026,12 +5101,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         marital_status: "",
         philhealth_number: ""
       }],
-      //Action buttons
+      //Action column
       actionCol: {
         label: "Actions",
         props: {
           align: "center"
         },
+        //Action Buttons
         buttons: [{
           props: {
             type: "info",
@@ -5055,7 +5131,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             size: "mini"
           },
           handler: function handler(row) {
-            _this2.resetForm();
+            _this2.clearFields();
 
             _this2.form.id = row.id;
             _this2.form.formmode = "edit_data";
@@ -5070,7 +5146,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             _this2.form.edit_object_index = _this2.data.indexOf(row);
             _this2.form_check.last_name = row.last_name, _this2.form_check.first_name = row.first_name, _this2.form_check.middle_name = row.middle_name, _this2.form_check.name_suffix = row.name_suffix, _this2.form_check.sex = row.sex, _this2.form_check.birthdate = row.birthdate, _this2.form_check.marital_status = row.marital_status, _this2.form_check.philhealth_number = row.philhealth_number, _this2.form_check.name = _this2.form_check.last_name + ", " + _this2.form_check.name_suffix + " " + _this2.form_check.first_name + " " + _this2.form_check.middle_name.slice(0, 1) + ". ";
 
-            _this2.formDialog('edit_data');
+            _this2.formDialog("edit_data");
           }
         }, {
           props: {
@@ -5089,43 +5165,23 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             });
           }
         }]
-      },
-      // Datatable Layout
-      layout: "pagination, table",
-      dialogTableVisible: false,
-      dialogFormVisible: false,
-      form: {
-        id: "",
-        last_name: "",
-        first_name: "",
-        middle_name: "",
-        name_suffix: "",
-        sex: "",
-        birthdate: "",
-        marital_status: "",
-        philhealth_number: "",
-        name: "",
-        formmode: "",
-        edit_object_index: ""
-      },
-      form_check: {
-        last_name: "",
-        first_name: "",
-        middle_name: "",
-        name_suffix: "",
-        sex: "",
-        birthdate: "",
-        marital_status: "",
-        philhealth_number: "",
-        name: ""
-      },
-      formLabelWidth: "120px"
+      }
     };
   },
   methods: {
+    getPatients: function getPatients() {
+      var _this3 = this;
+
+      axios.get("patients_get").then(function (response) {
+        response.data.forEach(function (element) {
+          _this3.buildPatientData(element);
+        });
+        _this3.data = response.data;
+      })["catch"](function (error) {});
+    },
     addPatient: function () {
       var _addPatient = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var _this3 = this;
+        var _this4 = this;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
@@ -5156,9 +5212,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                   response.data.name = response.data.last_name + ", " + response.data.name_suffix + " " + response.data.first_name + " " + response.data.middle_name.slice(0, 1) + ". ";
 
-                  _this3.data.push(response.data);
+                  _this4.data.push(response.data);
 
-                  _this3.dialogFormVisible = false;
+                  _this4.dialogFormVisible = false;
                 })["catch"](function (error) {});
 
               case 1:
@@ -5175,59 +5231,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       return addPatient;
     }(),
-    resetForm: function resetForm() {
-      this.form.last_name = "";
-      this.form.first_name = "";
-      this.form.middle_name = "";
-      this.form.name_suffix = "";
-      this.form.sex = "";
-      this.form.birthdate = "";
-      this.form.marital_status = "";
-      this.form.philhealth_number = "";
-    },
-    formDialog: function formDialog(id) {
-      if (id == "insert_data") {
-        this.form.formmode = "insert_data";
-        this.resetForm();
-        this.dialogFormVisible = true;
-      } else if (id == "edit_data") {
-        this.dialogFormVisible = true;
-      }
-    },
-    open_notif: function open_notif(status, title, message) {
-      if (status == "success") {
-        this.$notify.success({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      } else if (status == "error") {
-        this.$notify.error({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      } else if (status == "info") {
-        this.$notify.info({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      } else if (status == "warning") {
-        this.$notify.warning({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      }
-    },
     editPatient: function editPatient() {
-      var _this4 = this;
+      var _this5 = this;
 
       var _this = this;
 
       if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate && this.form.marital_status == this.form_check.marital_status && this.form.philhealth_number == this.form_check.philhealth_number) {
-        _this.open_notif('info', 'Message', 'No Changes');
+        _this.open_notif("info", "Message", "No Changes");
       } else {
         if (this.form.sex == "Male") {
           this.form.sex = 1;
@@ -5248,30 +5258,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
 
         _this.form.name = _this.form.last_name + ", " + _this.form.name_suffix + " " + _this.form.first_name + " " + _this.form.middle_name.slice(0, 1) + ". ";
-        axios.post("patients_edit/" + this.form.id, this.form).then(function (response) {
+        axios.post("patient_edit/" + this.form.id, this.form).then(function (response) {
           if (response.status > 199 && response.status < 203) {
-            _this.open_notif('success', 'Success', 'Changes has been saved');
+            _this.open_notif("success", "Success", "Changes has been saved");
 
-            _this4.dialogFormVisible = false;
-
-            if (_this.form.sex == 1) {
-              _this.form.sex = "Male";
-            } else if (_this.form.sex == 2) {
-              _this.form.sex = "Female";
-            }
-
-            if (_this.form.marital_status == 0) {
-              _this.form.marital_status = "Single";
-            } else if (_this.form.marital_status == 1) {
-              _this.form.marital_status = "Married";
-            } else if (_this.form.marital_status == 2) {
-              _this.form.marital_status = "Divorced";
-            } else if (_this.form.marital_status == 3) {
-              _this.form.marital_status = "Widowed";
-            } else if (_this.form.marital_status == 4) {
-              _this.form.marital_status = "Others/Prefer Not to Say";
-            }
-
+            _this5.dialogFormVisible = false;
             _this.data[parseInt(_this.form.edit_object_index)].last_name = _this.form.last_name;
             _this.data[parseInt(_this.form.edit_object_index)].first_name = _this.form.first_name;
             _this.data[parseInt(_this.form.edit_object_index)].middle_name = _this.form.middle_name;
@@ -5285,76 +5276,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         })["catch"](function (error) {});
       }
     },
-    buildName: function buildName(first_name, middle_name, last_name, suffix) {
-      return (last_name + " " + suffix + ", " + first_name + " " + middle_name.slice(0, 1) + ".").trim();
-    },
-    assignSex: function assignSex(sex_value) {
-      var sex;
-
-      switch (sex_value) {
-        case 1:
-          sex = "Male";
-          break;
-
-        case 2:
-          sex = "Female";
-          break;
-
-        case 9:
-          sex = "Not Applicable";
-          break;
-
-        default:
-          sex = "Not Known";
-      }
-
-      return sex;
-    },
-    assignMaritalStatus: function assignMaritalStatus(marital_status_value) {
-      var marital_status;
-
-      switch (marital_status_value) {
-        case 0:
-          marital_status = "Single";
-          break;
-
-        case 1:
-          marital_status = "Married";
-          break;
-
-        case 2:
-          marital_status = "Divorced";
-          break;
-
-        case 3:
-          marital_status = "Widowed";
-          break;
-
-        default:
-          marital_status = "Others/Prefer Not to Say";
-      }
-
-      return marital_status;
-    },
-    buildPatientData: function buildPatientData(element) {
-      if (element.name_suffix == undefined) {
-        element.name_suffix = "";
-      }
-
-      element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
-      element.sex = this.assignSex(element.sex);
-      element.marital_status = this.assignMaritalStatus(element.marital_status);
-    },
-    getPatients: function getPatients() {
-      var _this5 = this;
-
-      axios.get("patients_get").then(function (response) {
-        response.data.forEach(function (element) {
-          _this5.buildPatientData(element);
-        });
-        _this5.data = response.data;
-      })["catch"](function (error) {});
-    },
     deletePatients: function deletePatients(id, res) {
       var _this6 = this;
 
@@ -5365,23 +5286,128 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         type: "warning"
       }).then(function () {
         var _this = _this6;
-        axios.post("patients_delete/" + id).then(function (response) {
+        axios.post("patient_delete/" + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
-            _this.$message({
-              type: "success",
-              message: "Succesfully! Deleted"
-            });
+            _this.open_notif("success", "Success", "Deleted Successfully");
 
             res(id);
           }
         });
       })["catch"](function (action) {
-        _this6.$message({
-          type: "success",
-          message: action === "cancel" ? "Canceled" : "No changes"
-        });
+        _this6.open_notif("info", "Cancelled", "No Changes");
       });
     }
+  },
+  formDialog: function formDialog(id) {
+    if (id == "insert_data") {
+      this.form.formmode = "insert_data";
+      this.clearFields();
+      this.dialogFormVisible = true;
+    } else if (id == "edit_data") {
+      this.dialogFormVisible = true;
+    }
+  },
+  handleClose: function handleClose(done) {
+    this.$confirm("Are you sure to close this?").then(function (_) {
+      done();
+    })["catch"](function (_) {});
+  },
+  open_notif: function open_notif(status, title, message) {
+    if (status == "success") {
+      this.$notify.success({
+        title: title,
+        message: message,
+        offset: 0
+      });
+    } else if (status == "error") {
+      this.$notify.error({
+        title: title,
+        message: message,
+        offset: 0
+      });
+    } else if (status == "info") {
+      this.$notify.info({
+        title: title,
+        message: message,
+        offset: 0
+      });
+    } else if (status == "warning") {
+      this.$notify.warning({
+        title: title,
+        message: message,
+        offset: 0
+      });
+    }
+  },
+  clearFields: function clearFields() {
+    this.form.last_name = "";
+    this.form.first_name = "";
+    this.form.middle_name = "";
+    this.form.name_suffix = "";
+    this.form.sex = "";
+    this.form.birthdate = "";
+    this.form.marital_status = "";
+    this.form.philhealth_number = "";
+  },
+  buildName: function buildName(first_name, middle_name, last_name, suffix) {
+    return (last_name + " " + suffix + ", " + first_name + " " + middle_name.slice(0, 1) + ".").trim();
+  },
+  assignSex: function assignSex(sex_value) {
+    var sex;
+
+    switch (sex_value) {
+      case 1:
+        sex = "Male";
+        break;
+
+      case 2:
+        sex = "Female";
+        break;
+
+      case 9:
+        sex = "Not Applicable";
+        break;
+
+      default:
+        sex = "Not Known";
+    }
+
+    return sex;
+  },
+  assignMaritalStatus: function assignMaritalStatus(marital_status_value) {
+    var marital_status;
+
+    switch (marital_status_value) {
+      case 0:
+        marital_status = "Single";
+        break;
+
+      case 1:
+        marital_status = "Married";
+        break;
+
+      case 2:
+        marital_status = "Divorced";
+        break;
+
+      case 3:
+        marital_status = "Widowed";
+        break;
+
+      default:
+        marital_status = "Others/Prefer Not to Say";
+    }
+
+    return marital_status;
+  },
+  buildPatientData: function buildPatientData(element) {
+    if (element.name_suffix == undefined) {
+      element.name_suffix = "";
+    }
+
+    element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
+    element.sex = this.assignSex(element.sex);
+    element.marital_status = this.assignMaritalStatus(element.marital_status);
   },
   mounted: function mounted() {
     this.getPatients();
@@ -5399,8 +5425,14 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -5565,18 +5597,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 
-
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     var _this2 = this;
 
     return {
+      loading: true,
       data: [],
       personnelinfo: [],
       layout: "pagination, table",
@@ -5720,46 +5747,120 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
-    addPersonnel: function () {
-      var _addPersonnel = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var _this3 = this;
+    formLoading: function formLoading() {
+      var loading = this.$loading({
+        lock: true,
+        text: 'Loading',
+        spinner: 'el-icon-loading',
+        target: 'div.el-dialog'
+      });
+      loading.close();
+    },
+    getPersonnel: function getPersonnel() {
+      var _this3 = this;
 
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                axios.post("add_personnel", this.form).then(function (response) {
-                  if (response.data.sex == 1) {
-                    response.data.sex = "Male";
-                  } else if (response.data.sex == 2) {
-                    response.data.sex = "Female";
-                  } else if (response.data.sex == 3) {
-                    response.data.sex = "Not Applicable";
-                  } else {
-                    response.data.sex = "Not Known";
-                  }
+      axios.get("personnel_get").then(function (response) {
+        response.data.forEach(function (element) {
+          _this3.buildPersonnelData(element);
+        });
+        _this3.data = response.data;
+        _this3.loading = false;
+      })["catch"](function (error) {});
+    },
+    addPersonnel: function addPersonnel() {
+      var _this4 = this;
 
-                  response.data.name = response.data.last_name + ", " + response.data.name_suffix + " " + response.data.first_name + " " + response.data.middle_name.slice(0, 1) + ". ";
-
-                  _this3.data.push(response.data);
-
-                  _this3.dialogFormVisible = false;
-                })["catch"](function (error) {});
-
-              case 1:
-              case "end":
-                return _context.stop();
-            }
+      if (this.form.last_name == "" || this.form.first_name == "" || this.form.middle_name == "" || this.form.name_suffix == "" || this.form.sex == "" || this.form.birthdate == "") {
+        this.open_notif("info", "Message", "Required fields were missing values.");
+      } else {
+        axios.post("add_personnel", this.form).then(function (response) {
+          if (response.data.sex == 1) {
+            response.data.sex = "Male";
+          } else if (response.data.sex == 2) {
+            response.data.sex = "Female";
+          } else if (response.data.sex == 3) {
+            response.data.sex = "Not Applicable";
+          } else {
+            response.data.sex = "Not Known";
           }
-        }, _callee, this);
-      }));
 
-      function addPersonnel() {
-        return _addPersonnel.apply(this, arguments);
+          response.data.name = response.data.last_name + ", " + response.data.name_suffix + " " + response.data.first_name + " " + response.data.middle_name.slice(0, 1) + ". ";
+
+          _this4.open_notif("success", "Success", "Staff added successfully");
+
+          _this4.data.push(response.data);
+        })["catch"](function (error) {})["finally"](function () {
+          var _this = _this4;
+          _this.dialogFormVisible = false;
+        });
       }
+    },
+    editPersonnel: function editPersonnel() {
+      var _this5 = this;
 
-      return addPersonnel;
-    }(),
+      var _this = this;
+
+      if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate) {
+        _this.open_notif("info", "Message", "No Changes");
+      } else {
+        if (this.form.sex == "Male") {
+          this.form.sex = 1;
+        } else if (this.form.sex == "Female") {
+          this.form.sex = 2;
+        }
+
+        _this.form.name = _this.form.last_name + ", " + _this.form.name_suffix + " " + _this.form.first_name + " " + _this.form.middle_name.slice(0, 1) + ". ";
+        axios.post("edit_personnel/" + this.form.id, this.form).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this.open_notif("success", "Success", "Changes has been saved");
+
+            _this5.dialogFormVisible = false;
+            _this.data[parseInt(_this.form.edit_object_index)].last_name = _this.form.last_name;
+            _this.data[parseInt(_this.form.edit_object_index)].first_name = _this.form.first_name;
+            _this.data[parseInt(_this.form.edit_object_index)].middle_name = _this.form.middle_name;
+            _this.data[parseInt(_this.form.edit_object_index)].name_suffix = _this.form.name_suffix;
+            _this.data[parseInt(_this.form.edit_object_index)].sex = _this.form.sex;
+            _this.data[parseInt(_this.form.edit_object_index)].birthdate = _this.form.birthdate;
+            _this.data[parseInt(_this.form.edit_object_index)].name = _this.form.name;
+          }
+        })["catch"](function (error) {});
+      }
+    },
+    deletePersonnel: function deletePersonnel(id, res) {
+      var _this6 = this;
+
+      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(function () {
+        var _this = _this6;
+        axios.post("personnel_delete/" + id).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this.open_notif("success", "Success", "Deleted Successfully");
+
+            res(id);
+          }
+        });
+      })["catch"](function (action) {
+        _this6.open_notif("info", "Cancelled", "No Changes");
+      });
+    },
+    formDialog: function formDialog(id) {
+      if (id == "insert_data") {
+        this.form.formmode = "insert_data";
+        this.clearFields();
+        this.dialogFormVisible = true;
+      } else if (id == "edit_data") {
+        this.dialogFormVisible = true;
+      }
+    },
+    handleClose: function handleClose(done) {
+      this.$confirm("Are you sure to close this?").then(function (_) {
+        done();
+      })["catch"](function (_) {});
+    },
     open_notif: function open_notif(status, title, message) {
       if (status == "success") {
         this.$notify.success({
@@ -5795,43 +5896,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.form.sex = "";
       this.form.birthdate = "";
     },
-    formDialog: function formDialog(id) {
-      if (id == "insert_data") {
-        this.form.formmode = "insert_data";
-        this.clearFields();
-        this.dialogFormVisible = true;
-      } else if (id == "edit_data") {
-        this.dialogFormVisible = true;
-      }
-    },
-    handleClose: function handleClose(done) {
-      this.$confirm("Are you sure to close this?").then(function (_) {
-        done();
-      })["catch"](function (_) {});
-    },
-    editPersonnel: function editPersonnel() {
-      var _this4 = this;
-
-      var _this = this;
-
-      if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate) {
-        _this.open_notif("info", "Message", "No Changes");
-      } else {
-        axios.post("edit_personnel/" + this.form.id, this.form).then(function (response) {
-          if (response.status > 199 && response.status < 203) {
-            _this.open_notif("success", "Success", "Changes has been saved");
-
-            _this4.dialogFormVisible = false;
-            _this.data[parseInt(_this.form.edit_object_index)].last_name = _this.form.last_name;
-            _this.data[parseInt(_this.form.edit_object_index)].first_name = _this.form.first_name;
-            _this.data[parseInt(_this.form.edit_object_index)].middle_name = _this.form.middle_name;
-            _this.data[parseInt(_this.form.edit_object_index)].name_suffix = _this.form.name_suffix;
-            _this.data[parseInt(_this.form.edit_object_index)].sex = _this.form.sex;
-            _this.data[parseInt(_this.form.edit_object_index)].birthdate = _this.form.birthdate;
-          }
-        })["catch"](function (error) {});
-      }
-    },
     assignSex: function assignSex(sex_value) {
       var sex;
 
@@ -5864,43 +5928,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
       element.sex = this.assignSex(element.sex);
-    },
-    getPersonnel: function getPersonnel() {
-      var _this5 = this;
-
-      axios.get("personnel_get").then(function (response) {
-        response.data.forEach(function (element) {
-          _this5.buildPersonnelData(element);
-        });
-        _this5.data = response.data;
-      })["catch"](function (error) {});
-    },
-    deletePersonnel: function deletePersonnel(id, res) {
-      var _this6 = this;
-
-      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
-        distinguishCancelAndClose: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        type: "warning"
-      }).then(function () {
-        var _this = _this6;
-        axios.post("personnel_delete/" + id).then(function (response) {
-          if (response.status > 199 && response.status < 203) {
-            _this.$message({
-              type: "success",
-              message: "Succesfully! Deleted"
-            });
-
-            res(id);
-          }
-        });
-      })["catch"](function (action) {
-        _this6.$message({
-          type: "success",
-          message: action === "cancel" ? "Canceled" : "No changes"
-        });
-      });
     }
   },
   mounted: function mounted() {
@@ -104370,34 +104397,415 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+  return _c(
+    "div",
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+          _c(
+            "div",
+            { staticStyle: { "margin-bottom": "10px" } },
+            [
+              _c(
+                "el-row",
+                [
+                  _c(
+                    "el-col",
+                    { attrs: { span: 10 } },
+                    [
+                      _c("el-input", {
+                        attrs: { placeholder: "Search" },
+                        model: {
+                          value: _vm.filters[0].value,
+                          callback: function($$v) {
+                            _vm.$set(_vm.filters[0], "value", $$v)
+                          },
+                          expression: "filters[0].value"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ]),
+        _vm._v(" "),
         _c(
           "div",
-          { staticStyle: { "margin-bottom": "10px" } },
+          { staticClass: "col-sm-2", attrs: { align: "right" } },
           [
             _c(
-              "el-row",
+              "el-button",
+              {
+                attrs: { type: "primary" },
+                on: {
+                  click: function($event) {
+                    return _vm.formDialog("insert_data")
+                  }
+                }
+              },
+              [_vm._v("Add")]
+            )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c("div", { staticClass: "card" }, [
+        _c(
+          "div",
+          { staticClass: "card-body" },
+          [
+            _c(
+              "data-tables",
+              {
+                attrs: {
+                  data: _vm.data,
+                  "page-size": 10,
+                  filters: _vm.filters,
+                  "pagination-props": { pageSizes: [10, 20, 50] },
+                  "action-col": _vm.actionCol
+                }
+              },
+              [
+                _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
+                  _vm._v("Table Empty")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.titles, function(title) {
+                  return _c("el-table-column", {
+                    key: title.label,
+                    attrs: {
+                      prop: title.prop,
+                      label: title.label,
+                      sortable: "custom"
+                    }
+                  })
+                }),
+                _vm._v(" "),
+                _c("p", { attrs: { slot: "append" }, slot: "append" })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _c(
+              "el-dialog",
+              {
+                attrs: {
+                  title: "Patien Details",
+                  visible: _vm.dialogFormVisible,
+                  "before-close": _vm.handleClose,
+                  top: "0vh"
+                },
+                on: {
+                  "update:visible": function($event) {
+                    _vm.dialogFormVisible = $event
+                  }
+                }
+              },
               [
                 _c(
-                  "el-col",
-                  { attrs: { span: 10 } },
+                  "el-form",
+                  { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
                   [
-                    _c("el-input", {
-                      attrs: { placeholder: "Search" },
-                      model: {
-                        value: _vm.filters[0].value,
-                        callback: function($$v) {
-                          _vm.$set(_vm.filters[0], "value", $$v)
-                        },
-                        expression: "filters[0].value"
-                      }
-                    })
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Lastname",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "last_name"
+                        }
+                      },
+                      [
+                        _c("el-input", {
+                          attrs: { autocomplete: "off" },
+                          model: {
+                            value: _vm.form.last_name,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "last_name", $$v)
+                            },
+                            expression: "form.last_name"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Firstname",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "first_name"
+                        }
+                      },
+                      [
+                        _c("el-input", {
+                          attrs: { autocomplete: "off" },
+                          model: {
+                            value: _vm.form.first_name,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "first_name", $$v)
+                            },
+                            expression: "form.first_name"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Middlename",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "middle_name"
+                        }
+                      },
+                      [
+                        _c("el-input", {
+                          attrs: { autocomplete: "off" },
+                          model: {
+                            value: _vm.form.middle_name,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "middle_name", $$v)
+                            },
+                            expression: "form.middle_name"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Suffix",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "name_suffix"
+                        }
+                      },
+                      [
+                        _c("el-input", {
+                          attrs: { autocomplete: "off" },
+                          model: {
+                            value: _vm.form.name_suffix,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "name_suffix", $$v)
+                            },
+                            expression: "form.name_suffix"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Sex",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "sex"
+                        }
+                      },
+                      [
+                        _c(
+                          "el-select",
+                          {
+                            attrs: { placeholder: "Please select" },
+                            model: {
+                              value: _vm.form.sex,
+                              callback: function($$v) {
+                                _vm.$set(_vm.form, "sex", $$v)
+                              },
+                              expression: "form.sex"
+                            }
+                          },
+                          [
+                            _c("el-option", {
+                              attrs: { label: "Male", value: "1" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "Female", value: "2" }
+                            })
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Birthdate",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "birthdate"
+                        }
+                      },
+                      [
+                        _c("el-date-picker", {
+                          staticStyle: { width: "100%" },
+                          attrs: {
+                            type: "date",
+                            placeholder: "Pick a date",
+                            "value-format": "yyyy-MM-dd"
+                          },
+                          model: {
+                            value: _vm.form.birthdate,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "birthdate", $$v)
+                            },
+                            expression: "form.birthdate"
+                          }
+                        })
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Marital Status",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "marital_status"
+                        }
+                      },
+                      [
+                        _c(
+                          "el-select",
+                          {
+                            attrs: { placeholder: "Please select" },
+                            model: {
+                              value: _vm.form.marital_status,
+                              callback: function($$v) {
+                                _vm.$set(_vm.form, "marital_status", $$v)
+                              },
+                              expression: "form.marital_status"
+                            }
+                          },
+                          [
+                            _c("el-option", {
+                              attrs: { label: "Single", value: "0" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "Married", value: "1" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "Divorced", value: "2" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: { label: "Widowed", value: "3" }
+                            }),
+                            _vm._v(" "),
+                            _c("el-option", {
+                              attrs: {
+                                label: "Others/Prefer Not to Say",
+                                value: "4"
+                              }
+                            })
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "PhilHealth No.",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "philhealth_number"
+                        }
+                      },
+                      [
+                        _c("el-input", {
+                          attrs: { autocomplete: "off" },
+                          model: {
+                            value: _vm.form.philhealth_number,
+                            callback: function($$v) {
+                              _vm.$set(_vm.form, "philhealth_number", $$v)
+                            },
+                            expression: "form.philhealth_number"
+                          }
+                        })
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "span",
+                  {
+                    staticClass: "dialog-footer",
+                    attrs: { slot: "footer" },
+                    slot: "footer"
+                  },
+                  [
+                    _c(
+                      "el-button",
+                      {
+                        on: {
+                          click: function($event) {
+                            _vm.dialogFormVisible = false
+                          }
+                        }
+                      },
+                      [_vm._v("Cancel")]
+                    ),
+                    _vm._v(" "),
+                    this.form.formmode == "insert_data"
+                      ? _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary" },
+                            on: {
+                              click: function($event) {
+                                return _vm.addPatient()
+                              }
+                            }
+                          },
+                          [_vm._v("Save")]
+                        )
+                      : _vm._e(),
+                    _vm._v(" "),
+                    this.form.formmode == "edit_data"
+                      ? _c(
+                          "el-button",
+                          {
+                            attrs: { type: "primary" },
+                            on: {
+                              click: function($event) {
+                                return _vm.editPatient()
+                              }
+                            }
+                          },
+                          [_vm._v("Save Changes")]
+                        )
+                      : _vm._e()
                   ],
                   1
                 )
@@ -104410,439 +104818,60 @@ var render = function() {
       ]),
       _vm._v(" "),
       _c(
-        "div",
-        { staticClass: "col-sm-2", attrs: { align: "right" } },
+        "el-dialog",
+        {
+          attrs: { title: "Patient Info", visible: _vm.dialogTableVisible },
+          on: {
+            "update:visible": function($event) {
+              _vm.dialogTableVisible = $event
+            }
+          }
+        },
         [
           _c(
-            "el-button",
-            {
-              attrs: { type: "primary" },
-              on: {
-                click: function($event) {
-                  return _vm.formDialog("insert_data")
-                }
-              }
-            },
-            [_vm._v("Add")]
-          )
-        ],
-        1
-      )
-    ]),
-    _vm._v(" "),
-    _c("div", { staticClass: "card" }, [
-      _c(
-        "div",
-        { staticClass: "card-body" },
-        [
-          _c(
-            "data-tables",
-            {
-              attrs: {
-                data: _vm.data,
-                "page-size": 10,
-                filters: _vm.filters,
-                "pagination-props": { pageSizes: [10, 20, 50] },
-                "action-col": _vm.actionCol
-              }
-            },
+            "el-table",
+            { attrs: { data: _vm.gridData } },
             [
-              _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
-                _vm._v("Table Empty")
-              ]),
-              _vm._v(" "),
-              _vm._l(_vm.titles, function(title) {
-                return _c("el-table-column", {
-                  key: title.label,
-                  attrs: {
-                    prop: title.prop,
-                    label: title.label,
-                    sortable: "custom"
-                  }
-                })
+              _c("el-table-column", {
+                attrs: { property: "name", label: "Name", width: "200" }
               }),
               _vm._v(" "),
-              _c("p", { attrs: { slot: "append" }, slot: "append" })
-            ],
-            2
-          ),
-          _vm._v(" "),
-          _c(
-            "el-dialog",
-            {
-              attrs: {
-                title: "Add Patient",
-                visible: _vm.dialogFormVisible,
-                top: "0vh"
-              },
-              on: {
-                "update:visible": function($event) {
-                  _vm.dialogFormVisible = $event
-                }
-              }
-            },
-            [
-              _c(
-                "el-form",
-                { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
-                [
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Lastname",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "last_name"
-                      }
-                    },
-                    [
-                      _c("el-input", {
-                        attrs: { autocomplete: "off" },
-                        model: {
-                          value: _vm.form.last_name,
-                          callback: function($$v) {
-                            _vm.$set(_vm.form, "last_name", $$v)
-                          },
-                          expression: "form.last_name"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Firstname",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "first_name"
-                      }
-                    },
-                    [
-                      _c("el-input", {
-                        attrs: { autocomplete: "off" },
-                        model: {
-                          value: _vm.form.first_name,
-                          callback: function($$v) {
-                            _vm.$set(_vm.form, "first_name", $$v)
-                          },
-                          expression: "form.first_name"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Middlename",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "middle_name"
-                      }
-                    },
-                    [
-                      _c("el-input", {
-                        attrs: { autocomplete: "off" },
-                        model: {
-                          value: _vm.form.middle_name,
-                          callback: function($$v) {
-                            _vm.$set(_vm.form, "middle_name", $$v)
-                          },
-                          expression: "form.middle_name"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Suffix",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "name_suffix"
-                      }
-                    },
-                    [
-                      _c("el-input", {
-                        attrs: { autocomplete: "off" },
-                        model: {
-                          value: _vm.form.name_suffix,
-                          callback: function($$v) {
-                            _vm.$set(_vm.form, "name_suffix", $$v)
-                          },
-                          expression: "form.name_suffix"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Sex",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "sex"
-                      }
-                    },
-                    [
-                      _c(
-                        "el-select",
-                        {
-                          attrs: { placeholder: "Please select" },
-                          model: {
-                            value: _vm.form.sex,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "sex", $$v)
-                            },
-                            expression: "form.sex"
-                          }
-                        },
-                        [
-                          _c("el-option", {
-                            attrs: { label: "Male", value: "1" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: { label: "Female", value: "2" }
-                          })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Birthdate",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "birthdate"
-                      }
-                    },
-                    [
-                      _c("el-date-picker", {
-                        staticStyle: { width: "100%" },
-                        attrs: {
-                          type: "date",
-                          placeholder: "Pick a date",
-                          "value-format": "yyyy-MM-dd"
-                        },
-                        model: {
-                          value: _vm.form.birthdate,
-                          callback: function($$v) {
-                            _vm.$set(_vm.form, "birthdate", $$v)
-                          },
-                          expression: "form.birthdate"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Marital Status",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "marital_status"
-                      }
-                    },
-                    [
-                      _c(
-                        "el-select",
-                        {
-                          attrs: { placeholder: "Please select" },
-                          model: {
-                            value: _vm.form.marital_status,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "marital_status", $$v)
-                            },
-                            expression: "form.marital_status"
-                          }
-                        },
-                        [
-                          _c("el-option", {
-                            attrs: { label: "Single", value: "0" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: { label: "Married", value: "1" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: { label: "Divorced", value: "2" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: { label: "Widowed", value: "3" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: {
-                              label: "Others/Prefer Not to Say",
-                              value: "4"
-                            }
-                          })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "PhilHealth No.",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "philhealth_number"
-                      }
-                    },
-                    [
-                      _c("el-input", {
-                        attrs: { autocomplete: "off" },
-                        model: {
-                          value: _vm.form.philhealth_number,
-                          callback: function($$v) {
-                            _vm.$set(_vm.form, "philhealth_number", $$v)
-                          },
-                          expression: "form.philhealth_number"
-                        }
-                      })
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
+              _c("el-table-column", {
+                attrs: { property: "sex", label: "Sex", width: "100" }
+              }),
               _vm._v(" "),
-              _c(
-                "span",
-                {
-                  staticClass: "dialog-footer",
-                  attrs: { slot: "footer" },
-                  slot: "footer"
-                },
-                [
-                  _c(
-                    "el-button",
-                    {
-                      on: {
-                        click: function($event) {
-                          _vm.dialogFormVisible = false
-                        }
-                      }
-                    },
-                    [_vm._v("Cancel")]
-                  ),
-                  _vm._v(" "),
-                  this.form.formmode == "insert_data"
-                    ? _c(
-                        "el-button",
-                        {
-                          attrs: { type: "primary" },
-                          on: {
-                            click: function($event) {
-                              return _vm.addPatient()
-                            }
-                          }
-                        },
-                        [_vm._v("Save")]
-                      )
-                    : _vm._e(),
-                  _vm._v(" "),
-                  this.form.formmode == "edit_data"
-                    ? _c(
-                        "el-button",
-                        {
-                          attrs: { type: "primary" },
-                          on: {
-                            click: function($event) {
-                              return _vm.editPatient()
-                            }
-                          }
-                        },
-                        [_vm._v("Save Changes")]
-                      )
-                    : _vm._e()
-                ],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "el-dialog",
-            {
-              attrs: {
-                title: "Patient Details",
-                visible: _vm.dialogTableVisible
-              },
-              on: {
-                "update:visible": function($event) {
-                  _vm.dialogTableVisible = $event
+              _c("el-table-column", {
+                attrs: {
+                  property: "birthdate",
+                  label: "Birthdate",
+                  width: "formLabelWidth"
                 }
-              }
-            },
-            [
-              _c(
-                "el-table",
-                { attrs: { data: _vm.gridData } },
-                [
-                  _c("el-table-column", {
-                    attrs: { property: "name", label: "Name", width: "200" }
-                  }),
-                  _vm._v(" "),
-                  _c("el-table-column", {
-                    attrs: { property: "sex", label: "Sex", width: "100" }
-                  }),
-                  _vm._v(" "),
-                  _c("el-table-column", {
-                    attrs: {
-                      property: "birthdate",
-                      label: "Birthdate",
-                      width: "formLabelWidth"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("el-table-column", {
-                    attrs: {
-                      property: "marital_status",
-                      label: "Marital Status",
-                      width: "formLabelWidth"
-                    }
-                  }),
-                  _vm._v(" "),
-                  _c("el-table-column", {
-                    attrs: {
-                      property: "philhealth_number",
-                      label: "PhilHealth No.",
-                      width: "formLabelWidth"
-                    }
-                  })
-                ],
-                1
-              )
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: {
+                  property: "marital_status",
+                  label: "Marital Status",
+                  width: "formLabelWidth"
+                }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: {
+                  property: "philhealth_number",
+                  label: "PhilHealth No.",
+                  width: "formLabelWidth"
+                }
+              })
             ],
             1
           )
         ],
         1
       )
-    ])
-  ])
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -104928,7 +104957,7 @@ var render = function() {
                 attrs: { type: "primary" },
                 on: {
                   click: function($event) {
-                    _vm.dialogFormVisible = true
+                    return _vm.formDialog("insert_data")
                   }
                 }
               },
@@ -104947,6 +104976,14 @@ var render = function() {
             _c(
               "data-tables",
               {
+                directives: [
+                  {
+                    name: "loading",
+                    rawName: "v-loading",
+                    value: _vm.loading,
+                    expression: "loading"
+                  }
+                ],
                 attrs: {
                   data: _vm.data,
                   "page-size": 10,
@@ -105174,6 +105211,7 @@ var render = function() {
                         on: {
                           click: function($event) {
                             _vm.dialogFormVisible = false
+                            _vm.clearFields()
                           }
                         }
                       },
@@ -105187,7 +105225,8 @@ var render = function() {
                             attrs: { type: "primary" },
                             on: {
                               click: function($event) {
-                                return _vm.addPersonnel()
+                                _vm.addPersonnel()
+                                _vm.formLoading()
                               }
                             }
                           },
@@ -105202,7 +105241,8 @@ var render = function() {
                             attrs: { type: "primary" },
                             on: {
                               click: function($event) {
-                                return _vm.editPersonnel()
+                                _vm.editPersonnel()
+                                _vm.formLoading()
                               }
                             }
                           },

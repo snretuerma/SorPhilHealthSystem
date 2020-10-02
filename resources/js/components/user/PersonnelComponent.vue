@@ -27,7 +27,7 @@
 
       <!-- Add Button -->
       <div class="col-sm-2" align="right">
-        <el-button type="primary" @click="dialogFormVisible = true"
+        <el-button type="primary" @click="formDialog('insert_data')"
           >Add</el-button
         >
       </div>
@@ -43,6 +43,7 @@
           :page-size="10"
           :filters="filters"
           :pagination-props="{ pageSizes: [10, 20, 50] }"
+          v-loading="loading"
           :action-col="actionCol"
         >
           <div slot="empty">Table Empty</div>
@@ -65,6 +66,7 @@
           :before-close="handleClose"
           top="0vh"
         >
+          
           <el-form :model="form" :rules="rules" ref="form">
             <el-form-item
               label="Lastname"
@@ -117,17 +119,23 @@
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">Cancel</el-button>
+            <el-button
+              @click="
+                dialogFormVisible = false;
+                clearFields()
+              "
+              >Cancel</el-button
+            >
             <el-button
               v-if="this.form.formmode == 'insert_data'"
               type="primary"
-              @click="addPersonnel()"
+              @click="addPersonnel();formLoading()"
               >Save</el-button
             >
             <el-button
               v-if="this.form.formmode == 'edit_data'"
               type="primary"
-              @click="editPersonnel()"
+              @click="editPersonnel();formLoading()"
               >Save Changes</el-button
             >
           </span>
@@ -166,6 +174,7 @@
 export default {
   data() {
     return {
+      loading:true,
       data: [],
       personnelinfo: [],
       layout: "pagination, table",
@@ -310,20 +319,20 @@ export default {
               this.form.edit_object_index = this.data.indexOf(row);
 
               (this.form_check.last_name = row.last_name),
-              (this.form_check.first_name = row.first_name),
-              (this.form_check.middle_name = row.middle_name),
-              (this.form_check.name_suffix = row.name_suffix),
-              (this.form_check.sex = row.sex),
-              (this.form_check.birthdate = row.birthdate),
-              (this.form_check.name =
-                this.form_check.last_name +
-                ", " +
-                this.form_check.name_suffix +
-                " " +
-                this.form_check.first_name +
-                " " +
-                this.form_check.middle_name.slice(0, 1) +
-                ". ");
+                (this.form_check.first_name = row.first_name),
+                (this.form_check.middle_name = row.middle_name),
+                (this.form_check.name_suffix = row.name_suffix),
+                (this.form_check.sex = row.sex),
+                (this.form_check.birthdate = row.birthdate),
+                (this.form_check.name =
+                  this.form_check.last_name +
+                  ", " +
+                  this.form_check.name_suffix +
+                  " " +
+                  this.form_check.first_name +
+                  " " +
+                  this.form_check.middle_name.slice(0, 1) +
+                  ". ");
               this.formDialog("edit_data");
             },
           },
@@ -346,12 +355,42 @@ export default {
           },
         ],
       },
-      
-      
     };
   },
   methods: {
-    addPersonnel: async function () {
+    formLoading:function() {
+        const loading = this.$loading({
+          lock: true,
+          text: 'Loading',
+          spinner: 'el-icon-loading',
+          target:'div.el-dialog'
+        });
+          loading.close();
+       
+      },
+    getPersonnel: function () {
+      axios
+        .get("personnel_get")
+        .then((response) => {
+          response.data.forEach((element) => {
+            this.buildPersonnelData(element);
+          });
+          this.data = response.data;
+          this.loading = false;
+        })
+        .catch(function (error) {});
+    },
+    addPersonnel: function () {
+      if (
+            this.form.last_name == "" ||
+            this.form.first_name == "" ||
+            this.form.middle_name == "" ||
+            this.form.name_suffix == "" ||
+            this.form.sex == "" ||
+            this.form.birthdate == ""
+          ) {
+            this.open_notif("info", "Message", "Required fields were missing values.");
+          } else {
       axios
         .post("add_personnel", this.form)
         .then((response) => {
@@ -374,12 +413,105 @@ export default {
             " " +
             response.data.middle_name.slice(0, 1) +
             ". ";
-
+          this.open_notif("success", "Success", "Staff added successfully");
           this.data.push(response.data);
-
-          this.dialogFormVisible = false;
+          
+        
         })
-        .catch(function (error) {});
+        .catch(function (error) {})
+        .finally(() => {
+          var _this=this;
+          
+          _this.dialogFormVisible = false;
+        });
+          }
+    },
+    editPersonnel: function () {
+      var _this = this;
+      if (
+        this.form.last_name == this.form_check.last_name &&
+        this.form.first_name == this.form_check.first_name &&
+        this.form.middle_name == this.form_check.middle_name &&
+        this.form.name_suffix == this.form_check.name_suffix &&
+        this.form.sex == this.form_check.sex &&
+        this.form.birthdate == this.form_check.birthdate
+      ) {
+        _this.open_notif("info", "Message", "No Changes");
+      } else {
+        if (this.form.sex == "Male") {
+          this.form.sex = 1;
+        } else if (this.form.sex == "Female") {
+          this.form.sex = 2;
+        }
+        _this.form.name =
+          _this.form.last_name +
+          ", " +
+          _this.form.name_suffix +
+          " " +
+          _this.form.first_name +
+          " " +
+          _this.form.middle_name.slice(0, 1) +
+          ". ";
+        axios
+          .post("edit_personnel/" + this.form.id, this.form)
+          .then((response) => {
+            if (response.status > 199 && response.status < 203) {
+              _this.open_notif("success", "Success", "Changes has been saved");
+              this.dialogFormVisible = false;
+              _this.data[parseInt(_this.form.edit_object_index)].last_name =
+                _this.form.last_name;
+              _this.data[parseInt(_this.form.edit_object_index)].first_name =
+                _this.form.first_name;
+              _this.data[parseInt(_this.form.edit_object_index)].middle_name =
+                _this.form.middle_name;
+              _this.data[parseInt(_this.form.edit_object_index)].name_suffix =
+                _this.form.name_suffix;
+              _this.data[parseInt(_this.form.edit_object_index)].sex =
+                _this.form.sex;
+              _this.data[parseInt(_this.form.edit_object_index)].birthdate =
+                _this.form.birthdate;
+              _this.data[parseInt(_this.form.edit_object_index)].name =
+                _this.form.name;
+            }
+          })
+          .catch(function (error) {});
+      }
+    },
+    deletePersonnel: function (id, res) {
+      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        type: "warning",
+      })
+        .then(() => {
+          var _this = this;
+          axios.post("personnel_delete/" + id).then(function (response) {
+            if (response.status > 199 && response.status < 203) {
+              _this.open_notif("success", "Success", "Deleted Successfully");
+              res(id);
+            }
+          });
+        })
+        .catch((action) => {
+          this.open_notif("info", "Cancelled", "No Changes");
+        });
+    },
+    formDialog: function (id) {
+      if (id == "insert_data") {
+        this.form.formmode = "insert_data";
+        this.clearFields();
+        this.dialogFormVisible = true;
+      } else if (id == "edit_data") {
+        this.dialogFormVisible = true;
+      }
+    },
+    handleClose(done) {
+      this.$confirm("Are you sure to close this?")
+        .then((_) => {
+          done();
+        })
+        .catch((_) => {});
     },
     open_notif: function (status, title, message) {
       if (status == "success") {
@@ -415,57 +547,6 @@ export default {
       this.form.name_suffix = "";
       this.form.sex = "";
       this.form.birthdate = "";
-    },
-    formDialog: function (id) {
-      if (id == "insert_data") {
-        this.form.formmode = "insert_data";
-        this.clearFields();
-        this.dialogFormVisible = true;
-      } else if (id == "edit_data") {
-        this.dialogFormVisible = true;
-      }
-    },
-    handleClose(done) {
-      this.$confirm("Are you sure to close this?")
-        .then((_) => {
-          done();
-        })
-        .catch((_) => {});
-    },
-    editPersonnel: function () {
-      var _this = this;
-      if (
-        this.form.last_name == this.form_check.last_name &&
-        this.form.first_name == this.form_check.first_name &&
-        this.form.middle_name == this.form_check.middle_name &&
-        this.form.name_suffix == this.form_check.name_suffix &&
-        this.form.sex == this.form_check.sex &&
-        this.form.birthdate == this.form_check.birthdate
-      ) {
-        _this.open_notif("info", "Message", "No Changes");
-      } else {
-      axios
-        .post("edit_personnel/" + this.form.id, this.form)
-        .then((response) => {
-          if (response.status > 199 && response.status < 203) {
-              _this.open_notif("success", "Success", "Changes has been saved");
-              this.dialogFormVisible = false;
-              _this.data[parseInt(_this.form.edit_object_index)].last_name =
-                _this.form.last_name;
-              _this.data[parseInt(_this.form.edit_object_index)].first_name =
-                _this.form.first_name;
-              _this.data[parseInt(_this.form.edit_object_index)].middle_name =
-                _this.form.middle_name;
-              _this.data[parseInt(_this.form.edit_object_index)].name_suffix =
-                _this.form.name_suffix;
-              _this.data[parseInt(_this.form.edit_object_index)].sex =
-                _this.form.sex;
-              _this.data[parseInt(_this.form.edit_object_index)].birthdate =
-                _this.form.birthdate;
-            }
-        })
-        .catch(function (error) {});
-      }
     },
     assignSex: function (sex_value) {
       var sex;
@@ -507,43 +588,6 @@ export default {
         element.name_suffix
       );
       element.sex = this.assignSex(element.sex);
-    },
-    getPersonnel: function () {
-      axios
-        .get("personnel_get")
-        .then((response) => {
-          response.data.forEach((element) => {
-            this.buildPersonnelData(element);
-          });
-          this.data = response.data;
-        })
-        .catch(function (error) {});
-    },
-    deletePersonnel: function (id, res) {
-      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
-        distinguishCancelAndClose: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        type: "warning",
-      })
-        .then(() => {
-          var _this = this;
-          axios.post("personnel_delete/" + id).then(function (response) {
-            if (response.status > 199 && response.status < 203) {
-              _this.$message({
-                type: "success",
-                message: "Succesfully! Deleted",
-              });
-              res(id);
-            }
-          });
-        })
-        .catch((action) => {
-          this.$message({
-            type: "success",
-            message: action === "cancel" ? "Canceled" : "No changes",
-          });
-        });
     },
   },
   mounted() {

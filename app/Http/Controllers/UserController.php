@@ -8,7 +8,8 @@ use App\Models\Budget;
 use App\Models\Personnel;
 use Auth;
 use DB;
-use Dotenv\Store\File\Paths;;
+use Dotenv\Store\File\Paths;
+use App\Http\Requests\addPersonnelRequest;
 
 use Carbon\Carbon;
 
@@ -76,7 +77,7 @@ class UserController extends Controller
         return Personnel::where('hospital_id', Auth::user()->hospital_id)->get();
     }
 
-    public function addPersonnel(Request $request)
+    public function addPersonnel(addPersonnelRequest $request)
     {
         $date = Carbon::parse($request->birthdate)->format('Y-m-d');
         $personnel = new Personnel;
@@ -94,6 +95,13 @@ class UserController extends Controller
     public function editPersonnel(Request $request)
     {
         $personnel = Personnel::where('id', $request->id)->first();
+        $personnel->first_name=$request->first_name;
+        $personnel->middle_name = $request->middle_name;
+        $personnel->last_name = $request->last_name;
+        $personnel->name_suffix = $request->name_suffix;
+        $personnel->sex = $request->sex;
+        $personnel->birthdate = Carbon::parse($request->birthdate)->format('Y-m-d');
+        $personnel->save();
     }
 
     public function deletePersonnel(Request $request)
@@ -126,13 +134,22 @@ class UserController extends Controller
         $patient->philhealth_number = $request->philhealth_number;
         $patient->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $patient->save();
-        return $patient;
+        return $patient->with('messages');
     }
     
     
     public function editPatient(Request $request)
     {
         $patient = Patient::where('id', $request->id)->first();
+        $patient->first_name=$request->first_name;
+        $patient->middle_name = $request->middle_name;
+        $patient->last_name = $request->last_name;
+        $patient->name_suffix = $request->name_suffix;
+        $patient->sex = $request->sex;
+        $patient->birthdate = Carbon::parse($request->birthdate)->format('Y-m-d');
+        $patient->marital_status = $request->marital_status;
+        $patient->philhealth_number = $request->philhealth_number;
+        $patient->save();
     }
 
     public function deletePatient(Request $request)
