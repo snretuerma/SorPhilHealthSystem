@@ -39,6 +39,7 @@
           :filters="filters"
           :pagination-props="{ pageSizes: [10, 20, 50] }"
           :action-col="actionCol"
+          v-loading="loading"
         >
           <div slot="empty">Table Empty</div>
           <el-table-column
@@ -54,8 +55,9 @@
         <el-dialog
           title="Budget Details"
           :visible.sync="dialogFormVisible"
-          top="0vh"
+          top="5vh"
           :close-on-press-escape="false"
+          :close-on-click-modal="false"
         >
           <el-form :model="form" :rules="rules" ref="form">
             <el-form-item
@@ -118,14 +120,18 @@
             <el-button
               v-if="form.formmode == 'add'"
               type="primary"
-              @click="addBudget('add')"
+              @click="
+                addBudget('add');
+                openFullScreen2();
+              "
               >Save</el-button
             >
 
             <el-button
               v-if="form.formmode == 'edit'"
               type="primary"
-              @click="addBudget('edit')"
+              @click="addBudget('edit');
+               openFullScreen2();"
               >Save changes</el-button
             >
           </span>
@@ -162,9 +168,11 @@
 </template>
 <script>
 "use strict";
+import constants from "../../constants.js";
 export default {
   data() {
     return {
+      loading: true,
       data: [],
       budgetInfo: [],
       rules: {
@@ -257,26 +265,8 @@ export default {
               this.form.start_date = row.start_date;
               this.form.total = row.total;
               this.form.end_date = row.end_date;
-
-              if (row.hospital_code == "DFBDSMH") {
-                this.form.codeholder = 1;
-              } else if (row.hospital_code == "DDH") {
-                this.form.codeholder = 2;
-              } else if (row.hospital_code == "IDH") {
-                this.form.codeholder = 3;
-              } else if (row.hospital_code == "SREDH") {
-                this.form.codeholder = 4;
-              } else if (row.hospital_code == "VLPMDH") {
-                this.form.codeholder = 5;
-              } else if (row.hospital_code == "MagMCH") {
-                this.form.codeholder = 6;
-              } else if (row.hospital_code == "MatMCH") {
-                this.form.codeholder = 7;
-              } else if (row.hospital_code == "PGGMH") {
-                this.form.codeholder = 8;
-              } else if (row.hospital_code == "PDMH") {
-                this.form.codeholder = 9;
-              }
+              this.form.codeholder =
+                constants.hospital_code.indexOf(row.hospital_code) - 1;
               this.form.hospital_code = row.hospital_code;
               this.form.edit_object_index = this.data.indexOf(row);
               this.form_check.start_date = row.start_date;
@@ -310,6 +300,14 @@ export default {
     };
   },
   methods: {
+    openFullScreen2: function () {
+      const loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        target: "div.el-dialog",
+      });
+      loading.close();
+    },
     open_notif: function (status, title, message) {
       if (status == "success") {
         this.$notify.success({
@@ -351,10 +349,7 @@ export default {
           var _this = this;
           axios.post("delete_budget/" + id).then(function (response) {
             if (response.status > 199 && response.status < 203) {
-              _this.$message({
-                type: "warning",
-                message: "Succesfully! Deleted",
-              });
+              _this.open_notif("success", "Budget", "Successfully deleted!");
               res(id);
             }
           });
@@ -367,9 +362,14 @@ export default {
         });
     },
     getBudget: function () {
+      var _this = this;
       axios
         .get("adminbudget_get")
         .then((response) => {
+          response.data.forEach(function (entry) {
+            entry.total = _this.masknumber(entry.total);
+          });
+          this.loading = false;
           this.data = response.data;
         })
         .catch(function (error) {});
@@ -381,6 +381,12 @@ export default {
       this.form.codeholder = "";
       this.form.hospital_code = "";
     },
+    masknumber: function (num) {
+      num = parseFloat(num)
+        .toFixed(2)
+        .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      return num;
+    },
     addBudget: function (mode) {
       switch (mode) {
         case "add":
@@ -390,50 +396,59 @@ export default {
             this.form.end_date == "" ||
             this.form.codeholder == ""
           ) {
-            this.open_notif("info", "Message", "All field required!");
+            this.open_notif("info", "Invalid", "All fields required!");
           } else {
             axios
               .post("adminadd_budget", this.form)
               .then((response) => {
                 if (response.status > 199 && response.status < 203) {
+                  var total = response.data.total;
+                  response.data.total = this.masknumber(this.form.total);
+                  response.data.start_date = this.form.start_date;
+                  response.data.end_date = this.form.end_date;
+                  response.data.hospital_code =
+                    constants.hospital_code[
+                      Number(this.form.hospital_code - 1)
+                    ];
                   this.data.push(response.data);
                   this.dialogFormVisible = false;
-                  this.open_notif("success", "Message", "Successfully added!");
+                  this.open_notif("success", "Budget", "Successfully added!");
                 } else {
-                  this.open_notif("error", "Message", "Record failed to add!");
+                  this.open_notif("error", "System", "Record failed to add!");
                 }
               })
               .catch(function (error) {});
           }
           break;
         case "edit":
-          if (this.form.hospital_code == "DFBDSMH") {
-            this.form.codeholder = 1;
-          } else if (this.form.hospital_code == "DDH") {
-            this.form.codeholder = 2;
-          } else if (this.form.hospital_code == "IDH") {
-            this.form.codeholder = 3;
-          } else if (this.form.hospital_code == "SREDH") {
-            this.form.codeholder = 4;
-          } else if (this.form.hospital_code == "VLPMDH") {
-            this.form.codeholder = 5;
-          } else if (this.form.hospital_code == "MagMCH") {
-            this.form.codeholder = 6;
-          } else if (this.form.hospital_code == "MatMCH") {
-            this.form.codeholder = 7;
-          } else if (this.form.hospital_code == "PGGMH") {
-            this.form.codeholder = 8;
-          } else if (this.form.hospital_code == "PDMH") {
-            this.form.codeholder = 9;
-          }
           if (
             this.form.start_date == this.form_check.start_date &&
             this.form.end_date == this.form_check.end_date &&
             this.form.total == this.form_check.total &&
             this.form.codeholder == this.form_check.codeholder
           ) {
-            this.open_notif("info", "Message", "No changes");
+            this.open_notif("info", "Note : ", "No changes were made");
           } else {
+            if (this.form.hospital_code == "DFBDSMH") {
+              this.form.codeholder = 1;
+            } else if (this.form.hospital_code == "DDH") {
+              this.form.codeholder = 2;
+            } else if (this.form.hospital_code == "IDH") {
+              this.form.codeholder = 3;
+            } else if (this.form.hospital_code == "SREDH") {
+              this.form.codeholder = 4;
+            } else if (this.form.hospital_code == "VLPMDH") {
+              this.form.codeholder = 5;
+            } else if (this.form.hospital_code == "MagMCH") {
+              this.form.codeholder = 6;
+            } else if (this.form.hospital_code == "MatMCH") {
+              this.form.codeholder = 7;
+            } else if (this.form.hospital_code == "PGGMH") {
+              this.form.codeholder = 8;
+            } else if (this.form.hospital_code == "PDMH") {
+              this.form.codeholder = 9;
+            }
+            this.form.total= parseFloat(this.form.total.replace(/,/g, ''));
             axios
               .post("adminedit_budget/" + this.form.id, this.form)
               .then((response) => {
@@ -442,49 +457,18 @@ export default {
                 ].start_date = this.form.start_date;
                 this.data[
                   parseInt(this.form.edit_object_index)
-                ].total = this.form.total;
+                ].total = this.masknumber(this.form.total);
                 this.data[
                   parseInt(this.form.edit_object_index)
                 ].end_date = this.form.end_date;
-                if (this.form.hospital_code == "1") {
-                  this.data[
-                    parseInt(this.form.edit_object_index)
-                  ].hospital_code = "DFBDSMH";
-                } else if (this.form.hospital_code == "2") {
-                  this.data[
-                    parseInt(this.form.edit_object_index)
-                  ].hospital_code = "DDH";
-                } else if (this.form.hospital_code == "3") {
-                  this.data[
-                    parseInt(this.form.edit_object_index)
-                  ].hospital_code = "IDH";
-                } else if (this.form.hospital_code == "4") {
-                  this.data[
-                    parseInt(this.form.edit_object_index)
-                  ].hospital_code = "SREDH";
-                } else if (this.form.hospital_code == "5") {
-                  this.data[
-                    parseInt(this.form.edit_object_index)
-                  ].hospital_code = "VLPMDH";
-                } else if (this.form.hospital_code == "6") {
-                  this.data[
-                    parseInt(this.form.edit_object_index)
-                  ].hospital_code = "MagMCH";
-                } else if (this.form.hospital_code == "7") {
-                  this.data[
-                    parseInt(this.form.edit_object_index)
-                  ].hospital_code = "MatMCH";
-                } else if (this.form.hospital_code == "8") {
-                  this.data[
-                    parseInt(this.form.edit_object_index)
-                  ].hospital_code = "PGGMH";
-                } else if (this.form.hospital_code == "9") {
-                  this.data[
-                    parseInt(this.form.edit_object_index)
-                  ].hospital_code = "PDMH";
-                }
+                this.data[parseInt(this.form.edit_object_index)].hospital_code =
+                  constants.hospital_code[Number(this.form.codeholder) - 1];
                 this.dialogFormVisible = false;
-                this.open_notif("success", "Message", "Successfully change!");
+                this.open_notif(
+                  "success",
+                  "Notice : ",
+                  "Successfully changed!"
+                );
               })
               .catch(function (error) {});
           }

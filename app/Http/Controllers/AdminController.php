@@ -60,7 +60,8 @@ class AdminController extends Controller
         $budget->total = $request->total;
         $budget->start_date = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
         $budget->end_date = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
-        return $budget->save();
+        $budget->save();
+        return $budget;
     }
     
 }
