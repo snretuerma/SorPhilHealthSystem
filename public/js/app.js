@@ -3546,7 +3546,7 @@ function mergeFn (a, b) {
 /*! exports provided: default */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\resources\\js\\components\\admin\\BudgetComponent.vue: Unexpected token (318:0)\n\n\u001b[0m \u001b[90m 316 | \u001b[39m        hospital_code\u001b[33m:\u001b[39m \u001b[32m\"\"\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 317 | \u001b[39m        codeholder\u001b[33m:\u001b[39m \u001b[32m\"\"\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 318 | \u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<\u001b[39m \u001b[33mHEAD\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 319 | \u001b[39m        edit_object_index\u001b[33m:\u001b[39m \u001b[32m\"\"\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 320 | \u001b[39m\u001b[33m===\u001b[39m\u001b[33m===\u001b[39m\u001b[33m=\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 321 | \u001b[39m        edit_object_index\u001b[33m:\u001b[39m\u001b[32m\"\"\u001b[39m\u001b[0m\n    at Parser._raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:766:17)\n    at Parser.raiseWithData (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:759:17)\n    at Parser.raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:753:17)\n    at Parser.unexpected (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:8966:16)\n    at Parser.parseIdentifierName (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11086:18)\n    at Parser.parseIdentifier (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11059:23)\n    at Parser.parseMaybePrivateName (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10363:19)\n    at Parser.parsePropertyName (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10854:155)\n    at Parser.parsePropertyDefinition (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10747:22)\n    at Parser.parseObjectLike (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10664:25)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10198:23)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11303:12)\n    at Parser.parseMaybeAssignAllowIn (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:17)\n    at Parser.parseObjectProperty (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10816:101)\n    at Parser.parseObjPropValue (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10841:100)\n    at Parser.parsePropertyDefinition (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10772:10)\n    at Parser.parseObjectLike (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10664:25)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10198:23)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at Parser.parseExpressionBase (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9564:23)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9558:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11297:16)\n    at Parser.parseExpression (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9558:17)\n    at Parser.parseReturnStatement (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11800:28)");
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\resources\\js\\components\\admin\\BudgetComponent.vue: Unexpected token (386:0)\n\n\u001b[0m \u001b[90m 384 | \u001b[39m      \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mcodeholder \u001b[33m=\u001b[39m \u001b[32m\"\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 385 | \u001b[39m      \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mhospital_code \u001b[33m=\u001b[39m \u001b[32m\"\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 386 | \u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<\u001b[39m \u001b[33mHEAD\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 387 | \u001b[39m    }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 388 | \u001b[39m    masknumber\u001b[33m:\u001b[39m \u001b[36mfunction\u001b[39m (num) {\u001b[0m\n\u001b[0m \u001b[90m 389 | \u001b[39m      num \u001b[33m=\u001b[39m parseFloat(num)\u001b[0m\n    at Parser._raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:766:17)\n    at Parser.raiseWithData (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:759:17)\n    at Parser.raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:753:17)\n    at Parser.unexpected (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:8966:16)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10282:20)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at Parser.parseExpressionBase (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9564:23)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9558:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11297:16)\n    at Parser.parseExpression (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9558:17)\n    at Parser.parseStatementContent (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11562:23)\n    at Parser.parseStatement (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11431:17)\n    at Parser.parseBlockOrModuleBlockBody (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12013:25)\n    at Parser.parseBlockBody (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11999:10)\n    at Parser.parseBlock (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11983:10)\n    at Parser.parseFunctionBody (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10963:24)\n    at Parser.parseFunctionBodyAndFinish (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10946:10)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12153:12\n    at Parser.withTopicForbiddingContext (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11272:14)\n    at Parser.parseFunction (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12152:10)\n    at Parser.parseFunctionOrFunctionSent (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10377:17)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10202:21)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11303:12)\n    at Parser.parseMaybeAssignAllowIn (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:17)");
 
 /***/ }),
 
@@ -3844,7 +3844,7 @@ __webpack_require__.r(__webpack_exports__);
 /*! exports provided: default */
 /***/ (function(module, exports) {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\resources\\js\\components\\user\\BudgetComponent.vue: Unexpected token (215:0)\n\n\u001b[0m \u001b[90m 213 | \u001b[39m              \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mformmode \u001b[33m=\u001b[39m \u001b[32m\"edit\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 214 | \u001b[39m              \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mdialogFormVisible \u001b[33m=\u001b[39m \u001b[36mtrue\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 215 | \u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<\u001b[39m \u001b[33mHEAD\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 216 | \u001b[39m              \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mstart_date \u001b[33m=\u001b[39m row\u001b[33m.\u001b[39mstart_date\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 217 | \u001b[39m              \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mtotal \u001b[33m=\u001b[39m row\u001b[33m.\u001b[39mtotal\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 218 | \u001b[39m              \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mend_date \u001b[33m=\u001b[39m row\u001b[33m.\u001b[39mend_date\u001b[33m;\u001b[39m\u001b[0m\n    at Parser._raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:766:17)\n    at Parser.raiseWithData (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:759:17)\n    at Parser.raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:753:17)\n    at Parser.unexpected (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:8966:16)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10282:20)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at Parser.parseExpressionBase (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9564:23)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9558:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11303:12)\n    at Parser.parseExpression (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9558:17)\n    at Parser.parseStatementContent (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11562:23)\n    at Parser.parseStatement (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11431:17)\n    at Parser.parseBlockOrModuleBlockBody (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12013:25)\n    at Parser.parseBlockBody (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11999:10)\n    at Parser.parseBlock (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11983:10)\n    at Parser.parseFunctionBody (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10963:24)\n    at Parser.parseArrowExpression (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10932:10)\n    at Parser.parseParenAndDistinguishExpression (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10501:12)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10177:21)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11303:12)\n    at Parser.parseMaybeAssignAllowIn (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:17)\n    at Parser.parseObjectProperty (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10816:101)\n    at Parser.parseObjPropValue (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10841:100)\n    at Parser.parsePropertyDefinition (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10772:10)");
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\resources\\js\\components\\user\\BudgetComponent.vue: Unexpected token (277:0)\n\n\u001b[0m \u001b[90m 275 | \u001b[39m  }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 276 | \u001b[39m  methods\u001b[33m:\u001b[39m {\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 277 | \u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<\u001b[39m \u001b[33mHEAD\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 278 | \u001b[39m    openFullScreen2\u001b[33m:\u001b[39m \u001b[36mfunction\u001b[39m () {\u001b[0m\n\u001b[0m \u001b[90m 279 | \u001b[39m      \u001b[36mconst\u001b[39m loading \u001b[33m=\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39m$loading({\u001b[0m\n\u001b[0m \u001b[90m 280 | \u001b[39m        lock\u001b[33m:\u001b[39m \u001b[36mtrue\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n    at Parser._raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:766:17)\n    at Parser.raiseWithData (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:759:17)\n    at Parser.raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:753:17)\n    at Parser.unexpected (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:8966:16)\n    at Parser.parseIdentifierName (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11086:18)\n    at Parser.parseIdentifier (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11059:23)\n    at Parser.parseMaybePrivateName (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10363:19)\n    at Parser.parsePropertyName (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10854:155)\n    at Parser.parsePropertyDefinition (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10747:22)\n    at Parser.parseObjectLike (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10664:25)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10198:23)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11303:12)\n    at Parser.parseMaybeAssignAllowIn (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:17)\n    at Parser.parseObjectProperty (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10816:101)\n    at Parser.parseObjPropValue (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10841:100)\n    at Parser.parsePropertyDefinition (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10772:10)\n    at Parser.parseObjectLike (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10664:25)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10198:23)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11297:16)\n    at Parser.parseMaybeAssignAllowIn (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:17)\n    at Parser.parseExportDefaultExpression (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12620:24)\n    at Parser.parseExport (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12530:31)");
 
 /***/ }),
 
@@ -102245,8 +102245,406 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
-var render = function () {}
-var staticRenderFns = []
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("hr"),
+    _vm._v(" "),
+    _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+        _c(
+          "div",
+          { staticStyle: { "margin-bottom": "10px" } },
+          [
+            _c(
+              "el-row",
+              [
+                _c(
+                  "el-col",
+                  { attrs: { span: 10 } },
+                  [
+                    _c("el-input", {
+                      attrs: { placeholder: "Search" },
+                      model: {
+                        value: _vm.filters[0].value,
+                        callback: function($$v) {
+                          _vm.$set(_vm.filters[0], "value", $$v)
+                        },
+                        expression: "filters[0].value"
+                      }
+                    })
+                  ],
+                  1
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "col-sm-2", attrs: { align: "right" } },
+        [
+          _c(
+            "el-button",
+            {
+              attrs: { type: "primary" },
+              on: {
+                click: function($event) {
+                  _vm.dialogFormVisible = true
+                  _vm.form.formmode = "add"
+                  _vm.clearfield()
+                }
+              }
+            },
+            [_vm._v("Add")]
+          )
+        ],
+        1
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "card" },
+      [
+        _c(
+          "div",
+          { staticClass: "card-body" },
+          [
+            _c(
+              "data-tables",
+              {
+                directives: [
+                  {
+                    name: "loading",
+                    rawName: "v-loading",
+                    value: _vm.loading,
+                    expression: "loading"
+                  }
+                ],
+                attrs: {
+                  data: _vm.data,
+                  "page-size": 10,
+                  filters: _vm.filters,
+                  "pagination-props": { pageSizes: [10, 20, 50] },
+                  "action-col": _vm.actionCol
+                }
+              },
+              [
+                _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
+                  _vm._v("Table Empty")
+                ]),
+                _vm._v(" "),
+                _vm._l(_vm.titles, function(title) {
+                  return _c("el-table-column", {
+                    key: title.label,
+                    attrs: {
+                      prop: title.prop,
+                      label: title.label,
+                      sortable: "custom"
+                    }
+                  })
+                }),
+                _vm._v(" "),
+                _c("p", { attrs: { slot: "append" }, slot: "append" })
+              ],
+              2
+            ),
+            _vm._v(" "),
+            _vm._v(
+              '\n<<<<<<< HEAD\n          :close-on-click-modal="false"\n=======\n>>>>>>> c24d0f63f8090cc5d9f1429207d87aa2a389bd12\n        >\n          '
+            ),
+            _c(
+              "el-form",
+              { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
+              [
+                _c(
+                  "el-form-item",
+                  {
+                    attrs: {
+                      label: "Start date",
+                      "label-width": _vm.formLabelWidth,
+                      prop: "start_date"
+                    }
+                  },
+                  [
+                    _c("el-date-picker", {
+                      staticStyle: { width: "100%" },
+                      attrs: {
+                        type: "date",
+                        placeholder: "Pick a date",
+                        "value-format": "yyyy-MM-dd"
+                      },
+                      model: {
+                        value: _vm.form.start_date,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "start_date", $$v)
+                        },
+                        expression: "form.start_date"
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "el-form-item",
+                  {
+                    attrs: {
+                      label: "Amount",
+                      "label-width": _vm.formLabelWidth,
+                      prop: "total"
+                    }
+                  },
+                  [
+                    _c("el-input", {
+                      attrs: { autocomplete: "off" },
+                      model: {
+                        value: _vm.form.total,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "total", $$v)
+                        },
+                        expression: "form.total"
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "el-form-item",
+                  {
+                    attrs: {
+                      label: "End date",
+                      "label-width": _vm.formLabelWidth,
+                      prop: "end_date"
+                    }
+                  },
+                  [
+                    _c("el-date-picker", {
+                      staticStyle: { width: "100%" },
+                      attrs: {
+                        type: "date",
+                        placeholder: "Pick a date",
+                        "value-format": "yyyy-MM-dd"
+                      },
+                      model: {
+                        value: _vm.form.end_date,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "end_date", $$v)
+                        },
+                        expression: "form.end_date"
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "el-form-item",
+                  {
+                    attrs: {
+                      label: "Hospital code",
+                      "label-width": _vm.formLabelWidth,
+                      prop: "hospital_code"
+                    }
+                  },
+                  [
+                    _c(
+                      "el-select",
+                      {
+                        attrs: { placeholder: "Please select" },
+                        on: {
+                          change: function($event) {
+                            return _vm.onChange(_vm.form.hospital_code)
+                          }
+                        },
+                        model: {
+                          value: _vm.form.hospital_code,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "hospital_code", $$v)
+                          },
+                          expression: "form.hospital_code"
+                        }
+                      },
+                      [
+                        _c("el-option", {
+                          attrs: { label: "DFBDSMH", value: "1" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "DDH", value: "2" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "IDH", value: "3" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "SREDH", value: "4" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "VLPMDH", value: "5" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "MagMCH", value: "6" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "MatMCH", value: "7" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "PGGMH", value: "8" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "PDMH", value: "9" }
+                        })
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "span",
+              {
+                staticClass: "dialog-footer",
+                attrs: { slot: "footer" },
+                slot: "footer"
+              },
+              [
+                _c(
+                  "el-button",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.dialogFormVisible = false
+                      }
+                    }
+                  },
+                  [_vm._v("Cancel")]
+                ),
+                _vm._v(" "),
+                _vm.form.formmode == "add"
+                  ? _c(
+                      "el-button",
+                      {
+                        attrs: { type: "primary" },
+                        on: {
+                          click: function($event) {
+                            _vm.addBudget("add")
+                            _vm.openFullScreen2()
+                          }
+                        }
+                      },
+                      [_vm._v("Save")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.form.formmode == "edit"
+                  ? _c(
+                      "el-button",
+                      {
+                        attrs: { type: "primary" },
+                        on: {
+                          click: function($event) {
+                            _vm.addBudget("edit")
+                            _vm.openFullScreen2()
+                          }
+                        }
+                      },
+                      [_vm._v("Save changes")]
+                    )
+                  : _vm._e()
+              ],
+              1
+            )
+          ],
+          1
+        ),
+        _vm._v(" "),
+        _c(
+          "el-dialog",
+          {
+            attrs: { title: "Budget Details", visible: _vm.dialogTableVisible },
+            on: {
+              "update:visible": function($event) {
+                _vm.dialogTableVisible = $event
+              }
+            }
+          },
+          [
+            _c(
+              "el-table",
+              { attrs: { data: _vm.gridData } },
+              [
+                _c("el-table-column", {
+                  attrs: {
+                    property: "start_date",
+                    label: "Start date",
+                    width: "200"
+                  }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { property: "total", label: "Amount", width: "200" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: {
+                    property: "end_date",
+                    label: "End date",
+                    width: "formLabelWidth"
+                  }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: {
+                    property: "hospital_code",
+                    label: "Hospital",
+                    width: "formLabelWidth"
+                  }
+                })
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "row" }, [
+      _c("div", { staticClass: "col-sm-12" }, [
+        _c("h2", [_vm._v("Budget List")])
+      ])
+    ])
+  }
+]
+render._withStripped = true
 
 
 
@@ -102683,6 +103081,14 @@ var render = function() {
             _c(
               "data-tables",
               {
+                directives: [
+                  {
+                    name: "loading",
+                    rawName: "v-loading",
+                    value: _vm.loading,
+                    expression: "loading"
+                  }
+                ],
                 attrs: {
                   data: _vm.data,
                   "page-size": 10,
@@ -102718,7 +103124,9 @@ var render = function() {
                 attrs: {
                   title: "Budget Details",
                   visible: _vm.dialogFormVisible,
-                  top: "0vh"
+                  top: "5vh",
+                  "close-on-press-escape": false,
+                  "close-on-click-modal": false
                 },
                 on: {
                   "update:visible": function($event) {
@@ -102836,35 +103244,13 @@ var render = function() {
                       [_vm._v("Cancel")]
                     ),
                     _vm._v(" "),
-                    _vm.form.formmode == "add"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                return _vm.addBudget("add")
-                              }
-                            }
-                          },
-                          [_vm._v("Save")]
-                        )
-                      : _vm._e(),
+                    _vm._v(
+                      "\n<<<<<<< HEAD\n              @click=\"addBudget('add');\n               openFullScreen2();\"\n=======\n              @click=\"addBudget('add')\"\n>>>>>>> c24d0f63f8090cc5d9f1429207d87aa2a389bd12\n              >Save"
+                    ),
                     _vm._v(" "),
-                    _vm.form.formmode == "edit"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                return _vm.addBudget("edit")
-                              }
-                            }
-                          },
-                          [_vm._v("Save changes")]
-                        )
-                      : _vm._e()
+                    _vm._v(
+                      "\n<<<<<<< HEAD\n              @click=\"addBudget('edit');\n               openFullScreen2();\"\n=======\n              @click=\"addBudget('edit')\"\n>>>>>>> c24d0f63f8090cc5d9f1429207d87aa2a389bd12\n              >Save changes"
+                    )
                   ],
                   1
                 )
@@ -116509,8 +116895,8 @@ jQuery(function ($) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\SystemAnalyst\Desktop\Git\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\SystemAnalyst\Desktop\Git\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\REDAS\Desktop\kevz\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\REDAS\Desktop\kevz\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
