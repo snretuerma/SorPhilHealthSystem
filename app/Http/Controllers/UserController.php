@@ -134,9 +134,8 @@ class UserController extends Controller
         $patient->philhealth_number = $request->philhealth_number;
         $patient->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $patient->save();
-        return $patient->with('messages');
+        return $patient;
     }
-
 
     public function editPatient(Request $request)
     {

@@ -152,7 +152,7 @@
     <!-- Card ends here -->
 
     <!-- Show Personnel Details -->
-    <el-dialog title="Staffs Info" :visible.sync="dialogTableVisible">
+    <el-dialog title="Staff Info" :visible.sync="dialogTableVisible">
       <el-table :data="gridData">
         <el-table-column
           property="name"
@@ -276,14 +276,14 @@ export default {
         },
       ],
 
-      //Actiom Column
+      //Actiom column
       actionCol: {
         label: "Actions",
         props: {
           align: "center",
         },
 
-        //Action Buttons
+        //Action buttons
         buttons: [
           {
             props: {
@@ -317,12 +317,13 @@ export default {
               this.form.formmode = "edit";
               this.dialogFormVisible = true;
 
+              this.form.last_name = row.last_name;
               this.form.first_name = row.first_name;
               this.form.middle_name = row.middle_name;
               this.form.name_suffix = row.name_suffix;
               this.form.sex = row.sex;
               this.form.birthdate = row.birthdate;
-              this.form.last_name = row.last_name;
+              
               this.form.edit_object_index = this.data.indexOf(row);
 
               this.form_check.last_name = row.last_name;
@@ -423,7 +424,7 @@ export default {
                     "Staff added successfully"
                   );
                 } else {
-                  this.open_notif("error", "System", "Record failed to add!");
+                  this.open_notif("error", "System", "Failed to add personnel");
                 }
               })
               .catch(function (error) {});
