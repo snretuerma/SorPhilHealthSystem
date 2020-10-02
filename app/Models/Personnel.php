@@ -12,6 +12,7 @@ class Personnel extends Model
     protected $guarded = [
         'hospital_id', 'first_name', 'middle_name',
         'last_name','name_suffix', 'sex', 'birthdate',
+        'is_private'
     ];
 
     public function complaints()

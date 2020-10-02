@@ -21,6 +21,7 @@ class CreateMedicalRecordsTable extends Migration
             $table->date('discharge_date')->nullable();
             $table->string('final_diagnosis');
             $table->string('record_type');
+            $table->decimal('total_fee', 19, 4);
             $table->timestamps();
             $table->softDeletes();
         });

@@ -3544,462 +3544,9 @@ function mergeFn (a, b) {
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/admin/BudgetComponent.vue?vue&type=script&lang=js& ***!
   \********************************************************************************************************************************************************************************/
 /*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../constants.js */ "./resources/js/constants.js");
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    var _this2 = this;
-
-    return {
-      loading: true,
-      data: [],
-      budgetInfo: [],
-      rules: {
-        start_date: [{
-          required: true,
-          message: "Start date is required.",
-          trigger: "blur"
-        }],
-        total: [{
-          required: true,
-          message: "Amount is required.",
-          trigger: "blur"
-        }],
-        end_date: [{
-          required: true,
-          message: "End date is required.",
-          trigger: "blur"
-        }],
-        hospital_code: [{
-          required: true,
-          message: "Hospital code is required.",
-          trigger: "blur"
-        }]
-      },
-      filters: [{
-        prop: ["start_date", "total", "end_date", "hospital_code"],
-        value: ""
-      }],
-      titles: [{
-        prop: "start_date",
-        label: "Start date"
-      }, {
-        prop: "total",
-        label: "Amount"
-      }, {
-        prop: "end_date",
-        label: "End date"
-      }, {
-        prop: "hospital_code",
-        label: "Hospital"
-      }],
-      gridData: [{
-        start_date: "",
-        total: "",
-        end_date: "",
-        hospital_code: ""
-      }],
-      actionCol: {
-        label: "Actions",
-        props: {
-          align: "center"
-        },
-        buttons: [{
-          props: {
-            type: "info",
-            icon: "el-icon-info",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            _this2.dialogTableVisible = true;
-            _this2.gridData[0].start_date = row.start_date;
-            _this2.gridData[0].total = row.total;
-            _this2.gridData[0].end_date = row.end_date;
-            _this2.gridData[0].hospital_code = row.hospital_code;
-          }
-        }, {
-          props: {
-            type: "primary",
-            icon: "el-icon-edit",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            _this2.clearfield();
-
-            _this2.form.id = row.id;
-            _this2.form.formmode = "edit";
-            _this2.dialogFormVisible = true;
-            _this2.form.start_date = row.start_date;
-            _this2.form.total = row.total;
-            _this2.form.end_date = row.end_date;
-            _this2.form.codeholder = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code.indexOf(row.hospital_code) - 1;
-            _this2.form.hospital_code = row.hospital_code;
-            _this2.form.edit_object_index = _this2.data.indexOf(row);
-            _this2.form_check.start_date = row.start_date;
-            _this2.form_check.total = row.total;
-            _this2.form_check.end_date = row.end_date;
-            _this2.form_check.codeholder = _this2.form.codeholder;
-          }
-        }]
-      },
-      layout: "pagination, table",
-      dialogTableVisible: false,
-      dialogFormVisible: false,
-      form: {
-        id: "",
-        start_date: "",
-        total: "",
-        end_date: "",
-        formmode: "",
-        hospital_code: "",
-        codeholder: "",
-        edit_object_index: ""
-      },
-      form_check: {
-        start_date: "",
-        total: "",
-        end_date: "",
-        codeholder: ""
-      },
-      formLabelWidth: "120px"
-    };
-  },
-  methods: {
-    openFullScreen2: function openFullScreen2() {
-      var loading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        target: "div.el-dialog"
-      });
-      loading.close();
-    },
-    open_notif: function open_notif(status, title, message) {
-      if (status == "success") {
-        this.$notify.success({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      } else if (status == "error") {
-        this.$notify.error({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      } else if (status == "info") {
-        this.$notify.info({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      } else if (status == "warning") {
-        this.$notify.warning({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      }
-    },
-    onChange: function onChange(event) {
-      this.form.codeholder = event;
-    },
-    deletePatients: function deletePatients(id, res) {
-      var _this3 = this;
-
-      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
-        distinguishCancelAndClose: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        type: "warning"
-      }).then(function () {
-        var _this = _this3;
-        axios.post("delete_budget/" + id).then(function (response) {
-          if (response.status > 199 && response.status < 203) {
-            _this.open_notif("success", "Budget", "Successfully deleted!");
-
-            res(id);
-          }
-        });
-      })["catch"](function (action) {
-        _this3.$message({
-          type: "success",
-          message: action === "cancel" ? "Canceled" : "No changes"
-        });
-      });
-    },
-    getBudget: function getBudget() {
-      var _this4 = this;
-
-      var _this = this;
-
-      axios.get("adminbudget_get").then(function (response) {
-        response.data.forEach(function (entry) {
-          entry.total = _this.masknumber(entry.total);
-        });
-        _this4.loading = false;
-        _this4.data = response.data;
-      })["catch"](function (error) {});
-    },
-    clearfield: function clearfield() {
-      this.form.start_date = "";
-      this.form.total = "";
-      this.form.end_date = "";
-      this.form.codeholder = "";
-      this.form.hospital_code = "";
-    },
-    masknumber: function masknumber(num) {
-      num = parseFloat(num).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-      return num;
-    },
-    addBudget: function addBudget(mode) {
-      var _this5 = this;
-
-      switch (mode) {
-        case "add":
-          if (this.form.total == "" || this.form.start_date == "" || this.form.end_date == "" || this.form.codeholder == "") {
-            this.open_notif("info", "Invalid", "All fields required!");
-          } else {
-            axios.post("adminadd_budget", this.form).then(function (response) {
-              if (response.status > 199 && response.status < 203) {
-                var total = response.data.total;
-                response.data.total = _this5.masknumber(_this5.form.total);
-                response.data.start_date = _this5.form.start_date;
-                response.data.end_date = _this5.form.end_date;
-                response.data.hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this5.form.hospital_code - 1)];
-
-                _this5.data.push(response.data);
-
-                _this5.dialogFormVisible = false;
-
-                _this5.open_notif("success", "Budget", "Successfully added!");
-              } else {
-                _this5.open_notif("error", "System", "Record failed to add!");
-              }
-            })["catch"](function (error) {});
-          }
-
-          break;
-
-        case "edit":
-          if (this.form.start_date == this.form_check.start_date && this.form.end_date == this.form_check.end_date && this.form.total == this.form_check.total && this.form.codeholder == this.form_check.codeholder) {
-            this.open_notif("info", "Note : ", "No changes were made");
-          } else {
-            if (this.form.hospital_code == "DFBDSMH") {
-              this.form.codeholder = 1;
-            } else if (this.form.hospital_code == "DDH") {
-              this.form.codeholder = 2;
-            } else if (this.form.hospital_code == "IDH") {
-              this.form.codeholder = 3;
-            } else if (this.form.hospital_code == "SREDH") {
-              this.form.codeholder = 4;
-            } else if (this.form.hospital_code == "VLPMDH") {
-              this.form.codeholder = 5;
-            } else if (this.form.hospital_code == "MagMCH") {
-              this.form.codeholder = 6;
-            } else if (this.form.hospital_code == "MatMCH") {
-              this.form.codeholder = 7;
-            } else if (this.form.hospital_code == "PGGMH") {
-              this.form.codeholder = 8;
-            } else if (this.form.hospital_code == "PDMH") {
-              this.form.codeholder = 9;
-            }
-
-            this.form.total = parseFloat(this.form.total.replace(/,/g, ''));
-            axios.post("adminedit_budget/" + this.form.id, this.form).then(function (response) {
-              _this5.data[parseInt(_this5.form.edit_object_index)].start_date = _this5.form.start_date;
-              _this5.data[parseInt(_this5.form.edit_object_index)].total = _this5.masknumber(_this5.form.total);
-              _this5.data[parseInt(_this5.form.edit_object_index)].end_date = _this5.form.end_date;
-              _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this5.form.codeholder) - 1];
-              _this5.dialogFormVisible = false;
-
-              _this5.open_notif("success", "Notice : ", "Successfully changed!");
-            })["catch"](function (error) {});
-          }
-
-          break;
-      }
-    }
-  },
-  mounted: function mounted() {
-    this.getBudget();
-  }
-});
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\resources\\js\\components\\admin\\BudgetComponent.vue: Unexpected token (386:0)\n\n\u001b[0m \u001b[90m 384 | \u001b[39m      \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mcodeholder \u001b[33m=\u001b[39m \u001b[32m\"\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 385 | \u001b[39m      \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39mform\u001b[33m.\u001b[39mhospital_code \u001b[33m=\u001b[39m \u001b[32m\"\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 386 | \u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<\u001b[39m \u001b[33mHEAD\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 387 | \u001b[39m    }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 388 | \u001b[39m    masknumber\u001b[33m:\u001b[39m \u001b[36mfunction\u001b[39m (num) {\u001b[0m\n\u001b[0m \u001b[90m 389 | \u001b[39m      num \u001b[33m=\u001b[39m parseFloat(num)\u001b[0m\n    at Parser._raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:766:17)\n    at Parser.raiseWithData (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:759:17)\n    at Parser.raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:753:17)\n    at Parser.unexpected (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:8966:16)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10282:20)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at Parser.parseExpressionBase (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9564:23)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9558:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11297:16)\n    at Parser.parseExpression (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9558:17)\n    at Parser.parseStatementContent (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11562:23)\n    at Parser.parseStatement (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11431:17)\n    at Parser.parseBlockOrModuleBlockBody (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12013:25)\n    at Parser.parseBlockBody (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11999:10)\n    at Parser.parseBlock (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11983:10)\n    at Parser.parseFunctionBody (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10963:24)\n    at Parser.parseFunctionBodyAndFinish (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10946:10)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12153:12\n    at Parser.withTopicForbiddingContext (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11272:14)\n    at Parser.parseFunction (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12152:10)\n    at Parser.parseFunctionOrFunctionSent (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10377:17)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10202:21)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11303:12)\n    at Parser.parseMaybeAssignAllowIn (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:17)");
 
 /***/ }),
 
@@ -4295,404 +3842,9 @@ __webpack_require__.r(__webpack_exports__);
   !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/BudgetComponent.vue?vue&type=script&lang=js& ***!
   \*******************************************************************************************************************************************************************************/
 /*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
+/***/ (function(module, exports) {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    var _this2 = this;
-
-    return {
-      loading: true,
-      data: [],
-      budgetInfo: [],
-      rules: {
-        start_date: [{
-          required: true,
-          message: "Start date is required.",
-          trigger: "blur"
-        }],
-        total: [{
-          required: true,
-          message: "Amount is required.",
-          trigger: "blur"
-        }],
-        end_date: [{
-          required: true,
-          message: "End date is required.",
-          trigger: "blur"
-        }]
-      },
-      filters: [{
-        prop: ["start_date", "total", "end_date"],
-        value: ""
-      }],
-      titles: [{
-        prop: "start_date",
-        label: "Start date"
-      }, {
-        prop: "total",
-        label: "Amount"
-      }, {
-        prop: "end_date",
-        label: "End date"
-      }],
-      gridData: [{
-        start_date: "",
-        total: "",
-        end_date: ""
-      }],
-      actionCol: {
-        label: "Actions",
-        props: {
-          align: "center"
-        },
-        buttons: [{
-          props: {
-            type: "info",
-            icon: "el-icon-info",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            _this2.dialogTableVisible = true;
-            _this2.gridData[0].start_date = row.start_date;
-            _this2.gridData[0].total = row.total;
-            _this2.gridData[0].end_date = row.end_date;
-          }
-        }, {
-          props: {
-            type: "primary",
-            icon: "el-icon-edit",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            _this2.clearfield();
-
-            _this2.form.id = row.id;
-            _this2.form.formmode = "edit";
-            _this2.dialogFormVisible = true;
-            _this2.form.start_date = row.start_date;
-            _this2.form.total = row.total;
-            _this2.form.end_date = row.end_date;
-            _this2.form.edit_object_index = _this2.data.indexOf(row);
-            _this2.form_check.start_date = row.start_date;
-            _this2.form_check.total = row.total;
-            _this2.form_check.end_date = row.end_date;
-          }
-        }, {
-          props: {
-            type: "danger",
-            icon: "el-icon-delete",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            var data = _this2.data;
-
-            _this2.deletePatients(row.id, function (res_value) {
-              if (res_value) {
-                data.splice(data.indexOf(row), 1);
-              }
-            });
-          }
-        }]
-      },
-      layout: "pagination, table",
-      dialogTableVisible: false,
-      dialogFormVisible: false,
-      form: {
-        id: "",
-        start_date: "",
-        total: "",
-        end_date: "",
-        formmode: "",
-        edit_object_index: ""
-      },
-      form_check: {
-        start_date: "",
-        total: "",
-        end_date: ""
-      },
-      formLabelWidth: "120px"
-    };
-  },
-  methods: {
-    openFullScreen2: function openFullScreen2() {
-      var loading = this.$loading({
-        lock: true,
-        spinner: "el-icon-loading",
-        target: "div.el-dialog"
-      });
-      loading.close();
-    },
-    open_notif: function open_notif(status, title, message) {
-      if (status == "success") {
-        this.$notify.success({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      } else if (status == "error") {
-        this.$notify.error({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      } else if (status == "info") {
-        this.$notify.info({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      } else if (status == "warning") {
-        this.$notify.warning({
-          title: title,
-          message: message,
-          offset: 0
-        });
-      }
-    },
-    deletePatients: function deletePatients(id, res) {
-      var _this3 = this;
-
-      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
-        distinguishCancelAndClose: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        type: "warning"
-      }).then(function () {
-        var _this = _this3;
-        axios.post("delete_budget/" + id).then(function (response) {
-          if (response.status > 199 && response.status < 203) {
-            _this.open_notif("success", "Budget", "Successfully deleted!");
-
-            res(id);
-          }
-        });
-      })["catch"](function (action) {
-        _this3.$message({
-          type: "success",
-          message: action === "cancel" ? "Canceled" : "No changes"
-        });
-      });
-    },
-    getBudget: function getBudget() {
-      var _this4 = this;
-
-      var _this = this;
-
-      axios.get("budget_get").then(function (response) {
-        response.data.forEach(function (entry) {
-          entry.total = _this.masknumber(entry.total);
-        });
-        _this4.data = response.data;
-        _this4.loading = false;
-      })["catch"](function (error) {});
-    },
-    clearfield: function clearfield() {
-      this.form.start_date = "";
-      this.form.total = "";
-      this.form.end_date = "";
-    },
-    masknumber: function masknumber(num) {
-      num = parseFloat(num).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-      return num;
-    },
-    addBudget: function addBudget(mode) {
-      var _this5 = this;
-
-      switch (mode) {
-        case "add":
-          if (this.form.start_date == "" || this.form.end_date == "" || this.form.total == "") {
-            this.open_notif("info", "Invalid", "All fields required!");
-          } else {
-            axios.post("add_budget", this.form).then(function (response) {
-              response.data.start_date = _this5.form.start_date;
-              response.data.end_date = _this5.form.end_date;
-              response.data.total = _this5.masknumber(_this5.form.total);
-
-              _this5.data.push(response.data);
-
-              _this5.dialogFormVisible = false;
-
-              if (response.status > 199 && response.status < 203) {
-                _this5.open_notif("success", "Budget", "Successfully added!");
-              } else {
-                _this5.open_notif("error", "System", "Record failed to add!");
-              }
-            })["catch"](function (error) {});
-          }
-
-          break;
-
-        case "edit":
-          if (this.form.start_date == this.form_check.start_date && this.form.end_date == this.form_check.end_date && this.form.total == this.form_check.total) {
-            this.open_notif("info", "Note : ", "No changes were made");
-          } else {
-            this.form.total = parseFloat(this.form.total.replace(/,/g, ""));
-            axios.post("edit_budget/" + this.form.id, this.form).then(function (response) {
-              if (response.status > 199 && response.status < 203) {
-                _this5.data[parseInt(_this5.form.edit_object_index)].start_date = _this5.form.start_date;
-                _this5.data[parseInt(_this5.form.edit_object_index)].total = _this5.masknumber(_this5.form.total);
-                _this5.data[parseInt(_this5.form.edit_object_index)].end_date = _this5.form.end_date;
-                _this5.dialogFormVisible = false;
-
-                _this5.open_notif("success", "Notice : ", "Successfully changed!");
-              }
-            })["catch"](function (error) {});
-          }
-
-          break;
-      }
-    }
-  },
-  mounted: function mounted() {
-    this.getBudget();
-  }
-});
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\resources\\js\\components\\user\\BudgetComponent.vue: Unexpected token (277:0)\n\n\u001b[0m \u001b[90m 275 | \u001b[39m  }\u001b[33m,\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 276 | \u001b[39m  methods\u001b[33m:\u001b[39m {\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 277 | \u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<<\u001b[39m\u001b[33m<\u001b[39m \u001b[33mHEAD\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     | \u001b[39m\u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 278 | \u001b[39m    openFullScreen2\u001b[33m:\u001b[39m \u001b[36mfunction\u001b[39m () {\u001b[0m\n\u001b[0m \u001b[90m 279 | \u001b[39m      \u001b[36mconst\u001b[39m loading \u001b[33m=\u001b[39m \u001b[36mthis\u001b[39m\u001b[33m.\u001b[39m$loading({\u001b[0m\n\u001b[0m \u001b[90m 280 | \u001b[39m        lock\u001b[33m:\u001b[39m \u001b[36mtrue\u001b[39m\u001b[33m,\u001b[39m\u001b[0m\n    at Parser._raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:766:17)\n    at Parser.raiseWithData (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:759:17)\n    at Parser.raise (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:753:17)\n    at Parser.unexpected (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:8966:16)\n    at Parser.parseIdentifierName (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11086:18)\n    at Parser.parseIdentifier (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11059:23)\n    at Parser.parseMaybePrivateName (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10363:19)\n    at Parser.parsePropertyName (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10854:155)\n    at Parser.parsePropertyDefinition (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10747:22)\n    at Parser.parseObjectLike (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10664:25)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10198:23)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11303:12)\n    at Parser.parseMaybeAssignAllowIn (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:17)\n    at Parser.parseObjectProperty (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10816:101)\n    at Parser.parseObjPropValue (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10841:100)\n    at Parser.parsePropertyDefinition (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10772:10)\n    at Parser.parseObjectLike (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10664:25)\n    at Parser.parseExprAtom (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:10198:23)\n    at Parser.parseExprSubscripts (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9844:23)\n    at Parser.parseUpdate (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9824:21)\n    at Parser.parseMaybeUnary (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9813:17)\n    at Parser.parseExprOps (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9683:23)\n    at Parser.parseMaybeConditional (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9657:23)\n    at Parser.parseMaybeAssign (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9620:21)\n    at C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:39\n    at Parser.allowInAnd (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:11297:16)\n    at Parser.parseMaybeAssignAllowIn (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:9586:17)\n    at Parser.parseExportDefaultExpression (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12620:24)\n    at Parser.parseExport (C:\\Users\\REDAS\\Desktop\\kevz\\SorPhilHealthSystem\\node_modules\\@babel\\parser\\lib\\index.js:12530:31)");
 
 /***/ }),
 
@@ -103207,236 +102359,219 @@ var render = function() {
               2
             ),
             _vm._v(" "),
+            _vm._v(
+              '\n<<<<<<< HEAD\n          :close-on-click-modal="false"\n=======\n>>>>>>> c24d0f63f8090cc5d9f1429207d87aa2a389bd12\n        >\n          '
+            ),
             _c(
-              "el-dialog",
-              {
-                attrs: {
-                  title: "Budget Details",
-                  visible: _vm.dialogFormVisible,
-                  top: "5vh",
-                  "close-on-press-escape": false,
-                  "close-on-click-modal": false
-                },
-                on: {
-                  "update:visible": function($event) {
-                    _vm.dialogFormVisible = $event
-                  }
-                }
-              },
+              "el-form",
+              { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
               [
                 _c(
-                  "el-form",
-                  { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
+                  "el-form-item",
+                  {
+                    attrs: {
+                      label: "Start date",
+                      "label-width": _vm.formLabelWidth,
+                      prop: "start_date"
+                    }
+                  },
                   [
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "Start date",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "start_date"
-                        }
+                    _c("el-date-picker", {
+                      staticStyle: { width: "100%" },
+                      attrs: {
+                        type: "date",
+                        placeholder: "Pick a date",
+                        "value-format": "yyyy-MM-dd"
                       },
-                      [
-                        _c("el-date-picker", {
-                          staticStyle: { width: "100%" },
-                          attrs: {
-                            type: "date",
-                            placeholder: "Pick a date",
-                            "value-format": "yyyy-MM-dd"
-                          },
-                          model: {
-                            value: _vm.form.start_date,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "start_date", $$v)
-                            },
-                            expression: "form.start_date"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "Amount",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "total"
-                        }
-                      },
-                      [
-                        _c("el-input", {
-                          attrs: { autocomplete: "off" },
-                          model: {
-                            value: _vm.form.total,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "total", $$v)
-                            },
-                            expression: "form.total"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "End date",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "end_date"
-                        }
-                      },
-                      [
-                        _c("el-date-picker", {
-                          staticStyle: { width: "100%" },
-                          attrs: {
-                            type: "date",
-                            placeholder: "Pick a date",
-                            "value-format": "yyyy-MM-dd"
-                          },
-                          model: {
-                            value: _vm.form.end_date,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "end_date", $$v)
-                            },
-                            expression: "form.end_date"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "Hospital code",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "hospital_code"
-                        }
-                      },
-                      [
-                        _c(
-                          "el-select",
-                          {
-                            attrs: { placeholder: "Please select" },
-                            on: {
-                              change: function($event) {
-                                return _vm.onChange(_vm.form.hospital_code)
-                              }
-                            },
-                            model: {
-                              value: _vm.form.hospital_code,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "hospital_code", $$v)
-                              },
-                              expression: "form.hospital_code"
-                            }
-                          },
-                          [
-                            _c("el-option", {
-                              attrs: { label: "DFBDSMH", value: "1" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "DDH", value: "2" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "IDH", value: "3" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "SREDH", value: "4" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "VLPMDH", value: "5" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "MagMCH", value: "6" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "MatMCH", value: "7" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "PGGMH", value: "8" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "PDMH", value: "9" }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    )
+                      model: {
+                        value: _vm.form.start_date,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "start_date", $$v)
+                        },
+                        expression: "form.start_date"
+                      }
+                    })
                   ],
                   1
                 ),
                 _vm._v(" "),
                 _c(
-                  "span",
+                  "el-form-item",
                   {
-                    staticClass: "dialog-footer",
-                    attrs: { slot: "footer" },
-                    slot: "footer"
+                    attrs: {
+                      label: "Amount",
+                      "label-width": _vm.formLabelWidth,
+                      prop: "total"
+                    }
+                  },
+                  [
+                    _c("el-input", {
+                      attrs: { autocomplete: "off" },
+                      model: {
+                        value: _vm.form.total,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "total", $$v)
+                        },
+                        expression: "form.total"
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "el-form-item",
+                  {
+                    attrs: {
+                      label: "End date",
+                      "label-width": _vm.formLabelWidth,
+                      prop: "end_date"
+                    }
+                  },
+                  [
+                    _c("el-date-picker", {
+                      staticStyle: { width: "100%" },
+                      attrs: {
+                        type: "date",
+                        placeholder: "Pick a date",
+                        "value-format": "yyyy-MM-dd"
+                      },
+                      model: {
+                        value: _vm.form.end_date,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "end_date", $$v)
+                        },
+                        expression: "form.end_date"
+                      }
+                    })
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c(
+                  "el-form-item",
+                  {
+                    attrs: {
+                      label: "Hospital code",
+                      "label-width": _vm.formLabelWidth,
+                      prop: "hospital_code"
+                    }
                   },
                   [
                     _c(
-                      "el-button",
+                      "el-select",
                       {
+                        attrs: { placeholder: "Please select" },
                         on: {
-                          click: function($event) {
-                            _vm.dialogFormVisible = false
+                          change: function($event) {
+                            return _vm.onChange(_vm.form.hospital_code)
                           }
+                        },
+                        model: {
+                          value: _vm.form.hospital_code,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "hospital_code", $$v)
+                          },
+                          expression: "form.hospital_code"
                         }
                       },
-                      [_vm._v("Cancel")]
-                    ),
-                    _vm._v(" "),
-                    _vm.form.formmode == "add"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                _vm.addBudget("add")
-                                _vm.openFullScreen2()
-                              }
-                            }
-                          },
-                          [_vm._v("Save")]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.form.formmode == "edit"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                _vm.addBudget("edit")
-                                _vm.openFullScreen2()
-                              }
-                            }
-                          },
-                          [_vm._v("Save changes")]
-                        )
-                      : _vm._e()
+                      [
+                        _c("el-option", {
+                          attrs: { label: "DFBDSMH", value: "1" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "DDH", value: "2" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "IDH", value: "3" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "SREDH", value: "4" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "VLPMDH", value: "5" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "MagMCH", value: "6" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "MatMCH", value: "7" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "PGGMH", value: "8" }
+                        }),
+                        _vm._v(" "),
+                        _c("el-option", {
+                          attrs: { label: "PDMH", value: "9" }
+                        })
+                      ],
+                      1
+                    )
                   ],
                   1
                 )
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "span",
+              {
+                staticClass: "dialog-footer",
+                attrs: { slot: "footer" },
+                slot: "footer"
+              },
+              [
+                _c(
+                  "el-button",
+                  {
+                    on: {
+                      click: function($event) {
+                        _vm.dialogFormVisible = false
+                      }
+                    }
+                  },
+                  [_vm._v("Cancel")]
+                ),
+                _vm._v(" "),
+                _vm.form.formmode == "add"
+                  ? _c(
+                      "el-button",
+                      {
+                        attrs: { type: "primary" },
+                        on: {
+                          click: function($event) {
+                            _vm.addBudget("add")
+                            _vm.openFullScreen2()
+                          }
+                        }
+                      },
+                      [_vm._v("Save")]
+                    )
+                  : _vm._e(),
+                _vm._v(" "),
+                _vm.form.formmode == "edit"
+                  ? _c(
+                      "el-button",
+                      {
+                        attrs: { type: "primary" },
+                        on: {
+                          click: function($event) {
+                            _vm.addBudget("edit")
+                            _vm.openFullScreen2()
+                          }
+                        }
+                      },
+                      [_vm._v("Save changes")]
+                    )
+                  : _vm._e()
               ],
               1
             )
@@ -104109,37 +103244,13 @@ var render = function() {
                       [_vm._v("Cancel")]
                     ),
                     _vm._v(" "),
-                    _vm.form.formmode == "add"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                _vm.addBudget("add")
-                                _vm.openFullScreen2()
-                              }
-                            }
-                          },
-                          [_vm._v("Save")]
-                        )
-                      : _vm._e(),
+                    _vm._v(
+                      "\n<<<<<<< HEAD\n              @click=\"addBudget('add');\n               openFullScreen2();\"\n=======\n              @click=\"addBudget('add')\"\n>>>>>>> c24d0f63f8090cc5d9f1429207d87aa2a389bd12\n              >Save"
+                    ),
                     _vm._v(" "),
-                    _vm.form.formmode == "edit"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                _vm.addBudget("edit")
-                                _vm.openFullScreen2()
-                              }
-                            }
-                          },
-                          [_vm._v("Save changes")]
-                        )
-                      : _vm._e()
+                    _vm._v(
+                      "\n<<<<<<< HEAD\n              @click=\"addBudget('edit');\n               openFullScreen2();\"\n=======\n              @click=\"addBudget('edit')\"\n>>>>>>> c24d0f63f8090cc5d9f1429207d87aa2a389bd12\n              >Save changes"
+                    )
                   ],
                   1
                 )
@@ -117726,22 +116837,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_PersonnelComponent_vue_vue_type_template_id_82b802b4___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
-
-/***/ }),
-
-/***/ "./resources/js/constants.js":
-/*!***********************************!*\
-  !*** ./resources/js/constants.js ***!
-  \***********************************/
-/*! exports provided: default */
-/***/ (function(module, __webpack_exports__, __webpack_require__) {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-var hospital_code = ["DFBDSMH", "DDH", "IDH", "SREDH", "VLPMDH", "MagMCH", "MatMCH", "PGGMH", "PDMH"];
-/* harmony default export */ __webpack_exports__["default"] = ({
-  hospital_code: hospital_code
-});
 
 /***/ }),
 
