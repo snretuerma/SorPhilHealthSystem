@@ -27,7 +27,13 @@
 
       <!-- Add Button -->
       <div class="col-sm-2" align="right">
-        <el-button type="primary" @click="formDialog('insert_data')"
+        <el-button
+          type="primary"
+          @click="
+            dialogFormVisible = true;
+            form.formmode = 'add';
+            clearFields();
+          "
           >Add</el-button
         >
       </div>
@@ -43,8 +49,8 @@
           :page-size="10"
           :filters="filters"
           :pagination-props="{ pageSizes: [10, 20, 50] }"
-          v-loading="loading"
           :action-col="actionCol"
+          v-loading="loading"
         >
           <div slot="empty">Table Empty</div>
           <el-table-column
@@ -59,14 +65,14 @@
         </data-tables>
         <!-- Data table ends -->
 
-        <!-- Add Personnel form -->
+        <!-- Add/Edit Personnel form -->
         <el-dialog
           title="Staff Details"
           :visible.sync="dialogFormVisible"
-          :before-close="handleClose"
-          top="0vh"
+          top="5vh"
+          :close-on-press-escape="false"
+          :close-on-click-modal="false"
         >
-          
           <el-form :model="form" :rules="rules" ref="form">
             <el-form-item
               label="Lastname"
@@ -119,23 +125,23 @@
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">Cancel</el-button>
             <el-button
-              @click="
-                dialogFormVisible = false;
-                clearFields()
-              "
-              >Cancel</el-button
-            >
-            <el-button
-              v-if="this.form.formmode == 'insert_data'"
+              v-if="form.formmode == 'add'"
               type="primary"
-              @click="addPersonnel();formLoading()"
+              @click="
+                personnelFunctions('add');
+                formLoading();
+              "
               >Save</el-button
             >
             <el-button
-              v-if="this.form.formmode == 'edit_data'"
+              v-if="form.formmode == 'edit'"
               type="primary"
-              @click="editPersonnel();formLoading()"
+              @click="
+                personnelFunctions('edit');
+                formLoading();
+              "
               >Save Changes</el-button
             >
           </span>
@@ -171,10 +177,11 @@
 
 <script>
 "use strict";
+import constants from "../../constants.js";
 export default {
   data() {
     return {
-      loading:true,
+      loading: true,
       data: [],
       personnelinfo: [],
       layout: "pagination, table",
@@ -307,33 +314,33 @@ export default {
             handler: (row) => {
               this.clearFields();
               this.form.id = row.id;
-              this.form.formmode = "edit_data";
+              this.form.formmode = "edit";
+              this.dialogFormVisible = true;
 
-              this.form.last_name = row.last_name;
               this.form.first_name = row.first_name;
               this.form.middle_name = row.middle_name;
               this.form.name_suffix = row.name_suffix;
               this.form.sex = row.sex;
               this.form.birthdate = row.birthdate;
-
+              this.form.last_name = row.last_name;
               this.form.edit_object_index = this.data.indexOf(row);
 
-              (this.form_check.last_name = row.last_name),
-                (this.form_check.first_name = row.first_name),
-                (this.form_check.middle_name = row.middle_name),
-                (this.form_check.name_suffix = row.name_suffix),
-                (this.form_check.sex = row.sex),
-                (this.form_check.birthdate = row.birthdate),
-                (this.form_check.name =
-                  this.form_check.last_name +
-                  ", " +
-                  this.form_check.name_suffix +
-                  " " +
-                  this.form_check.first_name +
-                  " " +
-                  this.form_check.middle_name.slice(0, 1) +
-                  ". ");
-              this.formDialog("edit_data");
+              this.form_check.last_name = row.last_name;
+              this.form_check.first_name = row.first_name;
+              this.form_check.middle_name = row.middle_name;
+              this.form_check.name_suffix = row.name_suffix;
+              this.form_check.sex = row.sex;
+              this.form_check.birthdate = row.birthdate;
+
+              this.form_check.name =
+                this.form_check.last_name +
+                ", " +
+                this.form_check.name_suffix +
+                " " +
+                this.form_check.first_name +
+                " " +
+                this.form_check.middle_name.slice(0, 1) +
+                ". ";
             },
           },
           {
@@ -358,16 +365,14 @@ export default {
     };
   },
   methods: {
-    formLoading:function() {
-        const loading = this.$loading({
-          lock: true,
-          text: 'Loading',
-          spinner: 'el-icon-loading',
-          target:'div.el-dialog'
-        });
-          loading.close();
-       
-      },
+    formLoading: function () {
+      const loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        target: "div.el-dialog",
+      });
+      loading.close();
+    },
     getPersonnel: function () {
       axios
         .get("personnel_get")
@@ -380,101 +385,110 @@ export default {
         })
         .catch(function (error) {});
     },
-    addPersonnel: function () {
-      if (
+    personnelFunctions: function (mode) {
+      switch (mode) {
+        case "add":
+          if (
             this.form.last_name == "" ||
             this.form.first_name == "" ||
             this.form.middle_name == "" ||
-            this.form.name_suffix == "" ||
             this.form.sex == "" ||
             this.form.birthdate == ""
           ) {
-            this.open_notif("info", "Message", "Required fields were missing values.");
+            this.open_notif(
+              "info",
+              "Message",
+              "Required fields were missing values."
+            );
           } else {
-      axios
-        .post("add_personnel", this.form)
-        .then((response) => {
-          if (response.data.sex == 1) {
-            response.data.sex = "Male";
-          } else if (response.data.sex == 2) {
-            response.data.sex = "Female";
-          } else if (response.data.sex == 3) {
-            response.data.sex = "Not Applicable";
+            axios
+              .post("add_personnel", this.form)
+              .then((response) => {
+                if (response.status > 199 && response.status < 203) {
+                  response.data.name =
+                    this.form.last_name +
+                    ", " +
+                    this.form.name_suffix +
+                    " " +
+                    this.form.first_name +
+                    " " +
+                    this.form.middle_name.slice(0, 1) +
+                    ". ";
+                  response.data.sex = constants.sex[Number(this.form.sex - 1)];
+                  this.data.push(response.data);
+                  this.dialogFormVisible = false;
+                  this.open_notif(
+                    "success",
+                    "Success",
+                    "Staff added successfully"
+                  );
+                } else {
+                  this.open_notif("error", "System", "Record failed to add!");
+                }
+              })
+              .catch(function (error) {});
+          }
+          break;
+        case "edit":
+          if (
+            this.form.last_name == this.form_check.last_name &&
+            this.form.first_name == this.form_check.first_name &&
+            this.form.middle_name == this.form_check.middle_name &&
+            this.form.name_suffix == this.form_check.name_suffix &&
+            this.form.sex == this.form_check.sex &&
+            this.form.birthdate == this.form_check.birthdate
+          ) {
+            this.open_notif("info", "Message", "No Changes");
           } else {
-            response.data.sex = "Not Known";
-          }
-
-          response.data.name =
-            response.data.last_name +
-            ", " +
-            response.data.name_suffix +
-            " " +
-            response.data.first_name +
-            " " +
-            response.data.middle_name.slice(0, 1) +
-            ". ";
-          this.open_notif("success", "Success", "Staff added successfully");
-          this.data.push(response.data);
-          
-        
-        })
-        .catch(function (error) {})
-        .finally(() => {
-          var _this=this;
-          
-          _this.dialogFormVisible = false;
-        });
-          }
-    },
-    editPersonnel: function () {
-      var _this = this;
-      if (
-        this.form.last_name == this.form_check.last_name &&
-        this.form.first_name == this.form_check.first_name &&
-        this.form.middle_name == this.form_check.middle_name &&
-        this.form.name_suffix == this.form_check.name_suffix &&
-        this.form.sex == this.form_check.sex &&
-        this.form.birthdate == this.form_check.birthdate
-      ) {
-        _this.open_notif("info", "Message", "No Changes");
-      } else {
-        if (this.form.sex == "Male") {
-          this.form.sex = 1;
-        } else if (this.form.sex == "Female") {
-          this.form.sex = 2;
-        }
-        _this.form.name =
-          _this.form.last_name +
-          ", " +
-          _this.form.name_suffix +
-          " " +
-          _this.form.first_name +
-          " " +
-          _this.form.middle_name.slice(0, 1) +
-          ". ";
-        axios
-          .post("edit_personnel/" + this.form.id, this.form)
-          .then((response) => {
-            if (response.status > 199 && response.status < 203) {
-              _this.open_notif("success", "Success", "Changes has been saved");
-              this.dialogFormVisible = false;
-              _this.data[parseInt(_this.form.edit_object_index)].last_name =
-                _this.form.last_name;
-              _this.data[parseInt(_this.form.edit_object_index)].first_name =
-                _this.form.first_name;
-              _this.data[parseInt(_this.form.edit_object_index)].middle_name =
-                _this.form.middle_name;
-              _this.data[parseInt(_this.form.edit_object_index)].name_suffix =
-                _this.form.name_suffix;
-              _this.data[parseInt(_this.form.edit_object_index)].sex =
-                _this.form.sex;
-              _this.data[parseInt(_this.form.edit_object_index)].birthdate =
-                _this.form.birthdate;
-              _this.data[parseInt(_this.form.edit_object_index)].name =
-                _this.form.name;
+            if (this.form.sex == "Male") {
+              this.form.sex = 1;
+            } else if (this.form.sex == "Female") {
+              this.form.sex = 2;
             }
-          })
-          .catch(function (error) {});
+            this.form.name =
+              this.form.last_name +
+              ", " +
+              this.form.name_suffix +
+              " " +
+              this.form.first_name +
+              " " +
+              this.form.middle_name.slice(0, 1) +
+              ". ";
+            axios
+              .post("edit_personnel/" + this.form.id, this.form)
+              .then((response) => {
+                if (response.status > 199 && response.status < 203) {
+                  this.open_notif(
+                    "success",
+                    "Success",
+                    "Changes has been saved"
+                  );
+                  this.dialogFormVisible = false;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].last_name = this.form.last_name;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].first_name = this.form.first_name;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].middle_name = this.form.middle_name;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].name_suffix = this.form.name_suffix;
+                  this.data[parseInt(this.form.edit_object_index)].sex =
+                    constants.sex[Number(this.form.sex) - 1];
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].birthdate = this.form.birthdate;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].name = this.form.name;
+                }
+              })
+              .catch(function (error) {});
+          }
+          break;
       }
     },
     deletePersonnel: function (id, res) {
@@ -505,13 +519,6 @@ export default {
       } else if (id == "edit_data") {
         this.dialogFormVisible = true;
       }
-    },
-    handleClose(done) {
-      this.$confirm("Are you sure to close this?")
-        .then((_) => {
-          done();
-        })
-        .catch((_) => {});
     },
     open_notif: function (status, title, message) {
       if (status == "success") {

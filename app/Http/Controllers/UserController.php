@@ -36,17 +36,17 @@ class UserController extends Controller
 
     public function getBudget()
     {
-        return Budget::where('hospital_id', Auth::user()->hospital_id)->orderby('start_date','desc')->get();
+        return Budget::where('hospital_id', Auth::user()->hospital_id)->orderby('start_date', 'desc')->get();
     }
 
     public function addBudget(Request $request)
     {
         $budget = new Budget;
         $startdate = Carbon::parse($request->start_date)->format('Y-m-d');
-        $enddate= Carbon::parse($request->end_date)->format('Y-m-d');
-        $budget->start_date=$startdate;
+        $enddate = Carbon::parse($request->end_date)->format('Y-m-d');
+        $budget->start_date = $startdate;
         $budget->total = $request->total;
-        $budget->end_date=$enddate;
+        $budget->end_date = $enddate;
         $budget->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $budget->save();
         return $budget;
@@ -55,9 +55,9 @@ class UserController extends Controller
     public function editBudget(Request $request)
     {
         $budget = Budget::find($request->id);
-        $budget->total=$request->total;
-        $budget->start_date=Carbon::parse($request->start_date)->format('Y-m-d');
-        $budget->end_date=Carbon::parse($request->end_date)->format('Y-m-d');
+        $budget->total = $request->total;
+        $budget->start_date = Carbon::parse($request->start_date)->format('Y-m-d');
+        $budget->end_date = Carbon::parse($request->end_date)->format('Y-m-d');
         $budget->save();
     }
 
@@ -95,7 +95,7 @@ class UserController extends Controller
     public function editPersonnel(Request $request)
     {
         $personnel = Personnel::where('id', $request->id)->first();
-        $personnel->first_name=$request->first_name;
+        $personnel->first_name = $request->first_name;
         $personnel->middle_name = $request->middle_name;
         $personnel->last_name = $request->last_name;
         $personnel->name_suffix = $request->name_suffix;
@@ -114,12 +114,12 @@ class UserController extends Controller
     {
         return view('roles.user.patients');
     }
-    
+
     public function getPatients()
     {
         return Patient::where('hospital_id', Auth::user()->hospital_id)->get();
     }
-    
+
     public function addPatient(Request $request)
     {
         $date = Carbon::parse($request->birthdate)->format('Y-m-d');
@@ -136,12 +136,12 @@ class UserController extends Controller
         $patient->save();
         return $patient->with('messages');
     }
-    
-    
+
+
     public function editPatient(Request $request)
     {
         $patient = Patient::where('id', $request->id)->first();
-        $patient->first_name=$request->first_name;
+        $patient->first_name = $request->first_name;
         $patient->middle_name = $request->middle_name;
         $patient->last_name = $request->last_name;
         $patient->name_suffix = $request->name_suffix;
@@ -156,6 +156,4 @@ class UserController extends Controller
     {
         return Patient::where('id', $request->id)->delete();
     }
-    
 }
-

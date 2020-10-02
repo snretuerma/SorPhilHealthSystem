@@ -65,7 +65,7 @@
         </data-tables>
         <!-- Data table ends -->
 
-        <!-- Add/Edit Dialog -->
+        <!-- Add/Edit Budget Dialog -->
         <el-dialog
           title="Budget Details"
           :visible.sync="dialogFormVisible"
@@ -113,15 +113,19 @@
             <el-button
               v-if="form.formmode == 'add'"
               type="primary"
-              @click="addBudget('add');
-               openFullScreen2();"
+              @click="
+                addBudget('add');
+                openFullScreen2();
+              "
               >Save</el-button
             >
             <el-button
               v-if="form.formmode == 'edit'"
               type="primary"
-              @click="addBudget('edit');
-               openFullScreen2();"
+              @click="
+                addBudget('edit');
+                openFullScreen2();
+              "
               >Save changes</el-button
             >
           </span>
@@ -264,10 +268,13 @@ export default {
               this.form.id = row.id;
               this.form.formmode = "edit";
               this.dialogFormVisible = true;
+
               this.form.start_date = row.start_date;
               this.form.total = row.total;
               this.form.end_date = row.end_date;
+
               this.form.edit_object_index = this.data.indexOf(row);
+
               this.form_check.start_date = row.start_date;
               this.form_check.total = row.total;
               this.form_check.end_date = row.end_date;
@@ -387,6 +394,7 @@ export default {
           ) {
             this.open_notif("info", "Invalid", "All fields required!");
           } else {
+            var _this = this;
             axios
               .post("add_budget", this.form)
               .then((response) => {
@@ -401,7 +409,8 @@ export default {
                   this.open_notif("error", "System", "Record failed to add!");
                 }
               })
-              .catch(function (error) {});
+              .catch(function (error) {})
+              .finally(function () {});
           }
           break;
         case "edit":

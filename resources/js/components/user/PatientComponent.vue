@@ -64,7 +64,6 @@
           :visible.sync="dialogFormVisible"
           :before-close="handleClose"
           top="0vh"
-        
         >
           <el-form :model="form" :rules="rules" ref="form">
             <el-form-item
@@ -211,7 +210,7 @@
 export default {
   data() {
     return {
-      loading:true,
+      loading: true,
       data: [],
       patientinfo: [],
       layout: "pagination, table",
