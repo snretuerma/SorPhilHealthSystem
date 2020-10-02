@@ -39,6 +39,7 @@
           :filters="filters"
           :pagination-props="{ pageSizes: [10, 20, 50] }"
           :action-col="actionCol"
+          v-loading="loading"
         >
           <div slot="empty">Table Empty</div>
           <el-table-column
@@ -54,7 +55,9 @@
         <el-dialog
           title="Budget Details"
           :visible.sync="dialogFormVisible"
-          top="0vh"
+          top="5vh"
+          :close-on-press-escape="false"
+          :close-on-click-modal="false"
         >
           <el-form :model="form" :rules="rules" ref="form">
             <el-form-item
@@ -96,13 +99,15 @@
             <el-button
               v-if="form.formmode == 'add'"
               type="primary"
-              @click="addBudget('add')"
+              @click="addBudget('add');
+               openFullScreen2();"
               >Save</el-button
             >
             <el-button
               v-if="form.formmode == 'edit'"
               type="primary"
-              @click="addBudget('edit')"
+              @click="addBudget('edit');
+               openFullScreen2();"
               >Save changes</el-button
             >
           </span>
@@ -136,6 +141,7 @@
 export default {
   data() {
     return {
+      loading: true,
       data: [],
       budgetInfo: [],
       rules: {
@@ -260,6 +266,14 @@ export default {
     };
   },
   methods: {
+    openFullScreen2: function () {
+      const loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        target: "div.el-dialog",
+      });
+      loading.close();
+    },
     open_notif: function (status, title, message) {
       if (status == "success") {
         this.$notify.success({
@@ -298,10 +312,7 @@ export default {
           var _this = this;
           axios.post("delete_budget/" + id).then(function (response) {
             if (response.status > 199 && response.status < 203) {
-              _this.$message({
-                type: "warning",
-                message: "Succesfully! Deleted",
-              });
+              _this.open_notif("success", "Budget", "Successfully deleted!");
               res(id);
             }
           });
@@ -314,10 +325,15 @@ export default {
         });
     },
     getBudget: function () {
+      var _this = this;
       axios
         .get("budget_get")
         .then((response) => {
+          response.data.forEach(function (entry) {
+            entry.total = _this.masknumber(entry.total);
+          });
           this.data = response.data;
+          this.loading = false;
         })
         .catch(function (error) {});
     },
@@ -325,6 +341,12 @@ export default {
       this.form.start_date = "";
       this.form.total = "";
       this.form.end_date = "";
+    },
+    masknumber: function (num) {
+      num = parseFloat(num)
+        .toFixed(2)
+        .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      return num;
     },
     addBudget: function (mode) {
       switch (mode) {
@@ -334,17 +356,20 @@ export default {
             this.form.end_date == "" ||
             this.form.total == ""
           ) {
-            this.open_notif("info", "Message", "All field required!");
+            this.open_notif("info", "Invalid", "All fields required!");
           } else {
             axios
               .post("add_budget", this.form)
               .then((response) => {
+                response.data.start_date = this.form.start_date;
+                response.data.end_date = this.form.end_date;
+                response.data.total = this.masknumber(this.form.total);
                 this.data.push(response.data);
                 this.dialogFormVisible = false;
                 if (response.status > 199 && response.status < 203) {
-                  this.open_notif("success", "Message", "Successfully added!");
+                  this.open_notif("success", "Budget", "Successfully added!");
                 } else {
-                  this.open_notif("error", "Message", "Record failed to add!");
+                  this.open_notif("error", "System", "Record failed to add!");
                 }
               })
               .catch(function (error) {});
@@ -356,8 +381,9 @@ export default {
             this.form.end_date == this.form_check.end_date &&
             this.form.total == this.form_check.total
           ) {
-            this.open_notif("info", "Message", "No changes");
+            this.open_notif("info", "Note : ", "No changes were made");
           } else {
+            this.form.total = parseFloat(this.form.total.replace(/,/g, ""));
             axios
               .post("edit_budget/" + this.form.id, this.form)
               .then((response) => {
@@ -367,12 +393,17 @@ export default {
                   ].start_date = this.form.start_date;
                   this.data[
                     parseInt(this.form.edit_object_index)
-                  ].total = this.form.total;
+                  ].total = this.masknumber(this.form.total);
                   this.data[
                     parseInt(this.form.edit_object_index)
                   ].end_date = this.form.end_date;
+
                   this.dialogFormVisible = false;
-                  this.open_notif("success", "Message", "Successfully change!");
+                  this.open_notif(
+                    "success",
+                    "Notice : ",
+                    "Successfully changed!"
+                  );
                 }
               })
               .catch(function (error) {});
