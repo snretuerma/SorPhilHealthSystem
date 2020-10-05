@@ -172,6 +172,19 @@
     </div>
     <!-- Card ends here -->
 
+    <!-- Footer -->
+    <hr />
+    <div class="footer">
+      <div class="containter-fluid">
+        <div class="row text-center">
+          <span class="text-muted"
+            >&nbsp;&nbsp;&nbsp;&nbsp;©PF Management System 2020</span
+          >
+        </div>
+      </div>
+    </div>
+    <!-- Footer ends -->
+
     <!-- Show Personnel Details -->
     <el-dialog title="Staff Info" :visible.sync="dialogTableVisible">
       <el-table :data="gridData">

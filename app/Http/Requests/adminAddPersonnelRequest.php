@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class addPersonnelRequest extends FormRequest
+class adminAddPersonnelRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,6 +29,7 @@ class addPersonnelRequest extends FormRequest
             'middle_name' => 'required|max:50',
             'sex' => 'required',
             'birthdate' => 'required',
+            'hospital_code' => 'required',
         ];
     }
     public function messages()
@@ -39,6 +40,7 @@ class addPersonnelRequest extends FormRequest
         'middle_name.required' => 'Middlename is required',
         'sex.required' => 'Sex is required',
         'birthdate.required' => 'Birthdate is required',
+        'hospital_code.required' => 'Hospital is required',
         'last.max' => 'Lastname should not be greater than 50 characters',
         'first.max' => 'Firstname should not be greater than 50 characters',
         'middle.max' => 'Middlename should not be greater than 50 characters',

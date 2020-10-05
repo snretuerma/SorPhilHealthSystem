@@ -4249,6 +4249,19 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4682,6 +4695,19 @@ __webpack_require__.r(__webpack_exports__);
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../constants.js */ "./resources/js/constants.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -6138,6 +6164,63 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -6199,7 +6282,8 @@ __webpack_require__.r(__webpack_exports__);
       }],
       titles: [{
         prop: "name",
-        label: "Name"
+        label: "Name",
+        width: "300px"
       }, {
         prop: "sex",
         label: "Sex"
@@ -6363,7 +6447,7 @@ __webpack_require__.r(__webpack_exports__);
 
         case "edit":
           if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate && this.form.marital_status == this.form_check.marital_status && this.form.philhealth_number == this.form_check.philhealth_number) {
-            this.open_notif('info', 'Message', 'No Changes');
+            this.open_notif("info", "Message", "No Changes");
           } else {
             if (this.form.sex == "Male") {
               this.form.sex = 1;
@@ -6386,7 +6470,7 @@ __webpack_require__.r(__webpack_exports__);
             this.form.name = this.form.last_name + ", " + this.form.name_suffix + " " + this.form.first_name + " " + this.form.middle_name.slice(0, 1) + ". ";
             axios.post("patient_edit/" + this.form.id, this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
-                _this4.open_notif('success', 'Success', 'Changes has been saved');
+                _this4.open_notif("success", "Success", "Changes has been saved");
 
                 _this4.dialogFormVisible = false;
                 _this4.data[parseInt(_this4.form.edit_object_index)].last_name = _this4.form.last_name;
@@ -6727,6 +6811,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -6778,7 +6876,8 @@ __webpack_require__.r(__webpack_exports__);
       }],
       titles: [{
         prop: "name",
-        label: "Name"
+        label: "Name",
+        width: "300px"
       }, {
         prop: "sex",
         label: "Sex"
@@ -104594,6 +104693,10 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _vm._m(1),
+      _vm._v(" "),
       _c(
         "el-dialog",
         {
@@ -104666,6 +104769,20 @@ var staticRenderFns = [
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-sm-12" }, [
         _c("h2", [_vm._v("Admin Patient List")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "footer" }, [
+      _c("div", { staticClass: "containter-fluid" }, [
+        _c("div", { staticClass: "row text-center" }, [
+          _c("span", { staticClass: "text-muted" }, [
+            _vm._v("    ©PF Management System 2020")
+          ])
+        ])
       ])
     ])
   }
@@ -105117,6 +105234,10 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _vm._m(1),
+      _vm._v(" "),
       _c(
         "el-dialog",
         {
@@ -105173,6 +105294,20 @@ var staticRenderFns = [
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-sm-12" }, [
         _c("h2", [_vm._v("Admin Staffs List")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "footer" }, [
+      _c("div", { staticClass: "containter-fluid" }, [
+        _c("div", { staticClass: "row text-center" }, [
+          _c("span", { staticClass: "text-muted" }, [
+            _vm._v("    ©PF Management System 2020")
+          ])
+        ])
       ])
     ])
   }
@@ -105995,6 +106130,7 @@ var render = function() {
                     attrs: {
                       prop: title.prop,
                       label: title.label,
+                      width: title.width,
                       sortable: "custom"
                     }
                   })
@@ -106329,6 +106465,10 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _vm._m(1),
+      _vm._v(" "),
       _c(
         "el-dialog",
         {
@@ -106393,6 +106533,20 @@ var staticRenderFns = [
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-sm-12" }, [
         _c("h2", [_vm._v("Patient List")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "footer" }, [
+      _c("div", { staticClass: "containter-fluid" }, [
+        _c("div", { staticClass: "row text-center" }, [
+          _c("span", { staticClass: "text-muted" }, [
+            _vm._v("    ©PF Management System 2020")
+          ])
+        ])
       ])
     ])
   }
@@ -106517,6 +106671,7 @@ var render = function() {
                     attrs: {
                       prop: title.prop,
                       label: title.label,
+                      width: title.width,
                       sortable: "custom"
                     }
                   })
@@ -106774,6 +106929,10 @@ var render = function() {
         )
       ]),
       _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _vm._m(1),
+      _vm._v(" "),
       _c(
         "el-dialog",
         {
@@ -106790,11 +106949,11 @@ var render = function() {
             { attrs: { data: _vm.gridData } },
             [
               _c("el-table-column", {
-                attrs: { property: "name", label: "Name", width: "200" }
+                attrs: { property: "name", label: "Name", width: "300" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
-                attrs: { property: "sex", label: "Sex", width: "300" }
+                attrs: { property: "sex", label: "Sex", width: "200" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
@@ -106822,6 +106981,20 @@ var staticRenderFns = [
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-sm-12" }, [
         _c("h2", [_vm._v("Staffs List")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "footer" }, [
+      _c("div", { staticClass: "containter-fluid" }, [
+        _c("div", { staticClass: "row text-center" }, [
+          _c("span", { staticClass: "text-muted" }, [
+            _vm._v("    ©PF Management System 2020")
+          ])
+        ])
       ])
     ])
   }

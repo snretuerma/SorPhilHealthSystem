@@ -64,7 +64,7 @@
           <p slot="append"></p>
         </data-tables>
         <!-- Data table ends -->
-
+      
         <!-- Add/Edit Budget Dialog -->
         <el-dialog
           title="Budget Details"

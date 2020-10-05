@@ -96,11 +96,9 @@
         <div id="app">
           @yield('content')
         </div>
-        <footer class="text-center">
-          footer
-        </footer>
       </div>
     </main>
+
     <!-- page-content" -->
   </div>
   <script src="{{asset('js/app.js')}}"></script>

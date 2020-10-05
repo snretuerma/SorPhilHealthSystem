@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class addPatientRequest extends FormRequest
+class userEditPatientRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -30,7 +30,7 @@ class addPatientRequest extends FormRequest
             'sex' => 'required',
             'birthdate' => 'required',
             'marital_status' => 'required',
-            'philhealth_numer' => 'required',
+            'philhealth_number' => 'required',
         ];
     }
     public function messages()
@@ -42,7 +42,7 @@ class addPatientRequest extends FormRequest
             'sex.required' => 'Sex is required',
             'birthdate.required' => 'Birthdate is required',
             'marital_status.required' => 'Marital status is required',
-            'philhealth.required' => 'Phiilhealthnumber is required is required',
+            'philhealth_number.required' => 'Philhealth number is required is required',
             'last.max' => 'Lastname should not be greater than 50 characters',
             'first.max' => 'Firstname should not be greater than 50 characters',
             'middle.max' => 'Middlename should not be greater than 50 characters',

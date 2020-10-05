@@ -9,7 +9,12 @@ use App\Models\Personnel;
 use Auth;
 use DB;
 use Dotenv\Store\File\Paths;
-use App\Http\Requests\addPersonnelRequest;
+use App\Http\Requests\userAddBudgetRequest;
+use App\Http\Requests\userAddPatientRequest;
+use App\Http\Requests\userAddPersonnelRequest;
+use App\Http\Requests\userEditBudgetRequest;
+use App\Http\Requests\userEditPatientRequest;
+use App\Http\Requests\userEditPersonnelRequest;
 
 use Carbon\Carbon;
 
@@ -39,7 +44,7 @@ class UserController extends Controller
         return Budget::where('hospital_id', Auth::user()->hospital_id)->orderby('start_date', 'desc')->get();
     }
 
-    public function addBudget(Request $request)
+    public function addBudget(userAddBudgetRequest $request)
     {
         $budget = new Budget;
         $startdate = Carbon::parse($request->start_date)->format('Y-m-d');
@@ -52,7 +57,7 @@ class UserController extends Controller
         return $budget;
     }
 
-    public function editBudget(Request $request)
+    public function editBudget(userEditBudgetRequest $request)
     {
         $budget = Budget::find($request->id);
         $budget->total = $request->total;
@@ -77,7 +82,7 @@ class UserController extends Controller
         return Personnel::where('hospital_id', Auth::user()->hospital_id)->get();
     }
 
-    public function addPersonnel(addPersonnelRequest $request)
+    public function addPersonnel(userAddPersonnelRequest $request)
     {
         $date = Carbon::parse($request->birthdate)->format('Y-m-d');
         $personnel = new Personnel;
@@ -92,7 +97,7 @@ class UserController extends Controller
         return $personnel;
     }
 
-    public function editPersonnel(Request $request)
+    public function editPersonnel(userEditPersonnelRequest $request)
     {
         $personnel = Personnel::where('id', $request->id)->first();
         $personnel->first_name = $request->first_name;
@@ -120,7 +125,7 @@ class UserController extends Controller
         return Patient::where('hospital_id', Auth::user()->hospital_id)->get();
     }
 
-    public function addPatient(Request $request)
+    public function addPatient(userAddPatientRequest $request)
     {
         $date = Carbon::parse($request->birthdate)->format('Y-m-d');
         $patient = new Patient;
@@ -137,7 +142,7 @@ class UserController extends Controller
         return $patient;
     }
 
-    public function editPatient(Request $request)
+    public function editPatient(userEditPatientRequest $request)
     {
         $patient = Patient::where('id', $request->id)->first();
         $patient->first_name = $request->first_name;

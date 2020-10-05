@@ -58,6 +58,7 @@
             :prop="title.prop"
             :label="title.label"
             :key="title.label"
+            :width="title.width"
             sortable="custom"
           >
           </el-table-column>
@@ -151,18 +152,31 @@
     </div>
     <!-- Card ends here -->
 
+    <!-- Footer -->
+    <hr />
+    <div class="footer">
+      <div class="containter-fluid">
+        <div class="row text-center">
+          <span class="text-muted"
+            >&nbsp;&nbsp;&nbsp;&nbsp;©PF Management System 2020</span
+          >
+        </div>
+      </div>
+    </div>
+    <!-- Footer ends -->
+
     <!-- Show Personnel Details -->
     <el-dialog title="Staff Info" :visible.sync="dialogTableVisible">
       <el-table :data="gridData">
         <el-table-column
           property="name"
           label="Name"
-          width="200"
+          width="300"
         ></el-table-column>
         <el-table-column
           property="sex"
           label="Sex"
-          width="300"
+          width="200"
         ></el-table-column>
         <el-table-column
           property="birthdate"
@@ -231,6 +245,7 @@ export default {
         {
           prop: "name",
           label: "Name",
+          width: "300px",
         },
         {
           prop: "sex",

@@ -9,6 +9,13 @@ use Auth;
 use DB;
 use Dotenv\Store\File\Paths;;
 
+use App\Http\Requests\adminAddBudgetRequest;
+use App\Http\Requests\adminAddPatientRequest;
+use App\Http\Requests\adminAddPersonnelRequest;
+use App\Http\Requests\adminEditBudgetRequest;
+use App\Http\Requests\adminEditPatientRequest;
+use App\Http\Requests\adminEditPersonnelRequest;
+
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
@@ -40,7 +47,7 @@ class AdminController extends Controller
         return $personnel;
     }
 
-    public function addPersonnel(Request $request)
+    public function addPersonnel(adminAddPersonnelRequest $request)
     {
         $personnel = new Personnel;
         $date = Carbon::parse($request->birthdate)->format('Y-m-d');
@@ -55,7 +62,7 @@ class AdminController extends Controller
         return $personnel;
     }
 
-    public function editPersonnel(Request $request)
+    public function editPersonnel(adminEditPersonnelRequest $request)
     {
         $personnel = Personnel::find($request->id);
         $date = Carbon::parse($request->birthdate)->format('Y-m-d');
@@ -87,7 +94,7 @@ class AdminController extends Controller
         return $budget;
     }
 
-    public function addBudget(Request $request)
+    public function addBudget(adminAddBudgetRequest $request)
     {
         $budget = new Budget;
         $startdate = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
@@ -100,7 +107,7 @@ class AdminController extends Controller
         return $budget;
     }
 
-    public function editBudget(Request $request)
+    public function editBudget(adminEditBudgetRequest $request)
     {
         $budget = Budget::find($request->id);
         $budget->total = $request->total;
@@ -127,7 +134,7 @@ class AdminController extends Controller
         return $patient;
     }
 
-    public function addPatient(Request $request)
+    public function addPatient(adminAddPatientRequest $request)
     {
         $patient = new Patient;
         $date = Carbon::parse($request->birthdate)->format('Y-m-d');
@@ -144,7 +151,7 @@ class AdminController extends Controller
         return $patient;
     }
 
-    public function editPatient(Request $request)
+    public function editPatient(adminEditPatientRequest $request)
     {
         $patient = Patient::find($request->id);
         $patient->first_name = $request->first_name;
