@@ -103,12 +103,61 @@ class AdminController extends Controller
     public function editBudget(Request $request)
     {
         $budget = Budget::find($request->id);
-        $budget->hospital_id = $request->codeholder;
         $budget->total = $request->total;
         $budget->start_date = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
         $budget->end_date = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
+        $budget->hospital_id = $request->codeholder;
         $budget->save();
         return $budget;
+    }
+
+    //Patient
+    public function patient()
+    {
+        return view('roles.admin.patient');
+    }
+
+    public function getPatient()
+    {
+        $patient = DB::table('patients')
+            ->join('hospitals', 'patients.hospital_id', '=', 'hospitals.id')
+            ->select('patients.*', 'hospitals.hospital_code')
+            ->whereNull('patients.deleted_at')
+            ->get();
+        return $patient;
+    }
+
+    public function addPatient(Request $request)
+    {
+        $patient = new Patient;
+        $date = Carbon::parse($request->birthdate)->format('Y-m-d');
+        $patient->first_name = $request->first_name;
+        $patient->middle_name = $request->middle_name;
+        $patient->last_name = $request->last_name;
+        $patient->name_suffix = $request->name_suffix;
+        $patient->sex = $request->sex;
+        $patient->birthdate = $date;
+        $patient->marital_status = $request->marital_status;
+        $patient->philhealth_number = $request->philhealth_number;
+        $patient->hospital_id=$request->codeholder;
+        $patient->save();
+        return $patient;
+    }
+
+    public function editPatient(Request $request)
+    {
+        $patient = Patient::find($request->id);
+        $patient->first_name = $request->first_name;
+        $patient->middle_name = $request->middle_name;
+        $patient->last_name = $request->last_name;
+        $patient->name_suffix = $request->name_suffix;
+        $patient->sex = $request->sex;
+        $patient->birthdate = Carbon::parse($request->birthdate)->format('Y-m-d');
+        $patient->marital_status = $request->marital_status;
+        $patient->philhealth_number = $request->philhealth_number;
+        $patient->hospital_id = $request->codeholder;
+        $patient->save();
+        return $patient;
     }
     
 }

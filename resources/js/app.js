@@ -34,6 +34,7 @@ Vue.use(VueDataTables);
 Vue.component('users-component', require('./components/admin/UserComponent.vue').default);
 Vue.component('adminbudget-component', require('./components/admin/BudgetComponent.vue').default);
 Vue.component('adminpersonnel-component', require('./components/admin/PersonnelComponent.vue').default);
+Vue.component('adminpatient-component', require('./components/admin/PatientComponent.vue').default);
 
 //Users
 Vue.component('patient-component', require('./components/user/PatientComponent.vue').default);

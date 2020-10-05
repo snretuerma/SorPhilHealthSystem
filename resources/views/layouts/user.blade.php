@@ -65,7 +65,7 @@
             </li>
             <li class="sidebar li">
               <a href="{{route('patients')}}">
-                <i class="fa fa-file-medical-alt"></i><span>Patients</span>
+                <i class="fa fa-hospital-user"></i><span>Patients</span>
               </a>
             </li>
             <li class="sidebar li">

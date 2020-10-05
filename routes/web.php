@@ -37,6 +37,12 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::post('add_personnel', 'AdminController@addPersonnel');
     Route::post('edit_personnel/{id}', 'AdminController@editPersonnel');
 
+    //Patient
+    Route::get('/adminPatient', 'AdminController@patient')->name('adminPatient');
+    Route::get('patients_get', 'AdminController@getPatient');
+    Route::post('add_patient', 'AdminController@addPatient');
+    Route::post('edit_patient/{id}', 'AdminController@editPatient');
+
 });
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('user');
