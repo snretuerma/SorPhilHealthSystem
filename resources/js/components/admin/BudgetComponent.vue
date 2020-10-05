@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <div class="col-sm-12">
-        <h2>Budget List</h2>
+        <h2>Admin Budget List</h2>
       </div>
     </div>
     <hr />

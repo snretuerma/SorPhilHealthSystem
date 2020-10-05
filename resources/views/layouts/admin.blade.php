@@ -59,8 +59,8 @@
               </a>
             </li>
             <li class="sidebar li">
-              <a href="">
-                <i class="fa fa-user-md"></i><span>Physician</span>
+              <a href="{{route('adminPersonnel')}}">
+                <i class="fa fa-user-md"></i><span>Staffs</span>
               </a>
             </li>
             <li class="sidebar li">

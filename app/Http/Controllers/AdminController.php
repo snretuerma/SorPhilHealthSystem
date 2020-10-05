@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Models\Budget;
 use App\Models\Hospital;
+use App\Models\Personnel;
 use Auth;
 use DB;
 use Dotenv\Store\File\Paths;;
@@ -23,7 +24,53 @@ class AdminController extends Controller
     {
         return view('roles.admin.index');
     }
+    //Personnel
+    public function personnel()
+    {
+        return view('roles.admin.personnel');
+    }
 
+    public function getPersonnel()
+    {
+        $personnel = DB::table('personnels')
+            ->join('hospitals', 'personnels.hospital_id', '=', 'hospitals.id')
+            ->select('personnels.*', 'hospitals.hospital_code')
+            ->whereNull('personnels.deleted_at')
+            ->get();
+        return $personnel;
+    }
+
+    public function addPersonnel(Request $request)
+    {
+        $personnel = new Personnel;
+        $date = Carbon::parse($request->birthdate)->format('Y-m-d');
+        $personnel->birthdate = $date;
+        $personnel->first_name = $request->first_name;
+        $personnel->middle_name = $request->middle_name;
+        $personnel->last_name = $request->last_name;
+        $personnel->name_suffix = $request->name_suffix;
+        $personnel->sex = $request->sex;
+        $personnel->hospital_id=$request->codeholder;
+        $personnel->save();
+        return $personnel;
+    }
+
+    public function editPersonnel(Request $request)
+    {
+        $personnel = Personnel::find($request->id);
+        $date = Carbon::parse($request->birthdate)->format('Y-m-d');
+        $personnel->birthdate = $date;
+        $personnel->first_name = $request->first_name;
+        $personnel->middle_name = $request->middle_name;
+        $personnel->last_name = $request->last_name;
+        $personnel->name_suffix = $request->name_suffix;
+        $personnel->sex = $request->sex;
+        $personnel->hospital_id=$request->codeholder;
+        $personnel->save();
+        return $personnel;
+    }
+
+    //Budget
     public function budget()
     {
         return view('roles.admin.budget');
