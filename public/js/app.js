@@ -4911,6 +4911,22 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4943,6 +4959,11 @@ __webpack_require__.r(__webpack_exports__);
           message: "Middlename is required.",
           trigger: "blur"
         }],
+        is_private: [{
+          required: true,
+          message: "Please select staff type",
+          trigger: "change"
+        }],
         sex: [{
           required: true,
           message: "Sex is required.",
@@ -4962,12 +4983,16 @@ __webpack_require__.r(__webpack_exports__);
       },
       // Searchbox Filter
       filters: [{
-        prop: ["first_name", "last_name", "middle_name", "hospital_code"],
+        prop: ["first_name", "last_name", "middle_name", "hospital_code", "is_private"],
         value: ""
       }],
       titles: [{
         prop: "name",
-        label: "Name"
+        label: "Name",
+        width: "250px"
+      }, {
+        prop: "is_private",
+        label: "Type"
       }, {
         prop: "sex",
         label: "Sex"
@@ -4987,6 +5012,7 @@ __webpack_require__.r(__webpack_exports__);
         name_suffix: "",
         sex: "",
         birthdate: "",
+        is_private: "",
         hospital_code: "",
         codeholder: "",
         name: "",
@@ -5001,6 +5027,7 @@ __webpack_require__.r(__webpack_exports__);
         name_suffix: "",
         sex: "",
         birthdate: "",
+        is_private: "",
         codeholder: "",
         name: ""
       },
@@ -5009,6 +5036,7 @@ __webpack_require__.r(__webpack_exports__);
         name: "",
         sex: "",
         birthdate: "",
+        is_private: "",
         hospital_code: ""
       }],
       //Actiom column
@@ -5030,6 +5058,7 @@ __webpack_require__.r(__webpack_exports__);
             _this.gridData[0].name = _this.buildName(row.first_name, row.middle_name, row.last_name, row.name_suffix);
             _this.gridData[0].sex = row.sex;
             _this.gridData[0].birthdate = row.birthdate;
+            _this.gridData[0].is_private = row.is_private;
             _this.gridData[0].hospital_code = row.hospital_code;
           }
         }, {
@@ -5049,6 +5078,7 @@ __webpack_require__.r(__webpack_exports__);
             _this.form.first_name = row.first_name;
             _this.form.middle_name = row.middle_name;
             _this.form.name_suffix = row.name_suffix;
+            _this.form.is_private = row.is_private;
             _this.form.sex = row.sex;
             _this.form.birthdate = row.birthdate;
             _this.form.codeholder = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code.indexOf(row.hospital_code) - 1;
@@ -5058,6 +5088,7 @@ __webpack_require__.r(__webpack_exports__);
             _this.form_check.first_name = row.first_name;
             _this.form_check.middle_name = row.middle_name;
             _this.form_check.name_suffix = row.name_suffix;
+            _this.form_check.is_private = row.is_private;
             _this.form_check.sex = row.sex;
             _this.form_check.birthdate = row.birthdate;
             _this.form_check.codeholder = _this.form.codeholder;
@@ -5095,12 +5126,13 @@ __webpack_require__.r(__webpack_exports__);
 
       switch (mode) {
         case "add":
-          if (this.form.last_name == "" || this.form.first_name == "" || this.form.middle_name == "" || this.form.sex == "" || this.form.birthdate == "" || this.form.codeholder == "") {
+          if (this.form.last_name == "" || this.form.first_name == "" || this.form.middle_name == "" || this.form.is_private == "" || this.form.sex == "" || this.form.birthdate == "" || this.form.codeholder == "") {
             this.open_notif("info", "Message", "Required fields were missing values.");
           } else {
             axios.post("add_personnel", this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
                 response.data.name = _this3.form.last_name + ", " + _this3.form.name_suffix + " " + _this3.form.first_name + " " + _this3.form.middle_name.slice(0, 1) + ". ";
+                response.data.is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this3.form.is_private)];
                 response.data.sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this3.form.sex - 1)];
                 response.data.hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.hospital_code - 1)];
 
@@ -5118,13 +5150,19 @@ __webpack_require__.r(__webpack_exports__);
           break;
 
         case "edit":
-          if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate && this.form.codeholder == this.form_check.codeholder) {
+          if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.is_private == this.form_check.is_private && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate && this.form.codeholder == this.form_check.codeholder) {
             this.open_notif("info", "Message", "No Changes");
           } else {
             if (this.form.sex == "Male") {
               this.form.sex = 1;
             } else if (this.form.sex == "Female") {
               this.form.sex = 2;
+            }
+
+            if (this.form.is_private == "Private") {
+              this.form.is_private = 0;
+            } else if (this.form.is_private == "Non-private") {
+              this.form.is_private = 1;
             }
 
             if (this.form.hospital_code == "DFBDSMH") {
@@ -5157,6 +5195,7 @@ __webpack_require__.r(__webpack_exports__);
                 _this3.data[parseInt(_this3.form.edit_object_index)].first_name = _this3.form.first_name;
                 _this3.data[parseInt(_this3.form.edit_object_index)].middle_name = _this3.form.middle_name;
                 _this3.data[parseInt(_this3.form.edit_object_index)].name_suffix = _this3.form.name_suffix;
+                _this3.data[parseInt(_this3.form.edit_object_index)].is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this3.form.is_private)];
                 _this3.data[parseInt(_this3.form.edit_object_index)].sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this3.form.sex) - 1];
                 _this3.data[parseInt(_this3.form.edit_object_index)].birthdate = _this3.form.birthdate;
                 _this3.data[parseInt(_this3.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.codeholder) - 1];
@@ -5209,10 +5248,29 @@ __webpack_require__.r(__webpack_exports__);
       this.form.first_name = "";
       this.form.middle_name = "";
       this.form.name_suffix = "";
+      this.form.is_private = "";
       this.form.sex = "";
       this.form.birthdate = "";
       this.form.hospital_code = "";
       this.form.codeholder = "";
+    },
+    assignType: function assignType(type_value) {
+      var type;
+
+      switch (type_value) {
+        case 0:
+          type = "Private";
+          break;
+
+        case 1:
+          type = "Non-private";
+          break;
+
+        default:
+          type = "Not Known";
+      }
+
+      return type;
     },
     assignSex: function assignSex(sex_value) {
       var sex;
@@ -5246,6 +5304,7 @@ __webpack_require__.r(__webpack_exports__);
 
       element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
       element.sex = this.assignSex(element.sex);
+      element.is_private = this.assignType(element.is_private);
     }
   },
   mounted: function mounted() {
@@ -6825,6 +6884,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -6857,6 +6931,11 @@ __webpack_require__.r(__webpack_exports__);
           message: "Middlename is required.",
           trigger: "blur"
         }],
+        is_private: [{
+          required: true,
+          message: "Please select staff type",
+          trigger: "change"
+        }],
         sex: [{
           required: true,
           message: "Sex is required.",
@@ -6871,13 +6950,16 @@ __webpack_require__.r(__webpack_exports__);
       },
       // Searchbox Filter
       filters: [{
-        prop: ["first_name", "last_name", "middle_name"],
+        prop: ["first_name", "last_name", "middle_name", "is_private"],
         value: ""
       }],
       titles: [{
         prop: "name",
         label: "Name",
-        width: "300px"
+        width: "250px"
+      }, {
+        prop: "is_private",
+        label: "Type"
       }, {
         prop: "sex",
         label: "Sex"
@@ -6894,6 +6976,7 @@ __webpack_require__.r(__webpack_exports__);
         name_suffix: "",
         sex: "",
         birthdate: "",
+        is_private: "",
         name: "",
         formmode: "",
         edit_object_index: ""
@@ -6906,13 +6989,15 @@ __webpack_require__.r(__webpack_exports__);
         name_suffix: "",
         sex: "",
         birthdate: "",
+        is_private: "",
         name: ""
       },
       // View info data
       gridData: [{
         name: "",
         sex: "",
-        birthdate: ""
+        birthdate: "",
+        is_private: ""
       }],
       //Actiom column
       actionCol: {
@@ -6933,6 +7018,7 @@ __webpack_require__.r(__webpack_exports__);
             _this2.gridData[0].name = _this2.buildName(row.first_name, row.middle_name, row.last_name, row.name_suffix);
             _this2.gridData[0].sex = row.sex;
             _this2.gridData[0].birthdate = row.birthdate;
+            _this2.gridData[0].is_private = row.is_private;
           }
         }, {
           props: {
@@ -6951,6 +7037,7 @@ __webpack_require__.r(__webpack_exports__);
             _this2.form.first_name = row.first_name;
             _this2.form.middle_name = row.middle_name;
             _this2.form.name_suffix = row.name_suffix;
+            _this2.form.is_private = row.is_private;
             _this2.form.sex = row.sex;
             _this2.form.birthdate = row.birthdate;
             _this2.form.edit_object_index = _this2.data.indexOf(row);
@@ -6958,6 +7045,7 @@ __webpack_require__.r(__webpack_exports__);
             _this2.form_check.first_name = row.first_name;
             _this2.form_check.middle_name = row.middle_name;
             _this2.form_check.name_suffix = row.name_suffix;
+            _this2.form_check.is_private = row.is_private;
             _this2.form_check.sex = row.sex;
             _this2.form_check.birthdate = row.birthdate;
             _this2.form_check.name = _this2.form_check.last_name + ", " + _this2.form_check.name_suffix + " " + _this2.form_check.first_name + " " + _this2.form_check.middle_name.slice(0, 1) + ". ";
@@ -7007,12 +7095,13 @@ __webpack_require__.r(__webpack_exports__);
 
       switch (mode) {
         case "add":
-          if (this.form.last_name == "" || this.form.first_name == "" || this.form.middle_name == "" || this.form.sex == "" || this.form.birthdate == "") {
+          if (this.form.last_name == "" || this.form.first_name == "" || this.form.middle_name == "" || this.form.is_private == "" || this.form.sex == "" || this.form.birthdate == "") {
             this.open_notif("info", "Message", "Required fields were missing values.");
           } else {
             axios.post("add_personnel", this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
                 response.data.name = _this4.form.last_name + ", " + _this4.form.name_suffix + " " + _this4.form.first_name + " " + _this4.form.middle_name.slice(0, 1) + ". ";
+                response.data.is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this4.form.is_private)];
                 response.data.sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this4.form.sex - 1)];
 
                 _this4.data.push(response.data);
@@ -7038,6 +7127,12 @@ __webpack_require__.r(__webpack_exports__);
               this.form.sex = 2;
             }
 
+            if (this.form.is_private == "Private") {
+              this.form.is_private = 0;
+            } else if (this.form.is_private == "Non-private") {
+              this.form.is_private = 1;
+            }
+
             this.form.name = this.form.last_name + ", " + this.form.name_suffix + " " + this.form.first_name + " " + this.form.middle_name.slice(0, 1) + ". ";
             axios.post("edit_personnel/" + this.form.id, this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
@@ -7049,6 +7144,7 @@ __webpack_require__.r(__webpack_exports__);
                 _this4.data[parseInt(_this4.form.edit_object_index)].middle_name = _this4.form.middle_name;
                 _this4.data[parseInt(_this4.form.edit_object_index)].name_suffix = _this4.form.name_suffix;
                 _this4.data[parseInt(_this4.form.edit_object_index)].sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this4.form.sex) - 1];
+                _this4.data[parseInt(_this4.form.edit_object_index)].is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this4.form.is_private)];
                 _this4.data[parseInt(_this4.form.edit_object_index)].birthdate = _this4.form.birthdate;
                 _this4.data[parseInt(_this4.form.edit_object_index)].name = _this4.form.name;
               }
@@ -7120,8 +7216,27 @@ __webpack_require__.r(__webpack_exports__);
       this.form.first_name = "";
       this.form.middle_name = "";
       this.form.name_suffix = "";
+      this.form.is_private = "";
       this.form.sex = "";
       this.form.birthdate = "";
+    },
+    assignType: function assignType(type_value) {
+      var type;
+
+      switch (type_value) {
+        case 0:
+          type = "Private";
+          break;
+
+        case 1:
+          type = "Non-private";
+          break;
+
+        default:
+          type = "Not Known";
+      }
+
+      return type;
     },
     assignSex: function assignSex(sex_value) {
       var sex;
@@ -7155,6 +7270,7 @@ __webpack_require__.r(__webpack_exports__);
 
       element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
       element.sex = this.assignSex(element.sex);
+      element.is_private = this.assignType(element.is_private);
     }
   },
   mounted: function mounted() {
@@ -104907,6 +105023,7 @@ var render = function() {
                     attrs: {
                       prop: title.prop,
                       label: title.label,
+                      width: title.width,
                       sortable: "custom"
                     }
                   })
@@ -105063,6 +105180,42 @@ var render = function() {
                             _c("el-option", {
                               attrs: { label: "Female", value: "2" }
                             })
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
+                          label: "Type",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "is_private"
+                        }
+                      },
+                      [
+                        _c(
+                          "el-radio-group",
+                          {
+                            model: {
+                              value: _vm.form.is_private,
+                              callback: function($$v) {
+                                _vm.$set(_vm.form, "is_private", $$v)
+                              },
+                              expression: "form.is_private"
+                            }
+                          },
+                          [
+                            _c("el-radio", { attrs: { label: "0" } }, [
+                              _vm._v("Private")
+                            ]),
+                            _vm._v(" "),
+                            _c("el-radio", { attrs: { label: "1" } }, [
+                              _vm._v("Non-private")
+                            ])
                           ],
                           1
                         )
@@ -105255,6 +105408,10 @@ var render = function() {
             [
               _c("el-table-column", {
                 attrs: { property: "name", label: "Name", width: "200" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { property: "is_private", label: "Type", width: "300" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
@@ -106839,6 +106996,42 @@ var render = function() {
                       "el-form-item",
                       {
                         attrs: {
+                          label: "Type",
+                          "label-width": _vm.formLabelWidth,
+                          prop: "is_private"
+                        }
+                      },
+                      [
+                        _c(
+                          "el-radio-group",
+                          {
+                            model: {
+                              value: _vm.form.is_private,
+                              callback: function($$v) {
+                                _vm.$set(_vm.form, "is_private", $$v)
+                              },
+                              expression: "form.is_private"
+                            }
+                          },
+                          [
+                            _c("el-radio", { attrs: { label: "0" } }, [
+                              _vm._v("Private")
+                            ]),
+                            _vm._v(" "),
+                            _c("el-radio", { attrs: { label: "1" } }, [
+                              _vm._v("Non-private")
+                            ])
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "el-form-item",
+                      {
+                        attrs: {
                           label: "Birthdate",
                           "label-width": _vm.formLabelWidth,
                           prop: "birthdate"
@@ -106950,6 +107143,10 @@ var render = function() {
             [
               _c("el-table-column", {
                 attrs: { property: "name", label: "Name", width: "300" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { property: "is_private", label: "Type", width: "300" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
@@ -119770,10 +119967,12 @@ __webpack_require__.r(__webpack_exports__);
 var hospital_code = ["DFBDSMH", "DDH", "IDH", "SREDH", "VLPMDH", "MagMCH", "MatMCH", "PGGMH", "PDMH"];
 var sex = ["Male", "Female"];
 var marital_status = ["Single", "Married", "Divorced", "Widowed", "Others/Prefer Not to Say"];
+var is_private = ["Private", "Non-Private"];
 /* harmony default export */ __webpack_exports__["default"] = ({
   hospital_code: hospital_code,
   sex: sex,
-  marital_status: marital_status
+  marital_status: marital_status,
+  is_private: is_private
 });
 
 /***/ }),

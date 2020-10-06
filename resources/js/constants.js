@@ -23,10 +23,16 @@ const marital_status = [
     "Others/Prefer Not to Say"
 ];
 
+const is_private = [
+    "Private",
+    "Non-Private"
+];
+
 export default {
     hospital_code: hospital_code,
     sex: sex,
-    marital_status: marital_status
+    marital_status: marital_status,
+    is_private: is_private
 }
 
 

@@ -112,6 +112,16 @@
               </el-select>
             </el-form-item>
             <el-form-item
+              label="Type"
+              :label-width="formLabelWidth"
+              prop="is_private"
+            >
+              <el-radio-group v-model="form.is_private">
+                <el-radio label="0">Private</el-radio>
+                <el-radio label="1">Non-private</el-radio>
+              </el-radio-group>
+            </el-form-item>
+            <el-form-item
               label="Birthdate"
               :label-width="formLabelWidth"
               prop="birthdate"
@@ -174,6 +184,11 @@
           width="300"
         ></el-table-column>
         <el-table-column
+          property="is_private"
+          label="Type"
+          width="300"
+        ></el-table-column>
+        <el-table-column
           property="sex"
           label="Sex"
           width="200"
@@ -221,6 +236,13 @@ export default {
             trigger: "blur",
           },
         ],
+        is_private: [
+          {
+            required: true,
+            message: "Please select staff type",
+            trigger: "change",
+          },
+        ],
         sex: [
           { required: true, message: "Sex is required.", trigger: "change" },
         ],
@@ -236,7 +258,7 @@ export default {
       // Searchbox Filter
       filters: [
         {
-          prop: ["first_name", "last_name", "middle_name"],
+          prop: ["first_name", "last_name", "middle_name", "is_private"],
           value: "",
         },
       ],
@@ -245,7 +267,11 @@ export default {
         {
           prop: "name",
           label: "Name",
-          width: "300px",
+          width: "250px",
+        },
+        {
+          prop: "is_private",
+          label: "Type",
         },
         {
           prop: "sex",
@@ -266,6 +292,7 @@ export default {
         name_suffix: "",
         sex: "",
         birthdate: "",
+        is_private: "",
         name: "",
         formmode: "",
         edit_object_index: "",
@@ -279,6 +306,7 @@ export default {
         name_suffix: "",
         sex: "",
         birthdate: "",
+        is_private: "",
         name: "",
       },
 
@@ -288,6 +316,7 @@ export default {
           name: "",
           sex: "",
           birthdate: "",
+          is_private: "",
         },
       ],
 
@@ -317,6 +346,7 @@ export default {
               );
               this.gridData[0].sex = row.sex;
               this.gridData[0].birthdate = row.birthdate;
+              this.gridData[0].is_private = row.is_private;
             },
           },
           {
@@ -336,15 +366,17 @@ export default {
               this.form.first_name = row.first_name;
               this.form.middle_name = row.middle_name;
               this.form.name_suffix = row.name_suffix;
+              this.form.is_private = row.is_private;
               this.form.sex = row.sex;
               this.form.birthdate = row.birthdate;
-              
+
               this.form.edit_object_index = this.data.indexOf(row);
 
               this.form_check.last_name = row.last_name;
               this.form_check.first_name = row.first_name;
               this.form_check.middle_name = row.middle_name;
               this.form_check.name_suffix = row.name_suffix;
+              this.form_check.is_private = row.is_private;
               this.form_check.sex = row.sex;
               this.form_check.birthdate = row.birthdate;
 
@@ -408,6 +440,7 @@ export default {
             this.form.last_name == "" ||
             this.form.first_name == "" ||
             this.form.middle_name == "" ||
+            this.form.is_private == "" ||
             this.form.sex == "" ||
             this.form.birthdate == ""
           ) {
@@ -416,7 +449,7 @@ export default {
               "Message",
               "Required fields were missing values."
             );
-          } else {
+          } else { 
             axios
               .post("add_personnel", this.form)
               .then((response) => {
@@ -430,6 +463,8 @@ export default {
                     " " +
                     this.form.middle_name.slice(0, 1) +
                     ". ";
+                  response.data.is_private =
+                    constants.is_private[Number(this.form.is_private)];
                   response.data.sex = constants.sex[Number(this.form.sex - 1)];
                   this.data.push(response.data);
                   this.dialogFormVisible = false;
@@ -460,6 +495,11 @@ export default {
               this.form.sex = 1;
             } else if (this.form.sex == "Female") {
               this.form.sex = 2;
+            }
+            if (this.form.is_private == "Private") {
+              this.form.is_private = 0;
+            } else if (this.form.is_private == "Non-private") {
+              this.form.is_private = 1;
             }
             this.form.name =
               this.form.last_name +
@@ -494,6 +534,8 @@ export default {
                   ].name_suffix = this.form.name_suffix;
                   this.data[parseInt(this.form.edit_object_index)].sex =
                     constants.sex[Number(this.form.sex) - 1];
+                    this.data[parseInt(this.form.edit_object_index)].is_private =
+                    constants.is_private[Number(this.form.is_private)];
                   this.data[
                     parseInt(this.form.edit_object_index)
                   ].birthdate = this.form.birthdate;
@@ -568,8 +610,23 @@ export default {
       this.form.first_name = "";
       this.form.middle_name = "";
       this.form.name_suffix = "";
+      this.form.is_private = "";
       this.form.sex = "";
       this.form.birthdate = "";
+    },
+    assignType: function (type_value) {
+      var type;
+      switch (type_value) {
+        case 0:
+          type = "Private";
+          break;
+        case 1:
+          type = "Non-private";
+          break;
+        default:
+          type = "Not Known";
+      }
+      return type;
     },
     assignSex: function (sex_value) {
       var sex;
@@ -611,6 +668,7 @@ export default {
         element.name_suffix
       );
       element.sex = this.assignSex(element.sex);
+      element.is_private = this.assignType(element.is_private);
     },
   },
   mounted() {
