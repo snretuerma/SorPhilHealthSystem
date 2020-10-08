@@ -303,19 +303,22 @@ export default {
         {
           prop: "name",
           label: "Name",
-          width: "300px",
+          width: "250px",
         },
         {
           prop: "sex",
           label: "Sex",
+          width: "150px",
         },
         {
           prop: "birthdate",
           label: "Birthdate",
+          width: "150px",
         },
         {
           prop: "marital_status",
           label: "Marital Status",
+          width: "250px",
         },
         {
           prop: "philhealth_number",
@@ -373,10 +376,12 @@ export default {
         buttons: [
           {
             props: {
+              id: "info",
               type: "info",
               icon: "el-icon-info",
               circle: true,
               size: "mini",
+              tooltip: "Info",
             },
             handler: (row) => {
               this.dialogTableVisible = true;

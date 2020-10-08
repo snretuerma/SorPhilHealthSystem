@@ -5,6 +5,7 @@ use App\Models\Patient;
 use App\Models\Budget;
 use App\Models\Hospital;
 use App\Models\Personnel;
+use App\Models\User;
 use Auth;
 use DB;
 use Dotenv\Store\File\Paths;;
@@ -19,6 +20,7 @@ use App\Http\Requests\adminEditPersonnelRequest;
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 class AdminController extends Controller
 {
     public function __construct()
@@ -31,6 +33,20 @@ class AdminController extends Controller
     {
         return view('roles.admin.index');
     }
+    
+    public function resetViewAdmin()
+    {
+        return view('roles.admin.reset');
+    }
+
+    public function resetPassAdmin(Request $request)
+    {
+        $new_pass = User::find(Auth::user()->id);
+        $new_pass->password = Hash::make($request->password);
+        $new_pass->save();
+        
+    }
+
     //Personnel
     public function personnel()
     {

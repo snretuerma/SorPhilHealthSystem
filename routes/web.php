@@ -24,6 +24,8 @@ Auth::routes([
 ]);
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/', 'AdminController@index')->name('admin');
+    Route::get('resetadmin', 'AdminController@resetViewAdmin')->name('resetadmin');
+    Route::post('resetpassadmin', 'AdminController@resetPassAdmin');
     //Budget
     Route::get('/adminbudget', 'AdminController@budget')->name('adminbudget');
     Route::get('adminbudget_get', 'AdminController@getBudget');
@@ -46,6 +48,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 });
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('user');
+    Route::get('reset', 'UserController@resetView')->name('reset');
+    Route::post('resetpass', 'UserController@resetPass');
     //Budget
     Route::get('/budget', 'UserController@budget')->name('budget');
     Route::get('budget_get', 'UserController@getBudget');

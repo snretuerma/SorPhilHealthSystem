@@ -6,6 +6,7 @@ use App\Models\Patient;
 use App\Models\Hospital;
 use App\Models\Budget;
 use App\Models\Personnel;
+use App\Models\User;
 use Auth;
 use DB;
 use Dotenv\Store\File\Paths;
@@ -19,7 +20,7 @@ use App\Http\Requests\userEditPersonnelRequest;
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public function __construct()
@@ -31,6 +32,19 @@ class UserController extends Controller
     public function index()
     {
         return view('roles.user.index');
+    }
+
+    public function resetView()
+    {
+        return view('roles.user.reset');
+    }
+
+    public function resetPass(Request $request)
+    {
+        $new_pass = User::find(Auth::user()->id);
+        $new_pass->password = Hash::make($request->password);
+        $new_pass->save();
+        
     }
 
     //Budget

@@ -84,6 +84,9 @@
       </div>
       <!-- sidebar-content  -->
       <div class="sidebar-footer">
+        <a href="{{ route('resetadmin') }}">
+          <i class="fa fa-key"></i>&nbsp;&nbsp;Reset Password
+        </a>
         <a href="{{ route('logout') }}" onclick="event.preventDefault();
               document.getElementById('logout-form').submit();">
           <i class="fa fa-power-off"></i>&nbsp;&nbsp;Logout
