@@ -21,19 +21,27 @@
           type="password"
           v-model="form.password"
           autocomplete="off"
-  
         ></el-input>
+        <span class="font-italic text-danger" v-if="errors.password"
+          ><small>{{ errors.password[0] }}</small></span
+        >
       </el-form-item>
       <el-form-item label="Confirm Password " prop="checkPass">
         <el-input
           type="password"
           v-model="form.checkPass"
           autocomplete="off"
-          
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="submitForm('form');formLoading();">Submit</el-button>
+        <el-button
+          type="primary"
+          @click="
+            submitForm('form');
+            formLoading();
+          "
+          >Submit</el-button
+        >
         <el-button @click="resetForm('form')">Reset</el-button>
       </el-form-item>
     </el-form>
@@ -63,6 +71,7 @@ export default {
       }
     };
     return {
+      errors: [],
       form: {
         password: "",
         checkPass: "",
@@ -75,18 +84,24 @@ export default {
   },
   methods: {
     submitForm(formName) {
-
       this.$refs[formName].validate((valid) => {
         if (valid) {
           axios
-          .post("resetpassadmin", this.form)
-          .then((response) => {
-            if (response.status > 199 && response.status < 203) {
-              this.open_notif("success", "Success", "Password has been saved");
-              this.clearFields();
-            }
-          })
-          .catch(function (error) {});
+            .post("resetpassadmin", this.form)
+            .then((response) => {
+              if (response.status > 199 && response.status < 203) {
+                this.loading = false;
+                this.open_notif(
+                  "success",
+                  "Success",
+                  "Password has been saved"
+                );
+                this.clearFields();
+              }
+            })
+            .catch((error) => {
+              this.errors = error.response.data.errors;
+            });
         }
       });
     },

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Patient;
 use App\Models\Budget;
 use App\Models\Hospital;
@@ -16,11 +17,13 @@ use App\Http\Requests\adminAddPersonnelRequest;
 use App\Http\Requests\adminEditBudgetRequest;
 use App\Http\Requests\adminEditPatientRequest;
 use App\Http\Requests\adminEditPersonnelRequest;
+use App\Http\Requests\resetPassRequest;
 
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+
 class AdminController extends Controller
 {
     public function __construct()
@@ -33,18 +36,17 @@ class AdminController extends Controller
     {
         return view('roles.admin.index');
     }
-    
+
     public function resetViewAdmin()
     {
         return view('roles.admin.reset');
     }
 
-    public function resetPassAdmin(Request $request)
+    public function resetPassAdmin(resetPassRequest $request)
     {
         $new_pass = User::find(Auth::user()->id);
         $new_pass->password = Hash::make($request->password);
         $new_pass->save();
-        
     }
 
     //Personnel
@@ -74,7 +76,7 @@ class AdminController extends Controller
         $personnel->name_suffix = $request->name_suffix;
         $personnel->is_private = $request->is_private;
         $personnel->sex = $request->sex;
-        $personnel->hospital_id=$request->codeholder;
+        $personnel->hospital_id = $request->codeholder;
         $personnel->save();
         return $personnel;
     }
@@ -90,7 +92,7 @@ class AdminController extends Controller
         $personnel->name_suffix = $request->name_suffix;
         $personnel->is_private = $request->is_private;
         $personnel->sex = $request->sex;
-        $personnel->hospital_id=$request->codeholder;
+        $personnel->hospital_id = $request->codeholder;
         $personnel->save();
         return $personnel;
     }
@@ -107,7 +109,7 @@ class AdminController extends Controller
             ->join('hospitals', 'budgets.hospital_id', '=', 'hospitals.id')
             ->select('budgets.*', 'hospitals.hospital_code')
             ->whereNull('budgets.deleted_at')
-            ->orderby('start_date','desc')
+            ->orderby('start_date', 'desc')
             ->get();
         return $budget;
     }
@@ -116,11 +118,11 @@ class AdminController extends Controller
     {
         $budget = new Budget;
         $startdate = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
-        $enddate= Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
-        $budget->start_date=$startdate;
+        $enddate = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
+        $budget->start_date = $startdate;
         $budget->total = $request->total;
-        $budget->end_date=$enddate;
-        $budget->hospital_id=$request->codeholder;
+        $budget->end_date = $enddate;
+        $budget->hospital_id = $request->codeholder;
         $budget->save();
         return $budget;
     }
@@ -164,7 +166,7 @@ class AdminController extends Controller
         $patient->birthdate = $date;
         $patient->marital_status = $request->marital_status;
         $patient->philhealth_number = $request->philhealth_number;
-        $patient->hospital_id=$request->codeholder;
+        $patient->hospital_id = $request->codeholder;
         $patient->save();
         return $patient;
     }
@@ -184,5 +186,4 @@ class AdminController extends Controller
         $patient->save();
         return $patient;
     }
-    
 }

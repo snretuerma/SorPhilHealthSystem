@@ -41,7 +41,7 @@ class userEditPatientRequest extends FormRequest
             'middle_name.required' => 'Middlename is required',
             'sex.required' => 'Sex is required',
             'birthdate.required' => 'Birthdate is required',
-            'marital_status.required' => 'Marital status is required',
+            'marital_status.required' => 'Please choose marital status',
             'philhealth_number.required' => 'Philhealth number is required is required',
             'last.max' => 'Lastname should not be greater than 50 characters',
             'first.max' => 'Firstname should not be greater than 50 characters',

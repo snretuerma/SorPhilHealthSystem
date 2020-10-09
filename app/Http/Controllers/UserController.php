@@ -16,11 +16,13 @@ use App\Http\Requests\userAddPersonnelRequest;
 use App\Http\Requests\userEditBudgetRequest;
 use App\Http\Requests\userEditPatientRequest;
 use App\Http\Requests\userEditPersonnelRequest;
+use App\Http\Requests\resetPassRequest;
 
 use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+
 class UserController extends Controller
 {
     public function __construct()
@@ -39,12 +41,11 @@ class UserController extends Controller
         return view('roles.user.reset');
     }
 
-    public function resetPass(Request $request)
+    public function resetPass(resetPassRequest $request)
     {
         $new_pass = User::find(Auth::user()->id);
         $new_pass->password = Hash::make($request->password);
         $new_pass->save();
-        
     }
 
     //Budget

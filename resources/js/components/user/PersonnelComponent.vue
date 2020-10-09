@@ -39,7 +39,7 @@
       </div>
       <!-- End Button -->
     </div>
-    
+
     <!-- Card Begins Here -->
     <div class="card">
       <div class="card-body">
@@ -81,6 +81,9 @@
               prop="last_name"
             >
               <el-input v-model="form.last_name" autocomplete="off"></el-input>
+              <span class="font-italic text-danger" v-if="errors.last_name"
+                ><small>{{ errors.last_name[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Firstname"
@@ -88,6 +91,9 @@
               prop="first_name"
             >
               <el-input v-model="form.first_name" autocomplete="off"></el-input>
+              <span class="font-italic text-danger" v-if="errors.first_name"
+                ><small>{{ errors.first_name[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Middlename"
@@ -98,6 +104,9 @@
                 v-model="form.middle_name"
                 autocomplete="off"
               ></el-input>
+              <span class="font-italic text-danger" v-if="errors.middle_name"
+                ><small>{{ errors.middle_name[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item label="Suffix" :label-width="formLabelWidth">
               <el-input
@@ -110,6 +119,10 @@
                 <el-option label="Male" value="1"></el-option>
                 <el-option label="Female" value="2"></el-option>
               </el-select>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.sex"
+                ><small>{{ errors.sex[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Type"
@@ -120,6 +133,10 @@
                 <el-radio label="0">Private</el-radio>
                 <el-radio label="1">Non-private</el-radio>
               </el-radio-group>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.is_private"
+                ><small>{{ errors.is_private[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Birthdate"
@@ -133,6 +150,9 @@
                 style="width: 100%"
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
+              <span class="font-italic text-danger" v-if="errors.birthdate"
+                ><small>{{ errors.birthdate[0] }}</small></span
+              >
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
@@ -181,17 +201,17 @@
         <el-table-column
           property="name"
           label="Name"
-          width="300"
+          width="250"
         ></el-table-column>
         <el-table-column
           property="is_private"
           label="Type"
-          width="300"
+          width="150"
         ></el-table-column>
         <el-table-column
           property="sex"
           label="Sex"
-          width="200"
+          width="150"
         ></el-table-column>
         <el-table-column
           property="birthdate"
@@ -212,6 +232,7 @@ export default {
     return {
       loading: true,
       data: [],
+      errors: [],
       personnelinfo: [],
       layout: "pagination, table",
       dialogTableVisible: false,
@@ -449,7 +470,7 @@ export default {
               "Message",
               "Required fields were missing values."
             );
-          } else { 
+          } else {
             axios
               .post("add_personnel", this.form)
               .then((response) => {
@@ -477,7 +498,9 @@ export default {
                   this.open_notif("error", "System", "Failed to add personnel");
                 }
               })
-              .catch(function (error) {});
+              .catch((error) => {
+                this.errors = error.response.data.errors;
+              });
           }
           break;
         case "edit":
@@ -534,7 +557,7 @@ export default {
                   ].name_suffix = this.form.name_suffix;
                   this.data[parseInt(this.form.edit_object_index)].sex =
                     constants.sex[Number(this.form.sex) - 1];
-                    this.data[parseInt(this.form.edit_object_index)].is_private =
+                  this.data[parseInt(this.form.edit_object_index)].is_private =
                     constants.is_private[Number(this.form.is_private)];
                   this.data[
                     parseInt(this.form.edit_object_index)
@@ -544,7 +567,9 @@ export default {
                   ].name = this.form.name;
                 }
               })
-              .catch(function (error) {});
+              .catch((error) => {
+                this.errors = error.response.data.errors;
+              });
           }
           break;
       }

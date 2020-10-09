@@ -3705,6 +3705,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
 
 
@@ -3968,7 +3970,7 @@ __webpack_require__.r(__webpack_exports__);
               this.form.codeholder = 9;
             }
 
-            this.form.total = parseFloat(this.form.total.replace(/,/g, ''));
+            this.form.total = parseFloat(this.form.total.replace(/,/g, ""));
             axios.post("adminedit_budget/" + this.form.id, this.form).then(function (response) {
               _this5.data[parseInt(_this5.form.edit_object_index)].start_date = _this5.form.start_date;
               _this5.data[parseInt(_this5.form.edit_object_index)].total = _this5.masknumber(_this5.form.total);
@@ -4262,6 +4264,35 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4272,6 +4303,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       loading: true,
       data: [],
+      errors: [],
       patientinfo: [],
       layout: "pagination, table",
       dialogTableVisible: false,
@@ -4498,7 +4530,9 @@ __webpack_require__.r(__webpack_exports__);
               } else {
                 _this3.open_notif("error", "System", "Failed to add patient");
               }
-            })["catch"](function (error) {});
+            })["catch"](function (error) {
+              _this3.errors = error.response.data.errors;
+            });
           }
 
           break;
@@ -4562,7 +4596,9 @@ __webpack_require__.r(__webpack_exports__);
                 _this3.data[parseInt(_this3.form.edit_object_index)].name = _this3.form.name;
                 _this3.data[parseInt(_this3.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.codeholder) - 1];
               }
-            })["catch"](function (error) {});
+            })["catch"](function (error) {
+              _this3.errors = error.response.data.errors;
+            });
           }
 
           break;
@@ -4927,6 +4963,30 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4937,6 +4997,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       loading: true,
       data: [],
+      errors: [],
       personnelinfo: [],
       layout: "pagination, table",
       dialogTableVisible: false,
@@ -5144,7 +5205,9 @@ __webpack_require__.r(__webpack_exports__);
               } else {
                 _this3.open_notif("error", "System", "Failed to add personnel");
               }
-            })["catch"](function (error) {});
+            })["catch"](function (error) {
+              _this3.errors = error.response.data.errors;
+            });
           }
 
           break;
@@ -5201,7 +5264,9 @@ __webpack_require__.r(__webpack_exports__);
                 _this3.data[parseInt(_this3.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.codeholder) - 1];
                 _this3.data[parseInt(_this3.form.edit_object_index)].name = _this3.form.name;
               }
-            })["catch"](function (error) {});
+            })["catch"](function (error) {
+              _this3.errors = error.response.data.errors;
+            });
           }
 
           break;
@@ -5365,6 +5430,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     var _this = this;
@@ -5392,6 +5465,7 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     return {
+      errors: [],
       form: {
         password: "",
         checkPass: ""
@@ -5416,11 +5490,15 @@ __webpack_require__.r(__webpack_exports__);
         if (valid) {
           axios.post("resetpassadmin", _this2.form).then(function (response) {
             if (response.status > 199 && response.status < 203) {
+              _this2.loading = false;
+
               _this2.open_notif("success", "Success", "Password has been saved");
 
               _this2.clearFields();
             }
-          })["catch"](function (error) {});
+          })["catch"](function (error) {
+            _this2.errors = error.response.data.errors;
+          });
         }
       });
     },
@@ -6438,6 +6516,31 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -6448,6 +6551,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       loading: true,
       data: [],
+      errors: [],
       patientinfo: [],
       layout: "pagination, table",
       dialogTableVisible: false,
@@ -6662,7 +6766,9 @@ __webpack_require__.r(__webpack_exports__);
               } else {
                 _this4.open_notif("error", "System", "Failed to add patient");
               }
-            })["catch"](function (error) {});
+            })["catch"](function (error) {
+              _this4.errors = error.response.data.errors;
+            });
           }
 
           break;
@@ -6705,7 +6811,9 @@ __webpack_require__.r(__webpack_exports__);
                 _this4.data[parseInt(_this4.form.edit_object_index)].philhealth_number = _this4.form.philhealth_number;
                 _this4.data[parseInt(_this4.form.edit_object_index)].name = _this4.form.name;
               }
-            })["catch"](function (error) {});
+            })["catch"](function (error) {
+              _this4.errors = error.response.data.errors;
+            });
           }
 
           break;
@@ -7062,6 +7170,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -7072,6 +7200,7 @@ __webpack_require__.r(__webpack_exports__);
     return {
       loading: true,
       data: [],
+      errors: [],
       personnelinfo: [],
       layout: "pagination, table",
       dialogTableVisible: false,
@@ -7275,7 +7404,9 @@ __webpack_require__.r(__webpack_exports__);
               } else {
                 _this4.open_notif("error", "System", "Failed to add personnel");
               }
-            })["catch"](function (error) {});
+            })["catch"](function (error) {
+              _this4.errors = error.response.data.errors;
+            });
           }
 
           break;
@@ -7311,7 +7442,9 @@ __webpack_require__.r(__webpack_exports__);
                 _this4.data[parseInt(_this4.form.edit_object_index)].birthdate = _this4.form.birthdate;
                 _this4.data[parseInt(_this4.form.edit_object_index)].name = _this4.form.name;
               }
-            })["catch"](function (error) {});
+            })["catch"](function (error) {
+              _this4.errors = error.response.data.errors;
+            });
           }
 
           break;
@@ -7494,6 +7627,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     var _this = this;
@@ -7521,6 +7662,7 @@ __webpack_require__.r(__webpack_exports__);
     };
 
     return {
+      errors: [],
       form: {
         password: "",
         checkPass: ""
@@ -7549,7 +7691,9 @@ __webpack_require__.r(__webpack_exports__);
 
               _this2.clearFields();
             }
-          })["catch"](function (error) {});
+          })["catch"](function (error) {
+            _this2.errors = error.response.data.errors;
+          });
         }
       });
     },
@@ -104776,7 +104920,19 @@ var render = function() {
                             },
                             expression: "form.last_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.last_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.last_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -104800,7 +104956,19 @@ var render = function() {
                             },
                             expression: "form.first_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.first_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.first_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -104824,7 +104992,19 @@ var render = function() {
                             },
                             expression: "form.middle_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.middle_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.middle_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -104885,7 +105065,17 @@ var render = function() {
                             })
                           ],
                           1
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _vm.errors.sex
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [_c("small", [_vm._v(_vm._s(_vm.errors.sex[0]))])]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -104914,7 +105104,19 @@ var render = function() {
                             },
                             expression: "form.birthdate"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.birthdate
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.birthdate[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -104966,7 +105168,21 @@ var render = function() {
                             })
                           ],
                           1
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _vm.errors.marital_status
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.marital_status[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -104990,7 +105206,21 @@ var render = function() {
                             },
                             expression: "form.philhealth_number"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.philhealth_number
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(
+                                    _vm._s(_vm.errors.philhealth_number[0])
+                                  )
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -105060,7 +105290,21 @@ var render = function() {
                             })
                           ],
                           1
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _vm.errors.hospital_code
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.hospital_code[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     )
@@ -105395,7 +105639,19 @@ var render = function() {
                             },
                             expression: "form.last_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.last_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.last_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -105419,7 +105675,19 @@ var render = function() {
                             },
                             expression: "form.first_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.first_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.first_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -105443,7 +105711,19 @@ var render = function() {
                             },
                             expression: "form.middle_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.middle_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.middle_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -105503,7 +105783,17 @@ var render = function() {
                             })
                           ],
                           1
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _vm.errors.sex
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [_c("small", [_vm._v(_vm._s(_vm.errors.sex[0]))])]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -105539,7 +105829,21 @@ var render = function() {
                             ])
                           ],
                           1
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _vm.errors.is_private
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.is_private[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -105568,7 +105872,19 @@ var render = function() {
                             },
                             expression: "form.birthdate"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.birthdate
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.birthdate[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -105638,7 +105954,21 @@ var render = function() {
                             })
                           ],
                           1
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _vm.errors.hospital_code
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.hospital_code[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     )
@@ -105843,7 +106173,13 @@ var render = function() {
                   },
                   expression: "form.password"
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.errors.password
+                ? _c("span", { staticClass: "font-italic text-danger" }, [
+                    _c("small", [_vm._v(_vm._s(_vm.errors.password[0]))])
+                  ])
+                : _vm._e()
             ],
             1
           ),
@@ -106785,7 +107121,19 @@ var render = function() {
                             },
                             expression: "form.last_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.last_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.last_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -106809,7 +107157,19 @@ var render = function() {
                             },
                             expression: "form.first_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.first_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.first_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -106833,7 +107193,19 @@ var render = function() {
                             },
                             expression: "form.middle_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.middle_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.middle_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -106894,7 +107266,17 @@ var render = function() {
                             })
                           ],
                           1
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _vm.errors.sex
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [_c("small", [_vm._v(_vm._s(_vm.errors.sex[0]))])]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -106923,7 +107305,19 @@ var render = function() {
                             },
                             expression: "form.birthdate"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.birthdate
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.birthdate[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -106975,7 +107369,21 @@ var render = function() {
                             })
                           ],
                           1
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _vm.errors.marital_status
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.marital_status[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -106999,7 +107407,21 @@ var render = function() {
                             },
                             expression: "form.philhealth_number"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.philhealth_number
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(
+                                    _vm._s(_vm.errors.philhealth_number[0])
+                                  )
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     )
@@ -107326,7 +107748,19 @@ var render = function() {
                             },
                             expression: "form.last_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.last_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.last_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -107350,7 +107784,19 @@ var render = function() {
                             },
                             expression: "form.first_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.first_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.first_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -107374,7 +107820,19 @@ var render = function() {
                             },
                             expression: "form.middle_name"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.middle_name
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.middle_name[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -107434,7 +107892,17 @@ var render = function() {
                             })
                           ],
                           1
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _vm.errors.sex
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [_c("small", [_vm._v(_vm._s(_vm.errors.sex[0]))])]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -107470,7 +107938,21 @@ var render = function() {
                             ])
                           ],
                           1
-                        )
+                        ),
+                        _vm._v(" "),
+                        _c("br"),
+                        _vm._v(" "),
+                        _vm.errors.is_private
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.is_private[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     ),
@@ -107499,7 +107981,19 @@ var render = function() {
                             },
                             expression: "form.birthdate"
                           }
-                        })
+                        }),
+                        _vm._v(" "),
+                        _vm.errors.birthdate
+                          ? _c(
+                              "span",
+                              { staticClass: "font-italic text-danger" },
+                              [
+                                _c("small", [
+                                  _vm._v(_vm._s(_vm.errors.birthdate[0]))
+                                ])
+                              ]
+                            )
+                          : _vm._e()
                       ],
                       1
                     )
@@ -107589,15 +108083,15 @@ var render = function() {
             { attrs: { data: _vm.gridData } },
             [
               _c("el-table-column", {
-                attrs: { property: "name", label: "Name", width: "300" }
+                attrs: { property: "name", label: "Name", width: "250" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
-                attrs: { property: "is_private", label: "Type", width: "300" }
+                attrs: { property: "is_private", label: "Type", width: "150" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
-                attrs: { property: "sex", label: "Sex", width: "200" }
+                attrs: { property: "sex", label: "Sex", width: "150" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
@@ -107696,7 +108190,13 @@ var render = function() {
                   },
                   expression: "form.password"
                 }
-              })
+              }),
+              _vm._v(" "),
+              _vm.errors.password
+                ? _c("span", { staticClass: "font-italic text-danger" }, [
+                    _c("small", [_vm._v(_vm._s(_vm.errors.password[0]))])
+                  ])
+                : _vm._e()
             ],
             1
           ),

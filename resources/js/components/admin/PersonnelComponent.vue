@@ -81,6 +81,9 @@
               prop="last_name"
             >
               <el-input v-model="form.last_name" autocomplete="off"></el-input>
+              <span class="font-italic text-danger" v-if="errors.last_name"
+                ><small>{{ errors.last_name[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Firstname"
@@ -88,6 +91,9 @@
               prop="first_name"
             >
               <el-input v-model="form.first_name" autocomplete="off"></el-input>
+              <span class="font-italic text-danger" v-if="errors.first_name"
+                ><small>{{ errors.first_name[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Middlename"
@@ -98,6 +104,9 @@
                 v-model="form.middle_name"
                 autocomplete="off"
               ></el-input>
+              <span class="font-italic text-danger" v-if="errors.middle_name"
+                ><small>{{ errors.middle_name[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item label="Suffix" :label-width="formLabelWidth">
               <el-input
@@ -110,6 +119,10 @@
                 <el-option label="Male" value="1"></el-option>
                 <el-option label="Female" value="2"></el-option>
               </el-select>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.sex"
+                ><small>{{ errors.sex[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Type"
@@ -120,6 +133,10 @@
                 <el-radio label="0">Private</el-radio>
                 <el-radio label="1">Non-private</el-radio>
               </el-radio-group>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.is_private"
+                ><small>{{ errors.is_private[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Birthdate"
@@ -133,6 +150,9 @@
                 style="width: 100%"
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
+              <span class="font-italic text-danger" v-if="errors.birthdate"
+                ><small>{{ errors.birthdate[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Hospital code"
@@ -154,6 +174,10 @@
                 <el-option label="PGGMH" value="8"></el-option>
                 <el-option label="PDMH" value="9"></el-option>
               </el-select>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.hospital_code"
+                ><small>{{ errors.hospital_code[0] }}</small></span
+              >
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
@@ -220,10 +244,10 @@
           width="180"
         ></el-table-column>
         <el-table-column
-            property="hospital_code"
-            label="Hospital"
-            width="180"
-          ></el-table-column>
+          property="hospital_code"
+          label="Hospital"
+          width="180"
+        ></el-table-column>
       </el-table>
     </el-dialog>
     <!-- Show Personnel Details -->
@@ -238,6 +262,7 @@ export default {
     return {
       loading: true,
       data: [],
+      errors: [],
       personnelinfo: [],
       layout: "pagination, table",
       dialogTableVisible: false,
@@ -291,7 +316,13 @@ export default {
       // Searchbox Filter
       filters: [
         {
-          prop: ["first_name", "last_name", "middle_name", "hospital_code", "is_private"],
+          prop: [
+            "first_name",
+            "last_name",
+            "middle_name",
+            "hospital_code",
+            "is_private",
+          ],
           value: "",
         },
       ],
@@ -305,7 +336,6 @@ export default {
         {
           prop: "is_private",
           label: "Type",
-          
         },
         {
           prop: "sex",
@@ -319,7 +349,6 @@ export default {
           prop: "hospital_code",
           label: "Hospital",
         },
-
       ],
 
       // Add form
@@ -414,9 +443,9 @@ export default {
               this.form.sex = row.sex;
               this.form.birthdate = row.birthdate;
               this.form.codeholder =
-              constants.hospital_code.indexOf(row.hospital_code) - 1;
+                constants.hospital_code.indexOf(row.hospital_code) - 1;
               this.form.hospital_code = row.hospital_code;
-              
+
               this.form.edit_object_index = this.data.indexOf(row);
 
               this.form_check.last_name = row.last_name;
@@ -516,7 +545,9 @@ export default {
                   this.open_notif("error", "System", "Failed to add personnel");
                 }
               })
-              .catch(function (error) {});
+              .catch((error) => {
+                this.errors = error.response.data.errors;
+              });
           }
           break;
         case "edit":
@@ -599,13 +630,18 @@ export default {
                   this.data[
                     parseInt(this.form.edit_object_index)
                   ].birthdate = this.form.birthdate;
-                  this.data[parseInt(this.form.edit_object_index)].hospital_code = constants.hospital_code[Number(this.form.codeholder) - 1];
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].hospital_code =
+                    constants.hospital_code[Number(this.form.codeholder) - 1];
                   this.data[
                     parseInt(this.form.edit_object_index)
                   ].name = this.form.name;
                 }
               })
-              .catch(function (error) {});
+              .catch((error) => {
+                this.errors = error.response.data.errors;
+              });
           }
           break;
       }

@@ -130,8 +130,10 @@
             <el-button
               v-if="form.formmode == 'edit'"
               type="primary"
-              @click="addBudget('edit');
-               openFullScreen2();"
+              @click="
+                addBudget('edit');
+                openFullScreen2();
+              "
               >Save changes</el-button
             >
           </span>
@@ -267,9 +269,9 @@ export default {
               this.form.total = row.total;
               this.form.end_date = row.end_date;
               this.form.codeholder =
-              constants.hospital_code.indexOf(row.hospital_code) - 1;
+                constants.hospital_code.indexOf(row.hospital_code) - 1;
               this.form.hospital_code = row.hospital_code;
-              
+
               this.form.edit_object_index = this.data.indexOf(row);
               this.form_check.start_date = row.start_date;
               this.form_check.total = row.total;
@@ -450,7 +452,7 @@ export default {
             } else if (this.form.hospital_code == "PDMH") {
               this.form.codeholder = 9;
             }
-            this.form.total= parseFloat(this.form.total.replace(/,/g, ''));
+            this.form.total = parseFloat(this.form.total.replace(/,/g, ""));
             axios
               .post("adminedit_budget/" + this.form.id, this.form)
               .then((response) => {
@@ -463,7 +465,8 @@ export default {
                 this.data[
                   parseInt(this.form.edit_object_index)
                 ].end_date = this.form.end_date;
-                this.data[parseInt(this.form.edit_object_index)].hospital_code = constants.hospital_code[Number(this.form.codeholder) - 1];
+                this.data[parseInt(this.form.edit_object_index)].hospital_code =
+                  constants.hospital_code[Number(this.form.codeholder) - 1];
                 this.dialogFormVisible = false;
                 this.open_notif(
                   "success",

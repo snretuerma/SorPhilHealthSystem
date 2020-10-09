@@ -1,8 +1,5 @@
 @extends('layouts.user')
 
 @section('content')
-
-<x-alert />
-<patient-component></patient-component>
-
+<patient-component></patient-component>s
 @endsection

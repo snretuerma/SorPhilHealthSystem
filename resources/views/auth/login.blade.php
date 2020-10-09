@@ -5,7 +5,7 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 login-sec">
-                <h2 class="text-center">Login Now</h2>
+                <h2 class="text-center">Login</h2>
                 <form class="login-form" method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="form-group">
@@ -24,7 +24,7 @@
                         <input id="password" type="password"
                             class="form-control @error('password') is-invalid @enderror" name="password" required
                             autocomplete="current-password">
-                            
+
                         @error('password')
                         <span class="invalid-feedback" role="alert">
                             <strong>{{ $message }}</strong>
@@ -53,7 +53,7 @@
                             <img class="d-block img-fluid" src="{{asset('images/image1.jpeg')}}" alt="First slide">
                             <div class="carousel-caption d-none d-md-block">
                                 <div class="banner-text">
-                                    <h2>This is Heaven</h2>
+                                    <h2>PF Management System</h2>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                                         incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
                                         nostrud exercitation</p>
@@ -64,7 +64,7 @@
                             <img class="d-block img-fluid" src="{{asset('images/image2.jpg')}}" alt="First slide">
                             <div class="carousel-caption d-none d-md-block">
                                 <div class="banner-text">
-                                    <h2>This is Heaven</h2>
+                                    <h2>PF Management System</h2>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                                         incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
                                         nostrud exercitation</p>
@@ -75,7 +75,7 @@
                             <img class="d-block img-fluid" src="{{asset('images/image3.jpg')}}" alt="First slide">
                             <div class="carousel-caption d-none d-md-block">
                                 <div class="banner-text">
-                                    <h2>This is Heaven</h2>
+                                    <h2>PF Management System</h2>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                                         incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
                                         nostrud exercitation</p>

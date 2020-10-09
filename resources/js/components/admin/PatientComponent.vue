@@ -81,6 +81,9 @@
               prop="last_name"
             >
               <el-input v-model="form.last_name" autocomplete="off"></el-input>
+              <span class="font-italic text-danger" v-if="errors.last_name"
+                ><small>{{ errors.last_name[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Firstname"
@@ -88,6 +91,9 @@
               prop="first_name"
             >
               <el-input v-model="form.first_name" autocomplete="off"></el-input>
+              <span class="font-italic text-danger" v-if="errors.first_name"
+                ><small>{{ errors.first_name[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Middlename"
@@ -98,6 +104,9 @@
                 v-model="form.middle_name"
                 autocomplete="off"
               ></el-input>
+              <span class="font-italic text-danger" v-if="errors.middle_name"
+                ><small>{{ errors.middle_name[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Suffix"
@@ -114,6 +123,10 @@
                 <el-option label="Male" value="1"></el-option>
                 <el-option label="Female" value="2"></el-option>
               </el-select>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.sex"
+                ><small>{{ errors.sex[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Birthdate"
@@ -127,6 +140,9 @@
                 style="width: 100%"
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
+              <span class="font-italic text-danger" v-if="errors.birthdate"
+                ><small>{{ errors.birthdate[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Marital Status"
@@ -146,6 +162,10 @@
                   value="4"
                 ></el-option>
               </el-select>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.marital_status"
+                ><small>{{ errors.marital_status[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="PhilHealth No."
@@ -156,6 +176,11 @@
                 v-model="form.philhealth_number"
                 autocomplete="off"
               ></el-input>
+              <span
+                class="font-italic text-danger"
+                v-if="errors.philhealth_number"
+                ><small>{{ errors.philhealth_number[0] }}</small></span
+              >
             </el-form-item>
             <el-form-item
               label="Hospital code"
@@ -177,6 +202,10 @@
                 <el-option label="PGGMH" value="8"></el-option>
                 <el-option label="PDMH" value="9"></el-option>
               </el-select>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.hospital_code"
+                ><small>{{ errors.hospital_code[0] }}</small></span
+              >
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
@@ -267,6 +296,7 @@ export default {
     return {
       loading: true,
       data: [],
+      errors: [],
       patientinfo: [],
       layout: "pagination, table",
       dialogTableVisible: false,
@@ -572,7 +602,9 @@ export default {
                   this.open_notif("error", "System", "Failed to add patient");
                 }
               })
-              .catch(function (error) {});
+              .catch((error) => {
+                this.errors = error.response.data.errors;
+              });
           }
           break;
         case "edit":
@@ -676,7 +708,9 @@ export default {
                     constants.hospital_code[Number(this.form.codeholder) - 1];
                 }
               })
-              .catch(function (error) {});
+              .catch((error) => {
+                this.errors = error.response.data.errors;
+              });
           }
           break;
       }
