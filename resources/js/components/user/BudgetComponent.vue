@@ -1,12 +1,16 @@
 <template>
   <div>
+    <!-- Header -->
     <div class="row">
       <div class="col-sm-12">
         <h2>Budget List</h2>
       </div>
     </div>
     <hr />
+    <!-- End Header -->
+
     <div class="row">
+      <!-- Search Box -->
       <div class="col-sm-10" align="left">
         <div style="margin-bottom: 10px">
           <el-row>
@@ -19,6 +23,9 @@
           </el-row>
         </div>
       </div>
+      <!-- End Search Box -->
+
+      <!-- Add Button -->
       <div class="col-sm-2" align="right">
         <el-button
           type="primary"
@@ -30,9 +37,13 @@
           >Add</el-button
         >
       </div>
+      <!-- End Button -->
     </div>
+
+    <!-- Card Begins Here -->
     <div class="card">
       <div class="card-body">
+        <!-- Data table -->
         <data-tables
           :data="data"
           :page-size="10"
@@ -52,6 +63,9 @@
           </el-table-column>
           <p slot="append"></p>
         </data-tables>
+        <!-- Data table ends -->
+
+        <!-- Add/Edit Budget Dialog -->
         <el-dialog
           title="Budget Details"
           :visible.sync="dialogFormVisible"
@@ -99,22 +113,27 @@
             <el-button
               v-if="form.formmode == 'add'"
               type="primary"
-              @click="addBudget('add');
-               openFullScreen2();"
+              @click="
+                addBudget('add');
+                openFullScreen2();
+              "
               >Save</el-button
             >
             <el-button
               v-if="form.formmode == 'edit'"
               type="primary"
-              @click="addBudget('edit');
-               openFullScreen2();"
+              @click="
+                addBudget('edit');
+                openFullScreen2();
+              "
               >Save changes</el-button
             >
           </span>
         </el-dialog>
+        <!-- Add/Edit Dialog -->
       </div>
       <!-- Show Patient Details -->
-      <el-dialog title="Budget Details" :visible.sync="dialogTableVisible">
+      <el-dialog title="Budget Info" :visible.sync="dialogTableVisible">
         <el-table :data="gridData">
           <el-table-column
             property="start_date"
@@ -124,12 +143,12 @@
           <el-table-column
             property="total"
             label="Amount"
-            width="200"
+            width="300"
           ></el-table-column>
           <el-table-column
             property="end_date"
             label="End date"
-            width="formLabelWidth"
+            width="200"
           ></el-table-column>
         </el-table>
       </el-dialog>
@@ -144,6 +163,11 @@ export default {
       loading: true,
       data: [],
       budgetInfo: [],
+      layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      formLabelWidth: "120px",
+      // Validation
       rules: {
         start_date: [
           {
@@ -159,12 +183,15 @@ export default {
           { required: true, message: "End date is required.", trigger: "blur" },
         ],
       },
+
+      // Searchbox Filter
       filters: [
         {
           prop: ["start_date", "total", "end_date"],
           value: "",
         },
       ],
+
       titles: [
         {
           prop: "start_date",
@@ -179,6 +206,25 @@ export default {
           label: "End date",
         },
       ],
+
+      // Add form
+      form: {
+        id: "",
+        start_date: "",
+        total: "",
+        end_date: "",
+        formmode: "",
+        edit_object_index: "",
+      },
+
+      // Edit form check
+      form_check: {
+        start_date: "",
+        total: "",
+        end_date: "",
+      },
+
+      // View info data
       gridData: [
         {
           start_date: "",
@@ -186,11 +232,15 @@ export default {
           end_date: "",
         },
       ],
+
+      //Actiom Column
       actionCol: {
         label: "Actions",
         props: {
           align: "center",
         },
+
+        //Action Buttons
         buttons: [
           {
             props: {
@@ -218,10 +268,13 @@ export default {
               this.form.id = row.id;
               this.form.formmode = "edit";
               this.dialogFormVisible = true;
+
               this.form.start_date = row.start_date;
               this.form.total = row.total;
               this.form.end_date = row.end_date;
+
               this.form.edit_object_index = this.data.indexOf(row);
+
               this.form_check.start_date = row.start_date;
               this.form_check.total = row.total;
               this.form_check.end_date = row.end_date;
@@ -246,23 +299,6 @@ export default {
           },
         ],
       },
-      layout: "pagination, table",
-      dialogTableVisible: false,
-      dialogFormVisible: false,
-      form: {
-        id: "",
-        start_date: "",
-        total: "",
-        end_date: "",
-        formmode: "",
-        edit_object_index: "",
-      },
-      form_check: {
-        start_date: "",
-        total: "",
-        end_date: "",
-      },
-      formLabelWidth: "120px",
     };
   },
   methods: {
@@ -358,6 +394,7 @@ export default {
           ) {
             this.open_notif("info", "Invalid", "All fields required!");
           } else {
+            var _this = this;
             axios
               .post("add_budget", this.form)
               .then((response) => {
@@ -372,7 +409,8 @@ export default {
                   this.open_notif("error", "System", "Record failed to add!");
                 }
               })
-              .catch(function (error) {});
+              .catch(function (error) {})
+              .finally(function () {});
           }
           break;
         case "edit":

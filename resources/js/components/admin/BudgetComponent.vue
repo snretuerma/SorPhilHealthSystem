@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <div class="col-sm-12">
-        <h2>Budget List</h2>
+        <h2>Admin Budget List</h2>
       </div>
     </div>
     <hr />
@@ -130,8 +130,10 @@
             <el-button
               v-if="form.formmode == 'edit'"
               type="primary"
-              @click="addBudget('edit');
-               openFullScreen2();"
+              @click="
+                addBudget('edit');
+                openFullScreen2();
+              "
               >Save changes</el-button
             >
           </span>
@@ -262,12 +264,14 @@ export default {
               this.form.id = row.id;
               this.form.formmode = "edit";
               this.dialogFormVisible = true;
+
               this.form.start_date = row.start_date;
               this.form.total = row.total;
               this.form.end_date = row.end_date;
               this.form.codeholder =
                 constants.hospital_code.indexOf(row.hospital_code) - 1;
               this.form.hospital_code = row.hospital_code;
+
               this.form.edit_object_index = this.data.indexOf(row);
               this.form_check.start_date = row.start_date;
               this.form_check.total = row.total;
@@ -448,7 +452,7 @@ export default {
             } else if (this.form.hospital_code == "PDMH") {
               this.form.codeholder = 9;
             }
-            this.form.total= parseFloat(this.form.total.replace(/,/g, ''));
+            this.form.total = parseFloat(this.form.total.replace(/,/g, ""));
             axios
               .post("adminedit_budget/" + this.form.id, this.form)
               .then((response) => {

@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="row">
       <div class="col-sm-12">
-        <h2>Staffs List</h2>
+        <h2>Admin Patient List</h2>
       </div>
     </div>
     <hr />
@@ -57,8 +57,8 @@
             v-for="title in titles"
             :prop="title.prop"
             :label="title.label"
-            :key="title.label"
             :width="title.width"
+            :key="title.label"
             sortable="custom"
           >
           </el-table-column>
@@ -66,9 +66,9 @@
         </data-tables>
         <!-- Data table ends -->
 
-        <!-- Add/Edit Personnel form -->
+        <!-- Add Patient form -->
         <el-dialog
-          title="Staff Details"
+          title="Patient Details"
           :visible.sync="dialogFormVisible"
           top="5vh"
           :close-on-press-escape="false"
@@ -108,7 +108,11 @@
                 ><small>{{ errors.middle_name[0] }}</small></span
               >
             </el-form-item>
-            <el-form-item label="Suffix" :label-width="formLabelWidth">
+            <el-form-item
+              label="Suffix"
+              :label-width="formLabelWidth"
+              prop="name_suffix"
+            >
               <el-input
                 v-model="form.name_suffix"
                 autocomplete="off"
@@ -122,20 +126,6 @@
               <br />
               <span class="font-italic text-danger" v-if="errors.sex"
                 ><small>{{ errors.sex[0] }}</small></span
-              >
-            </el-form-item>
-            <el-form-item
-              label="Type"
-              :label-width="formLabelWidth"
-              prop="is_private"
-            >
-              <el-radio-group v-model="form.is_private">
-                <el-radio label="0">Private</el-radio>
-                <el-radio label="1">Non-private</el-radio>
-              </el-radio-group>
-              <br />
-              <span class="font-italic text-danger" v-if="errors.is_private"
-                ><small>{{ errors.is_private[0] }}</small></span
               >
             </el-form-item>
             <el-form-item
@@ -154,6 +144,69 @@
                 ><small>{{ errors.birthdate[0] }}</small></span
               >
             </el-form-item>
+            <el-form-item
+              label="Marital Status"
+              :label-width="formLabelWidth"
+              prop="marital_status"
+            >
+              <el-select
+                v-model="form.marital_status"
+                placeholder="Please select"
+              >
+                <el-option label="Single" value="0"></el-option>
+                <el-option label="Married" value="1"></el-option>
+                <el-option label="Divorced" value="2"></el-option>
+                <el-option label="Widowed" value="3"></el-option>
+                <el-option
+                  label="Others/Prefer Not to Say"
+                  value="4"
+                ></el-option>
+              </el-select>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.marital_status"
+                ><small>{{ errors.marital_status[0] }}</small></span
+              >
+            </el-form-item>
+            <el-form-item
+              label="PhilHealth No."
+              :label-width="formLabelWidth"
+              prop="philhealth_number"
+            >
+              <el-input
+                v-model="form.philhealth_number"
+                autocomplete="off"
+              ></el-input>
+              <span
+                class="font-italic text-danger"
+                v-if="errors.philhealth_number"
+                ><small>{{ errors.philhealth_number[0] }}</small></span
+              >
+            </el-form-item>
+            <el-form-item
+              label="Hospital code"
+              :label-width="formLabelWidth"
+              prop="hospital_code"
+            >
+              <el-select
+                v-model="form.hospital_code"
+                @change="onChange(form.hospital_code)"
+                placeholder="Please select"
+              >
+                <el-option label="DFBDSMH" value="1"></el-option>
+                <el-option label="DDH" value="2"></el-option>
+                <el-option label="IDH" value="3"></el-option>
+                <el-option label="SREDH" value="4"></el-option>
+                <el-option label="VLPMDH" value="5"></el-option>
+                <el-option label="MagMCH" value="6"></el-option>
+                <el-option label="MatMCH" value="7"></el-option>
+                <el-option label="PGGMH" value="8"></el-option>
+                <el-option label="PDMH" value="9"></el-option>
+              </el-select>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.hospital_code"
+                ><small>{{ errors.hospital_code[0] }}</small></span
+              >
+            </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">Cancel</el-button>
@@ -161,7 +214,7 @@
               v-if="form.formmode == 'add'"
               type="primary"
               @click="
-                personnelFunctions('add');
+                patientFunctions('add');
                 formLoading();
               "
               >Save</el-button
@@ -170,14 +223,14 @@
               v-if="form.formmode == 'edit'"
               type="primary"
               @click="
-                personnelFunctions('edit');
+                patientFunctions('edit');
                 formLoading();
               "
               >Save Changes</el-button
             >
           </span>
         </el-dialog>
-        <!-- Add Personnel form ends here-->
+        <!-- Add Patient form ends here-->
       </div>
     </div>
     <!-- Card ends here -->
@@ -195,34 +248,45 @@
     </div>
     <!-- Footer ends -->
 
-    <!-- Show Personnel Details -->
-    <el-dialog title="Staff Info" :visible.sync="dialogTableVisible">
+    <!-- Show Patient Details -->
+    <el-dialog title="Patient Info" :visible.sync="dialogTableVisible">
       <el-table :data="gridData">
         <el-table-column
           property="name"
           label="Name"
-          width="250"
-        ></el-table-column>
-        <el-table-column
-          property="is_private"
-          label="Type"
-          width="150"
+          width="200"
         ></el-table-column>
         <el-table-column
           property="sex"
           label="Sex"
-          width="150"
+          width="100"
         ></el-table-column>
         <el-table-column
           property="birthdate"
           label="Birthdate"
-          width="100"
+          width="formLabelWidth"
+        ></el-table-column>
+        <el-table-column
+          property="marital_status"
+          label="Marital Status"
+          width="formLabelWidth"
+        ></el-table-column>
+        <el-table-column
+          property="philhealth_number"
+          label="PhilHealth No."
+          width="formLabelWidth"
+        ></el-table-column>
+        <el-table-column
+          property="hospital_code"
+          label="Hospital"
+          width="formLabelWidth"
         ></el-table-column>
       </el-table>
     </el-dialog>
-    <!-- Show Personnel Details -->
+    <!-- Show Patient Details -->
   </div>
 </template>
+
 
 <script>
 "use strict";
@@ -233,7 +297,7 @@ export default {
       loading: true,
       data: [],
       errors: [],
-      personnelinfo: [],
+      patientinfo: [],
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
@@ -257,13 +321,6 @@ export default {
             trigger: "blur",
           },
         ],
-        is_private: [
-          {
-            required: true,
-            message: "Please select staff type",
-            trigger: "change",
-          },
-        ],
         sex: [
           { required: true, message: "Sex is required.", trigger: "change" },
         ],
@@ -275,11 +332,38 @@ export default {
             trigger: "change",
           },
         ],
+        marital_status: [
+          {
+            required: true,
+            message: "Marital Status is required.",
+            trigger: "change",
+          },
+        ],
+        philhealth_number: [
+          {
+            required: true,
+            message: "PhilHealth No. is required.",
+            trigger: "blur",
+          },
+        ],
+        hospital_code: [
+          {
+            required: true,
+            message: "Hospital code is required.",
+            trigger: "blur",
+          },
+        ],
       },
-      // Searchbox Filter
+      // Searchbox Filters
       filters: [
         {
-          prop: ["first_name", "last_name", "middle_name", "is_private"],
+          prop: [
+            "first_name",
+            "last_name",
+            "philhealth_number",
+            "middle_name",
+            "hospital_code",
+          ],
           value: "",
         },
       ],
@@ -291,16 +375,29 @@ export default {
           width: "250px",
         },
         {
-          prop: "is_private",
-          label: "Type",
-        },
-        {
           prop: "sex",
           label: "Sex",
+          width: "120px",
         },
         {
           prop: "birthdate",
           label: "Birthdate",
+          width: "120px",
+        },
+        {
+          prop: "marital_status",
+          label: "Marital Status",
+          width: "180px",
+        },
+        {
+          prop: "philhealth_number",
+          label: "PhilHealth #",
+          width: "150px",
+        },
+        {
+          prop: "hospital_code",
+          label: "Hospital",
+          width: "150px",
         },
       ],
 
@@ -313,12 +410,14 @@ export default {
         name_suffix: "",
         sex: "",
         birthdate: "",
-        is_private: "",
+        marital_status: "",
+        philhealth_number: "",
         name: "",
         formmode: "",
+        hospital_code: "",
+        codeholder: "",
         edit_object_index: "",
       },
-
       // Edit form check
       form_check: {
         last_name: "",
@@ -327,21 +426,25 @@ export default {
         name_suffix: "",
         sex: "",
         birthdate: "",
-        is_private: "",
+        marital_status: "",
+        philhealth_number: "",
+        codeholder: "",
         name: "",
       },
 
-      // View info data
+      // Show details data
       gridData: [
         {
           name: "",
           sex: "",
           birthdate: "",
-          is_private: "",
+          marital_status: "",
+          philhealth_number: "",
+          hospital_code: "",
         },
       ],
 
-      //Actiom column
+      //Action column
       actionCol: {
         label: "Actions",
         props: {
@@ -367,7 +470,9 @@ export default {
               );
               this.gridData[0].sex = row.sex;
               this.gridData[0].birthdate = row.birthdate;
-              this.gridData[0].is_private = row.is_private;
+              this.gridData[0].marital_status = row.marital_status;
+              this.gridData[0].philhealth_number = row.philhealth_number;
+              this.gridData[0].hospital_code = row.hospital_code;
             },
           },
           {
@@ -387,9 +492,13 @@ export default {
               this.form.first_name = row.first_name;
               this.form.middle_name = row.middle_name;
               this.form.name_suffix = row.name_suffix;
-              this.form.is_private = row.is_private;
               this.form.sex = row.sex;
               this.form.birthdate = row.birthdate;
+              this.form.marital_status = row.marital_status;
+              this.form.philhealth_number = row.philhealth_number;
+              this.form.codeholder =
+                constants.hospital_code.indexOf(row.hospital_code) - 1;
+              this.form.hospital_code = row.hospital_code;
 
               this.form.edit_object_index = this.data.indexOf(row);
 
@@ -397,9 +506,11 @@ export default {
               this.form_check.first_name = row.first_name;
               this.form_check.middle_name = row.middle_name;
               this.form_check.name_suffix = row.name_suffix;
-              this.form_check.is_private = row.is_private;
               this.form_check.sex = row.sex;
               this.form_check.birthdate = row.birthdate;
+              this.form_check.marital_status = row.marital_status;
+              this.form_check.philhealth_number = row.philhealth_number;
+              this.form_check.codeholder = this.form.codeholder;
 
               this.form_check.name =
                 this.form_check.last_name +
@@ -410,23 +521,6 @@ export default {
                 " " +
                 this.form_check.middle_name.slice(0, 1) +
                 ". ";
-            },
-          },
-          {
-            props: {
-              type: "danger",
-              icon: "el-icon-delete",
-              circle: true,
-              size: "mini",
-            },
-            handler: (row) => {
-              var data = this.data;
-
-              this.deletePersonnel(row.id, (res_value) => {
-                if (res_value) {
-                  data.splice(data.indexOf(row), 1);
-                }
-              });
             },
           },
         ],
@@ -442,28 +536,33 @@ export default {
       });
       loading.close();
     },
-    getPersonnel: function () {
+    getPatients: function () {
       axios
-        .get("personnel_get")
+        .get("patients_get")
         .then((response) => {
           response.data.forEach((element) => {
-            this.buildPersonnelData(element);
+            this.buildPatientData(element);
           });
           this.data = response.data;
           this.loading = false;
         })
         .catch(function (error) {});
     },
-    personnelFunctions: function (mode) {
+    onChange: function (event) {
+      this.form.codeholder = event;
+    },
+    patientFunctions: function (mode) {
       switch (mode) {
         case "add":
           if (
             this.form.last_name == "" ||
             this.form.first_name == "" ||
             this.form.middle_name == "" ||
-            this.form.is_private == "" ||
             this.form.sex == "" ||
-            this.form.birthdate == ""
+            this.form.birthdate == "" ||
+            this.form.marital_status == "" ||
+            this.form.philhealth_number == "" ||
+            this.form.codeholder == ""
           ) {
             this.open_notif(
               "info",
@@ -472,7 +571,7 @@ export default {
             );
           } else {
             axios
-              .post("add_personnel", this.form)
+              .post("add_patient", this.form)
               .then((response) => {
                 if (response.status > 199 && response.status < 203) {
                   response.data.name =
@@ -484,18 +583,23 @@ export default {
                     " " +
                     this.form.middle_name.slice(0, 1) +
                     ". ";
-                  response.data.is_private =
-                    constants.is_private[Number(this.form.is_private)];
                   response.data.sex = constants.sex[Number(this.form.sex - 1)];
+                  response.data.marital_status =
+                    constants.marital_status[Number(this.form.marital_status)];
+                  response.data.hospital_code =
+                    constants.hospital_code[
+                      Number(this.form.hospital_code - 1)
+                    ];
+
                   this.data.push(response.data);
                   this.dialogFormVisible = false;
                   this.open_notif(
                     "success",
                     "Success",
-                    "Staff added successfully"
+                    "Patient added successfully"
                   );
                 } else {
-                  this.open_notif("error", "System", "Failed to add personnel");
+                  this.open_notif("error", "System", "Failed to add patient");
                 }
               })
               .catch((error) => {
@@ -510,7 +614,10 @@ export default {
             this.form.middle_name == this.form_check.middle_name &&
             this.form.name_suffix == this.form_check.name_suffix &&
             this.form.sex == this.form_check.sex &&
-            this.form.birthdate == this.form_check.birthdate
+            this.form.birthdate == this.form_check.birthdate &&
+            this.form.marital_status == this.form_check.marital_status &&
+            this.form.philhealth_number == this.form_check.philhealth_number &&
+            this.form.codeholder == this.form_check.codeholder
           ) {
             this.open_notif("info", "Message", "No Changes");
           } else {
@@ -519,10 +626,35 @@ export default {
             } else if (this.form.sex == "Female") {
               this.form.sex = 2;
             }
-            if (this.form.is_private == "Private") {
-              this.form.is_private = 0;
-            } else if (this.form.is_private == "Non-private") {
-              this.form.is_private = 1;
+            if (this.form.marital_status == "Single") {
+              this.form.marital_status = 0;
+            } else if (this.form.marital_status == "Married") {
+              this.form.marital_status = 1;
+            } else if (this.form.marital_status == "Divorced") {
+              this.form.marital_status = 2;
+            } else if (this.form.marital_status == "Widowed") {
+              this.form.marital_status = 3;
+            } else if (this.form.marital_status == "Others/Prefer Not to Say") {
+              this.form.marital_status = 4;
+            }
+            if (this.form.hospital_code == "DFBDSMH") {
+              this.form.codeholder = 1;
+            } else if (this.form.hospital_code == "DDH") {
+              this.form.codeholder = 2;
+            } else if (this.form.hospital_code == "IDH") {
+              this.form.codeholder = 3;
+            } else if (this.form.hospital_code == "SREDH") {
+              this.form.codeholder = 4;
+            } else if (this.form.hospital_code == "VLPMDH") {
+              this.form.codeholder = 5;
+            } else if (this.form.hospital_code == "MagMCH") {
+              this.form.codeholder = 6;
+            } else if (this.form.hospital_code == "MatMCH") {
+              this.form.codeholder = 7;
+            } else if (this.form.hospital_code == "PGGMH") {
+              this.form.codeholder = 8;
+            } else if (this.form.hospital_code == "PDMH") {
+              this.form.codeholder = 9;
             }
             this.form.name =
               this.form.last_name +
@@ -534,7 +666,7 @@ export default {
               this.form.middle_name.slice(0, 1) +
               ". ";
             axios
-              .post("edit_personnel/" + this.form.id, this.form)
+              .post("edit_patient/" + this.form.id, this.form)
               .then((response) => {
                 if (response.status > 199 && response.status < 203) {
                   this.open_notif(
@@ -557,14 +689,23 @@ export default {
                   ].name_suffix = this.form.name_suffix;
                   this.data[parseInt(this.form.edit_object_index)].sex =
                     constants.sex[Number(this.form.sex) - 1];
-                  this.data[parseInt(this.form.edit_object_index)].is_private =
-                    constants.is_private[Number(this.form.is_private)];
                   this.data[
                     parseInt(this.form.edit_object_index)
                   ].birthdate = this.form.birthdate;
                   this.data[
                     parseInt(this.form.edit_object_index)
+                  ].marital_status =
+                    constants.marital_status[Number(this.form.marital_status)];
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].philhealth_number = this.form.philhealth_number;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
                   ].name = this.form.name;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].hospital_code =
+                    constants.hospital_code[Number(this.form.codeholder) - 1];
                 }
               })
               .catch((error) => {
@@ -574,30 +715,10 @@ export default {
           break;
       }
     },
-    deletePersonnel: function (id, res) {
-      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
-        distinguishCancelAndClose: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        type: "warning",
-      })
-        .then(() => {
-          var _this = this;
-          axios.post("personnel_delete/" + id).then(function (response) {
-            if (response.status > 199 && response.status < 203) {
-              _this.open_notif("success", "Success", "Deleted Successfully");
-              res(id);
-            }
-          });
-        })
-        .catch((action) => {
-          this.open_notif("info", "Cancelled", "No Changes");
-        });
-    },
     formDialog: function (id) {
       if (id == "insert_data") {
         this.form.formmode = "insert_data";
-        this.clearFields();
+        this.resetForm();
         this.dialogFormVisible = true;
       } else if (id == "edit_data") {
         this.dialogFormVisible = true;
@@ -635,23 +756,24 @@ export default {
       this.form.first_name = "";
       this.form.middle_name = "";
       this.form.name_suffix = "";
-      this.form.is_private = "";
       this.form.sex = "";
       this.form.birthdate = "";
+      this.form.marital_status = "";
+      this.form.philhealth_number = "";
+      this.form.hospital_code = "";
+      this.form.codeholder = "";
     },
-    assignType: function (type_value) {
-      var type;
-      switch (type_value) {
-        case 0:
-          type = "Private";
-          break;
-        case 1:
-          type = "Non-private";
-          break;
-        default:
-          type = "Not Known";
-      }
-      return type;
+    buildName: function (first_name, middle_name, last_name, suffix) {
+      return (
+        last_name +
+        " " +
+        suffix +
+        ", " +
+        first_name +
+        " " +
+        middle_name.slice(0, 1) +
+        "."
+      ).trim();
     },
     assignSex: function (sex_value) {
       var sex;
@@ -670,19 +792,27 @@ export default {
       }
       return sex;
     },
-    buildName: function (first_name, middle_name, last_name, suffix) {
-      return (
-        last_name +
-        " " +
-        suffix +
-        ", " +
-        first_name +
-        " " +
-        middle_name.slice(0, 1) +
-        "."
-      ).trim();
+    assignMaritalStatus: function (marital_status_value) {
+      var marital_status;
+      switch (marital_status_value) {
+        case 0:
+          marital_status = "Single";
+          break;
+        case 1:
+          marital_status = "Married";
+          break;
+        case 2:
+          marital_status = "Divorced";
+          break;
+        case 3:
+          marital_status = "Widowed";
+          break;
+        default:
+          marital_status = "Others/Prefer Not to Say";
+      }
+      return marital_status;
     },
-    buildPersonnelData: function (element) {
+    buildPatientData: function (element) {
       if (element.name_suffix == undefined) {
         element.name_suffix = "";
       }
@@ -693,12 +823,12 @@ export default {
         element.name_suffix
       );
       element.sex = this.assignSex(element.sex);
-      element.is_private = this.assignType(element.is_private);
+      element.marital_status = this.assignMaritalStatus(element.marital_status);
     },
   },
   mounted() {
-    this.getPersonnel();
-    this.loading=false;
+    this.getPatients();
+    $(".el-table_1_column_2").width("100px");
   },
 };
 </script>

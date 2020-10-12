@@ -13,14 +13,14 @@
       <!-- Search Box -->
       <div class="col-sm-10" align="left">
         <div style="margin-bottom: 10px">
-          <el-row>
+          <!-- <el-row>
             <el-col :span="10">
               <el-input
                 v-model="filters[0].value"
                 placeholder="Search"
               ></el-input>
             </el-col>
-          </el-row>
+          </el-row> -->
         </div>
       </div>
       <!-- End Search Box -->
@@ -723,6 +723,8 @@ export default {
       axios
         .post("add_patient", this.form)
         .then((response) => {
+          if (response.status > 199 && response.status < 203) {
+          this.open_notif("success", "Success", "Changes has been saved");
           if (this.form.sex == 1) {
             this.form.sex = "Male";
           } else if (this.form.sex == 2) {
@@ -755,6 +757,7 @@ export default {
           this.data.push(this.form);
 
           this.dialogFormVisible = false;
+          }
         })
         .catch(function (error) {});
     },
@@ -844,7 +847,7 @@ export default {
           _this.form.middle_name.slice(0, 1) +
           ". ";
         axios
-          .post("patients_edit/" + this.form.id, this.form)
+          .post("patient_edit/" + this.form.id, this.form)
           .then((response) => {
             if (response.status > 199 && response.status < 203) {
               _this.open_notif("success", "Success", "Changes has been saved");
@@ -973,7 +976,7 @@ export default {
       })
         .then(() => {
           var _this = this;
-          axios.post("patients_delete/" + id).then(function (response) {
+          axios.post("patient_delete/" + id).then(function (response) {
             if (response.status > 199 && response.status < 203) {
                _this.open_notif("success", "Success",  "Succesfully! Deleted");
               res(id);
