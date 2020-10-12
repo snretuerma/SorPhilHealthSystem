@@ -34,6 +34,3 @@ export default {
     marital_status: marital_status,
     is_private: is_private
 }
-
-
-

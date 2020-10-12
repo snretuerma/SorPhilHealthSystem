@@ -35,11 +35,14 @@ Vue.component('users-component', require('./components/admin/UserComponent.vue')
 Vue.component('adminbudget-component', require('./components/admin/BudgetComponent.vue').default);
 Vue.component('adminpersonnel-component', require('./components/admin/PersonnelComponent.vue').default);
 Vue.component('adminpatient-component', require('./components/admin/PatientComponent.vue').default);
+Vue.component('adminrecord-component', require('./components/admin/RecordComponent.vue').default);
 Vue.component('resetpassadmin-component', require('./components/admin/ResetPasswordComponent.vue').default);
 
 //Users
 Vue.component('patient-component', require('./components/user/PatientComponent.vue').default);
 Vue.component('budget-component', require('./components/user/BudgetComponent.vue').default);
+Vue.component('record-component', require('./components/user/RecordComponent.vue').default);
+Vue.component('restore-component', require('./components/user/RestoreComponent.vue').default);
 Vue.component('personnel-component', require('./components/user/PersonnelComponent.vue').default);
 Vue.component('resetpass-component', require('./components/user/ResetPasswordComponent.vue').default);
 const app = new Vue({

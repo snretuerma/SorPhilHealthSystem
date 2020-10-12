@@ -7,6 +7,7 @@ use App\Models\Budget;
 use App\Models\Hospital;
 use App\Models\Personnel;
 use App\Models\User;
+use App\Models\MedicalRecord;
 use Auth;
 use DB;
 use Dotenv\Store\File\Paths;;
@@ -103,6 +104,11 @@ class AdminController extends Controller
         return view('roles.admin.budget');
     }
 
+    public function record()
+    {
+        return view('roles.admin.record');
+    }
+
     public function getBudget()
     {
         $budget = DB::table('budgets')
@@ -185,5 +191,11 @@ class AdminController extends Controller
         $patient->hospital_id = $request->codeholder;
         $patient->save();
         return $patient;
+    }
+    public function getRecord()
+    {
+        $result = MedicalRecord::join('patients as p', 'medical_records.patient_id', '=', 'p.id')
+        ->get();
+        return $result;
     }
 }
