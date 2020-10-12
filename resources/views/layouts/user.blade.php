@@ -65,12 +65,17 @@
             </li>
             <li class="sidebar li">
               <a href="{{route('patients')}}">
-                <i class="fa fa-file-medical-alt"></i><span>Patients</span>
+                <i class="fa fa-hospital-user"></i><span>Patients</span>
               </a>
             </li>
             <li class="sidebar li">
-              <a href="">
+              <a href="{{route('record')}}">
                 <i class="fa fa-file-medical-alt"></i><span>Records</span>
+              </a>
+            </li>
+            <li class="sidebar li">
+              <a href="{{route('restore')}}">
+                <i class="fa fa-file-medical-alt"></i><span>Restore</span>
               </a>
             </li>
           </ul>
@@ -79,6 +84,9 @@
       </div>
       <!-- sidebar-content  -->
       <div class="sidebar-footer">
+        <a href="{{route('reset')}}">
+          <i class="fa fa-key"></i>&nbsp;&nbsp;Reset Password
+        </a>
         <a href="{{ route('logout') }}" onclick="event.preventDefault();
               document.getElementById('logout-form').submit();">
           <i class="fa fa-power-off"></i>&nbsp;&nbsp;Logout
@@ -96,11 +104,9 @@
         <div id="app">
           @yield('content')
         </div>
-        <footer class="text-center">
-          footer
-        </footer>
       </div>
     </main>
+
     <!-- page-content" -->
   </div>
   <script src="{{asset('js/app.js')}}"></script>

@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
 Auth::routes([
@@ -24,15 +24,34 @@ Auth::routes([
 ]);
 Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/', 'AdminController@index')->name('admin');
+    Route::get('resetadmin', 'AdminController@resetViewAdmin')->name('resetadmin');
+    Route::post('resetpassadmin', 'AdminController@resetPassAdmin');
+    //Budget
     Route::get('/adminbudget', 'AdminController@budget')->name('adminbudget');
     Route::get('adminbudget_get', 'AdminController@getBudget');
-
     Route::post('adminedit_budget/{id}', 'AdminController@editBudget');
     Route::post('adminadd_budget', 'AdminController@addBudget');
-    
+
+    //Staffs
+    Route::get('/adminPersonnel', 'AdminController@personnel')->name('adminPersonnel');
+    Route::get('personnel_get', 'AdminController@getPersonnel');
+    Route::post('add_personnel', 'AdminController@addPersonnel');
+    Route::post('edit_personnel/{id}', 'AdminController@editPersonnel');
+
+    //Patient
+    Route::get('/adminPatient', 'AdminController@patient')->name('adminPatient');
+    Route::get('patients_get', 'AdminController@getPatient');
+    Route::post('add_patient', 'AdminController@addPatient');
+    Route::post('edit_patient/{id}', 'AdminController@editPatient');
+
+    Route::get('/adminrecord', 'AdminController@record')->name('adminrecord');
+    Route::get('adminrecord_get', 'AdminController@getRecord');
+    Route::get('adminrecord_get1', 'AdminController@getRecord1');
 });
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('user');
+    Route::get('reset', 'UserController@resetView')->name('reset');
+    Route::post('resetpass', 'UserController@resetPass');
     //Budget
     Route::get('/budget', 'UserController@budget')->name('budget');
     Route::get('budget_get', 'UserController@getBudget');
@@ -43,21 +62,28 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/budget_export', 'UserController@exportBudget');
     //Staffs
     Route::get('/personnel', 'UserController@personnel')->name('personnel');
-    Route::get('personnel_get', 'UserController@getPersonnel');
+    Route::get('personnel_get', 'UserController@getPersonnels');
     Route::post('add_personnel', 'UserController@addPersonnel');
+    Route::post('/edit_personnel/{id}', 'UserController@editPersonnel');
     Route::post('personnel_delete/{id}', 'UserController@deletePersonnel');
     //Patients
     Route::get('/patients', 'UserController@patients')->name('patients');
     Route::get('patients_get', 'UserController@getPatients');
     Route::post('add_patient', 'UserController@addPatient');
-    Route::post('patients_delete/{id}', 'UserController@deletePatients');
-    Route::post('patients_edit/{id}', 'UserController@editPatients');
     Route::post('patients_import', 'UserController@importPatients');
     Route::get('/patients_export', 'UserController@exportPatients');
-    
+    Route::post('patient_delete/{id}', 'UserController@deletePatient');
+    Route::post('patient_edit/{id}', 'UserController@editPatient');
     //Records
-    Route::get('/records', 'UserController@records')->name('records');
-    
+    Route::get('/record', 'UserController@record')->name('record');
+    Route::get('record_get', 'UserController@getRecord');
+    Route::post('personnel_get/{id}', 'UserController@getPersonnel');
+    Route::post('delete_record/{id}', 'UserController@deleteRecord');
+
+    //Restore 
+    Route::get('/restore', 'UserController@restore')->name('restore');
+    Route::get('restore_get', 'UserController@getRestore');//to get deleted medical records
+    Route::post('edit_restore/{id}', 'UserController@editRestore');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');

@@ -7,6 +7,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\Request;
 use Auth;
+
 use Spatie\Permission\Models\Role;
 
 class LoginController extends Controller
@@ -33,7 +34,7 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
     }
-    
+
     public function username()
     {
         return 'username';
@@ -41,14 +42,21 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        if($user->hasRole('admin')){
+        if ($user->hasRole('admin')) {
             return redirect('/admin');
         }
-        if($user->hasRole('user')){
+        if ($user->hasRole('user')) {
             return redirect('/user');
         }
-        if($user->hasRole('observer')){
+        if ($user->hasRole('observer')) {
             return redirect('/observer');
         }
+    }
+
+    public function logout()
+    {
+        Auth::logout();
+
+        return redirect('/');
     }
 }

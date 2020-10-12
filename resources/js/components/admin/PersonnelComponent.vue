@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="row">
       <div class="col-sm-12">
-        <h2>Staffs List</h2>
+        <h2>Admin Staffs List</h2>
       </div>
     </div>
     <hr />
@@ -154,6 +154,31 @@
                 ><small>{{ errors.birthdate[0] }}</small></span
               >
             </el-form-item>
+            <el-form-item
+              label="Hospital code"
+              :label-width="formLabelWidth"
+              prop="hospital_code"
+            >
+              <el-select
+                v-model="form.hospital_code"
+                @change="onChange(form.hospital_code)"
+                placeholder="Please select"
+              >
+                <el-option label="DFBDSMH" value="1"></el-option>
+                <el-option label="DDH" value="2"></el-option>
+                <el-option label="IDH" value="3"></el-option>
+                <el-option label="SREDH" value="4"></el-option>
+                <el-option label="VLPMDH" value="5"></el-option>
+                <el-option label="MagMCH" value="6"></el-option>
+                <el-option label="MatMCH" value="7"></el-option>
+                <el-option label="PGGMH" value="8"></el-option>
+                <el-option label="PDMH" value="9"></el-option>
+              </el-select>
+              <br />
+              <span class="font-italic text-danger" v-if="errors.hospital_code"
+                ><small>{{ errors.hospital_code[0] }}</small></span
+              >
+            </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">Cancel</el-button>
@@ -201,12 +226,12 @@
         <el-table-column
           property="name"
           label="Name"
-          width="250"
+          width="200"
         ></el-table-column>
         <el-table-column
           property="is_private"
           label="Type"
-          width="150"
+          width="300"
         ></el-table-column>
         <el-table-column
           property="sex"
@@ -216,7 +241,12 @@
         <el-table-column
           property="birthdate"
           label="Birthdate"
-          width="100"
+          width="180"
+        ></el-table-column>
+        <el-table-column
+          property="hospital_code"
+          label="Hospital"
+          width="180"
         ></el-table-column>
       </el-table>
     </el-dialog>
@@ -275,11 +305,24 @@ export default {
             trigger: "change",
           },
         ],
+        hospital_code: [
+          {
+            required: true,
+            message: "Hospital code is required.",
+            trigger: "blur",
+          },
+        ],
       },
       // Searchbox Filter
       filters: [
         {
-          prop: ["first_name", "last_name", "middle_name", "is_private"],
+          prop: [
+            "first_name",
+            "last_name",
+            "middle_name",
+            "hospital_code",
+            "is_private",
+          ],
           value: "",
         },
       ],
@@ -302,6 +345,10 @@ export default {
           prop: "birthdate",
           label: "Birthdate",
         },
+        {
+          prop: "hospital_code",
+          label: "Hospital",
+        },
       ],
 
       // Add form
@@ -314,6 +361,8 @@ export default {
         sex: "",
         birthdate: "",
         is_private: "",
+        hospital_code: "",
+        codeholder: "",
         name: "",
         formmode: "",
         edit_object_index: "",
@@ -328,6 +377,7 @@ export default {
         sex: "",
         birthdate: "",
         is_private: "",
+        codeholder: "",
         name: "",
       },
 
@@ -338,6 +388,7 @@ export default {
           sex: "",
           birthdate: "",
           is_private: "",
+          hospital_code: "",
         },
       ],
 
@@ -368,6 +419,7 @@ export default {
               this.gridData[0].sex = row.sex;
               this.gridData[0].birthdate = row.birthdate;
               this.gridData[0].is_private = row.is_private;
+              this.gridData[0].hospital_code = row.hospital_code;
             },
           },
           {
@@ -390,6 +442,9 @@ export default {
               this.form.is_private = row.is_private;
               this.form.sex = row.sex;
               this.form.birthdate = row.birthdate;
+              this.form.codeholder =
+                constants.hospital_code.indexOf(row.hospital_code) - 1;
+              this.form.hospital_code = row.hospital_code;
 
               this.form.edit_object_index = this.data.indexOf(row);
 
@@ -400,6 +455,7 @@ export default {
               this.form_check.is_private = row.is_private;
               this.form_check.sex = row.sex;
               this.form_check.birthdate = row.birthdate;
+              this.form_check.codeholder = this.form.codeholder;
 
               this.form_check.name =
                 this.form_check.last_name +
@@ -412,28 +468,14 @@ export default {
                 ". ";
             },
           },
-          {
-            props: {
-              type: "danger",
-              icon: "el-icon-delete",
-              circle: true,
-              size: "mini",
-            },
-            handler: (row) => {
-              var data = this.data;
-
-              this.deletePersonnel(row.id, (res_value) => {
-                if (res_value) {
-                  data.splice(data.indexOf(row), 1);
-                }
-              });
-            },
-          },
         ],
       },
     };
   },
   methods: {
+    onChange: function (event) {
+      this.form.codeholder = event;
+    },
     formLoading: function () {
       const loading = this.$loading({
         lock: true,
@@ -463,7 +505,8 @@ export default {
             this.form.middle_name == "" ||
             this.form.is_private == "" ||
             this.form.sex == "" ||
-            this.form.birthdate == ""
+            this.form.birthdate == "" ||
+            this.form.codeholder == ""
           ) {
             this.open_notif(
               "info",
@@ -487,6 +530,10 @@ export default {
                   response.data.is_private =
                     constants.is_private[Number(this.form.is_private)];
                   response.data.sex = constants.sex[Number(this.form.sex - 1)];
+                  response.data.hospital_code =
+                    constants.hospital_code[
+                      Number(this.form.hospital_code - 1)
+                    ];
                   this.data.push(response.data);
                   this.dialogFormVisible = false;
                   this.open_notif(
@@ -509,8 +556,10 @@ export default {
             this.form.first_name == this.form_check.first_name &&
             this.form.middle_name == this.form_check.middle_name &&
             this.form.name_suffix == this.form_check.name_suffix &&
+            this.form.is_private == this.form_check.is_private &&
             this.form.sex == this.form_check.sex &&
-            this.form.birthdate == this.form_check.birthdate
+            this.form.birthdate == this.form_check.birthdate &&
+            this.form.codeholder == this.form_check.codeholder
           ) {
             this.open_notif("info", "Message", "No Changes");
           } else {
@@ -523,6 +572,25 @@ export default {
               this.form.is_private = 0;
             } else if (this.form.is_private == "Non-private") {
               this.form.is_private = 1;
+            }
+            if (this.form.hospital_code == "DFBDSMH") {
+              this.form.codeholder = 1;
+            } else if (this.form.hospital_code == "DDH") {
+              this.form.codeholder = 2;
+            } else if (this.form.hospital_code == "IDH") {
+              this.form.codeholder = 3;
+            } else if (this.form.hospital_code == "SREDH") {
+              this.form.codeholder = 4;
+            } else if (this.form.hospital_code == "VLPMDH") {
+              this.form.codeholder = 5;
+            } else if (this.form.hospital_code == "MagMCH") {
+              this.form.codeholder = 6;
+            } else if (this.form.hospital_code == "MatMCH") {
+              this.form.codeholder = 7;
+            } else if (this.form.hospital_code == "PGGMH") {
+              this.form.codeholder = 8;
+            } else if (this.form.hospital_code == "PDMH") {
+              this.form.codeholder = 9;
             }
             this.form.name =
               this.form.last_name +
@@ -555,13 +623,17 @@ export default {
                   this.data[
                     parseInt(this.form.edit_object_index)
                   ].name_suffix = this.form.name_suffix;
-                  this.data[parseInt(this.form.edit_object_index)].sex =
-                    constants.sex[Number(this.form.sex) - 1];
                   this.data[parseInt(this.form.edit_object_index)].is_private =
                     constants.is_private[Number(this.form.is_private)];
+                  this.data[parseInt(this.form.edit_object_index)].sex =
+                    constants.sex[Number(this.form.sex) - 1];
                   this.data[
                     parseInt(this.form.edit_object_index)
                   ].birthdate = this.form.birthdate;
+                  this.data[
+                    parseInt(this.form.edit_object_index)
+                  ].hospital_code =
+                    constants.hospital_code[Number(this.form.codeholder) - 1];
                   this.data[
                     parseInt(this.form.edit_object_index)
                   ].name = this.form.name;
@@ -573,26 +645,6 @@ export default {
           }
           break;
       }
-    },
-    deletePersonnel: function (id, res) {
-      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
-        distinguishCancelAndClose: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        type: "warning",
-      })
-        .then(() => {
-          var _this = this;
-          axios.post("personnel_delete/" + id).then(function (response) {
-            if (response.status > 199 && response.status < 203) {
-              _this.open_notif("success", "Success", "Deleted Successfully");
-              res(id);
-            }
-          });
-        })
-        .catch((action) => {
-          this.open_notif("info", "Cancelled", "No Changes");
-        });
     },
     formDialog: function (id) {
       if (id == "insert_data") {
@@ -638,6 +690,8 @@ export default {
       this.form.is_private = "";
       this.form.sex = "";
       this.form.birthdate = "";
+      this.form.hospital_code = "";
+      this.form.codeholder = "";
     },
     assignType: function (type_value) {
       var type;
@@ -698,7 +752,6 @@ export default {
   },
   mounted() {
     this.getPersonnel();
-    this.loading=false;
   },
 };
 </script>

@@ -22,6 +22,7 @@ class CreatePersonnelsTable extends Migration
             $table->string('name_suffix')->nullable();
             $table->unsignedTinyInteger('sex');
             $table->date('birthdate');
+            $table->boolean('is_private');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -1,5 +1,109 @@
 @import url(https://fonts.googleapis.com/css?family=Nunito);@charset "UTF-8";
 
+.login-block {
+  background: #e31b23;
+  /* fallback for old browsers */
+  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to bottom, #3B4783, #e31b23);
+  /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  float: left;
+  width: 100%;
+  padding: 60px 0;
+}
+
+.banner-sec {
+  background: "{{asset('images/provincial_logo.png')}}" no-repeat left bottom;
+  background-size: cover;
+  min-height: 500px;
+  border-radius: 0 10px 10px 0;
+  padding: 0;
+}
+
+.container {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 15px 20px 0px rgba(0, 0, 0, 0.1);
+}
+
+.carousel-inner {
+  border-radius: 0 10px 10px 0;
+}
+
+.img-fluid {
+  min-height: 450px;
+}
+
+.carousel-caption {
+  text-align: left;
+  left: 5%;
+}
+
+.login-sec {
+  padding: 50px 30px;
+  position: relative;
+}
+
+.login-sec .copy-text {
+  position: absolute;
+  width: 80%;
+  bottom: 20px;
+  font-size: 13px;
+  text-align: center;
+}
+
+.login-sec .copy-text i {
+  color: #e31b23;
+}
+
+.login-sec .copy-text a {
+  color: #3B4783;
+}
+
+.login-sec h2 {
+  margin-bottom: 30px;
+  font-weight: 800;
+  font-size: 30px;
+  color: #e31b23;
+}
+
+.login-sec h2:after {
+  content: " ";
+  width: 100px;
+  height: 5px;
+  background: #3B4783;
+  display: block;
+  margin-top: 20px;
+  border-radius: 3px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.banner-text {
+  width: 70%;
+  position: absolute;
+  bottom: 40px;
+  padding-left: 20px;
+}
+
+.banner-text h2 {
+  color: black;
+  font-weight: 600;
+}
+
+.banner-text h2:after {
+  content: " ";
+  width: 100px;
+  height: 5px;
+  background: #FFF;
+  display: block;
+  margin-top: 20px;
+  border-radius: 3px;
+}
+
+.banner-text p {
+  color: black;
+}
+
 @-webkit-keyframes swing {
   0% {
     transform: rotate(0deg);
@@ -133,7 +237,7 @@ body {
 }
 
 .page-wrapper .theme.chiller-theme {
-  background: #1e2229;
+  background: #39c1eb;
 }
 
 /*----------------toggeled sidebar----------------*/
@@ -479,13 +583,13 @@ body {
 /*-----------------------------chiller-theme-------------------------------------------------*/
 
 .chiller-theme .sidebar-wrapper {
-  background: #31353D;
+  background: #3B4783;
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-header,
 .chiller-theme .sidebar-wrapper .sidebar-search,
 .chiller-theme .sidebar-wrapper .sidebar-menu {
-  border-top: 1px solid #3a3f48;
+  border-top: 1px solid #4862e4;
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
@@ -501,7 +605,7 @@ body {
 .chiller-theme .sidebar-wrapper .sidebar-brand > a,
 .chiller-theme .sidebar-wrapper .sidebar-menu ul li a,
 .chiller-theme .sidebar-footer > a {
-  color: #818896;
+  color: #ffffff;
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-menu ul li:hover > a,
@@ -509,7 +613,7 @@ body {
 .chiller-theme .sidebar-wrapper .sidebar-header .user-info,
 .chiller-theme .sidebar-wrapper .sidebar-brand > a:hover,
 .chiller-theme .sidebar-footer > a:hover i {
-  color: #b8bfce;
+  color: #ffffff;
 }
 
 .page-wrapper.chiller-theme.toggled #close-sidebar {
@@ -532,17 +636,17 @@ body {
 .chiller-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .chiller-theme .sidebar-wrapper .sidebar-search .input-group-text {
-  background: #3a3f48;
+  background: #636ca0;
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-menu .header-menu span {
-  color: #6c7b88;
+  color: #ffffff;
 }
 
 .chiller-theme .sidebar-footer {
-  background: #3a3f48;
-  box-shadow: 0px -1px 5px #282c33;
-  border-top: 1px solid #464a52;
+  background: #3B4783;
+  box-shadow: 0px -1px 5px #2b3980;
+  border-top: 1px solid #4862e4;
 }
 
 .chiller-theme .sidebar-footer > a:first-child {
@@ -554,7 +658,7 @@ body {
 }
 
 .li.li {
-  border-bottom: 1px solid #3a3f48;
+  border-bottom: 1px solid #4862e4;
 }
 
 /*!

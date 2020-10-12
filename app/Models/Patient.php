@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+// use App\Models\Hospital;
 class Patient extends Model
 {
     use SoftDeletes;
@@ -15,11 +15,14 @@ class Patient extends Model
         'marital_status', 'philhealth_number'
     ];
 
-    public function hospital()
+    public  function hospital()
     {
-        return $this->belongsTo('App\Models\Hospital');
+        return $this->belongsTo(Hospital::class);
     }
-
+    public function getHospital()
+    {
+        return Hospital::find($this->hospital->id)->get();
+    }
     public function medical_records()
     {
         return $this->hasMany('App\Models\MedicalRecord');

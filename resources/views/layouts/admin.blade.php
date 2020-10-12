@@ -59,23 +59,23 @@
               </a>
             </li>
             <li class="sidebar li">
-              <a href="">
-                <i class="fa fa-user-md"></i><span>Physician</span>
+              <a href="{{route('adminPersonnel')}}">
+                <i class="fa fa-user-md"></i><span>Staffs</span>
               </a>
             </li>
             <li class="sidebar li">
-              <a href="">
-                <i class="fa fa-file-medical-alt"></i><span>Patients</span>
+              <a href="{{route('adminPatient')}}">
+                <i class="fa fa-hospital-user"></i><span>Patients</span>
               </a>
             </li>
             <li class="sidebar li">
-              <a href="">
+              <a href="{{route('adminrecord')}}">
                 <i class="fa fa-file-medical-alt"></i><span>Records</span>
               </a>
             </li>
             <li class="sidebar li">
               <a href="">
-                <i class="fa fa-file-medical-alt"></i><span>Users</span>
+                <i class="fa fa-users"></i><span>Users</span>
               </a>
             </li>
           </ul>
@@ -84,6 +84,9 @@
       </div>
       <!-- sidebar-content  -->
       <div class="sidebar-footer">
+        <a href="{{ route('resetadmin') }}">
+          <i class="fa fa-key"></i>&nbsp;&nbsp;Reset Password
+        </a>
         <a href="{{ route('logout') }}" onclick="event.preventDefault();
               document.getElementById('logout-form').submit();">
           <i class="fa fa-power-off"></i>&nbsp;&nbsp;Logout
@@ -101,9 +104,6 @@
         <div id="app">
           @yield('content')
         </div>
-        <footer class="text-center">
-          footer
-        </footer>
       </div>
     </main>
     <!-- page-content" -->
