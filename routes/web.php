@@ -58,6 +58,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('add_budget', 'UserController@addBudget');
     Route::post('/edit_budget/{id}', 'UserController@editBudget');
     Route::post('delete_budget/{id}', 'UserController@deleteBudget');
+    Route::post('budget_import', 'UserController@importBudget');
+    Route::get('/budget_export', 'UserController@exportBudget');
     //Staffs
     Route::get('/personnel', 'UserController@personnel')->name('personnel');
     Route::get('personnel_get', 'UserController@getPersonnels');
@@ -68,6 +70,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/patients', 'UserController@patients')->name('patients');
     Route::get('patients_get', 'UserController@getPatients');
     Route::post('add_patient', 'UserController@addPatient');
+    Route::post('patients_import', 'UserController@importPatients');
+    Route::get('/patients_export', 'UserController@exportPatients');
     Route::post('patient_delete/{id}', 'UserController@deletePatient');
     Route::post('patient_edit/{id}', 'UserController@editPatient');
     //Records

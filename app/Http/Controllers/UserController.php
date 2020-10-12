@@ -11,6 +11,11 @@ use App\Models\MedicalRecord;
 use Auth;
 use DB;
 use Dotenv\Store\File\Paths;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\PatientImport;
+use App\Exports\PatientExport;
+use App\Imports\BudgetImport;
+use App\Exports\BudgetExport;
 use App\Http\Requests\userAddBudgetRequest;
 use App\Http\Requests\userAddPatientRequest;
 use App\Http\Requests\userAddPersonnelRequest;
@@ -20,7 +25,6 @@ use App\Http\Requests\userEditPersonnelRequest;
 use App\Http\Requests\resetPassRequest;
 
 use Carbon\Carbon;
-
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -30,6 +34,7 @@ class UserController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('role:user');
+        date_default_timezone_set('Asia/Manila');
     }
 
     public function index()
@@ -239,4 +244,55 @@ class UserController extends Controller
     {
         return MedicalRecord::where('id', $req->id)->delete();
     }
+    public function importPatients(Request $request)
+    {
+        try {
+            $import = new PatientImport;
+            $postData = request()->file('patients');
+            Excel::import($import, $postData[0]);
+            return $import->getRowCount_imported().'/'.$import->getRowCount();
+        } catch (\Error $ex) {
+            return "Error, something went wrong!";
+        }
+    }
+    public function exportPatients(Request $request) 
+    {
+        $date = Carbon::now()->format('Ymd_His');
+
+        if(isset($_GET['exceltype']) && $_GET['exceltype'] != ""){
+            if($_GET['exceltype'] == "csv"){
+                return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.csv');
+            }elseif($_GET['exceltype'] == "xlsx"){
+                return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.xlsx');
+            }elseif($_GET['exceltype'] == "xls"){
+                return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.xls');
+            }
+        }
+    }
+    public function importBudget(Request $request)
+    {
+        try {
+            $import = new BudgetImport;
+            $postData = request()->file('budgets');
+            Excel::import($import, $postData[0]);
+            return $import->getRowCount();
+        } catch (\Error $ex) {
+            return "Error, something went wrong!";
+        }
+    }
+    public function exportBudget(Request $request) 
+    {
+        $date = Carbon::now()->format('Ymd_His');
+
+        if(isset($_GET['exceltype']) && $_GET['exceltype'] != ""){
+            if($_GET['exceltype'] == "csv"){
+                return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.csv');
+            }elseif($_GET['exceltype'] == "xlsx"){
+                return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.xlsx');
+            }elseif($_GET['exceltype'] == "xls"){
+                return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.xls');
+            }
+        }
+    }
+	
 }
