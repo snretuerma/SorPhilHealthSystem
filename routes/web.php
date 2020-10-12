@@ -27,8 +27,15 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/adminbudget', 'AdminController@budget')->name('adminbudget');
     Route::get('adminbudget_get', 'AdminController@getBudget');
 
+
     Route::post('adminedit_budget/{id}', 'AdminController@editBudget');
     Route::post('adminadd_budget', 'AdminController@addBudget');
+
+    Route::get('/adminrecord', 'AdminController@record')->name('adminrecord');
+    Route::get('adminrecord_get', 'AdminController@getRecord');
+    Route::get('adminrecord_get1', 'AdminController@getRecord1');
+
+    Route::get('adminpatient_get', 'AdminController@getPatient');
 });
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('user');
@@ -50,8 +57,15 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('patients_delete/{id}', 'UserController@deletePatients');
     Route::post('patients_edit/{id}', 'UserController@editPatients');
     //Records
-    Route::get('/records', 'UserController@records')->name('records');
-    
+    Route::get('/record', 'UserController@record')->name('record');
+    Route::get('record_get', 'UserController@getRecord');
+    Route::post('personnel_get/{id}', 'UserController@getPersonnel');
+    Route::post('delete_record/{id}', 'UserController@deleteRecord');
+
+    //Restore 
+    Route::get('/restore', 'UserController@restore')->name('restore');
+    Route::get('restore_get', 'UserController@getRestore');//to get deleted medical records
+    Route::post('edit_restore/{id}', 'UserController@editRestore');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');

@@ -31,7 +31,10 @@ Vue.use(VueDataTables);
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 Vue.component('patient-component', require('./components/user/PatientComponent.vue').default);
 Vue.component('budget-component', require('./components/user/BudgetComponent.vue').default);
+Vue.component('record-component', require('./components/user/RecordComponent.vue').default);
+Vue.component('restore-component', require('./components/user/RestoreComponent.vue').default);
 Vue.component('adminbudget-component', require('./components/admin/BudgetComponent.vue').default);
+Vue.component('adminrecord-component', require('./components/admin/RecordComponent.vue').default);
 Vue.component('users-component', require('./components/admin/UserComponent.vue').default);
 Vue.component('personnel-component', require('./components/user/PersonnelComponent.vue').default);
 const app = new Vue({
