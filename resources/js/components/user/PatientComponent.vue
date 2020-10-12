@@ -11,11 +11,12 @@
 
     <div class="row">
       <!-- Search Box -->
-      <div class="col-sm-10" align="left">
+      <div class="col-sm-6" align="left">
         <div style="margin-bottom: 10px">
           <el-row>
             <el-col :span="10">
               <el-input
+                size="medium"
                 v-model="filters[0].value"
                 placeholder="Search"
               ></el-input>
@@ -26,10 +27,10 @@
       <!-- End Search Box -->
 
       <!-- Add Button -->
-      <div class="col-sm-2" align="right">
-        <el-button type="primary" @click="formDialog('insert_data')"
-          >Add</el-button
-        >
+      <div class="col-sm-6" align="right">
+        <el-button type="primary" size="medium" @click="formDialog('export_data')">Export</el-button>
+        <el-button type="primary" size="medium" @click="formDialog('import_data')">Import</el-button>
+        <el-button type="primary" size="medium" @click="formDialog('insert_data')">Add</el-button>
       </div>
       <!-- End Button -->
     </div>
@@ -57,6 +58,71 @@
           <p slot="append"></p>
         </data-tables>
         <!-- Data table ends -->
+
+        <!-- Import patient via excel file-->
+        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Import Patient</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form method="post" enctype="multipart/form-data" action="/patients_import">
+                <input type="hidden" name="" id="">
+                <div class="modal-body">
+                    <div class="form-group">
+                      <label>Select excel file for upload (.csv)</label><br>
+                      <input type="file" @change="selectFile($event)" id="excelcontent" name="patients" accept=".csv" class="w-100" style="border:1px solid rgba(0,0,0,0.1);border-radius:4px;"/>
+                      <div v-if="progressbar_import" class="progress" style="margin-top:15px;">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                          0%
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" name="upload" class="btn btn-primary" v-on:click="progressbar_import=true; onSubmit()" v-bind:disabled="enableUpload === false">Import</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Import excel end-->
+
+        <!-- Export excel-->
+        <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Export Patient</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form method="get" enctype="multipart/form-data" action="patients_export/">
+                <input type="hidden" name="" id="">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Select excel file type</label><br>
+                        <select name="exceltype" class="form-control">
+                          <option value="csv">CSV</option>
+                          <option value="xlsx">XLSX</option>
+                          <option value="xls">XLS</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" name="upload" class="btn btn-primary" >Export</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Export excel end-->
 
         <!-- Add Patient form -->
         <el-dialog
@@ -349,6 +415,9 @@ export default {
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
+      dialogFormVisible_import_excel: false,
+      progressbar_import: false,
+      enableUpload: false,
       form: {
         id: "",
         last_name: "",
@@ -378,6 +447,62 @@ export default {
     };
   },
   methods: {
+    selectFile(event){
+      if(event.target.value){
+        this.enableUpload = true;
+      }else{
+        this.enableUpload = false;
+      }
+    },
+    onSubmit(){
+      var _this = this;
+      var formData = new FormData();
+      formData.append("patients[]", $("#excelcontent").get(0).files[0]);
+       axios.post( 'patients_import',
+          formData,
+          {
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            },
+            onUploadProgress: function( progressEvent ) {
+              this.uploadPercentage = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+            
+              $('.progress-bar').css('width', this.uploadPercentage +'%').attr('aria-valuenow', this.uploadPercentage);
+              $('.progress-bar').html(this.uploadPercentage + "%");
+
+            }.bind(this)
+          }
+        ).then(function(res){
+          setTimeout(function(){
+            _this.progressbar_import = false;
+            $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+            $('.progress-bar').html('0%');
+            $("#importModal").modal('hide');
+            $("#excelcontent").val('');
+            
+          },2000);
+          var total_imported = res.data;
+          var get_imported = total_imported.split('/');
+
+          if(get_imported[0] == 0 && get_imported[1] == 0){
+            _this.open_notif("warning", "Import", "No row to be import");
+          }else if(get_imported[0] == 0 && get_imported[1] > 0){
+            _this.open_notif("info", "Import", "All row already exist in the database");
+          }else if(get_imported[0] > 0 && get_imported[1] > 0){
+            _this.open_notif("success", "Import", "Successfully imported: " + res.data);
+            _this.getPatients();
+          }
+          
+        })
+        .catch(function(res){
+           _this.progressbar_import = false;
+           $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+           $('.progress-bar').html('0%');
+           $("#excelcontent").val('');
+           $("#importModal").modal('hide');
+           _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
+        });
+    },
     addPatient: async function () {
       axios
         .post("add_patient", this.form)
@@ -434,6 +559,10 @@ export default {
         this.dialogFormVisible = true;
       }else if(id == "edit_data"){
         this.dialogFormVisible = true;
+      }else if(id == "import_data"){
+        $("#importModal").modal({backdrop: 'static', keyboard: false});
+      }else if(id == "export_data"){
+        $("#exportModal").modal({backdrop: 'static', keyboard: false});
       }
     },
     open_notif: function (status, title, message) {
