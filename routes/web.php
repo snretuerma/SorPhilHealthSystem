@@ -60,7 +60,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('delete_budget/{id}', 'UserController@deleteBudget');
     //Staffs
     Route::get('/personnel', 'UserController@personnel')->name('personnel');
-    Route::get('personnel_get', 'UserController@getPersonnel');
+    Route::get('personnel_get', 'UserController@getPersonnels');
     Route::post('add_personnel', 'UserController@addPersonnel');
     Route::post('/edit_personnel/{id}', 'UserController@editPersonnel');
     Route::post('personnel_delete/{id}', 'UserController@deletePersonnel');

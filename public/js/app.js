@@ -7458,33 +7458,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context.prev = _context.next) {
               case 0:
                 axios.post("add_patient", this.form).then(function (response) {
-                  if (_this3.form.sex == 1) {
-                    _this3.form.sex = "Male";
-                  } else if (_this3.form.sex == 2) {
-                    _this3.form.sex = "Female";
-                  } else if (_this3.form.sex == 3) {
-                    _this3.form.sex = "Not Applicable";
-                  } else {
-                    _this3.form.sex = "Not Known";
+                  if (response.status > 199 && response.status < 203) {
+                    _this3.open_notif("success", "Success", "Changes has been saved");
+
+                    if (_this3.form.sex == 1) {
+                      _this3.form.sex = "Male";
+                    } else if (_this3.form.sex == 2) {
+                      _this3.form.sex = "Female";
+                    } else if (_this3.form.sex == 3) {
+                      _this3.form.sex = "Not Applicable";
+                    } else {
+                      _this3.form.sex = "Not Known";
+                    }
+
+                    if (_this3.form.marital_status == 0) {
+                      _this3.form.marital_status = "Single";
+                    } else if (_this3.form.marital_status == 1) {
+                      _this3.form.marital_status = "Married";
+                    } else if (_this3.form.marital_status == 2) {
+                      _this3.form.marital_status = "Divorced";
+                    } else if (_this3.form.marital_status == 3) {
+                      _this3.form.marital_status = "Widowed";
+                    } else {
+                      _this3.form.marital_status = "Others/Prefer Not to Say";
+                    }
+
+                    _this3.form.name = _this3.form.last_name + ", " + _this3.form.name_suffix + " " + _this3.form.first_name + " " + _this3.form.middle_name.slice(0, 1) + ". ";
+
+                    _this3.data.push(_this3.form);
+
+                    _this3.dialogFormVisible = false;
                   }
-
-                  if (_this3.form.marital_status == 0) {
-                    _this3.form.marital_status = "Single";
-                  } else if (_this3.form.marital_status == 1) {
-                    _this3.form.marital_status = "Married";
-                  } else if (_this3.form.marital_status == 2) {
-                    _this3.form.marital_status = "Divorced";
-                  } else if (_this3.form.marital_status == 3) {
-                    _this3.form.marital_status = "Widowed";
-                  } else {
-                    _this3.form.marital_status = "Others/Prefer Not to Say";
-                  }
-
-                  _this3.form.name = _this3.form.last_name + ", " + _this3.form.name_suffix + " " + _this3.form.first_name + " " + _this3.form.middle_name.slice(0, 1) + ". ";
-
-                  _this3.data.push(_this3.form);
-
-                  _this3.dialogFormVisible = false;
                 })["catch"](function (error) {});
 
               case 1:
@@ -7574,7 +7578,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
 
         _this.form.name = _this.form.last_name + ", " + _this.form.name_suffix + " " + _this.form.first_name + " " + _this.form.middle_name.slice(0, 1) + ". ";
-        axios.post("patients_edit/" + this.form.id, this.form).then(function (response) {
+        axios.post("patient_edit/" + this.form.id, this.form).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             _this.open_notif("success", "Success", "Changes has been saved");
 
@@ -7692,7 +7696,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         type: "warning"
       }).then(function () {
         var _this = _this6;
-        axios.post("patients_delete/" + id).then(function (response) {
+        axios.post("patient_delete/" + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             _this.open_notif("success", "Success", "Succesfully! Deleted");
 
@@ -8331,6 +8335,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.getPersonnel();
+    this.loading = false;
   }
 });
 
@@ -109827,38 +109832,7 @@ var render = function() {
     _c("hr"),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
-        _c(
-          "div",
-          { staticStyle: { "margin-bottom": "10px" } },
-          [
-            _c(
-              "el-row",
-              [
-                _c(
-                  "el-col",
-                  { attrs: { span: 10 } },
-                  [
-                    _c("el-input", {
-                      attrs: { placeholder: "Search" },
-                      model: {
-                        value: _vm.filters[0].value,
-                        callback: function($$v) {
-                          _vm.$set(_vm.filters[0], "value", $$v)
-                        },
-                        expression: "filters[0].value"
-                      }
-                    })
-                  ],
-                  1
-                )
-              ],
-              1
-            )
-          ],
-          1
-        )
-      ]),
+      _vm._m(1),
       _vm._v(" "),
       _c(
         "div",
@@ -110824,6 +110798,14 @@ var staticRenderFns = [
       _c("div", { staticClass: "col-sm-12" }, [
         _c("h2", [_vm._v("Patient List")])
       ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+      _c("div", { staticStyle: { "margin-bottom": "10px" } })
     ])
   }
 ]

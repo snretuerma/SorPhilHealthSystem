@@ -698,6 +698,7 @@ export default {
   },
   mounted() {
     this.getPersonnel();
+    this.loading=false;
   },
 };
 </script>

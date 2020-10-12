@@ -100,7 +100,7 @@ class UserController extends Controller
     {
         return view('roles.user.personnel');
     }
-
+ 
     public function getPersonnels()
     {
         return Personnel::where('hospital_id', Auth::user()->hospital_id)->get();
