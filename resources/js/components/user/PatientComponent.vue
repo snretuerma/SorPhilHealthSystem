@@ -37,8 +37,114 @@
     <!-- Card Begins Here -->
     <div class="card">
       <div class="card-body">
+        <el-table
+        v-loading="loading"
+          :data="
+            pagedTableData.filter(
+              (data) =>
+                !search ||
+                data.name.toLowerCase().includes(search.toLowerCase()) ||
+                data.philhealth_number
+                  .toLowerCase()
+                  .includes(search.toLowerCase())
+            )
+          "
+        >
+          <el-table-column
+            width="115"
+            label="Philhealth"
+            prop="philhealth_number"
+          >
+          </el-table-column>
+          <el-table-column width="200" label="Patient" prop="name">
+          </el-table-column>
+          <el-table-column width="100" label="Sex" prop="sex">
+          </el-table-column>
+          <el-table-column width="110" label="Birthdate" prop="birthdate">
+          </el-table-column>
+          <el-table-column min-width="175" label="Marital" prop="marital_status">
+          </el-table-column>
+          <el-table-column width="200" align="right" fixed="right">
+            <template slot="header" slot-scope="scope">
+              <el-input
+                v-model="search"
+                size="mini"
+                placeholder="Type to search"
+              />
+            </template>
+            <template slot-scope="scope">
+              <el-tooltip
+                class="item"
+                effect="light"
+                content="Add Medical Record"
+                placement="top"
+              >
+                <el-button
+                  size="mini"
+                  type="success"
+                  icon="el-icon-plus"
+                  circle
+                  @click="handleAddMedical(scope.$index, scope.row);"
+                >
+                </el-button>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="light"
+                content="View"
+                placement="top"
+              >
+                <el-button
+                  size="mini"
+                  type="info"
+                  icon="el-icon-info"
+                  circle
+                  @click="handleView(scope.$index, scope.row)"
+                >
+                </el-button>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="light"
+                content="Edit"
+                placement="top"
+              >
+                <el-button
+                  size="mini"
+                  type="primary"
+                  icon="el-icon-edit"
+                  circle
+                  @click="handleEdit(scope.$index, scope.row)"
+                >
+                </el-button>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="light"
+                content="Delete"
+                placement="top"
+              >
+                <el-button
+                  size="mini"
+                  type="danger"
+                  icon="el-icon-delete"
+                  circle
+                  @click="handleDelete(scope.$index, scope.row)"
+                ></el-button>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+        </el-table>
+        <div style="text-align: center">
+          <el-pagination
+            layout="prev, pager, next"
+            :total="this.data.length"
+            @current-change="setPage"
+          >
+          </el-pagination>
+        </div>
         <!-- Data table -->
-        <data-tables
+        <!-- <data-tables
           :data="data"
           :page-size="10"
           :filters="filters"
@@ -55,9 +161,113 @@
           >
           </el-table-column>
           <p slot="append"></p>
-        </data-tables>
+        </data-tables> -->
         <!-- Data table ends -->
 
+        <!-- Add medical form -->
+        <el-dialog
+          title="Add Medical Record"
+          :visible.sync="dialogFormMedicalVisible"
+          top="0vh"
+        >
+          <el-form :model="formMedical" :rules="rules" ref="form">
+            <el-form-item
+              label="Admission Date"
+              :label-width="formLabelWidth"
+              prop="admission_date"
+            >
+              <el-date-picker
+                type="date"
+                placeholder="Pick a date"
+                v-model="formMedical.admission_date"
+                style="width: 100%"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
+            </el-form-item>
+            
+            <el-form-item
+              label="Discharge Date"
+              :label-width="formLabelWidth"
+              prop="discharge_date"
+            >
+              <el-date-picker
+                type="date"
+                placeholder="Pick a date"
+                v-model="formMedical.discharge_date"
+                style="width: 100%"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
+            </el-form-item>
+            <el-form-item
+              label="Final Diagnosis"
+              :label-width="formLabelWidth"
+              prop="final_diagnosis"
+            >
+              <el-input v-model="formMedical.final_diagnosis" autocomplete="off"></el-input>
+            </el-form-item>
+           <el-form-item
+              label="Record Type"
+              :label-width="formLabelWidth"
+              prop="record_type"
+            >
+              <el-input v-model="formMedical.record_type" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item
+              label="Total Fee"
+              :label-width="formLabelWidth"
+              prop="total_fee"
+            >
+              <el-input v-model="formMedical.total_fee" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item
+              label="Personnel"
+              :label-width="formLabelWidth"
+              prop="total_fee"
+            >
+              <el-input v-model="formMedical.personnel" autocomplete="off"></el-input>
+            </el-form-item>
+            <el-form-item label="Personnel Type" :label-width="formLabelWidth" prop="personnel_type">
+              <el-select v-model="form.personnel_type" placeholder="Please select">
+                <el-option label="Male" value="1"></el-option>
+                <el-option label="Female" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+            <el-form-item label="Contribution Type" :label-width="formLabelWidth" prop="contribution_type">
+              <el-select v-model="form.contribution_type" placeholder="Please select">
+                <el-option label="Male" value="1"></el-option>
+                <el-option label="Female" value="2"></el-option>
+              </el-select>
+            </el-form-item>
+           
+            
+            <el-form-item
+              label="Computed PF"
+              :label-width="formLabelWidth"
+              prop="computed_pf"
+            >
+              <el-input
+                v-model="form.computed_pf"
+                autocomplete="off"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">Cancel</el-button>
+            <el-button
+              v-if="this.formMedical.formmode == 'insert_data'"
+              type="primary"
+              @click="addPatient()"
+              >Save</el-button
+            >
+            <el-button
+              v-if="this.formMedical.formmode == 'edit_data'"
+              type="primary"
+              @click="editPatient()"
+              >Save Changes</el-button
+            >
+          </span>
+        </el-dialog>
+        <!-- Add medical form ends here-->
         <!-- Add Patient form -->
         <el-dialog
           title="Add Patient"
@@ -65,19 +275,35 @@
           top="0vh"
         >
           <el-form :model="form" :rules="rules" ref="form">
-            <el-form-item label="Lastname" :label-width="formLabelWidth" prop="last_name">
+            <el-form-item
+              label="Lastname"
+              :label-width="formLabelWidth"
+              prop="last_name"
+            >
               <el-input v-model="form.last_name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Firstname" :label-width="formLabelWidth" prop="first_name">
+            <el-form-item
+              label="Firstname"
+              :label-width="formLabelWidth"
+              prop="first_name"
+            >
               <el-input v-model="form.first_name" autocomplete="off"></el-input>
             </el-form-item>
-            <el-form-item label="Middlename" :label-width="formLabelWidth" prop="middle_name">
+            <el-form-item
+              label="Middlename"
+              :label-width="formLabelWidth"
+              prop="middle_name"
+            >
               <el-input
                 v-model="form.middle_name"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
-            <el-form-item label="Suffix" :label-width="formLabelWidth" prop="name_suffix">
+            <el-form-item
+              label="Suffix"
+              :label-width="formLabelWidth"
+              prop="name_suffix"
+            >
               <el-input
                 v-model="form.name_suffix"
                 autocomplete="off"
@@ -89,7 +315,11 @@
                 <el-option label="Female" value="2"></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="Birthdate" :label-width="formLabelWidth" prop="birthdate">
+            <el-form-item
+              label="Birthdate"
+              :label-width="formLabelWidth"
+              prop="birthdate"
+            >
               <el-date-picker
                 type="date"
                 placeholder="Pick a date"
@@ -98,7 +328,11 @@
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
-            <el-form-item label="Marital Status" :label-width="formLabelWidth" prop="marital_status">
+            <el-form-item
+              label="Marital Status"
+              :label-width="formLabelWidth"
+              prop="marital_status"
+            >
               <el-select
                 v-model="form.marital_status"
                 placeholder="Please select"
@@ -107,10 +341,17 @@
                 <el-option label="Married" value="1"></el-option>
                 <el-option label="Divorced" value="2"></el-option>
                 <el-option label="Widowed" value="3"></el-option>
-                <el-option label="Others/Prefer Not to Say" value="4"></el-option>
+                <el-option
+                  label="Others/Prefer Not to Say"
+                  value="4"
+                ></el-option>
               </el-select>
             </el-form-item>
-            <el-form-item label="PhilHealth No." :label-width="formLabelWidth" prop="philhealth_number">
+            <el-form-item
+              label="PhilHealth No."
+              :label-width="formLabelWidth"
+              prop="philhealth_number"
+            >
               <el-input
                 v-model="form.philhealth_number"
                 autocomplete="off"
@@ -119,8 +360,18 @@
           </el-form>
           <span slot="footer" class="dialog-footer">
             <el-button @click="dialogFormVisible = false">Cancel</el-button>
-            <el-button v-if="this.form.formmode == 'insert_data'" type="primary" @click="addPatient()">Save</el-button>
-            <el-button v-if="this.form.formmode == 'edit_data'" type="primary" @click="editPatient()">Save Changes</el-button>
+            <el-button
+              v-if="this.form.formmode == 'insert_data'"
+              type="primary"
+              @click="addPatient()"
+              >Save</el-button
+            >
+            <el-button
+              v-if="this.form.formmode == 'edit_data'"
+              type="primary"
+              @click="editPatient()"
+              >Save Changes</el-button
+            >
           </span>
         </el-dialog>
         <!-- Add Patient form ends here-->
@@ -213,8 +464,11 @@ export default {
           },
         ],
       },
+      loading: true,
+      page: 1,
+      pageSize: 10,
+      search: "",
       data: [],
-      patientinfo: [],
       // Searchbox Filters
       filters: [
         {
@@ -305,16 +559,15 @@ export default {
 
               this.form.edit_object_index = this.data.indexOf(row);
 
-              this.form_check.last_name = row.last_name,
-              this.form_check.first_name = row.first_name,
-              this.form_check.middle_name = row.middle_name,
-              this.form_check.name_suffix = row.name_suffix,
-              this.form_check.sex = row.sex,
-              this.form_check.birthdate = row.birthdate,
-              this.form_check.marital_status = row.marital_status,
-              this.form_check.philhealth_number = row.philhealth_number,
-
-              this.form_check.name =
+              (this.form_check.last_name = row.last_name),
+                (this.form_check.first_name = row.first_name),
+                (this.form_check.middle_name = row.middle_name),
+                (this.form_check.name_suffix = row.name_suffix),
+                (this.form_check.sex = row.sex),
+                (this.form_check.birthdate = row.birthdate),
+                (this.form_check.marital_status = row.marital_status),
+                (this.form_check.philhealth_number = row.philhealth_number),
+                (this.form_check.name =
                   this.form_check.last_name +
                   ", " +
                   this.form_check.name_suffix +
@@ -322,8 +575,8 @@ export default {
                   this.form_check.first_name +
                   " " +
                   this.form_check.middle_name.slice(0, 1) +
-                  ". ";
-              this.formDialog('edit_data');
+                  ". ");
+              this.formDialog("edit_data");
             },
           },
           {
@@ -349,6 +602,7 @@ export default {
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
+      dialogFormMedicalVisible: false,
       form: {
         id: "",
         last_name: "",
@@ -361,7 +615,15 @@ export default {
         philhealth_number: "",
         name: "",
         formmode: "",
-        edit_object_index: ""
+        edit_object_index: "",
+      },
+      formMedical:{
+        admission_date:"",
+        discharge_date:"",
+        final_diagnosis:"",
+        record_type:"",
+        total_fee:"",
+        formmode:""
       },
       form_check: {
         last_name: "",
@@ -372,12 +634,91 @@ export default {
         birthdate: "",
         marital_status: "",
         philhealth_number: "",
-        name: ""
+        name: "",
       },
-      formLabelWidth: "120px",
+      formLabelWidth: "125px",
     };
   },
+  computed: {
+    pagedTableData() {
+      return this.data.slice(
+        this.pageSize * this.page - this.pageSize,
+        this.pageSize * this.page
+      );
+    },
+  },
   methods: {
+    masknumber: function (num) {
+      num = parseFloat(num)
+        .toFixed(2)
+        .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      return num;
+    },
+    setPage(val) {
+      this.page = val;
+    },
+    handleEdit(index,row){
+      this.resetForm();
+              this.form.id = row.id;
+              this.form.formmode = "edit_data";
+
+              this.form.last_name = row.last_name;
+              this.form.first_name = row.first_name;
+              this.form.middle_name = row.middle_name;
+              this.form.name_suffix = row.name_suffix;
+              this.form.sex = row.sex;
+              this.form.birthdate = row.birthdate;
+              this.form.marital_status = row.marital_status;
+              this.form.philhealth_number = row.philhealth_number;
+
+              this.form.edit_object_index = this.data.indexOf(row);
+
+              (this.form_check.last_name = row.last_name),
+                (this.form_check.first_name = row.first_name),
+                (this.form_check.middle_name = row.middle_name),
+                (this.form_check.name_suffix = row.name_suffix),
+                (this.form_check.sex = row.sex),
+                (this.form_check.birthdate = row.birthdate),
+                (this.form_check.marital_status = row.marital_status),
+                (this.form_check.philhealth_number = row.philhealth_number),
+                (this.form_check.name =
+                  this.form_check.last_name +
+                  ", " +
+                  this.form_check.name_suffix +
+                  " " +
+                  this.form_check.first_name +
+                  " " +
+                  this.form_check.middle_name.slice(0, 1) +
+                  ". ");
+              this.formDialog("edit_data");
+    },
+    handleView(index, row) {
+      this.dialogTableVisible = true;
+      this.gridData[0].name = this.buildName(
+        row.first_name,
+        row.middle_name,
+        row.last_name,
+        row.name_suffix
+      );
+      this.gridData[0].sex = row.sex;
+      this.gridData[0].birthdate = row.birthdate;
+      this.gridData[0].marital_status = row.marital_status;
+      this.gridData[0].philhealth_number = row.philhealth_number;
+    },
+    handleAddMedical(index, row) {
+      this.dialogFormMedicalVisible=true;
+      this.formMedical.formmode="insert_data";
+      console.log(row);
+    },
+    handleDelete(index, row) {
+      var data = this.data;
+
+              this.deletePatients(row.id, (res_value) => {
+                if (res_value) {
+                  data.splice(data.indexOf(row), 1);
+                }
+              });
+    },
     addPatient: async function () {
       axios
         .post("add_patient", this.form)
@@ -417,124 +758,137 @@ export default {
         })
         .catch(function (error) {});
     },
-    resetForm: function (){
-        this.form.last_name = "";
-        this.form.first_name = "";
-        this.form.middle_name = "";
-        this.form.name_suffix = "";
-        this.form.sex = "";
-        this.form.birthdate = "";
-        this.form.marital_status = "";
-        this.form.philhealth_number = "";
+    resetForm: function () {
+      this.form.last_name = "";
+      this.form.first_name = "";
+      this.form.middle_name = "";
+      this.form.name_suffix = "";
+      this.form.sex = "";
+      this.form.birthdate = "";
+      this.form.marital_status = "";
+      this.form.philhealth_number = "";
     },
     formDialog: function (id) {
-      if(id == "insert_data"){
+      if (id == "insert_data") {
         this.form.formmode = "insert_data";
         this.resetForm();
         this.dialogFormVisible = true;
-      }else if(id == "edit_data"){
+      } else if (id == "edit_data") {
         this.dialogFormVisible = true;
       }
     },
     open_notif: function (status, title, message) {
-        if(status == "success"){
-            this.$notify.success({
-              title: title,
-              message: message,
-              offset: 0
-            });
-        }else if(status == "error"){
-            this.$notify.error({
-              title: title,
-              message: message,
-              offset: 0
-            });
-        }else if(status == "info"){
-            this.$notify.info({
-              title: title,
-              message: message,
-              offset: 0
-            });
-        }else if(status == "warning"){
-            this.$notify.warning({
-              title: title,
-              message: message,
-              offset: 0
-            });
-        }
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0,
+        });
+      }
     },
     editPatient: function () {
-        var _this = this;
-        if(this.form.last_name == this.form_check.last_name && 
-          this.form.first_name == this.form_check.first_name && 
-          this.form.middle_name == this.form_check.middle_name && 
-          this.form.name_suffix == this.form_check.name_suffix && 
-          this.form.sex == this.form_check.sex &&
-          this.form.birthdate == this.form_check.birthdate && 
-          this.form.marital_status == this.form_check.marital_status &&
-          this.form.philhealth_number == this.form_check.philhealth_number){
-          _this.open_notif('info', 'Message', 'No Changes');
-        }else{
-            if(this.form.sex=="Male"){
-              this.form.sex=1;
-            }else if(this.form.sex=="Female"){
-              this.form.sex=2;
-            }
-            if(this.form.marital_status=="Single"){
-              this.form.marital_status=0;
-            }else if(this.form.marital_status=="Married"){
-              this.form.marital_status=1;
-            }else if(this.form.marital_status=="Divorced"){
-              this.form.marital_status=2;
-            }else if(this.form.marital_status=="Widowed"){
-              this.form.marital_status=3;
-            }else if(this.form.marital_status=="Others/Prefer Not to Say"){
-              this.form.marital_status=4;
-            }
-            _this.form.name =
-                _this.form.last_name +
-                ", " +
-                _this.form.name_suffix +
-                " " +
-                _this.form.first_name +
-                " " +
-                _this.form.middle_name.slice(0, 1) +
-                ". ";
-            axios
-              .post("patients_edit/" + this.form.id , this.form)
-              .then((response) => {
-                if (response.status > 199 && response.status < 203) {
-                    _this.open_notif('success', 'Success', 'Changes has been saved');
-                    this.dialogFormVisible = false;
-                    if(_this.form.sex == 1){
-                      _this.form.sex = "Male";
-                    }else if(_this.form.sex == 2){
-                      _this.form.sex = "Female";
-                    }
-                    if(_this.form.marital_status==0){
-                      _this.form.marital_status="Single";
-                    }else if(_this.form.marital_status==1){
-                      _this.form.marital_status="Married";
-                    }else if(_this.form.marital_status==2){
-                      _this.form.marital_status="Divorced";
-                    }else if(_this.form.marital_status==3){
-                      _this.form.marital_status="Widowed";
-                    }else if(_this.form.marital_status==4){
-                      _this.form.marital_status="Others/Prefer Not to Say";
-                    }
-                    _this.data[parseInt(_this.form.edit_object_index)].last_name = _this.form.last_name;
-                    _this.data[parseInt(_this.form.edit_object_index)].first_name = _this.form.first_name;
-                    _this.data[parseInt(_this.form.edit_object_index)].middle_name = _this.form.middle_name;
-                    _this.data[parseInt(_this.form.edit_object_index)].name_suffix = _this.form.name_suffix;
-                    _this.data[parseInt(_this.form.edit_object_index)].sex = _this.form.sex;
-                    _this.data[parseInt(_this.form.edit_object_index)].birthdate = _this.form.birthdate;
-                    _this.data[parseInt(_this.form.edit_object_index)].marital_status = _this.form.marital_status;
-                    _this.data[parseInt(_this.form.edit_object_index)].philhealth_number = _this.form.philhealth_number;
-                    _this.data[parseInt(_this.form.edit_object_index)].name = _this.form.name;
-                }
-              })
-              .catch(function (error) {});
+      var _this = this;
+      if (
+        this.form.last_name == this.form_check.last_name &&
+        this.form.first_name == this.form_check.first_name &&
+        this.form.middle_name == this.form_check.middle_name &&
+        this.form.name_suffix == this.form_check.name_suffix &&
+        this.form.sex == this.form_check.sex &&
+        this.form.birthdate == this.form_check.birthdate &&
+        this.form.marital_status == this.form_check.marital_status &&
+        this.form.philhealth_number == this.form_check.philhealth_number
+      ) {
+        _this.open_notif("info", "Message", "No Changes");
+      } else {
+        if (this.form.sex == "Male") {
+          this.form.sex = 1;
+        } else if (this.form.sex == "Female") {
+          this.form.sex = 2;
         }
+        if (this.form.marital_status == "Single") {
+          this.form.marital_status = 0;
+        } else if (this.form.marital_status == "Married") {
+          this.form.marital_status = 1;
+        } else if (this.form.marital_status == "Divorced") {
+          this.form.marital_status = 2;
+        } else if (this.form.marital_status == "Widowed") {
+          this.form.marital_status = 3;
+        } else if (this.form.marital_status == "Others/Prefer Not to Say") {
+          this.form.marital_status = 4;
+        }
+        _this.form.name =
+          _this.form.last_name +
+          ", " +
+          _this.form.name_suffix +
+          " " +
+          _this.form.first_name +
+          " " +
+          _this.form.middle_name.slice(0, 1) +
+          ". ";
+        axios
+          .post("patients_edit/" + this.form.id, this.form)
+          .then((response) => {
+            if (response.status > 199 && response.status < 203) {
+              _this.open_notif("success", "Success", "Changes has been saved");
+              this.dialogFormVisible = false;
+              if (_this.form.sex == 1) {
+                _this.form.sex = "Male";
+              } else if (_this.form.sex == 2) {
+                _this.form.sex = "Female";
+              }
+              if (_this.form.marital_status == 0) {
+                _this.form.marital_status = "Single";
+              } else if (_this.form.marital_status == 1) {
+                _this.form.marital_status = "Married";
+              } else if (_this.form.marital_status == 2) {
+                _this.form.marital_status = "Divorced";
+              } else if (_this.form.marital_status == 3) {
+                _this.form.marital_status = "Widowed";
+              } else if (_this.form.marital_status == 4) {
+                _this.form.marital_status = "Others/Prefer Not to Say";
+              }
+              _this.data[parseInt(_this.form.edit_object_index)].last_name =
+                _this.form.last_name;
+              _this.data[parseInt(_this.form.edit_object_index)].first_name =
+                _this.form.first_name;
+              _this.data[parseInt(_this.form.edit_object_index)].middle_name =
+                _this.form.middle_name;
+              _this.data[parseInt(_this.form.edit_object_index)].name_suffix =
+                _this.form.name_suffix;
+              _this.data[parseInt(_this.form.edit_object_index)].sex =
+                _this.form.sex;
+              _this.data[parseInt(_this.form.edit_object_index)].birthdate =
+                _this.form.birthdate;
+              _this.data[
+                parseInt(_this.form.edit_object_index)
+              ].marital_status = _this.form.marital_status;
+              _this.data[
+                parseInt(_this.form.edit_object_index)
+              ].philhealth_number = _this.form.philhealth_number;
+              _this.data[parseInt(_this.form.edit_object_index)].name =
+                _this.form.name;
+            }
+          })
+          .catch(function (error) {});
+      }
     },
     buildName: function (first_name, middle_name, last_name, suffix) {
       return (
@@ -606,6 +960,7 @@ export default {
             this.buildPatientData(element);
           });
           this.data = response.data;
+          console.log(this.data);
         })
         .catch(function (error) {});
     },
@@ -620,24 +975,20 @@ export default {
           var _this = this;
           axios.post("patients_delete/" + id).then(function (response) {
             if (response.status > 199 && response.status < 203) {
-              _this.$message({
-                type: "success",
-                message: "Succesfully! Deleted",
-              });
+               _this.open_notif("success", "Success",  "Succesfully! Deleted");
               res(id);
             }
           });
         })
         .catch((action) => {
-          this.$message({
-            type: "success",
-            message: action === "cancel" ? "Canceled" : "No changes",
-          });
+           var _this = this;
+          _this.open_notif("info", "Message",  "No changes");
         });
     },
   },
   mounted() {
     this.getPatients();
+    this.loading=false;
   },
 };
 </script>

@@ -69,7 +69,7 @@
               </a>
             </li>
             <li class="sidebar li">
-              <a href="">
+              <a href="{{route('adminrecord')}}">
                 <i class="fa fa-file-medical-alt"></i><span>Records</span>
               </a>
             </li>

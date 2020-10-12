@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\Patient;
 use App\Models\Budget;
 use App\Models\Hospital;
+use App\Models\MedicalRecord;
 use Auth;
 use DB;
 use Dotenv\Store\File\Paths;;
@@ -23,23 +24,24 @@ class AdminController extends Controller
     {
         return view('roles.admin.index');
     }
-
     public function budget()
     {
         return view('roles.admin.budget');
     }
 
+    public function record()
+    {
+        return view('roles.admin.record');
+    }
+    
     public function getBudget()
     {
         $budget = DB::table('budgets')
             ->join('hospitals', 'budgets.hospital_id', '=', 'hospitals.id')
             ->select('budgets.*', 'hospitals.hospital_code')
-            ->whereNull('budgets.deleted_at')
-            ->orderby('start_date','desc')
             ->get();
         return $budget;
     }
-
     public function addBudget(Request $request)
     {
         $budget = new Budget;
@@ -52,7 +54,6 @@ class AdminController extends Controller
         $budget->save();
         return $budget;
     }
-
     public function editBudget(Request $request)
     {
         $budget = Budget::find($request->id);
@@ -61,7 +62,12 @@ class AdminController extends Controller
         $budget->start_date = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
         $budget->end_date = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
         $budget->save();
-        return $budget;
+        
     }
-    
+    public function getRecord()
+    {
+        $result = MedicalRecord::join('patients as p', 'medical_records.patient_id', '=', 'p.id')
+        ->get();
+        return $result;
+    }
 }
