@@ -278,14 +278,15 @@ export default {
 
 			this.form.edit_object_index = this.data.indexOf(row);
 
-			(this.form_check.last_name = row.last_name),
-            (this.form_check.first_name = row.first_name),
-            (this.form_check.middle_name = row.middle_name),
-            (this.form_check.name_suffix = row.name_suffix),
-            (this.form_check.is_private = row.is_private),
-            (this.form_check.sex = row.sex),
-            (this.form_check.birthdate = row.birthdate),
-            (this.form_check.name =
+			this.form_check.last_name = row.last_name;
+            this.form_check.first_name = row.first_name;
+            this.form_check.middle_name = row.middle_name;
+            this.form_check.name_suffix = row.name_suffix;
+            this.form_check.is_private = row.is_private;
+            this.form_check.sex = row.sex;
+            this.form_check.birthdate = row.birthdate;
+            
+            this.form_check.name =
             this.form_check.last_name +
             ", " +
             this.form_check.name_suffix +
@@ -293,7 +294,7 @@ export default {
             this.form_check.first_name +
             " " +
             this.form_check.middle_name.slice(0, 1) +
-            ". ");
+            ". ";
 			this.dialogFormVisible = true;
         },
         handleDelete(index, row) {
