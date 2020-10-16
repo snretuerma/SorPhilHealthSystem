@@ -99,7 +99,7 @@ class UserController extends Controller
     {
         return Budget::where('id', $request->id)->delete();
     }
-
+    
     //Staffs
     public function personnel()
     {
