@@ -78,11 +78,6 @@
                 <i class="fa fa-users"></i><span>Users</span>
               </a>
             </li>
-            <li class="sidebar li">
-              <a href="{{route('hospital')}}">
-                <i class="fa fa-clinic-medical"></i><span>Hospital</span>
-              </a>
-            </li>
           </ul>
         </div>
         <!-- sidebar-menu  -->
