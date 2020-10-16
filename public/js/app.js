@@ -3663,61 +3663,23 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    var _this2 = this;
-
     return {
+      page: 1,
+      pageSize: 10,
       loading: true,
+      search: "",
       data: [],
-      budgetInfo: [],
+      errors: [],
+      layout: "pagination, table",
+      dialogTableVisible: false,
+      dialogFormVisible: false,
+      formLabelWidth: "120px",
+      // Validation
       rules: {
         start_date: [{
           required: true,
@@ -3740,10 +3702,6 @@ __webpack_require__.r(__webpack_exports__);
           trigger: "blur"
         }]
       },
-      filters: [{
-        prop: ["start_date", "total", "end_date", "hospital_code"],
-        value: ""
-      }],
       titles: [{
         prop: "start_date",
         label: "Start date"
@@ -3757,87 +3715,170 @@ __webpack_require__.r(__webpack_exports__);
         prop: "hospital_code",
         label: "Hospital"
       }],
-      gridData: [{
-        start_date: "",
-        total: "",
-        end_date: "",
-        hospital_code: ""
-      }],
-      actionCol: {
-        label: "Actions",
-        props: {
-          align: "center"
-        },
-        buttons: [{
-          props: {
-            type: "info",
-            icon: "el-icon-info",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            _this2.dialogTableVisible = true;
-            _this2.gridData[0].start_date = row.start_date;
-            _this2.gridData[0].total = row.total;
-            _this2.gridData[0].end_date = row.end_date;
-            _this2.gridData[0].hospital_code = row.hospital_code;
-          }
-        }, {
-          props: {
-            type: "primary",
-            icon: "el-icon-edit",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            _this2.clearfield();
-
-            _this2.form.id = row.id;
-            _this2.form.formmode = "edit";
-            _this2.dialogFormVisible = true;
-            _this2.form.start_date = row.start_date;
-            _this2.form.total = row.total;
-            _this2.form.end_date = row.end_date;
-            _this2.form.codeholder = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code.indexOf(row.hospital_code) - 1;
-            _this2.form.hospital_code = row.hospital_code;
-            _this2.form.edit_object_index = _this2.data.indexOf(row);
-            _this2.form_check.start_date = row.start_date;
-            _this2.form_check.total = row.total;
-            _this2.form_check.end_date = row.end_date;
-            _this2.form_check.codeholder = _this2.form.codeholder;
-          }
-        }]
-      },
-      layout: "pagination, table",
-      dialogTableVisible: false,
-      dialogFormVisible: false,
+      // Add form
       form: {
         id: "",
         start_date: "",
         total: "",
         end_date: "",
-        formmode: "",
         hospital_code: "",
         codeholder: "",
+        formmode: "",
         edit_object_index: ""
       },
+      // Edit form check
       form_check: {
         start_date: "",
         total: "",
         end_date: "",
         codeholder: ""
       },
-      formLabelWidth: "120px"
+      // View info data
+      gridData: [{
+        start_date: "",
+        total: "",
+        end_date: "",
+        hospital_code: ""
+      }]
     };
   },
+  computed: {
+    ListData: function ListData() {
+      var _this = this;
+
+      if (this.search == null) return this.data;
+      this.filtered = this.data.filter(function (data) {
+        return !_this.search || data.first_name.toLowerCase().includes(_this.search.toLowerCase()) || data.last_name.toLowerCase().includes(_this.search.toLowerCase());
+      });
+      this.total = this.filtered.length;
+      return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
+    }
+  },
   methods: {
-    openFullScreen2: function openFullScreen2() {
+    masknumber: function masknumber(num) {
+      num = parseFloat(num).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      return num;
+    },
+    onChange: function onChange(event) {
+      this.form.codeholder = event;
+    },
+    handleCurrentChange: function handleCurrentChange(val) {
+      this.page = val;
+    },
+    formLoading: function formLoading() {
       var loading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
         target: "div.el-dialog"
       });
       loading.close();
+    },
+    getBudget: function getBudget() {
+      var _this2 = this;
+
+      axios.get("adminbudget_get").then(function (response) {
+        response.data.forEach(function (entry) {
+          entry.total = _this2.masknumber(entry.total);
+        });
+        _this2.data = response.data;
+        _this2.loading = false;
+      })["catch"](function (error) {});
+    },
+    handleView: function handleView(index, row) {
+      this.dialogTableVisible = true;
+      this.gridData[0].start_date = row.start_date;
+      this.gridData[0].total = row.total;
+      this.gridData[0].end_date = row.end_date;
+      this.gridData[0].hospital_code = row.hospital_code;
+    },
+    handleEdit: function handleEdit(index, row) {
+      this.clearFields();
+      this.form.id = row.id;
+      this.form.formmode = "edit";
+      this.form.start_date = row.start_date;
+      this.form.total = row.total;
+      this.form.end_date = row.end_date;
+      this.form.codeholder = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code.indexOf(row.hospital_code) - 1;
+      this.form.hospital_code = row.hospital_code;
+      this.form.edit_object_index = this.data.indexOf(row);
+      this.form_check.start_date = row.start_date;
+      this.form_check.total = row.total;
+      this.form_check.end_date = row.end_date;
+      this.form_check.codeholder = this.form.codeholder;
+      this.dialogFormVisible = true;
+    },
+    budgetFunctions: function budgetFunctions(mode) {
+      var _this3 = this;
+
+      switch (mode) {
+        case "add":
+          if (this.form.start_date == "" || this.form.total == "" || this.form.end_date == "" || this.form.codeholder == "") {
+            this.open_notif("info", "Message", "Required fields were missing values.");
+          } else {
+            axios.post("adminadd_budget", this.form).then(function (response) {
+              if (response.status > 199 && response.status < 203) {
+                var total = response.data.total;
+                response.data.total = _this3.masknumber(_this3.form.total);
+                response.data.hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.hospital_code - 1)];
+
+                _this3.data.push(response.data);
+
+                _this3.dialogFormVisible = false;
+
+                _this3.open_notif("success", "Success", "Budget added successfully");
+              } else {
+                _this3.open_notif("error", "System", "Failed to add budget");
+              }
+            })["catch"](function (error) {
+              _this3.errors = error.response.data.errors;
+            });
+          }
+
+          break;
+
+        case "edit":
+          if (this.form.start_date == this.form_check.start_date && this.form.total == this.form_check.total && this.form.end_date == this.form_check.end_date && this.form.codeholder == this.form_check.codeholder) {
+            this.open_notif("info", "Message", "No Changes");
+          } else {
+            if (this.form.hospital_code == "DFBDSMH") {
+              this.form.codeholder = 1;
+            } else if (this.form.hospital_code == "DDH") {
+              this.form.codeholder = 2;
+            } else if (this.form.hospital_code == "IDH") {
+              this.form.codeholder = 3;
+            } else if (this.form.hospital_code == "SREDH") {
+              this.form.codeholder = 4;
+            } else if (this.form.hospital_code == "VLPMDH") {
+              this.form.codeholder = 5;
+            } else if (this.form.hospital_code == "MagMCH") {
+              this.form.codeholder = 6;
+            } else if (this.form.hospital_code == "MatMCH") {
+              this.form.codeholder = 7;
+            } else if (this.form.hospital_code == "PGGMH") {
+              this.form.codeholder = 8;
+            } else if (this.form.hospital_code == "PDMH") {
+              this.form.codeholder = 9;
+            }
+
+            this.form.total = parseFloat(this.form.total.replace(/,/g, ""));
+            axios.post("adminedit_budget/" + this.form.id, this.form).then(function (response) {
+              if (response.status > 199 && response.status < 203) {
+                _this3.open_notif("success", "Success", "Changes has been saved");
+
+                _this3.dialogFormVisible = false;
+                _this3.data[parseInt(_this3.form.edit_object_index)].start_date = _this3.form.start_date;
+                _this3.data[parseInt(_this3.form.edit_object_index)].total = _this3.masknumber(_this3.form.total);
+                ;
+                _this3.data[parseInt(_this3.form.edit_object_index)].end_date = _this3.form.end_date;
+                _this3.data[parseInt(_this3.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.codeholder) - 1];
+              }
+            })["catch"](function (error) {
+              _this3.errors = error.response.data.errors;
+            });
+          }
+
+          break;
+      }
     },
     open_notif: function open_notif(status, title, message) {
       if (status == "success") {
@@ -3866,124 +3907,12 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
-    onChange: function onChange(event) {
-      this.form.codeholder = event;
-    },
-    deletePatients: function deletePatients(id, res) {
-      var _this3 = this;
-
-      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
-        distinguishCancelAndClose: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        type: "warning"
-      }).then(function () {
-        var _this = _this3;
-        axios.post("delete_budget/" + id).then(function (response) {
-          if (response.status > 199 && response.status < 203) {
-            _this.open_notif("success", "Budget", "Successfully deleted!");
-
-            res(id);
-          }
-        });
-      })["catch"](function (action) {
-        _this3.$message({
-          type: "success",
-          message: action === "cancel" ? "Canceled" : "No changes"
-        });
-      });
-    },
-    getBudget: function getBudget() {
-      var _this4 = this;
-
-      var _this = this;
-
-      axios.get("adminbudget_get").then(function (response) {
-        response.data.forEach(function (entry) {
-          entry.total = _this.masknumber(entry.total);
-        });
-        _this4.loading = false;
-        _this4.data = response.data;
-      })["catch"](function (error) {});
-    },
-    clearfield: function clearfield() {
+    clearFields: function clearFields() {
       this.form.start_date = "";
       this.form.total = "";
       this.form.end_date = "";
-      this.form.codeholder = "";
       this.form.hospital_code = "";
-    },
-    masknumber: function masknumber(num) {
-      num = parseFloat(num).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-      return num;
-    },
-    addBudget: function addBudget(mode) {
-      var _this5 = this;
-
-      switch (mode) {
-        case "add":
-          if (this.form.total == "" || this.form.start_date == "" || this.form.end_date == "" || this.form.codeholder == "") {
-            this.open_notif("info", "Invalid", "All fields required!");
-          } else {
-            axios.post("adminadd_budget", this.form).then(function (response) {
-              if (response.status > 199 && response.status < 203) {
-                var total = response.data.total;
-                response.data.total = _this5.masknumber(_this5.form.total);
-                response.data.start_date = _this5.form.start_date;
-                response.data.end_date = _this5.form.end_date;
-                response.data.hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this5.form.hospital_code - 1)];
-
-                _this5.data.push(response.data);
-
-                _this5.dialogFormVisible = false;
-
-                _this5.open_notif("success", "Budget", "Successfully added!");
-              } else {
-                _this5.open_notif("error", "System", "Record failed to add!");
-              }
-            })["catch"](function (error) {});
-          }
-
-          break;
-
-        case "edit":
-          if (this.form.start_date == this.form_check.start_date && this.form.end_date == this.form_check.end_date && this.form.total == this.form_check.total && this.form.codeholder == this.form_check.codeholder) {
-            this.open_notif("info", "Note : ", "No changes were made");
-          } else {
-            if (this.form.hospital_code == "DFBDSMH") {
-              this.form.codeholder = 1;
-            } else if (this.form.hospital_code == "DDH") {
-              this.form.codeholder = 2;
-            } else if (this.form.hospital_code == "IDH") {
-              this.form.codeholder = 3;
-            } else if (this.form.hospital_code == "SREDH") {
-              this.form.codeholder = 4;
-            } else if (this.form.hospital_code == "VLPMDH") {
-              this.form.codeholder = 5;
-            } else if (this.form.hospital_code == "MagMCH") {
-              this.form.codeholder = 6;
-            } else if (this.form.hospital_code == "MatMCH") {
-              this.form.codeholder = 7;
-            } else if (this.form.hospital_code == "PGGMH") {
-              this.form.codeholder = 8;
-            } else if (this.form.hospital_code == "PDMH") {
-              this.form.codeholder = 9;
-            }
-
-            this.form.total = parseFloat(this.form.total.replace(/,/g, ""));
-            axios.post("adminedit_budget/" + this.form.id, this.form).then(function (response) {
-              _this5.data[parseInt(_this5.form.edit_object_index)].start_date = _this5.form.start_date;
-              _this5.data[parseInt(_this5.form.edit_object_index)].total = _this5.masknumber(_this5.form.total);
-              _this5.data[parseInt(_this5.form.edit_object_index)].end_date = _this5.form.end_date;
-              _this5.data[parseInt(_this5.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this5.form.codeholder) - 1];
-              _this5.dialogFormVisible = false;
-
-              _this5.open_notif("success", "Notice : ", "Successfully changed!");
-            })["catch"](function (error) {});
-          }
-
-          break;
-      }
+      this.form.codeholder = "";
     }
   },
   mounted: function mounted() {
@@ -4577,7 +4506,6 @@ __webpack_require__.r(__webpack_exports__);
       search: "",
       data: [],
       errors: [],
-      patientinfo: [],
       dialogFormVisible_import_excel: false,
       progressbar_import: false,
       enableUpload: false,
@@ -5208,7 +5136,6 @@ __webpack_require__.r(__webpack_exports__);
       search: "",
       data: [],
       errors: [],
-      personnelinfo: [],
       dialogFormVisible_import_excel: false,
       progressbar_import: false,
       enableUpload: false,
@@ -6649,119 +6576,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    var _this2 = this;
-
     return {
+      page: 1,
+      pageSize: 10,
       loading: true,
+      search: "",
       data: [],
-      budgetInfo: [],
+      errors: [],
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
@@ -6784,11 +6609,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           trigger: "blur"
         }]
       },
-      // Searchbox Filter
-      filters: [{
-        prop: ["start_date", "total", "end_date"],
-        value: ""
-      }],
       titles: [{
         prop: "start_date",
         label: "Start date"
@@ -6819,76 +6639,146 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         start_date: "",
         total: "",
         end_date: ""
-      }],
-      //Actiom Column
-      actionCol: {
-        label: "Actions",
-        props: {
-          align: "center"
-        },
-        //Action Buttons
-        buttons: [{
-          props: {
-            type: "info",
-            icon: "el-icon-info",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            _this2.dialogTableVisible = true;
-            _this2.gridData[0].start_date = row.start_date;
-            _this2.gridData[0].total = row.total;
-            _this2.gridData[0].end_date = row.end_date;
-          }
-        }, {
-          props: {
-            type: "primary",
-            icon: "el-icon-edit",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            _this2.clearfield();
-
-            _this2.form.id = row.id;
-            _this2.form.formmode = "edit";
-            _this2.dialogFormVisible = true;
-            _this2.form.start_date = row.start_date;
-            _this2.form.total = row.total;
-            _this2.form.end_date = row.end_date;
-            _this2.form.edit_object_index = _this2.data.indexOf(row);
-            _this2.form_check.start_date = row.start_date;
-            _this2.form_check.total = row.total;
-            _this2.form_check.end_date = row.end_date;
-          }
-        }, {
-          props: {
-            type: "danger",
-            icon: "el-icon-delete",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            var data = _this2.data;
-
-            _this2.deletePatients(row.id, function (res_value) {
-              if (res_value) {
-                data.splice(data.indexOf(row), 1);
-              }
-            });
-          }
-        }]
-      }
+      }]
     };
   },
-  methods: _defineProperty({
-    openFullScreen2: function openFullScreen2() {
+  computed: {
+    ListData: function ListData() {
+      var _this2 = this;
+
+      if (this.search == null) return this.data;
+      this.filtered = this.data.filter(function (data) {
+        return !_this2.search || data.first_name.toLowerCase().includes(_this2.search.toLowerCase()) || data.last_name.toLowerCase().includes(_this2.search.toLowerCase());
+      });
+      this.total = this.filtered.length;
+      return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
+    }
+  },
+  methods: {
+    masknumber: function masknumber(num) {
+      num = parseFloat(num).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      return num;
+    },
+    handleCurrentChange: function handleCurrentChange(val) {
+      this.page = val;
+    },
+    formLoading: function formLoading() {
       var loading = this.$loading({
         lock: true,
         spinner: "el-icon-loading",
         target: "div.el-dialog"
       });
       loading.close();
+    },
+    getBudget: function getBudget() {
+      var _this3 = this;
+
+      axios.get("budget_get").then(function (response) {
+        response.data.forEach(function (entry) {
+          entry.total = _this3.masknumber(entry.total);
+        });
+        _this3.data = response.data;
+        _this3.loading = false;
+      })["catch"](function (error) {});
+    },
+    handleView: function handleView(index, row) {
+      this.dialogTableVisible = true;
+      this.gridData[0].start_date = row.start_date;
+      this.gridData[0].total = row.total;
+      this.gridData[0].end_date = row.end_date;
+    },
+    handleEdit: function handleEdit(index, row) {
+      this.clearFields();
+      this.form.id = row.id;
+      this.form.formmode = "edit";
+      this.form.start_date = row.start_date;
+      this.form.total = row.total;
+      this.form.end_date = row.end_date;
+      this.form.edit_object_index = this.data.indexOf(row);
+      this.form_check.start_date = row.start_date;
+      this.form_check.total = row.total;
+      this.form_check.end_date = row.end_date;
+      this.dialogFormVisible = true;
+    },
+    handleDelete: function handleDelete(index, row) {
+      var data = this.data;
+      this.deleteBudget(row.id, function (res_value) {
+        if (res_value) {
+          data.splice(data.indexOf(row), 1);
+        }
+      });
+    },
+    budgetFunctions: function budgetFunctions(mode) {
+      var _this4 = this;
+
+      switch (mode) {
+        case "add":
+          if (this.form.start_date == "" || this.form.total == "" || this.form.end_date == "") {
+            this.open_notif("info", "Message", "Required fields were missing values.");
+          } else {
+            axios.post("add_budget", this.form).then(function (response) {
+              if (response.status > 199 && response.status < 203) {
+                var total = response.data.total;
+                response.data.total = _this4.masknumber(_this4.form.total);
+
+                _this4.data.push(response.data);
+
+                _this4.dialogFormVisible = false;
+
+                _this4.open_notif("success", "Success", "Budget added successfully");
+              } else {
+                _this4.open_notif("error", "System", "Failed to add budget");
+              }
+            })["catch"](function (error) {
+              _this4.errors = error.response.data.errors;
+            });
+          }
+
+          break;
+
+        case "edit":
+          if (this.form.start_date == this.form_check.start_date && this.form.total == this.form_check.total && this.form.end_date == this.form_check.end_date) {
+            this.open_notif("info", "Message", "No Changes");
+          } else {
+            this.form.total = parseFloat(this.form.total.replace(/,/g, ""));
+            axios.post("edit_budget/" + this.form.id, this.form).then(function (response) {
+              if (response.status > 199 && response.status < 203) {
+                _this4.open_notif("success", "Success", "Changes has been saved");
+
+                _this4.dialogFormVisible = false;
+                _this4.data[parseInt(_this4.form.edit_object_index)].start_date = _this4.form.start_date;
+                _this4.data[parseInt(_this4.form.edit_object_index)].total = _this4.masknumber(_this4.form.total);
+                ;
+                _this4.data[parseInt(_this4.form.edit_object_index)].end_date = _this4.form.end_date;
+              }
+            })["catch"](function (error) {
+              _this4.errors = error.response.data.errors;
+            });
+          }
+
+          break;
+      }
+    },
+    deleteBudget: function deleteBudget(id, res) {
+      var _this5 = this;
+
+      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+        distinguishCancelAndClose: true,
+        confirmButtonText: "Delete",
+        cancelButtonText: "Cancel",
+        type: "warning"
+      }).then(function () {
+        var _this = _this5;
+        axios.post("budget_delete/" + id).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this.open_notif("success", "Success", "Deleted Successfully");
+
+            res(id);
+          }
+        });
+      })["catch"](function (action) {
+        _this5.open_notif("info", "Cancelled", "No Changes");
+      });
     },
     open_notif: function open_notif(status, title, message) {
       if (status == "success") {
@@ -6917,189 +6807,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
       }
     },
-    deletePatients: function deletePatients(id, res) {
-      var _this3 = this;
-
-      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
-        distinguishCancelAndClose: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        type: "warning"
-      }).then(function () {
-        var _this = _this3;
-        axios.post("delete_budget/" + id).then(function (response) {
-          if (response.status > 199 && response.status < 203) {
-            _this.open_notif("success", "Budget", "Successfully deleted!");
-
-            res(id);
-          }
-        });
-      })["catch"](function (action) {
-        _this3.$message({
-          type: "success",
-          message: action === "cancel" ? "Canceled" : "No changes"
-        });
-      });
-    },
-    getBudget: function getBudget() {
-      var _this4 = this;
-
-      var _this = this;
-
-      axios.get("budget_get").then(function (response) {
-        response.data.forEach(function (entry) {
-          entry.total = _this.masknumber(entry.total);
-        });
-        _this4.data = response.data;
-        _this4.loading = false;
-      })["catch"](function (error) {});
-    },
-    clearfield: function clearfield() {
+    clearFields: function clearFields() {
       this.form.start_date = "";
       this.form.total = "";
       this.form.end_date = "";
-    },
-    masknumber: function masknumber(num) {
-      num = parseFloat(num).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-      return num;
-    },
-    addBudget: function addBudget(mode) {
-      var _this5 = this;
-
-      switch (mode) {
-        case "add":
-          if (this.form.start_date == "" || this.form.end_date == "" || this.form.total == "") {
-            this.open_notif("info", "Invalid", "All fields required!");
-          } else {
-            var _this = this;
-
-            axios.post("add_budget", this.form).then(function (response) {
-              response.data.start_date = _this5.form.start_date;
-              response.data.end_date = _this5.form.end_date;
-              response.data.total = _this5.masknumber(_this5.form.total);
-
-              _this5.data.push(response.data);
-
-              _this5.dialogFormVisible = false;
-
-              if (response.status > 199 && response.status < 203) {
-                _this5.open_notif("success", "Budget", "Successfully added!");
-              } else {
-                _this5.open_notif("error", "System", "Record failed to add!");
-              }
-            })["catch"](function (error) {})["finally"](function () {});
-          }
-
-          break;
-
-        case "edit":
-          if (this.form.start_date == this.form_check.start_date && this.form.end_date == this.form_check.end_date && this.form.total == this.form_check.total) {
-            this.open_notif("info", "Note : ", "No changes were made");
-          } else {
-            this.form.total = parseFloat(this.form.total.replace(/,/g, ""));
-            axios.post("edit_budget/" + this.form.id, this.form).then(function (response) {
-              if (response.status > 199 && response.status < 203) {
-                _this5.data[parseInt(_this5.form.edit_object_index)].start_date = _this5.form.start_date;
-                _this5.data[parseInt(_this5.form.edit_object_index)].total = _this5.masknumber(_this5.form.total);
-                _this5.data[parseInt(_this5.form.edit_object_index)].end_date = _this5.form.end_date;
-                _this5.dialogFormVisible = false;
-
-                _this5.open_notif("success", "Notice : ", "Successfully changed!");
-              }
-            })["catch"](function (error) {});
-          }
-
-          break;
-      }
-    },
-    formDialog: function formDialog(id) {
-      if (id == "import_data") {
-        $("#importModal").modal({
-          backdrop: 'static',
-          keyboard: false
-        });
-      } else if (id == "export_data") {
-        $("#exportModal").modal({
-          backdrop: 'static',
-          keyboard: false
-        });
-      }
-    },
-    selectFile: function selectFile(event) {
-      if (event.target.value) {
-        this.enableUpload = true;
-      } else {
-        this.enableUpload = false;
-      }
-    },
-    onSubmit: function onSubmit() {
-      var _this = this;
-
-      var formData = new FormData();
-      formData.append("budgets[]", $("#excelcontent").get(0).files[0]);
-      axios.post('budget_import', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        },
-        onUploadProgress: function (progressEvent) {
-          this.uploadPercentage = parseInt(Math.round(progressEvent.loaded * 100 / progressEvent.total));
-          $('.progress-bar').css('width', this.uploadPercentage + '%').attr('aria-valuenow', this.uploadPercentage);
-          $('.progress-bar').html(this.uploadPercentage + "%");
-        }.bind(this)
-      }).then(function (res) {
-        setTimeout(function () {
-          _this.progressbar_import = false;
-          $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
-          $('.progress-bar').html('0%');
-          $("#importModal").modal('hide');
-          $("#excelcontent").val('');
-        }, 2000);
-        var total_imported = res.data;
-
-        if (total_imported == 0) {
-          _this.open_notif("warning", "Import", "No row to be import");
-        } else if (total_imported > 0) {
-          _this.open_notif("success", "Import", "Successfully imported: " + res.data + " row");
-
-          _this.getBudget();
-        }
-      })["catch"](function (res) {
-        _this.progressbar_import = false;
-        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
-        $('.progress-bar').html('0%');
-        $("#excelcontent").val('');
-        $("#importModal").modal('hide');
-
-        _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
-      });
     }
-  }, "open_notif", function open_notif(status, title, message) {
-    if (status == "success") {
-      this.$notify.success({
-        title: title,
-        message: message,
-        offset: 0
-      });
-    } else if (status == "error") {
-      this.$notify.error({
-        title: title,
-        message: message,
-        offset: 0
-      });
-    } else if (status == "info") {
-      this.$notify.info({
-        title: title,
-        message: message,
-        offset: 0
-      });
-    } else if (status == "warning") {
-      this.$notify.warning({
-        title: title,
-        message: message,
-        offset: 0
-      });
-    }
-  }),
+  },
   mounted: function mounted() {
     this.getBudget();
   }
@@ -7383,7 +7096,6 @@ __webpack_require__.r(__webpack_exports__);
       search: "",
       data: [],
       errors: [],
-      patientinfo: [],
       dialogFormVisible_import_excel: false,
       progressbar_import: false,
       enableUpload: false,
@@ -7995,7 +7707,6 @@ __webpack_require__.r(__webpack_exports__);
       search: "",
       data: [],
       errors: [],
-      personnelinfo: [],
       dialogFormVisible_import_excel: false,
       progressbar_import: false,
       enableUpload: false,
@@ -105913,78 +105624,48 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+  return _c(
+    "div",
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
         _c(
           "div",
-          { staticStyle: { "margin-bottom": "10px" } },
+          {
+            staticClass: "col-sm-12",
+            staticStyle: { "margin-bottom": "10px" },
+            attrs: { align: "right" }
+          },
           [
             _c(
-              "el-row",
-              [
-                _c(
-                  "el-col",
-                  { attrs: { span: 10 } },
-                  [
-                    _c("el-input", {
-                      attrs: { placeholder: "Search" },
-                      model: {
-                        value: _vm.filters[0].value,
-                        callback: function($$v) {
-                          _vm.$set(_vm.filters[0], "value", $$v)
-                        },
-                        expression: "filters[0].value"
-                      }
-                    })
-                  ],
-                  1
-                )
-              ],
-              1
+              "el-button",
+              {
+                attrs: { type: "primary" },
+                on: {
+                  click: function($event) {
+                    _vm.dialogFormVisible = true
+                    _vm.form.formmode = "add"
+                    _vm.clearFields()
+                  }
+                }
+              },
+              [_vm._v("Add")]
             )
           ],
           1
         )
       ]),
       _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "col-sm-2", attrs: { align: "right" } },
-        [
-          _c(
-            "el-button",
-            {
-              attrs: { type: "primary" },
-              on: {
-                click: function($event) {
-                  _vm.dialogFormVisible = true
-                  _vm.form.formmode = "add"
-                  _vm.clearfield()
-                }
-              }
-            },
-            [_vm._v("Add")]
-          )
-        ],
-        1
-      )
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "card" },
-      [
+      _c("div", { staticClass: "card" }, [
         _c(
           "div",
           { staticClass: "card-body" },
           [
             _c(
-              "data-tables",
+              "el-table",
               {
                 directives: [
                   {
@@ -105994,313 +105675,142 @@ var render = function() {
                     expression: "loading"
                   }
                 ],
-                attrs: {
-                  data: _vm.data,
-                  "page-size": 10,
-                  filters: _vm.filters,
-                  "pagination-props": { pageSizes: [10, 20, 50] },
-                  "action-col": _vm.actionCol
-                }
+                attrs: { data: _vm.ListData }
               },
               [
-                _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
-                  _vm._v("Table Empty")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.titles, function(title) {
-                  return _c("el-table-column", {
-                    key: title.label,
-                    attrs: {
-                      prop: title.prop,
-                      label: title.label,
-                      sortable: "custom"
-                    }
-                  })
+                _c("el-table-column", {
+                  attrs: {
+                    width: "250",
+                    label: "Start Date",
+                    prop: "start_date"
+                  }
                 }),
                 _vm._v(" "),
-                _c("p", { attrs: { slot: "append" }, slot: "append" })
+                _c("el-table-column", {
+                  attrs: { width: "200", label: "Amount", prop: "total" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { width: "250", label: "End date", prop: "end_date" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: {
+                    width: "150",
+                    label: "Hospital",
+                    prop: "hospital_code"
+                  }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { width: "250", align: "right", fixed: "right" },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "header",
+                      fn: function(scope) {
+                        return [
+                          _c("el-input", {
+                            attrs: {
+                              size: "mini",
+                              placeholder: "Type to search"
+                            },
+                            model: {
+                              value: _vm.search,
+                              callback: function($$v) {
+                                _vm.search = $$v
+                              },
+                              expression: "search"
+                            }
+                          })
+                        ]
+                      }
+                    },
+                    {
+                      key: "default",
+                      fn: function(scope) {
+                        return [
+                          _c(
+                            "el-tooltip",
+                            {
+                              staticClass: "item",
+                              attrs: {
+                                effect: "light",
+                                content: "View",
+                                placement: "top"
+                              }
+                            },
+                            [
+                              _c("el-button", {
+                                attrs: {
+                                  size: "mini",
+                                  type: "info",
+                                  icon: "el-icon-info",
+                                  circle: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleView(
+                                      scope.$index,
+                                      scope.row
+                                    )
+                                  }
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "el-tooltip",
+                            {
+                              staticClass: "item",
+                              attrs: {
+                                effect: "light",
+                                content: "Edit",
+                                placement: "top"
+                              }
+                            },
+                            [
+                              _c("el-button", {
+                                attrs: {
+                                  size: "mini",
+                                  type: "primary",
+                                  icon: "el-icon-edit",
+                                  circle: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleEdit(
+                                      scope.$index,
+                                      scope.row
+                                    )
+                                  }
+                                }
+                              })
+                            ],
+                            1
+                          )
+                        ]
+                      }
+                    }
+                  ])
+                })
               ],
-              2
+              1
             ),
             _vm._v(" "),
             _c(
-              "el-dialog",
-              {
-                attrs: {
-                  title: "Budget Details",
-                  visible: _vm.dialogFormVisible,
-                  top: "5vh",
-                  "close-on-press-escape": false,
-                  "close-on-click-modal": false
-                },
-                on: {
-                  "update:visible": function($event) {
-                    _vm.dialogFormVisible = $event
-                  }
-                }
-              },
+              "div",
+              { staticStyle: { "text-align": "center" } },
               [
-                _c(
-                  "el-form",
-                  { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
-                  [
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "Start date",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "start_date"
-                        }
-                      },
-                      [
-                        _c("el-date-picker", {
-                          staticStyle: { width: "100%" },
-                          attrs: {
-                            type: "date",
-                            placeholder: "Pick a date",
-                            "value-format": "yyyy-MM-dd"
-                          },
-                          model: {
-                            value: _vm.form.start_date,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "start_date", $$v)
-                            },
-                            expression: "form.start_date"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "Amount",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "total"
-                        }
-                      },
-                      [
-                        _c("el-input", {
-                          attrs: { autocomplete: "off" },
-                          model: {
-                            value: _vm.form.total,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "total", $$v)
-                            },
-                            expression: "form.total"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "End date",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "end_date"
-                        }
-                      },
-                      [
-                        _c("el-date-picker", {
-                          staticStyle: { width: "100%" },
-                          attrs: {
-                            type: "date",
-                            placeholder: "Pick a date",
-                            "value-format": "yyyy-MM-dd"
-                          },
-                          model: {
-                            value: _vm.form.end_date,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "end_date", $$v)
-                            },
-                            expression: "form.end_date"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "Hospital code",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "hospital_code"
-                        }
-                      },
-                      [
-                        _c(
-                          "el-select",
-                          {
-                            attrs: { placeholder: "Please select" },
-                            on: {
-                              change: function($event) {
-                                return _vm.onChange(_vm.form.hospital_code)
-                              }
-                            },
-                            model: {
-                              value: _vm.form.hospital_code,
-                              callback: function($$v) {
-                                _vm.$set(_vm.form, "hospital_code", $$v)
-                              },
-                              expression: "form.hospital_code"
-                            }
-                          },
-                          [
-                            _c("el-option", {
-                              attrs: { label: "DFBDSMH", value: "1" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "DDH", value: "2" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "IDH", value: "3" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "SREDH", value: "4" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "VLPMDH", value: "5" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "MagMCH", value: "6" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "MatMCH", value: "7" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "PGGMH", value: "8" }
-                            }),
-                            _vm._v(" "),
-                            _c("el-option", {
-                              attrs: { label: "PDMH", value: "9" }
-                            })
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    )
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    staticClass: "dialog-footer",
-                    attrs: { slot: "footer" },
-                    slot: "footer"
+                _c("el-pagination", {
+                  attrs: {
+                    background: "",
+                    layout: "prev, pager, next",
+                    "page-size": _vm.pageSize,
+                    total: _vm.data.length
                   },
-                  [
-                    _c(
-                      "el-button",
-                      {
-                        on: {
-                          click: function($event) {
-                            _vm.dialogFormVisible = false
-                          }
-                        }
-                      },
-                      [_vm._v("Cancel")]
-                    ),
-                    _vm._v(" "),
-                    _vm.form.formmode == "add"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                _vm.addBudget("add")
-                                _vm.openFullScreen2()
-                              }
-                            }
-                          },
-                          [_vm._v("Save")]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.form.formmode == "edit"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                _vm.addBudget("edit")
-                                _vm.openFullScreen2()
-                              }
-                            }
-                          },
-                          [_vm._v("Save changes")]
-                        )
-                      : _vm._e()
-                  ],
-                  1
-                )
-              ],
-              1
-            )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "el-dialog",
-          {
-            attrs: { title: "Budget Details", visible: _vm.dialogTableVisible },
-            on: {
-              "update:visible": function($event) {
-                _vm.dialogTableVisible = $event
-              }
-            }
-          },
-          [
-            _c(
-              "el-table",
-              { attrs: { data: _vm.gridData } },
-              [
-                _c("el-table-column", {
-                  attrs: {
-                    property: "start_date",
-                    label: "Start date",
-                    width: "200"
-                  }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: { property: "total", label: "Amount", width: "200" }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: {
-                    property: "end_date",
-                    label: "End date",
-                    width: "formLabelWidth"
-                  }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: {
-                    property: "hospital_code",
-                    label: "Hospital",
-                    width: "formLabelWidth"
-                  }
+                  on: { "current-change": _vm.handleCurrentChange }
                 })
               ],
               1
@@ -106308,10 +105818,313 @@ var render = function() {
           ],
           1
         )
-      ],
-      1
-    )
-  ])
+      ]),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _vm._m(1),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: {
+            title: "Budget Details",
+            visible: _vm.dialogFormVisible,
+            top: "5vh",
+            "close-on-press-escape": false,
+            "close-on-click-modal": false
+          },
+          on: {
+            "update:visible": function($event) {
+              _vm.dialogFormVisible = $event
+            }
+          }
+        },
+        [
+          _c(
+            "el-form",
+            { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
+            [
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Start date",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "start_date"
+                  }
+                },
+                [
+                  _c("el-date-picker", {
+                    staticStyle: { width: "100%" },
+                    attrs: {
+                      type: "date",
+                      placeholder: "Pick a date",
+                      "value-format": "yyyy-MM-dd"
+                    },
+                    model: {
+                      value: _vm.form.start_date,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "start_date", $$v)
+                      },
+                      expression: "form.start_date"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.start_date
+                    ? _c("span", { staticClass: "font-italic text-danger" }, [
+                        _c("small", [_vm._v(_vm._s(_vm.errors.start_date[0]))])
+                      ])
+                    : _vm._e()
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Amount",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "total"
+                  }
+                },
+                [
+                  _c("el-input", {
+                    attrs: { autocomplete: "off" },
+                    model: {
+                      value: _vm.form.total,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "total", $$v)
+                      },
+                      expression: "form.total"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.total
+                    ? _c("span", { staticClass: "font-italic text-danger" }, [
+                        _c("small", [_vm._v(_vm._s(_vm.errors.total[0]))])
+                      ])
+                    : _vm._e()
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "End date",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "end_date"
+                  }
+                },
+                [
+                  _c("el-date-picker", {
+                    staticStyle: { width: "100%" },
+                    attrs: {
+                      type: "date",
+                      placeholder: "Pick a date",
+                      "value-format": "yyyy-MM-dd"
+                    },
+                    model: {
+                      value: _vm.form.end_date,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "end_date", $$v)
+                      },
+                      expression: "form.end_date"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.end_date
+                    ? _c("span", { staticClass: "font-italic text-danger" }, [
+                        _c("small", [_vm._v(_vm._s(_vm.errors.end_date[0]))])
+                      ])
+                    : _vm._e()
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Hospital",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "hospital_code"
+                  }
+                },
+                [
+                  _c(
+                    "el-select",
+                    {
+                      attrs: { placeholder: "Please select" },
+                      on: {
+                        change: function($event) {
+                          return _vm.onChange(_vm.form.hospital_code)
+                        }
+                      },
+                      model: {
+                        value: _vm.form.hospital_code,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "hospital_code", $$v)
+                        },
+                        expression: "form.hospital_code"
+                      }
+                    },
+                    [
+                      _c("el-option", {
+                        attrs: { label: "DFBDSMH", value: "1" }
+                      }),
+                      _vm._v(" "),
+                      _c("el-option", { attrs: { label: "DDH", value: "2" } }),
+                      _vm._v(" "),
+                      _c("el-option", { attrs: { label: "IDH", value: "3" } }),
+                      _vm._v(" "),
+                      _c("el-option", {
+                        attrs: { label: "SREDH", value: "4" }
+                      }),
+                      _vm._v(" "),
+                      _c("el-option", {
+                        attrs: { label: "VLPMDH", value: "5" }
+                      }),
+                      _vm._v(" "),
+                      _c("el-option", {
+                        attrs: { label: "MagMCH", value: "6" }
+                      }),
+                      _vm._v(" "),
+                      _c("el-option", {
+                        attrs: { label: "MatMCH", value: "7" }
+                      }),
+                      _vm._v(" "),
+                      _c("el-option", {
+                        attrs: { label: "PGGMH", value: "8" }
+                      }),
+                      _vm._v(" "),
+                      _c("el-option", { attrs: { label: "PDMH", value: "9" } })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _vm.errors.hospital_code
+                    ? _c("span", { staticClass: "font-italic text-danger" }, [
+                        _c("small", [
+                          _vm._v(_vm._s(_vm.errors.hospital_code[0]))
+                        ])
+                      ])
+                    : _vm._e()
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "dialog-footer",
+              attrs: { slot: "footer" },
+              slot: "footer"
+            },
+            [
+              _c(
+                "el-button",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.dialogFormVisible = false
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              ),
+              _vm._v(" "),
+              _vm.form.formmode == "add"
+                ? _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: {
+                        click: function($event) {
+                          _vm.budgetFunctions("add")
+                          _vm.formLoading()
+                        }
+                      }
+                    },
+                    [_vm._v("Save")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.form.formmode == "edit"
+                ? _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: {
+                        click: function($event) {
+                          _vm.budgetFunctions("edit")
+                          _vm.formLoading()
+                        }
+                      }
+                    },
+                    [_vm._v("Save Changes")]
+                  )
+                : _vm._e()
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: { title: "Staff Info", visible: _vm.dialogTableVisible },
+          on: {
+            "update:visible": function($event) {
+              _vm.dialogTableVisible = $event
+            }
+          }
+        },
+        [
+          _c(
+            "el-table",
+            { attrs: { data: _vm.gridData } },
+            [
+              _c("el-table-column", {
+                attrs: {
+                  property: "start_date",
+                  label: "Start Date",
+                  width: "200"
+                }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { property: "total", label: "Amount", width: "200" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { property: "end_date", label: "End Date", width: "150" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: {
+                  property: "hospital_code",
+                  label: "Hospital",
+                  width: "150"
+                }
+              })
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -106321,6 +106134,20 @@ var staticRenderFns = [
     return _c("div", { staticClass: "row" }, [
       _c("div", { staticClass: "col-sm-12" }, [
         _c("h2", [_vm._v("Admin Budget List")])
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "footer" }, [
+      _c("div", { staticClass: "containter-fluid" }, [
+        _c("div", { staticClass: "row text-center" }, [
+          _c("span", { staticClass: "text-muted" }, [
+            _vm._v("    ©PF Management System 2020")
+          ])
+        ])
       ])
     ])
   }
@@ -109562,104 +109389,48 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm._m(0),
-    _vm._v(" "),
-    _c("hr"),
-    _vm._v(" "),
-    _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-6", attrs: { align: "left" } }, [
+  return _c(
+    "div",
+    [
+      _vm._m(0),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c("div", { staticClass: "row" }, [
         _c(
           "div",
-          { staticStyle: { "margin-bottom": "10px" } },
+          {
+            staticClass: "col-sm-12",
+            staticStyle: { "margin-bottom": "10px" },
+            attrs: { align: "right" }
+          },
           [
             _c(
-              "el-row",
-              [
-                _c(
-                  "el-col",
-                  { attrs: { span: 10 } },
-                  [
-                    _c("el-input", {
-                      attrs: { size: "medium", placeholder: "Search" },
-                      model: {
-                        value: _vm.filters[0].value,
-                        callback: function($$v) {
-                          _vm.$set(_vm.filters[0], "value", $$v)
-                        },
-                        expression: "filters[0].value"
-                      }
-                    })
-                  ],
-                  1
-                )
-              ],
-              1
+              "el-button",
+              {
+                attrs: { type: "primary" },
+                on: {
+                  click: function($event) {
+                    _vm.dialogFormVisible = true
+                    _vm.form.formmode = "add"
+                    _vm.clearFields()
+                  }
+                }
+              },
+              [_vm._v("Add")]
             )
           ],
           1
         )
       ]),
       _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "col-sm-6", attrs: { align: "right" } },
-        [
-          _c(
-            "el-button",
-            {
-              attrs: { type: "primary", size: "medium" },
-              on: {
-                click: function($event) {
-                  return _vm.formDialog("export_data")
-                }
-              }
-            },
-            [_vm._v("Export")]
-          ),
-          _vm._v(" "),
-          _c(
-            "el-button",
-            {
-              attrs: { type: "primary", size: "medium" },
-              on: {
-                click: function($event) {
-                  return _vm.formDialog("import_data")
-                }
-              }
-            },
-            [_vm._v("Import")]
-          ),
-          _vm._v(" "),
-          _c(
-            "el-button",
-            {
-              attrs: { type: "primary", size: "medium" },
-              on: {
-                click: function($event) {
-                  _vm.dialogFormVisible = true
-                  _vm.form.formmode = "add"
-                  _vm.clearfield()
-                }
-              }
-            },
-            [_vm._v("Add")]
-          )
-        ],
-        1
-      )
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "card" },
-      [
+      _c("div", { staticClass: "card" }, [
         _c(
           "div",
           { staticClass: "card-body" },
           [
             _c(
-              "data-tables",
+              "el-table",
               {
                 directives: [
                   {
@@ -109669,373 +109440,399 @@ var render = function() {
                     expression: "loading"
                   }
                 ],
-                attrs: {
-                  data: _vm.data,
-                  "page-size": 10,
-                  filters: _vm.filters,
-                  "pagination-props": { pageSizes: [10, 20, 50] },
-                  "action-col": _vm.actionCol
-                }
+                attrs: { data: _vm.ListData }
               },
               [
-                _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
-                  _vm._v("Table Empty")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.titles, function(title) {
-                  return _c("el-table-column", {
-                    key: title.label,
-                    attrs: {
-                      prop: title.prop,
-                      label: title.label,
-                      sortable: "custom"
-                    }
-                  })
+                _c("el-table-column", {
+                  attrs: {
+                    width: "300",
+                    label: "Start Date",
+                    prop: "start_date"
+                  }
                 }),
                 _vm._v(" "),
-                _c("p", { attrs: { slot: "append" }, slot: "append" })
+                _c("el-table-column", {
+                  attrs: { width: "300", label: "Amount", prop: "total" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { width: "150", label: "End date", prop: "end_date" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { width: "250", align: "right", fixed: "right" },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "header",
+                      fn: function(scope) {
+                        return [
+                          _c("el-input", {
+                            attrs: {
+                              size: "mini",
+                              placeholder: "Type to search"
+                            },
+                            model: {
+                              value: _vm.search,
+                              callback: function($$v) {
+                                _vm.search = $$v
+                              },
+                              expression: "search"
+                            }
+                          })
+                        ]
+                      }
+                    },
+                    {
+                      key: "default",
+                      fn: function(scope) {
+                        return [
+                          _c(
+                            "el-tooltip",
+                            {
+                              staticClass: "item",
+                              attrs: {
+                                effect: "light",
+                                content: "View",
+                                placement: "top"
+                              }
+                            },
+                            [
+                              _c("el-button", {
+                                attrs: {
+                                  size: "mini",
+                                  type: "info",
+                                  icon: "el-icon-info",
+                                  circle: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleView(
+                                      scope.$index,
+                                      scope.row
+                                    )
+                                  }
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "el-tooltip",
+                            {
+                              staticClass: "item",
+                              attrs: {
+                                effect: "light",
+                                content: "Edit",
+                                placement: "top"
+                              }
+                            },
+                            [
+                              _c("el-button", {
+                                attrs: {
+                                  size: "mini",
+                                  type: "primary",
+                                  icon: "el-icon-edit",
+                                  circle: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleEdit(
+                                      scope.$index,
+                                      scope.row
+                                    )
+                                  }
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "el-tooltip",
+                            {
+                              staticClass: "item",
+                              attrs: {
+                                effect: "light",
+                                content: "Delete",
+                                placement: "top"
+                              }
+                            },
+                            [
+                              _c("el-button", {
+                                attrs: {
+                                  size: "mini",
+                                  type: "danger",
+                                  icon: "el-icon-delete",
+                                  circle: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleDelete(
+                                      scope.$index,
+                                      scope.row
+                                    )
+                                  }
+                                }
+                              })
+                            ],
+                            1
+                          )
+                        ]
+                      }
+                    }
+                  ])
+                })
               ],
-              2
+              1
             ),
             _vm._v(" "),
             _c(
-              "el-dialog",
-              {
-                attrs: {
-                  title: "Budget Details",
-                  visible: _vm.dialogFormVisible,
-                  top: "5vh",
-                  "close-on-press-escape": false,
-                  "close-on-click-modal": false
-                },
-                on: {
-                  "update:visible": function($event) {
-                    _vm.dialogFormVisible = $event
-                  }
-                }
-              },
+              "div",
+              { staticStyle: { "text-align": "center" } },
               [
-                _c(
-                  "el-form",
-                  { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
-                  [
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "Start date",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "start_date"
-                        }
-                      },
-                      [
-                        _c("el-date-picker", {
-                          staticStyle: { width: "100%" },
-                          attrs: {
-                            type: "date",
-                            placeholder: "Pick a date",
-                            "value-format": "yyyy-MM-dd"
-                          },
-                          model: {
-                            value: _vm.form.start_date,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "start_date", $$v)
-                            },
-                            expression: "form.start_date"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "Amount",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "total"
-                        }
-                      },
-                      [
-                        _c("el-input", {
-                          attrs: { autocomplete: "off" },
-                          model: {
-                            value: _vm.form.total,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "total", $$v)
-                            },
-                            expression: "form.total"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "End date",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "end_date"
-                        }
-                      },
-                      [
-                        _c("el-date-picker", {
-                          staticStyle: { width: "100%" },
-                          attrs: {
-                            type: "date",
-                            placeholder: "Pick a date",
-                            "value-format": "yyyy-MM-dd"
-                          },
-                          model: {
-                            value: _vm.form.end_date,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "end_date", $$v)
-                            },
-                            expression: "form.end_date"
-                          }
-                        })
-                      ],
-                      1
-                    )
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    staticClass: "dialog-footer",
-                    attrs: { slot: "footer" },
-                    slot: "footer"
+                _c("el-pagination", {
+                  attrs: {
+                    background: "",
+                    layout: "prev, pager, next",
+                    "page-size": _vm.pageSize,
+                    total: _vm.data.length
                   },
-                  [
-                    _c(
-                      "el-button",
-                      {
-                        on: {
-                          click: function($event) {
-                            _vm.dialogFormVisible = false
-                          }
-                        }
-                      },
-                      [_vm._v("Cancel")]
-                    ),
-                    _vm._v(" "),
-                    _vm.form.formmode == "add"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                _vm.addBudget("add")
-                                _vm.openFullScreen2()
-                              }
-                            }
-                          },
-                          [_vm._v("Save")]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.form.formmode == "edit"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                _vm.addBudget("edit")
-                                _vm.openFullScreen2()
-                              }
-                            }
-                          },
-                          [_vm._v("Save changes")]
-                        )
-                      : _vm._e()
-                  ],
-                  1
-                )
-              ],
-              1
-            )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "el-dialog",
-          {
-            attrs: { title: "Budget Info", visible: _vm.dialogTableVisible },
-            on: {
-              "update:visible": function($event) {
-                _vm.dialogTableVisible = $event
-              }
-            }
-          },
-          [
-            _c(
-              "el-table",
-              { attrs: { data: _vm.gridData } },
-              [
-                _c("el-table-column", {
-                  attrs: {
-                    property: "start_date",
-                    label: "Start date",
-                    width: "200"
-                  }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: { property: "total", label: "Amount", width: "300" }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: {
-                    property: "end_date",
-                    label: "End date",
-                    width: "200"
-                  }
+                  on: { "current-change": _vm.handleCurrentChange }
                 })
               ],
               1
             )
           ],
           1
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass: "modal fade",
-            attrs: {
-              id: "importModal",
-              tabindex: "-1",
-              "aria-labelledby": "ModalLabel",
-              "aria-hidden": "true"
-            }
+        )
+      ]),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _vm._m(1),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: {
+            title: "Budget Details",
+            visible: _vm.dialogFormVisible,
+            top: "5vh",
+            "close-on-press-escape": false,
+            "close-on-click-modal": false
           },
-          [
-            _c("div", { staticClass: "modal-dialog" }, [
-              _c("div", { staticClass: "modal-content" }, [
-                _vm._m(1),
-                _vm._v(" "),
-                _c(
-                  "form",
-                  {
+          on: {
+            "update:visible": function($event) {
+              _vm.dialogFormVisible = $event
+            }
+          }
+        },
+        [
+          _c(
+            "el-form",
+            { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
+            [
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Start date",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "start_date"
+                  }
+                },
+                [
+                  _c("el-date-picker", {
+                    staticStyle: { width: "100%" },
                     attrs: {
-                      method: "post",
-                      enctype: "multipart/form-data",
-                      action: "/budget_import"
+                      type: "date",
+                      placeholder: "Pick a date",
+                      "value-format": "yyyy-MM-dd"
+                    },
+                    model: {
+                      value: _vm.form.start_date,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "start_date", $$v)
+                      },
+                      expression: "form.start_date"
                     }
-                  },
-                  [
-                    _c("input", {
-                      attrs: { type: "hidden", name: "", id: "" }
-                    }),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "modal-body" }, [
-                      _c("div", { staticClass: "form-group" }, [
-                        _c("label", [
-                          _vm._v("Select excel file for upload (.csv)")
-                        ]),
-                        _c("br"),
-                        _vm._v(" "),
-                        _c("input", {
-                          staticClass: "w-100",
-                          staticStyle: {
-                            border: "1px solid rgba(0,0,0,0.1)",
-                            "border-radius": "4px"
-                          },
-                          attrs: {
-                            type: "file",
-                            id: "excelcontent",
-                            name: "budgets",
-                            accept: ".csv"
-                          },
-                          on: {
-                            change: function($event) {
-                              return _vm.selectFile($event)
-                            }
-                          }
-                        }),
-                        _vm._v(" "),
-                        _vm.progressbar_import
-                          ? _c(
-                              "div",
-                              {
-                                staticClass: "progress",
-                                staticStyle: { "margin-top": "15px" }
-                              },
-                              [
-                                _c(
-                                  "div",
-                                  {
-                                    staticClass:
-                                      "progress-bar progress-bar-striped active",
-                                    staticStyle: { width: "0%" },
-                                    attrs: {
-                                      role: "progressbar",
-                                      "aria-valuenow": "0",
-                                      "aria-valuemin": "0",
-                                      "aria-valuemax": "100"
-                                    }
-                                  },
-                                  [
-                                    _vm._v(
-                                      "\n                        0%\n                      "
-                                    )
-                                  ]
-                                )
-                              ]
-                            )
-                          : _vm._e()
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.start_date
+                    ? _c("span", { staticClass: "font-italic text-danger" }, [
+                        _c("small", [_vm._v(_vm._s(_vm.errors.start_date[0]))])
                       ])
-                    ]),
-                    _vm._v(" "),
-                    _c("div", { staticClass: "modal-footer" }, [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-secondary",
-                          attrs: { type: "button", "data-dismiss": "modal" }
-                        },
-                        [_vm._v("Close")]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-primary",
-                          attrs: {
-                            type: "button",
-                            name: "upload",
-                            disabled: _vm.enableUpload === false
-                          },
-                          on: {
-                            click: function($event) {
-                              _vm.progressbar_import = true
-                              _vm.onSubmit()
-                            }
-                          }
-                        },
-                        [_vm._v("Import")]
-                      )
-                    ])
-                  ]
-                )
-              ])
-            ])
-          ]
-        ),
-        _vm._v(" "),
-        _vm._m(2)
-      ],
-      1
-    )
-  ])
+                    : _vm._e()
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Amount",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "total"
+                  }
+                },
+                [
+                  _c("el-input", {
+                    attrs: { autocomplete: "off" },
+                    model: {
+                      value: _vm.form.total,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "total", $$v)
+                      },
+                      expression: "form.total"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.total
+                    ? _c("span", { staticClass: "font-italic text-danger" }, [
+                        _c("small", [_vm._v(_vm._s(_vm.errors.total[0]))])
+                      ])
+                    : _vm._e()
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "End date",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "end_date"
+                  }
+                },
+                [
+                  _c("el-date-picker", {
+                    staticStyle: { width: "100%" },
+                    attrs: {
+                      type: "date",
+                      placeholder: "Pick a date",
+                      "value-format": "yyyy-MM-dd"
+                    },
+                    model: {
+                      value: _vm.form.end_date,
+                      callback: function($$v) {
+                        _vm.$set(_vm.form, "end_date", $$v)
+                      },
+                      expression: "form.end_date"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _vm.errors.end_date
+                    ? _c("span", { staticClass: "font-italic text-danger" }, [
+                        _c("small", [_vm._v(_vm._s(_vm.errors.end_date[0]))])
+                      ])
+                    : _vm._e()
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "dialog-footer",
+              attrs: { slot: "footer" },
+              slot: "footer"
+            },
+            [
+              _c(
+                "el-button",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.dialogFormVisible = false
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              ),
+              _vm._v(" "),
+              _vm.form.formmode == "add"
+                ? _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: {
+                        click: function($event) {
+                          _vm.budgetFunctions("add")
+                          _vm.formLoading()
+                        }
+                      }
+                    },
+                    [_vm._v("Save")]
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.form.formmode == "edit"
+                ? _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: {
+                        click: function($event) {
+                          _vm.budgetFunctions("edit")
+                          _vm.formLoading()
+                        }
+                      }
+                    },
+                    [_vm._v("Save Changes")]
+                  )
+                : _vm._e()
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: { title: "Staff Info", visible: _vm.dialogTableVisible },
+          on: {
+            "update:visible": function($event) {
+              _vm.dialogTableVisible = $event
+            }
+          }
+        },
+        [
+          _c(
+            "el-table",
+            { attrs: { data: _vm.gridData } },
+            [
+              _c("el-table-column", {
+                attrs: {
+                  property: "start_date",
+                  label: "Start Date",
+                  width: "250"
+                }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { property: "total", label: "Amount", width: "250" }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { property: "end_date", label: "End Date", width: "150" }
+              })
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = [
   function() {
@@ -110052,133 +109849,15 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "modal-header" }, [
-      _c("h5", { staticClass: "modal-title", attrs: { id: "ModalLabel" } }, [
-        _vm._v("Import Patient")
-      ]),
-      _vm._v(" "),
-      _c(
-        "button",
-        {
-          staticClass: "close",
-          attrs: {
-            type: "button",
-            "data-dismiss": "modal",
-            "aria-label": "Close"
-          }
-        },
-        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
-      )
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      {
-        staticClass: "modal fade",
-        attrs: {
-          id: "exportModal",
-          tabindex: "-1",
-          "aria-labelledby": "ModalLabel",
-          "aria-hidden": "true"
-        }
-      },
-      [
-        _c("div", { staticClass: "modal-dialog" }, [
-          _c("div", { staticClass: "modal-content" }, [
-            _c("div", { staticClass: "modal-header" }, [
-              _c(
-                "h5",
-                { staticClass: "modal-title", attrs: { id: "ModalLabel" } },
-                [_vm._v("Export Patient")]
-              ),
-              _vm._v(" "),
-              _c(
-                "button",
-                {
-                  staticClass: "close",
-                  attrs: {
-                    type: "button",
-                    "data-dismiss": "modal",
-                    "aria-label": "Close"
-                  }
-                },
-                [
-                  _c("span", { attrs: { "aria-hidden": "true" } }, [
-                    _vm._v("×")
-                  ])
-                ]
-              )
-            ]),
-            _vm._v(" "),
-            _c(
-              "form",
-              {
-                attrs: {
-                  method: "get",
-                  enctype: "multipart/form-data",
-                  action: "budget_export/"
-                }
-              },
-              [
-                _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
-                _vm._v(" "),
-                _c("div", { staticClass: "modal-body" }, [
-                  _c("div", { staticClass: "form-group" }, [
-                    _c("label", [_vm._v("Select excel file type")]),
-                    _c("br"),
-                    _vm._v(" "),
-                    _c(
-                      "select",
-                      {
-                        staticClass: "form-control",
-                        attrs: { name: "exceltype" }
-                      },
-                      [
-                        _c("option", { attrs: { value: "csv" } }, [
-                          _vm._v("CSV")
-                        ]),
-                        _vm._v(" "),
-                        _c("option", { attrs: { value: "xlsx" } }, [
-                          _vm._v("XLSX")
-                        ]),
-                        _vm._v(" "),
-                        _c("option", { attrs: { value: "xls" } }, [
-                          _vm._v("XLS")
-                        ])
-                      ]
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c("div", { staticClass: "modal-footer" }, [
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-secondary",
-                      attrs: { type: "button", "data-dismiss": "modal" }
-                    },
-                    [_vm._v("Close")]
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "button",
-                    {
-                      staticClass: "btn btn-primary",
-                      attrs: { type: "submit", name: "upload" }
-                    },
-                    [_vm._v("Export")]
-                  )
-                ])
-              ]
-            )
+    return _c("div", { staticClass: "footer" }, [
+      _c("div", { staticClass: "containter-fluid" }, [
+        _c("div", { staticClass: "row text-center" }, [
+          _c("span", { staticClass: "text-muted" }, [
+            _vm._v("    ©PF Management System 2020")
           ])
         ])
-      ]
-    )
+      ])
+    ])
   }
 ]
 render._withStripped = true

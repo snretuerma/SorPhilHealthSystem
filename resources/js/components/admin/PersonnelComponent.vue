@@ -163,7 +163,6 @@ export default {
         search: "",
         data: [],
         errors: [],
-        personnelinfo: [],
         dialogFormVisible_import_excel: false,
 		progressbar_import: false,
 		enableUpload: false,

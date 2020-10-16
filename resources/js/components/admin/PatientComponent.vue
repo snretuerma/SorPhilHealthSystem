@@ -275,7 +275,6 @@ export default {
 		search: "",
 		data: [],
 		errors: [],
-		patientinfo: [],
 		dialogFormVisible_import_excel: false,
 		progressbar_import: false,
 		enableUpload: false,
