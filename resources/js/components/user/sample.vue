@@ -278,7 +278,9 @@ export default {
                 this.data = response.data;
                 this.loading = false;
                 })
-                .catch(function (error) {});
+                .catch(function (error) {
+                    
+                });
         },
         handleView(index, row) {
 			this.dialogTableVisible = true;

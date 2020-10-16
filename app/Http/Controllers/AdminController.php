@@ -19,6 +19,8 @@ use App\Http\Requests\adminEditBudgetRequest;
 use App\Http\Requests\adminEditPatientRequest;
 use App\Http\Requests\adminEditPersonnelRequest;
 use App\Http\Requests\resetPassRequest;
+use App\Http\Requests\addHospitalRequest;
+use App\Http\Requests\editHospitalRequest;
 
 use Carbon\Carbon;
 
@@ -198,4 +200,43 @@ class AdminController extends Controller
         ->get();
         return $result;
     }
+
+    // Hospital
+    public function hospital()
+    {
+        return view('roles.admin.hospital');
+    }
+
+    public function getHospitals()
+    {
+       $hospitals = Hospital::all();
+       return $hospitals;
+    }
+
+    public function addHospital(addHospitalRequest $request)
+    {
+        $hospital = new Hospital;
+        $hospital->name = $request->name;
+        $hospital->address = $request->address;
+        $hospital->hospital_code = $request->hospital_code;
+        $hospital->save();
+        return $hospital;
+
+    }
+
+    public function editHospital(editHospitalRequest $request)
+    {
+        $hospital = Hospital::find($request->id);
+        $hospital->name = $request->name;
+        $hospital->address = $request->address;
+        $hospital->hospital_code = $request->hospital_code;
+        $hospital->save();
+        return $hospital;
+    }
+
+    public function deleteHospital(Request $req)
+    {
+        return Hospital::where('id', $req->id)->delete();
+    }
+
 }

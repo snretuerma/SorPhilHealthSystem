@@ -37,6 +37,7 @@ Vue.component('adminpersonnel-component', require('./components/admin/PersonnelC
 Vue.component('adminpatient-component', require('./components/admin/PatientComponent.vue').default);
 Vue.component('adminrecord-component', require('./components/admin/RecordComponent.vue').default);
 Vue.component('resetpassadmin-component', require('./components/admin/ResetPasswordComponent.vue').default);
+Vue.component('hospital-component', require('./components/admin/HospitalComponent.vue').default);
 
 //Users
 Vue.component('patient-component', require('./components/user/PatientComponent.vue').default);

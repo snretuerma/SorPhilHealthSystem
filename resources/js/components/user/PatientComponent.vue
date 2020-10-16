@@ -23,9 +23,9 @@
 		<div class="card">
 			<div class="card-body">
 				<!-- Table -->
-				<el-table v-loading="loading" :data="ListData">
+				<el-table v-loading="loading" :data="listData">
 					<el-table-column width="150" label="PhilHealth No." prop="philhealth_number"></el-table-column>
-					<el-table-column width="250" label="Name" prop="name"></el-table-column>
+					<el-table-column width="250" label="Name" prop="name" sortable></el-table-column>
 					<el-table-column width="130" label="Sex" prop="sex"></el-table-column>
 					<el-table-column width="150" label="Birthdate" prop="birthdate"></el-table-column>
 					<el-table-column width="180" label="Marital Status" prop="marital_status"></el-table-column>
@@ -55,8 +55,11 @@
 						background
 						layout="prev, pager, next"
 						@current-change="handleCurrentChange"
+						@size-change="handleSizeChange"
+						hide-on-single-page="true"
 						:page-size="pageSize"
-						:total="data.length">
+						:total="paginateTotal"
+						>
 					</el-pagination>
 				</div>
 				<!-- End table -->
@@ -283,10 +286,10 @@ export default {
 			{ required: true, message: "Sex is required.", trigger: "change" }
 			],
 			birthdate: [
-			{ required: true, message: "Please pick a date", trigger: "change" }
+			{ required: true, message: "Please pick a date.", trigger: "change" }
 			],
 			marital_status: [
-			{ required: true, message: "Marital Status is required.", trigger: "change" }
+			{ required: true, message: "Please select a marital status.", trigger: "change" }
 			],
 			philhealth_number: [
 			{ required: true, message: "PhilHealth No. is required.", trigger: "blur" }
@@ -337,11 +340,21 @@ export default {
 		};
 	},
 	computed: {
-		ListData() {
-			if(this.search == null) return this.data;
-			this.filtered = this.data.filter(data => !this.search || data.first_name.toLowerCase().includes(this.search.toLowerCase()) || data.last_name.toLowerCase().includes(this.search.toLowerCase()));
+		listData() {
+			if(this.search == null)return this.data;
+			
+			this.filtered = this.data.filter(data  => !this.search || data.first_name.toLowerCase().includes(this.search.toLowerCase()) || data.last_name.toLowerCase().includes(this.search.toLowerCase()) || data.philhealth_number.toLowerCase().includes(this.search.toLowerCase()));
 			this.total = this.filtered.length;
-			return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
+			var temp = this.page;
+			return this.filtered.slice(this.pageSize * temp - this.pageSize, this.pageSize * temp);
+			
+			
+		},
+		paginateTotal(){
+			console.log(this.data.length);	
+			if(this.search == null)  return this.data.length;
+			if(this.filtered != null) return this.filtered.length;
+			
 		}
 	},
  	methods: {
@@ -423,6 +436,9 @@ export default {
 		handleCurrentChange(val) {
 			this.page = val;
 		},
+		handleSizeChange(val) {
+			this.pageSize = val;
+		},
 		formLoading: function () {
 			const loading = this.$loading({
 				lock: true,
@@ -435,11 +451,11 @@ export default {
 			axios
 				.get("patients_get")
 				.then((response) => {
-				response.data.forEach((element) => {
-					this.buildPatientData(element);
-				});
-				this.data = response.data;
-				this.loading = false;
+					response.data.forEach((element) => {
+						this.buildPatientData(element);
+					})
+						this.data = response.data;
+						this.loading = false;
 				})
 				.catch(function (error) {});
 		},

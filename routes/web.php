@@ -47,6 +47,14 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('/adminrecord', 'AdminController@record')->name('adminrecord');
     Route::get('adminrecord_get', 'AdminController@getRecord');
     Route::get('adminrecord_get1', 'AdminController@getRecord1');
+    
+    // Hospital
+    Route::get('/hospital', 'AdminController@hospital')->name('hospital');
+    Route::get('hospital_get', 'AdminController@getHospitals');
+    Route::post('add_hospital', 'AdminController@addHospital');
+    Route::post('edit_hospital/{id}', 'AdminController@editHospital');
+    Route::post('delete_hospital/{id}', 'AdminController@deleteHospital');
+
 });
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('user');

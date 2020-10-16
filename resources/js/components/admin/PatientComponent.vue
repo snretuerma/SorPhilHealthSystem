@@ -300,13 +300,13 @@ export default {
 			{ required: true, message: "Please pick a date", trigger: "change" }
 			],
 			marital_status: [
-			{ required: true, message: "Marital Status is required.", trigger: "change" }
+			{ required: true, message: "Please select a marital status.", trigger: "change" }
 			],
 			philhealth_number: [
 			{ required: true, message: "PhilHealth No. is required.", trigger: "blur" }
             ],
             hospital_code: [
-            { required: true, message: "Please choose a hospital.", trigger: "blur" }
+            { required: true, message: "Please select a hospital.", trigger: "blur" }
             ]
 		},
 		titles: [
@@ -361,7 +361,7 @@ export default {
 	computed: {
 		ListData() {
 			if(this.search == null) return this.data;
-			this.filtered = this.data.filter(data => !this.search || data.first_name.toLowerCase().includes(this.search.toLowerCase()) || data.last_name.toLowerCase().includes(this.search.toLowerCase()));
+			this.filtered = this.data.filter(data => !this.search || data.first_name.toLowerCase().includes(this.search.toLowerCase()) || data.last_name.toLowerCase().includes(this.search.toLowerCase()) || data.philhealth_number.toLowerCase().includes(this.search.toLowerCase()));
 			this.total = this.filtered.length;
 			return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
 		}

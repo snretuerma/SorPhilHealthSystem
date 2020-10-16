@@ -168,13 +168,13 @@ export default {
 			{ required: true, message: "Middlename is required.", trigger: "blur" }
 			],
             is_private: [
-            { required: true, message: "Please select staff type", trigger: "change"}
+            { required: true, message: "Please select staff type.", trigger: "change"}
             ],
             sex: [
 			{ required: true, message: "Sex is required.", trigger: "change" }
 			],
 			birthdate: [
-			{ required: true, message: "Please pick a date", trigger: "change" }
+			{ required: true, message: "Please pick a date.", trigger: "change" }
 			]
         },
 

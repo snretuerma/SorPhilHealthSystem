@@ -38,9 +38,6 @@
                         <el-tooltip class="item" effect="light" content="Edit" placement="top">
                             <el-button size="mini" type="primary" icon="el-icon-edit" circle @click="handleEdit(scope.$index, scope.row)"></el-button>
                         </el-tooltip>
-                        <el-tooltip class="item" effect="light" content="Delete" placement="top">
-                            <el-button size="mini" type="danger" icon="el-icon-delete" circle @click="handleDelete(scope.$index, scope.row)"></el-button>
-                        </el-tooltip>
                     </template>
                 </el-table-column>
                 </el-table>
@@ -185,16 +182,16 @@ export default {
 			{ required: true, message: "Middlename is required.", trigger: "blur" }
 			],
             is_private: [
-            { required: true, message: "Please select staff type", trigger: "change"}
+            { required: true, message: "Please select staff type.", trigger: "change"}
             ],
             sex: [
 			{ required: true, message: "Sex is required.", trigger: "change" }
 			],
 			birthdate: [
-			{ required: true, message: "Please pick a date", trigger: "change" }
+			{ required: true, message: "Please pick a date.", trigger: "change" }
 			],
 			hospital_code: [
-			{ required: true, message: "Please pick a hospital", trigger: "change" }
+			{ required: true, message: "Please select a hospital.", trigger: "change" }
 			]
         },
 
@@ -331,15 +328,6 @@ export default {
             ". ";
 			this.dialogFormVisible = true;
         },
-        handleDelete(index, row) {
-			var data = this.data;
-
-			this.deletePersonnel(row.id, (res_value) => {
-				if (res_value) {
-				data.splice(data.indexOf(row), 1);
-				}
-			});
-		},
         personnelFunctions: function (mode) {
             switch (mode) {
                 case "add":
@@ -488,26 +476,6 @@ export default {
                 }
                 break;
             }
-        },
-        deletePersonnel: function (id, res) {
-            this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
-                distinguishCancelAndClose: true,
-                confirmButtonText: "Delete",
-                cancelButtonText: "Cancel",
-                type: "warning",
-            })
-            .then(() => {
-                var _this = this;
-                axios.post("personnel_delete/" + id).then(function (response) {
-                    if (response.status > 199 && response.status < 203) {
-                    _this.open_notif("success", "Success", "Deleted Successfully");
-                    res(id);
-                    }
-                });
-            })
-            .catch((action) => {
-                this.open_notif("info", "Cancelled", "No Changes");
-            });
         },
         open_notif: function (status, title, message) {
 			if (status == "success") {
