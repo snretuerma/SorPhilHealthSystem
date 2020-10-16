@@ -20,7 +20,7 @@ class PatientSeeder extends Seeder
             $patient->middle_name = $faker->lastName;
             $patient->last_name = $faker->lastName;
             $patient->name_suffix = null;
-            $patient->sex = rand(1, 2);
+            $patient->sex = rand(0, 1);
             $patient->birthdate = $faker->date;
             $patient->marital_status = rand(0, 4);
             $patient->philhealth_number = $faker->ssn;
