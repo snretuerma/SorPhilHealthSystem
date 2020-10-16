@@ -45,6 +45,7 @@ Vue.component('record-component', require('./components/user/RecordComponent.vue
 Vue.component('restore-component', require('./components/user/RestoreComponent.vue').default);
 Vue.component('personnel-component', require('./components/user/PersonnelComponent.vue').default);
 Vue.component('resetpass-component', require('./components/user/ResetPasswordComponent.vue').default);
+Vue.component('medical-component', require('./components/user/MedicalRecordComponent.vue').default);
 const app = new Vue({
     el: '#app'
 });

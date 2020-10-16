@@ -28,9 +28,24 @@
 
       <!-- Add Button -->
       <div class="col-sm-6" align="right">
-        <el-button type="primary" size="medium" @click="formDialog('export_data')">Export</el-button>
-        <el-button type="primary" size="medium" @click="formDialog('import_data')">Import</el-button>
-        <el-button type="primary" size="medium" @click="formDialog('insert_data')">Add</el-button>
+        <el-button
+          type="primary"
+          size="medium"
+          @click="formDialog('export_data')"
+          >Export</el-button
+        >
+        <el-button
+          type="primary"
+          size="medium"
+          @click="formDialog('import_data')"
+          >Import</el-button
+        >
+        <el-button
+          type="primary"
+          size="medium"
+          @click="formDialog('insert_data')"
+          >Add</el-button
+        >
       </div>
       <!-- End Button -->
     </div>
@@ -39,7 +54,7 @@
     <div class="card">
       <div class="card-body">
         <el-table
-        v-loading="loading"
+          v-loading="loading"
           :data="
             pagedTableData.filter(
               (data) =>
@@ -63,7 +78,11 @@
           </el-table-column>
           <el-table-column width="110" label="Birthdate" prop="birthdate">
           </el-table-column>
-          <el-table-column min-width="175" label="Marital" prop="marital_status">
+          <el-table-column
+            min-width="175"
+            label="Marital"
+            prop="marital_status"
+          >
           </el-table-column>
           <el-table-column width="200" align="right" fixed="right">
             <template slot="header" slot-scope="scope">
@@ -85,7 +104,7 @@
                   type="success"
                   icon="el-icon-plus"
                   circle
-                  @click="handleAddMedical(scope.$index, scope.row);"
+                  @click="handleAddMedical(scope.$index, scope.row)"
                 >
                 </el-button>
               </el-tooltip>
@@ -144,53 +163,86 @@
           >
           </el-pagination>
         </div>
-        <!-- Data table -->
-        <!-- <data-tables
-          :data="data"
-          :page-size="10"
-          :filters="filters"
-          :pagination-props="{ pageSizes: [10, 20, 50] }"
-          :action-col="actionCol"
-        >
-          <div slot="empty">Table Empty</div>
-          <el-table-column
-            v-for="title in titles"
-            :prop="title.prop"
-            :label="title.label"
-            :key="title.label"
-            sortable="custom"
-          >
-          </el-table-column>
-          <p slot="append"></p>
-        </data-tables> -->
-        <!-- Data table ends -->
-
         <!-- Import patient via excel file-->
-        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div
+          class="modal fade"
+          id="importModal"
+          tabindex="-1"
+          aria-labelledby="ModalLabel"
+          aria-hidden="true"
+        >
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">Import Patient</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <form method="post" enctype="multipart/form-data" action="/patients_import">
-                <input type="hidden" name="" id="">
+              <form
+                method="post"
+                enctype="multipart/form-data"
+                action="/patients_import"
+              >
+                <input type="hidden" name="" id="" />
                 <div class="modal-body">
-                    <div class="form-group">
-                      <label>Select excel file for upload (.csv)</label><br>
-                      <input type="file" @change="selectFile($event)" id="excelcontent" name="patients" accept=".csv" class="w-100" style="border:1px solid rgba(0,0,0,0.1);border-radius:4px;"/>
-                      <div v-if="progressbar_import" class="progress" style="margin-top:15px;">
-                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
-                          0%
-                        </div>
+                  <div class="form-group">
+                    <label>Select excel file for upload (.csv)</label><br />
+                    <input
+                      type="file"
+                      @change="selectFile($event)"
+                      id="excelcontent"
+                      name="patients"
+                      accept=".csv"
+                      class="w-100"
+                      style="
+                        border: 1px solid rgba(0, 0, 0, 0.1);
+                        border-radius: 4px;
+                      "
+                    />
+                    <div
+                      v-if="progressbar_import"
+                      class="progress"
+                      style="margin-top: 15px"
+                    >
+                      <div
+                        class="progress-bar progress-bar-striped active"
+                        role="progressbar"
+                        aria-valuenow="0"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        style="width: 0%"
+                      >
+                        0%
                       </div>
                     </div>
+                  </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="button" name="upload" class="btn btn-primary" v-on:click="progressbar_import=true; onSubmit()" v-bind:disabled="enableUpload === false">Import</button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button
+                    type="button"
+                    name="upload"
+                    class="btn btn-primary"
+                    v-on:click="
+                      progressbar_import = true;
+                      onSubmit();
+                    "
+                    v-bind:disabled="enableUpload === false"
+                  >
+                    Import
+                  </button>
                 </div>
               </form>
             </div>
@@ -199,30 +251,53 @@
         <!-- Import excel end-->
 
         <!-- Export excel-->
-        <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div
+          class="modal fade"
+          id="exportModal"
+          tabindex="-1"
+          aria-labelledby="ModalLabel"
+          aria-hidden="true"
+        >
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="ModalLabel">Export Patient</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
-              <form method="get" enctype="multipart/form-data" action="patients_export/">
-                <input type="hidden" name="" id="">
+              <form
+                method="get"
+                enctype="multipart/form-data"
+                action="patients_export/"
+              >
+                <input type="hidden" name="" id="" />
                 <div class="modal-body">
-                    <div class="form-group">
-                        <label>Select excel file type</label><br>
-                        <select name="exceltype" class="form-control">
-                          <option value="csv">CSV</option>
-                          <option value="xlsx">XLSX</option>
-                          <option value="xls">XLS</option>
-                        </select>
-                    </div>
+                  <div class="form-group">
+                    <label>Select excel file type</label><br />
+                    <select name="exceltype" class="form-control">
+                      <option value="csv">CSV</option>
+                      <option value="xlsx">XLSX</option>
+                      <option value="xls">XLS</option>
+                    </select>
+                  </div>
                 </div>
                 <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                  <button type="submit" name="upload" class="btn btn-primary" >Export</button>
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="submit" name="upload" class="btn btn-primary">
+                    Export
+                  </button>
                 </div>
               </form>
             </div>
@@ -250,7 +325,7 @@
                 value-format="yyyy-MM-dd"
               ></el-date-picker>
             </el-form-item>
-            
+
             <el-form-item
               label="Discharge Date"
               :label-width="formLabelWidth"
@@ -269,60 +344,43 @@
               :label-width="formLabelWidth"
               prop="final_diagnosis"
             >
-              <el-input v-model="formMedical.final_diagnosis" autocomplete="off"></el-input>
+              <el-input
+                v-model="formMedical.final_diagnosis"
+                autocomplete="off"
+              ></el-input>
             </el-form-item>
-           <el-form-item
+            <el-form-item
               label="Record Type"
               :label-width="formLabelWidth"
               prop="record_type"
             >
-              <el-input v-model="formMedical.record_type" autocomplete="off"></el-input>
+              <el-input
+                v-model="formMedical.record_type"
+                autocomplete="off"
+              ></el-input>
             </el-form-item>
             <el-form-item
               label="Total Fee"
               :label-width="formLabelWidth"
               prop="total_fee"
             >
-              <el-input v-model="formMedical.total_fee" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item
-              label="Personnel"
-              :label-width="formLabelWidth"
-              prop="total_fee"
-            >
-              <el-input v-model="formMedical.personnel" autocomplete="off"></el-input>
-            </el-form-item>
-            <el-form-item label="Personnel Type" :label-width="formLabelWidth" prop="personnel_type">
-              <el-select v-model="form.personnel_type" placeholder="Please select">
-                <el-option label="Male" value="1"></el-option>
-                <el-option label="Female" value="2"></el-option>
-              </el-select>
-            </el-form-item>
-            <el-form-item label="Contribution Type" :label-width="formLabelWidth" prop="contribution_type">
-              <el-select v-model="form.contribution_type" placeholder="Please select">
-                <el-option label="Male" value="1"></el-option>
-                <el-option label="Female" value="2"></el-option>
-              </el-select>
-            </el-form-item>
-           
-            
-            <el-form-item
-              label="Computed PF"
-              :label-width="formLabelWidth"
-              prop="computed_pf"
-            >
               <el-input
-                v-model="form.computed_pf"
+                v-model="formMedical.total_fee"
                 autocomplete="off"
               ></el-input>
             </el-form-item>
           </el-form>
           <span slot="footer" class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">Cancel</el-button>
+            <el-button @click="dialogMedicalFormVisible = false"
+              >Cancel</el-button
+            >
             <el-button
               v-if="this.formMedical.formmode == 'insert_data'"
               type="primary"
-              @click="addPatient()"
+              @click="
+                addMedicalRecord();
+                openFullScreen2();
+              "
               >Save</el-button
             >
             <el-button
@@ -686,13 +744,13 @@ export default {
         formmode: "",
         edit_object_index: "",
       },
-      formMedical:{
-        admission_date:"",
-        discharge_date:"",
-        final_diagnosis:"",
-        record_type:"",
-        total_fee:"",
-        formmode:""
+      formMedical: {
+        admission_date: "",
+        discharge_date: "",
+        final_diagnosis: "",
+        patient_id: "",
+        record_type: "",
+        total_fee: "",
       },
       form_check: {
         last_name: "",
@@ -717,61 +775,74 @@ export default {
     },
   },
   methods: {
-    selectFile(event){
-      if(event.target.value){
+    selectFile(event) {
+      if (event.target.value) {
         this.enableUpload = true;
-      }else{
+      } else {
         this.enableUpload = false;
       }
     },
-    onSubmit(){
+    onSubmit() {
       var _this = this;
       var formData = new FormData();
       formData.append("patients[]", $("#excelcontent").get(0).files[0]);
-       axios.post( 'patients_import',
-          formData,
-          {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
-            onUploadProgress: function( progressEvent ) {
-              this.uploadPercentage = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
-            
-              $('.progress-bar').css('width', this.uploadPercentage +'%').attr('aria-valuenow', this.uploadPercentage);
-              $('.progress-bar').html(this.uploadPercentage + "%");
+      axios
+        .post("patients_import", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+          onUploadProgress: function (progressEvent) {
+            this.uploadPercentage = parseInt(
+              Math.round((progressEvent.loaded * 100) / progressEvent.total)
+            );
 
-            }.bind(this)
-          }
-        ).then(function(res){
-          setTimeout(function(){
+            $(".progress-bar")
+              .css("width", this.uploadPercentage + "%")
+              .attr("aria-valuenow", this.uploadPercentage);
+            $(".progress-bar").html(this.uploadPercentage + "%");
+          }.bind(this),
+        })
+        .then(function (res) {
+          setTimeout(function () {
             _this.progressbar_import = false;
-            $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
-            $('.progress-bar').html('0%');
-            $("#importModal").modal('hide');
-            $("#excelcontent").val('');
-            
-          },2000);
+            $(".progress-bar").css("width", "0%").attr("aria-valuenow", 0);
+            $(".progress-bar").html("0%");
+            $("#importModal").modal("hide");
+            $("#excelcontent").val("");
+          }, 2000);
           var total_imported = res.data;
-          var get_imported = total_imported.split('/');
+          var get_imported = total_imported.split("/");
 
-          if(get_imported[0] == 0 && get_imported[1] == 0){
+          if (get_imported[0] == 0 && get_imported[1] == 0) {
             _this.open_notif("warning", "Import", "No row to be import");
-          }else if(get_imported[0] == 0 && get_imported[1] > 0){
-            _this.open_notif("info", "Import", "All row already exist in the database");
-          }else if(get_imported[0] > 0 && get_imported[1] > 0){
-            _this.open_notif("success", "Import", "Successfully imported: " + res.data);
+          } else if (get_imported[0] == 0 && get_imported[1] > 0) {
+            _this.open_notif(
+              "info",
+              "Import",
+              "All row already exist in the database"
+            );
+          } else if (get_imported[0] > 0 && get_imported[1] > 0) {
+            _this.open_notif(
+              "success",
+              "Import",
+              "Successfully imported: " + res.data
+            );
             _this.getPatients();
           }
-          
         })
-        .catch(function(res){
-           _this.progressbar_import = false;
-           $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
-           $('.progress-bar').html('0%');
-           $("#excelcontent").val('');
-           $("#importModal").modal('hide');
-           _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
+        .catch(function (res) {
+          _this.progressbar_import = false;
+          $(".progress-bar").css("width", "0%").attr("aria-valuenow", 0);
+          $(".progress-bar").html("0%");
+          $("#excelcontent").val("");
+          $("#importModal").modal("hide");
+          _this.open_notif(
+            "error",
+            "Message",
+            "FAILURE!! Something went wrong!"
+          );
         });
+    },
     masknumber: function (num) {
       num = parseFloat(num)
         .toFixed(2)
@@ -781,40 +852,40 @@ export default {
     setPage(val) {
       this.page = val;
     },
-    handleEdit(index,row){
+    handleEdit(index, row) {
       this.resetForm();
-              this.form.id = row.id;
-              this.form.formmode = "edit_data";
+      this.form.id = row.id;
+      this.form.formmode = "edit_data";
 
-              this.form.last_name = row.last_name;
-              this.form.first_name = row.first_name;
-              this.form.middle_name = row.middle_name;
-              this.form.name_suffix = row.name_suffix;
-              this.form.sex = row.sex;
-              this.form.birthdate = row.birthdate;
-              this.form.marital_status = row.marital_status;
-              this.form.philhealth_number = row.philhealth_number;
+      this.form.last_name = row.last_name;
+      this.form.first_name = row.first_name;
+      this.form.middle_name = row.middle_name;
+      this.form.name_suffix = row.name_suffix;
+      this.form.sex = row.sex;
+      this.form.birthdate = row.birthdate;
+      this.form.marital_status = row.marital_status;
+      this.form.philhealth_number = row.philhealth_number;
 
-              this.form.edit_object_index = this.data.indexOf(row);
+      this.form.edit_object_index = this.data.indexOf(row);
 
-              (this.form_check.last_name = row.last_name),
-                (this.form_check.first_name = row.first_name),
-                (this.form_check.middle_name = row.middle_name),
-                (this.form_check.name_suffix = row.name_suffix),
-                (this.form_check.sex = row.sex),
-                (this.form_check.birthdate = row.birthdate),
-                (this.form_check.marital_status = row.marital_status),
-                (this.form_check.philhealth_number = row.philhealth_number),
-                (this.form_check.name =
-                  this.form_check.last_name +
-                  ", " +
-                  this.form_check.name_suffix +
-                  " " +
-                  this.form_check.first_name +
-                  " " +
-                  this.form_check.middle_name.slice(0, 1) +
-                  ". ");
-              this.formDialog("edit_data");
+      (this.form_check.last_name = row.last_name),
+        (this.form_check.first_name = row.first_name),
+        (this.form_check.middle_name = row.middle_name),
+        (this.form_check.name_suffix = row.name_suffix),
+        (this.form_check.sex = row.sex),
+        (this.form_check.birthdate = row.birthdate),
+        (this.form_check.marital_status = row.marital_status),
+        (this.form_check.philhealth_number = row.philhealth_number),
+        (this.form_check.name =
+          this.form_check.last_name +
+          ", " +
+          this.form_check.name_suffix +
+          " " +
+          this.form_check.first_name +
+          " " +
+          this.form_check.middle_name.slice(0, 1) +
+          ". ");
+      this.formDialog("edit_data");
     },
     handleView(index, row) {
       this.dialogTableVisible = true;
@@ -830,57 +901,78 @@ export default {
       this.gridData[0].philhealth_number = row.philhealth_number;
     },
     handleAddMedical(index, row) {
-      this.dialogFormMedicalVisible=true;
-      this.formMedical.formmode="insert_data";
+      this.dialogFormMedicalVisible = true;
+      this.formMedical.formmode = "insert_data";
+      this.formMedical.patient_id = row.id;
       console.log(row);
     },
     handleDelete(index, row) {
       var data = this.data;
 
-              this.deletePatients(row.id, (res_value) => {
-                if (res_value) {
-                  data.splice(data.indexOf(row), 1);
-                }
-              });
+      this.deletePatients(row.id, (res_value) => {
+        if (res_value) {
+          data.splice(data.indexOf(row), 1);
+        }
+      });
+    },
+    openFullScreen2: function () {
+      const loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        target: "div.el-dialog",
+      });
+      loading.close();
+    },
+    addMedicalRecord() {
+      axios
+        .post("/user/medicalrecord_add", this.formMedical)
+        .then((response) => {
+          if (response.status > 199 && response.status < 203) {
+            this.open_notif("success", "Success", "Medical Record Save!");
+            this.dialogFormMedicalVisible = false;
+            this.formMedical = [];
+          }
+        })
+        .catch(function (error) {});
     },
     addPatient: async function () {
       axios
         .post("add_patient", this.form)
         .then((response) => {
           if (response.status > 199 && response.status < 203) {
-          this.open_notif("success", "Success", "Changes has been saved");
-          if (this.form.sex == 1) {
-            this.form.sex = "Male";
-          } else if (this.form.sex == 2) {
-            this.form.sex = "Female";
-          } else if (this.form.sex == 3) {
-            this.form.sex = "Not Applicable";
-          } else {
-            this.form.sex = "Not Known";
-          }
-          if (this.form.marital_status == 0) {
-            this.form.marital_status = "Single";
-          } else if (this.form.marital_status == 1) {
-            this.form.marital_status = "Married";
-          } else if (this.form.marital_status == 2) {
-            this.form.marital_status = "Divorced";
-          } else if (this.form.marital_status == 3) {
-            this.form.marital_status = "Widowed";
-          } else {
-            this.form.marital_status = "Others/Prefer Not to Say";
-          }
-          this.form.name =
-            this.form.last_name +
-            ", " +
-            this.form.name_suffix +
-            " " +
-            this.form.first_name +
-            " " +
-            this.form.middle_name.slice(0, 1) +
-            ". ";
-          this.data.push(this.form);
+            this.open_notif("success", "Success", "Changes has been saved");
+            if (this.form.sex == 1) {
+              this.form.sex = "Male";
+            } else if (this.form.sex == 2) {
+              this.form.sex = "Female";
+            } else if (this.form.sex == 3) {
+              this.form.sex = "Not Applicable";
+            } else {
+              this.form.sex = "Not Known";
+            }
+            if (this.form.marital_status == 0) {
+              this.form.marital_status = "Single";
+            } else if (this.form.marital_status == 1) {
+              this.form.marital_status = "Married";
+            } else if (this.form.marital_status == 2) {
+              this.form.marital_status = "Divorced";
+            } else if (this.form.marital_status == 3) {
+              this.form.marital_status = "Widowed";
+            } else {
+              this.form.marital_status = "Others/Prefer Not to Say";
+            }
+            this.form.name =
+              this.form.last_name +
+              ", " +
+              this.form.name_suffix +
+              " " +
+              this.form.first_name +
+              " " +
+              this.form.middle_name.slice(0, 1) +
+              ". ";
+            this.data.push(this.form);
 
-          this.dialogFormVisible = false;
+            this.dialogFormVisible = false;
           }
         })
         .catch(function (error) {});
@@ -902,10 +994,10 @@ export default {
         this.dialogFormVisible = true;
       } else if (id == "edit_data") {
         this.dialogFormVisible = true;
-      }else if(id == "import_data"){
-        $("#importModal").modal({backdrop: 'static', keyboard: false});
-      }else if(id == "export_data"){
-        $("#exportModal").modal({backdrop: 'static', keyboard: false});
+      } else if (id == "import_data") {
+        $("#importModal").modal({ backdrop: "static", keyboard: false });
+      } else if (id == "export_data") {
+        $("#exportModal").modal({ backdrop: "static", keyboard: false });
       }
     },
     open_notif: function (status, title, message) {
@@ -1106,20 +1198,20 @@ export default {
           var _this = this;
           axios.post("patient_delete/" + id).then(function (response) {
             if (response.status > 199 && response.status < 203) {
-               _this.open_notif("success", "Success",  "Succesfully! Deleted");
+              _this.open_notif("success", "Success", "Succesfully! Deleted");
               res(id);
             }
           });
         })
         .catch((action) => {
-           var _this = this;
-          _this.open_notif("info", "Message",  "No changes");
+          var _this = this;
+          _this.open_notif("info", "Message", "No changes");
         });
     },
   },
   mounted() {
     this.getPatients();
-    this.loading=false;
+    this.loading = false;
   },
 };
 </script>

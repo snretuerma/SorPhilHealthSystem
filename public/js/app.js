@@ -5792,13 +5792,19 @@ __webpack_require__.r(__webpack_exports__);
       this.page = val;
     },
     handleView: function handleView(index, row) {
+      var _this3 = this;
+
       console.log(row);
+      axios.get("adminpersonnel_get/" + row.id).then(function (response) {
+        _this3.staff = response.data.personnels;
+      })["catch"](function (error) {});
+      this.dialogTableVisible = true;
     },
     handleDelete: function handleDelete(index, row) {
       console.log(index, row);
     },
     deleteRecord: function deleteRecord(id, res) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
@@ -5806,7 +5812,7 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonText: "Cancel",
         type: "warning"
       }).then(function () {
-        var _this = _this3;
+        var _this = _this4;
         axios.post("delete_record/" + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             _this.$message({
@@ -5818,14 +5824,14 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       })["catch"](function (action) {
-        _this3.$message({
+        _this4.$message({
           type: "success",
           message: action === "cancel" ? "Canceled" : "No changes"
         });
       });
     },
     getRecord: function getRecord() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.get("adminrecord_get").then(function (response) {
         response.data.forEach(function (entry) {
@@ -5836,10 +5842,10 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           entry.hospital_id = _constants__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(entry.hospital_id) - 1];
-          entry.total_fee = _this4.masknumber(entry.total_fee);
+          entry.total_fee = _this5.masknumber(entry.total_fee);
         });
-        _this4.data = response.data;
-        console.log(_this4.data);
+        _this5.data = response.data;
+        console.log(_this5.data);
       })["catch"](function (error) {});
     },
     clearfield: function clearfield() {
@@ -6513,13 +6519,74 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     var _this2 = this;
 
     return {
+      progressbar_import: false,
+      enableUpload: false,
       loading: true,
       data: [],
       budgetInfo: [],
@@ -6642,7 +6709,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     };
   },
-  methods: {
+  methods: _defineProperty({
     openFullScreen2: function openFullScreen2() {
       var loading = this.$loading({
         lock: true,
@@ -6772,10 +6839,350 @@ __webpack_require__.r(__webpack_exports__);
 
           break;
       }
+    },
+    formDialog: function formDialog(id) {
+      if (id == "import_data") {
+        $("#importModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      } else if (id == "export_data") {
+        $("#exportModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      }
+    },
+    selectFile: function selectFile(event) {
+      if (event.target.value) {
+        this.enableUpload = true;
+      } else {
+        this.enableUpload = false;
+      }
+    },
+    onSubmit: function onSubmit() {
+      var _this = this;
+
+      var formData = new FormData();
+      formData.append("budgets[]", $("#excelcontent").get(0).files[0]);
+      axios.post('budget_import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: function (progressEvent) {
+          this.uploadPercentage = parseInt(Math.round(progressEvent.loaded * 100 / progressEvent.total));
+          $('.progress-bar').css('width', this.uploadPercentage + '%').attr('aria-valuenow', this.uploadPercentage);
+          $('.progress-bar').html(this.uploadPercentage + "%");
+        }.bind(this)
+      }).then(function (res) {
+        setTimeout(function () {
+          _this.progressbar_import = false;
+          $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+          $('.progress-bar').html('0%');
+          $("#importModal").modal('hide');
+          $("#excelcontent").val('');
+        }, 2000);
+        var total_imported = res.data;
+
+        if (total_imported == 0) {
+          _this.open_notif("warning", "Import", "No row to be import");
+        } else if (total_imported > 0) {
+          _this.open_notif("success", "Import", "Successfully imported: " + res.data + " row");
+
+          _this.getBudget();
+        }
+      })["catch"](function (res) {
+        _this.progressbar_import = false;
+        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+        $('.progress-bar').html('0%');
+        $("#excelcontent").val('');
+        $("#importModal").modal('hide');
+
+        _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
+      });
+    }
+  }, "open_notif", function open_notif(status, title, message) {
+    if (status == "success") {
+      this.$notify.success({
+        title: title,
+        message: message,
+        offset: 0
+      });
+    } else if (status == "error") {
+      this.$notify.error({
+        title: title,
+        message: message,
+        offset: 0
+      });
+    } else if (status == "info") {
+      this.$notify.info({
+        title: title,
+        message: message,
+        offset: 0
+      });
+    } else if (status == "warning") {
+      this.$notify.warning({
+        title: title,
+        message: message,
+        offset: 0
+      });
+    }
+  }),
+  mounted: function mounted() {
+    this.getBudget();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+var generateNewPersonnel = function generateNewPersonnel() {
+  return {
+    contribution: "",
+    patient_id: "",
+    state: "",
+    stafftype: "",
+    staff: "",
+    query: ""
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["medicalRecordId"],
+  data: function data() {
+    return {
+      medical_record_id: "",
+      formLabelWidth: "120px",
+      staff: [],
+      query: "",
+      state: "",
+      personnels: [],
+      search_data: [],
+      rules: {
+        personnel: [{
+          required: true,
+          message: 'Please input Personnel name',
+          trigger: 'blur'
+        }],
+        personnel_type: [{
+          required: true,
+          message: 'Please input Personnel type',
+          trigger: 'blur'
+        }],
+        contribution_type: [{
+          required: true,
+          message: 'Please input Contribution type',
+          trigger: 'blur'
+        }]
+      }
+    };
+  },
+  methods: {
+    save: function save() {
+      var _this = this;
+
+      var validCount = 0;
+      var formAmount = this.personnels.length + 1;
+      this.$refs.personnels.validate(function (valid) {
+        if (valid) {
+          validCount++;
+        }
+      });
+      this.personnels.forEach(function (personnel, index) {
+        _this.$refs["dynamicFieldsForm".concat(index)][0].validate(function (valid) {
+          if (valid) {
+            validCount++;
+          }
+        });
+      });
+
+      if (validCount === formAmount) {
+        this.$message.success('通过所有验证'); // 通过所有验证，进行后续处理
+      }
+    },
+    submitForm: function submitForm(formName) {
+      this.$refs[formName].validate(function (valid) {
+        if (valid) {
+          alert("submit!");
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetForm: function resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    addStaff: function addStaff() {
+      this.personnels.push(new generateNewPersonnel());
+    },
+    removeStaff: function removeStaff() {
+      if (this.personnels.length > 1) {
+        this.personnels.pop(this.personnels[this.personnels.length - 1]);
+      }
+    },
+    handleSelect: function handleSelect(item) {
+      var _this2 = this;
+
+      var index = this.personnels.length - 1;
+      this.personnels.forEach(function (entry) {
+        entry.patient_id = _this2.patientId;
+        entry.staff = item.id;
+      });
+    },
+    querySearch: function querySearch(queryString, cb) {
+      var links = this.staff;
+      var results = queryString ? links.filter(this.createFilter(queryString)) : links; // call callback function to return suggestions
+
+      console.log(results);
+      cb(results);
+    },
+    createFilter: function createFilter(queryString) {
+      return function (link) {
+        return link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0;
+      };
+    },
+    onSubmit: function onSubmit() {
+      var data = {
+        medical_record_id: this.medicalRecordId,
+        personnel: this.personnels
+      };
+      axios.post("/user/contrirecord_add", data).then(function (response) {
+        console.log(response.data);
+      })["catch"](function (error) {});
+    },
+    getName: function getName(name) {
+      this.personnels.query = name;
+      this.search_data = [];
+    },
+    getStaff: function getStaff() {
+      var _this3 = this;
+
+      axios.get("/user/personnel_get").then(function (response) {
+        response.data.forEach(function (element) {
+          element.value = element.first_name + " " + element.middle_name + " " + element.last_name + (element.name_suffix === null ? "" : " " + element.name_suffix);
+        });
+        _this3.staff = response.data;
+      })["catch"](function (error) {});
     }
   },
   mounted: function mounted() {
-    this.getBudget();
+    this.getStaff(); // this.search();
+
+    this.personnels.push(new generateNewPersonnel());
   }
 });
 
@@ -6792,6 +7199,130 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -7362,6 +7893,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
+      dialogFormVisible_import_excel: false,
+      progressbar_import: false,
+      enableUpload: false,
       dialogFormMedicalVisible: false,
       form: {
         id: "",
@@ -7381,9 +7915,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         admission_date: "",
         discharge_date: "",
         final_diagnosis: "",
+        patient_id: "",
         record_type: "",
-        total_fee: "",
-        formmode: ""
+        total_fee: ""
       },
       form_check: {
         last_name: "",
@@ -7405,6 +7939,57 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     }
   },
   methods: {
+    selectFile: function selectFile(event) {
+      if (event.target.value) {
+        this.enableUpload = true;
+      } else {
+        this.enableUpload = false;
+      }
+    },
+    onSubmit: function onSubmit() {
+      var _this = this;
+
+      var formData = new FormData();
+      formData.append("patients[]", $("#excelcontent").get(0).files[0]);
+      axios.post("patients_import", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        onUploadProgress: function (progressEvent) {
+          this.uploadPercentage = parseInt(Math.round(progressEvent.loaded * 100 / progressEvent.total));
+          $(".progress-bar").css("width", this.uploadPercentage + "%").attr("aria-valuenow", this.uploadPercentage);
+          $(".progress-bar").html(this.uploadPercentage + "%");
+        }.bind(this)
+      }).then(function (res) {
+        setTimeout(function () {
+          _this.progressbar_import = false;
+          $(".progress-bar").css("width", "0%").attr("aria-valuenow", 0);
+          $(".progress-bar").html("0%");
+          $("#importModal").modal("hide");
+          $("#excelcontent").val("");
+        }, 2000);
+        var total_imported = res.data;
+        var get_imported = total_imported.split("/");
+
+        if (get_imported[0] == 0 && get_imported[1] == 0) {
+          _this.open_notif("warning", "Import", "No row to be import");
+        } else if (get_imported[0] == 0 && get_imported[1] > 0) {
+          _this.open_notif("info", "Import", "All row already exist in the database");
+        } else if (get_imported[0] > 0 && get_imported[1] > 0) {
+          _this.open_notif("success", "Import", "Successfully imported: " + res.data);
+
+          _this.getPatients();
+        }
+      })["catch"](function (res) {
+        _this.progressbar_import = false;
+        $(".progress-bar").css("width", "0%").attr("aria-valuenow", 0);
+        $(".progress-bar").html("0%");
+        $("#excelcontent").val("");
+        $("#importModal").modal("hide");
+
+        _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
+      });
+    },
     masknumber: function masknumber(num) {
       num = parseFloat(num).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
       return num;
@@ -7439,6 +8024,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     handleAddMedical: function handleAddMedical(index, row) {
       this.dialogFormMedicalVisible = true;
       this.formMedical.formmode = "insert_data";
+      this.formMedical.patient_id = row.id;
       console.log(row);
     },
     handleDelete: function handleDelete(index, row) {
@@ -7449,9 +8035,29 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }
       });
     },
+    openFullScreen2: function openFullScreen2() {
+      var loading = this.$loading({
+        lock: true,
+        spinner: "el-icon-loading",
+        target: "div.el-dialog"
+      });
+      loading.close();
+    },
+    addMedicalRecord: function addMedicalRecord() {
+      var _this3 = this;
+
+      axios.post("/user/medicalrecord_add", this.formMedical).then(function (response) {
+        if (response.status > 199 && response.status < 203) {
+          _this3.open_notif("success", "Success", "Medical Record Save!");
+
+          _this3.dialogFormMedicalVisible = false;
+          _this3.formMedical = [];
+        }
+      })["catch"](function (error) {});
+    },
     addPatient: function () {
       var _addPatient = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var _this3 = this;
+        var _this4 = this;
 
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
           while (1) {
@@ -7459,35 +8065,35 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 0:
                 axios.post("add_patient", this.form).then(function (response) {
                   if (response.status > 199 && response.status < 203) {
-                    _this3.open_notif("success", "Success", "Changes has been saved");
+                    _this4.open_notif("success", "Success", "Changes has been saved");
 
-                    if (_this3.form.sex == 1) {
-                      _this3.form.sex = "Male";
-                    } else if (_this3.form.sex == 2) {
-                      _this3.form.sex = "Female";
-                    } else if (_this3.form.sex == 3) {
-                      _this3.form.sex = "Not Applicable";
+                    if (_this4.form.sex == 1) {
+                      _this4.form.sex = "Male";
+                    } else if (_this4.form.sex == 2) {
+                      _this4.form.sex = "Female";
+                    } else if (_this4.form.sex == 3) {
+                      _this4.form.sex = "Not Applicable";
                     } else {
-                      _this3.form.sex = "Not Known";
+                      _this4.form.sex = "Not Known";
                     }
 
-                    if (_this3.form.marital_status == 0) {
-                      _this3.form.marital_status = "Single";
-                    } else if (_this3.form.marital_status == 1) {
-                      _this3.form.marital_status = "Married";
-                    } else if (_this3.form.marital_status == 2) {
-                      _this3.form.marital_status = "Divorced";
-                    } else if (_this3.form.marital_status == 3) {
-                      _this3.form.marital_status = "Widowed";
+                    if (_this4.form.marital_status == 0) {
+                      _this4.form.marital_status = "Single";
+                    } else if (_this4.form.marital_status == 1) {
+                      _this4.form.marital_status = "Married";
+                    } else if (_this4.form.marital_status == 2) {
+                      _this4.form.marital_status = "Divorced";
+                    } else if (_this4.form.marital_status == 3) {
+                      _this4.form.marital_status = "Widowed";
                     } else {
-                      _this3.form.marital_status = "Others/Prefer Not to Say";
+                      _this4.form.marital_status = "Others/Prefer Not to Say";
                     }
 
-                    _this3.form.name = _this3.form.last_name + ", " + _this3.form.name_suffix + " " + _this3.form.first_name + " " + _this3.form.middle_name.slice(0, 1) + ". ";
+                    _this4.form.name = _this4.form.last_name + ", " + _this4.form.name_suffix + " " + _this4.form.first_name + " " + _this4.form.middle_name.slice(0, 1) + ". ";
 
-                    _this3.data.push(_this3.form);
+                    _this4.data.push(_this4.form);
 
-                    _this3.dialogFormVisible = false;
+                    _this4.dialogFormVisible = false;
                   }
                 })["catch"](function (error) {});
 
@@ -7522,6 +8128,16 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         this.dialogFormVisible = true;
       } else if (id == "edit_data") {
         this.dialogFormVisible = true;
+      } else if (id == "import_data") {
+        $("#importModal").modal({
+          backdrop: "static",
+          keyboard: false
+        });
+      } else if (id == "export_data") {
+        $("#exportModal").modal({
+          backdrop: "static",
+          keyboard: false
+        });
       }
     },
     open_notif: function open_notif(status, title, message) {
@@ -7552,7 +8168,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     },
     editPatient: function editPatient() {
-      var _this4 = this;
+      var _this5 = this;
 
       var _this = this;
 
@@ -7582,7 +8198,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           if (response.status > 199 && response.status < 203) {
             _this.open_notif("success", "Success", "Changes has been saved");
 
-            _this4.dialogFormVisible = false;
+            _this5.dialogFormVisible = false;
 
             if (_this.form.sex == 1) {
               _this.form.sex = "Male";
@@ -7676,18 +8292,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       element.marital_status = this.assignMaritalStatus(element.marital_status);
     },
     getPatients: function getPatients() {
-      var _this5 = this;
+      var _this6 = this;
 
       axios.get("patients_get").then(function (response) {
         response.data.forEach(function (element) {
-          _this5.buildPatientData(element);
+          _this6.buildPatientData(element);
         });
-        _this5.data = response.data;
-        console.log(_this5.data);
+        _this6.data = response.data;
+        console.log(_this6.data);
       })["catch"](function (error) {});
     },
     deletePatients: function deletePatients(id, res) {
-      var _this6 = this;
+      var _this7 = this;
 
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
@@ -7695,7 +8311,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         cancelButtonText: "Cancel",
         type: "warning"
       }).then(function () {
-        var _this = _this6;
+        var _this = _this7;
         axios.post("patient_delete/" + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             _this.open_notif("success", "Success", "Succesfully! Deleted");
@@ -7704,7 +8320,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         });
       })["catch"](function (action) {
-        var _this = _this6;
+        var _this = _this7;
 
         _this.open_notif("info", "Message", "No changes");
       });
@@ -8583,12 +9199,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      filtered: [],
       page: 1,
+      total: 0,
       pageSize: 10,
       search: "",
       data: [],
@@ -8656,7 +9294,14 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     pagedTableData: function pagedTableData() {
-      return this.data.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
+      var _this2 = this;
+
+      if (this.search == null) return this.data;
+      this.filtered = this.data.filter(function (data) {
+        return !_this2.search || data.first_name.toLowerCase().includes(_this2.search.toLowerCase());
+      });
+      this.total = this.filtered.length;
+      return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
     }
   },
   methods: {
@@ -8675,12 +9320,25 @@ __webpack_require__.r(__webpack_exports__);
         }
       });
     },
+    handleAddRecord: function handleAddRecord(index, row) {
+      //  console.log(row);
+      window.location.replace("medicalrecord/" + row.id);
+    },
     handleView: function handleView(index, row) {
-      var _this2 = this;
+      var _this3 = this;
 
-      console.log(row);
       axios.post("personnel_get/" + row.id).then(function (response) {
-        _this2.staff = response.data.personnels;
+        // console.log(response.data.personnels);
+        var parent = parseFloat(row.total_fee.replace(/,/g, "")) / 2;
+        var child1 = parent;
+        var child2 = parent;
+        var gchild1 = child2 * 0.7;
+        var gchild2 = child2 * 0.3;
+        var cnt_of_type;
+        response.data.personnels.forEach(function (entry) {
+          entry.total_fee = _this3.masknumber(gchild1);
+        });
+        _this3.staff = response.data.personnels;
       })["catch"](function (error) {});
       this.dialogTableVisible = true;
     },
@@ -8712,7 +9370,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     deleteRecord: function deleteRecord(id) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
@@ -8720,7 +9378,7 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonText: "Cancel",
         type: "warning"
       }).then(function () {
-        var _this = _this3;
+        var _this = _this4;
         axios.post("delete_record/" + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             if (response.status > 199 && response.status < 203) {
@@ -8731,14 +9389,14 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       })["catch"](function (action) {
-        _this3.$message({
+        _this4.$message({
           type: "success",
           message: action === "cancel" ? "Canceled" : "No changes"
         });
       });
     },
     getRecord: function getRecord() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.get("record_get").then(function (response) {
         console.log(response.data);
@@ -8751,9 +9409,9 @@ __webpack_require__.r(__webpack_exports__);
           //   constants.hospital_code[Number(entry.patient.hospital_id) - 1];
 
 
-          entry.total_fee = _this4.masknumber(entry.total_fee);
+          entry.total_fee = _this5.masknumber(entry.total_fee);
         });
-        _this4.data = response.data; //   console.log(response.data);
+        _this5.data = response.data; //   console.log(response.data);
       })["catch"](function (error) {});
     },
     clearfield: function clearfield() {
@@ -109477,7 +110135,7 @@ var render = function() {
     _c("hr"),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+      _c("div", { staticClass: "col-sm-6", attrs: { align: "left" } }, [
         _c(
           "div",
           { staticStyle: { "margin-bottom": "10px" } },
@@ -109490,7 +110148,7 @@ var render = function() {
                   { attrs: { span: 10 } },
                   [
                     _c("el-input", {
-                      attrs: { placeholder: "Search" },
+                      attrs: { size: "medium", placeholder: "Search" },
                       model: {
                         value: _vm.filters[0].value,
                         callback: function($$v) {
@@ -109512,12 +110170,38 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "col-sm-2", attrs: { align: "right" } },
+        { staticClass: "col-sm-6", attrs: { align: "right" } },
         [
           _c(
             "el-button",
             {
-              attrs: { type: "primary" },
+              attrs: { type: "primary", size: "medium" },
+              on: {
+                click: function($event) {
+                  return _vm.formDialog("export_data")
+                }
+              }
+            },
+            [_vm._v("Export")]
+          ),
+          _vm._v(" "),
+          _c(
+            "el-button",
+            {
+              attrs: { type: "primary", size: "medium" },
+              on: {
+                click: function($event) {
+                  return _vm.formDialog("import_data")
+                }
+              }
+            },
+            [_vm._v("Import")]
+          ),
+          _vm._v(" "),
+          _c(
+            "el-button",
+            {
+              attrs: { type: "primary", size: "medium" },
               on: {
                 click: function($event) {
                   _vm.dialogFormVisible = true
@@ -109787,7 +110471,134 @@ var render = function() {
             )
           ],
           1
-        )
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "modal fade",
+            attrs: {
+              id: "importModal",
+              tabindex: "-1",
+              "aria-labelledby": "ModalLabel",
+              "aria-hidden": "true"
+            }
+          },
+          [
+            _c("div", { staticClass: "modal-dialog" }, [
+              _c("div", { staticClass: "modal-content" }, [
+                _vm._m(1),
+                _vm._v(" "),
+                _c(
+                  "form",
+                  {
+                    attrs: {
+                      method: "post",
+                      enctype: "multipart/form-data",
+                      action: "/budget_import"
+                    }
+                  },
+                  [
+                    _c("input", {
+                      attrs: { type: "hidden", name: "", id: "" }
+                    }),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "modal-body" }, [
+                      _c("div", { staticClass: "form-group" }, [
+                        _c("label", [
+                          _vm._v("Select excel file for upload (.csv)")
+                        ]),
+                        _c("br"),
+                        _vm._v(" "),
+                        _c("input", {
+                          staticClass: "w-100",
+                          staticStyle: {
+                            border: "1px solid rgba(0,0,0,0.1)",
+                            "border-radius": "4px"
+                          },
+                          attrs: {
+                            type: "file",
+                            id: "excelcontent",
+                            name: "budgets",
+                            accept: ".csv"
+                          },
+                          on: {
+                            change: function($event) {
+                              return _vm.selectFile($event)
+                            }
+                          }
+                        }),
+                        _vm._v(" "),
+                        _vm.progressbar_import
+                          ? _c(
+                              "div",
+                              {
+                                staticClass: "progress",
+                                staticStyle: { "margin-top": "15px" }
+                              },
+                              [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass:
+                                      "progress-bar progress-bar-striped active",
+                                    staticStyle: { width: "0%" },
+                                    attrs: {
+                                      role: "progressbar",
+                                      "aria-valuenow": "0",
+                                      "aria-valuemin": "0",
+                                      "aria-valuemax": "100"
+                                    }
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                        0%\n                      "
+                                    )
+                                  ]
+                                )
+                              ]
+                            )
+                          : _vm._e()
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "modal-footer" }, [
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-secondary",
+                          attrs: { type: "button", "data-dismiss": "modal" }
+                        },
+                        [_vm._v("Close")]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: {
+                            type: "button",
+                            name: "upload",
+                            disabled: _vm.enableUpload === false
+                          },
+                          on: {
+                            click: function($event) {
+                              _vm.progressbar_import = true
+                              _vm.onSubmit()
+                            }
+                          }
+                        },
+                        [_vm._v("Import")]
+                      )
+                    ])
+                  ]
+                )
+              ])
+            ])
+          ]
+        ),
+        _vm._v(" "),
+        _vm._m(2)
       ],
       1
     )
@@ -109803,8 +110614,452 @@ var staticRenderFns = [
         _c("h2", [_vm._v("Budget List")])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "ModalLabel" } }, [
+        _vm._v("Import Patient")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "exportModal",
+          tabindex: "-1",
+          "aria-labelledby": "ModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c(
+                "h5",
+                { staticClass: "modal-title", attrs: { id: "ModalLabel" } },
+                [_vm._v("Export Patient")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: {
+                    type: "button",
+                    "data-dismiss": "modal",
+                    "aria-label": "Close"
+                  }
+                },
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("×")
+                  ])
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: {
+                  method: "get",
+                  enctype: "multipart/form-data",
+                  action: "budget_export/"
+                }
+              },
+              [
+                _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", [_vm._v("Select excel file type")]),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        staticClass: "form-control",
+                        attrs: { name: "exceltype" }
+                      },
+                      [
+                        _c("option", { attrs: { value: "csv" } }, [
+                          _vm._v("CSV")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xlsx" } }, [
+                          _vm._v("XLSX")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xls" } }, [
+                          _vm._v("XLS")
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button", "data-dismiss": "modal" }
+                    },
+                    [_vm._v("Close")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "submit", name: "upload" }
+                    },
+                    [_vm._v("Export")]
+                  )
+                ])
+              ]
+            )
+          ])
+        ])
+      ]
+    )
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578&":
+/*!******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578& ***!
+  \******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "el-card",
+    { staticClass: "box-card" },
+    [
+      _c("h3", [_vm._v("Medical Record Staff")]),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c(
+        "el-form",
+        { attrs: { "label-width": "120px", size: "small" } },
+        [
+          _c("el-row", [
+            _vm.personnels.length >= 1
+              ? _c(
+                  "div",
+                  _vm._l(_vm.personnels, function(personnel, index) {
+                    return _c(
+                      "div",
+                      { key: index },
+                      [
+                        _c(
+                          "el-col",
+                          { attrs: { span: 12 } },
+                          [
+                            _c(
+                              "el-card",
+                              { staticClass: "box-card" },
+                              [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "clearfix",
+                                    attrs: { slot: "header" },
+                                    slot: "header"
+                                  },
+                                  [
+                                    _c("span", [_vm._v("Card name")]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "el-form-item",
+                                      [
+                                        index >= 0
+                                          ? _c(
+                                              "el-button",
+                                              {
+                                                staticStyle: {
+                                                  float: "right",
+                                                  padding: "3px 0"
+                                                },
+                                                on: { click: _vm.removeStaff }
+                                              },
+                                              [_vm._v("Close")]
+                                            )
+                                          : _vm._e()
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Personnel",
+                                      "label-width": _vm.formLabelWidth,
+                                      prop: "personnel"
+                                    }
+                                  },
+                                  [
+                                    _c("el-autocomplete", {
+                                      staticClass: "inline-input",
+                                      attrs: {
+                                        width: "200px",
+                                        "fetch-suggestions": _vm.querySearch,
+                                        placeholder: "Please Input",
+                                        "trigger-on-focus": false
+                                      },
+                                      on: { select: _vm.handleSelect },
+                                      model: {
+                                        value: personnel.state,
+                                        callback: function($$v) {
+                                          _vm.$set(personnel, "state", $$v)
+                                        },
+                                        expression: "personnel.state"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Personnel",
+                                      prop: "personnel_type"
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "el-select",
+                                      {
+                                        attrs: { placeholder: "choose" },
+                                        model: {
+                                          value: personnel.stafftype,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              personnel,
+                                              "stafftype",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "personnel.stafftype"
+                                        }
+                                      },
+                                      [
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Medical",
+                                            value: "medical"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Non-medical",
+                                            value: "non-medical"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Contribution",
+                                      prop: "contribution_type"
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "el-select",
+                                      {
+                                        attrs: { placeholder: "choose" },
+                                        model: {
+                                          value: personnel.contribution,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              personnel,
+                                              "contribution",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "personnel.contribution"
+                                        }
+                                      },
+                                      [
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Attending Physician",
+                                            value: "Attending Physician"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Requesting Physician",
+                                            value: "Requesting Physician"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Surgeon Physician",
+                                            value: "Surgeon Physician"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Health Care Physician",
+                                            value: "Health Care Physician"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "ER Physician",
+                                            value: "ER Physician"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Anesthesiologist",
+                                            value: "Anesthesiologist"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Co-management",
+                                            value: "Co-management"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Admitting",
+                                            value: "Admitting"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Computed PF",
+                                      "label-width": _vm.formLabelWidth
+                                    }
+                                  },
+                                  [
+                                    _c("el-input", {
+                                      attrs: { autocomplete: "off" },
+                                      model: {
+                                        value: personnel.computed_pf,
+                                        callback: function($$v) {
+                                          _vm.$set(
+                                            personnel,
+                                            "computed_pf",
+                                            $$v
+                                          )
+                                        },
+                                        expression: "personnel.computed_pf"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  }),
+                  0
+                )
+              : _vm._e()
+          ]),
+          _vm._v(" "),
+          _c(
+            "el-form-item",
+            [
+              _c(
+                "el-button",
+                { attrs: { type: "primary" }, on: { click: _vm.onSubmit } },
+                [_vm._v("Create")]
+              ),
+              _vm._v(" "),
+              _c("el-button", { on: { click: _vm.addStaff } }, [
+                _vm._v("Add Staff")
+              ])
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -109836,12 +111091,38 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticClass: "col-sm-2", attrs: { align: "right" } },
+        { staticClass: "col-sm-6", attrs: { align: "right" } },
         [
           _c(
             "el-button",
             {
-              attrs: { type: "primary" },
+              attrs: { type: "primary", size: "medium" },
+              on: {
+                click: function($event) {
+                  return _vm.formDialog("export_data")
+                }
+              }
+            },
+            [_vm._v("Export")]
+          ),
+          _vm._v(" "),
+          _c(
+            "el-button",
+            {
+              attrs: { type: "primary", size: "medium" },
+              on: {
+                click: function($event) {
+                  return _vm.formDialog("import_data")
+                }
+              }
+            },
+            [_vm._v("Import")]
+          ),
+          _vm._v(" "),
+          _c(
+            "el-button",
+            {
+              attrs: { type: "primary", size: "medium" },
               on: {
                 click: function($event) {
                   return _vm.formDialog("insert_data")
@@ -110080,6 +111361,141 @@ var render = function() {
           ),
           _vm._v(" "),
           _c(
+            "div",
+            {
+              staticClass: "modal fade",
+              attrs: {
+                id: "importModal",
+                tabindex: "-1",
+                "aria-labelledby": "ModalLabel",
+                "aria-hidden": "true"
+              }
+            },
+            [
+              _c("div", { staticClass: "modal-dialog" }, [
+                _c("div", { staticClass: "modal-content" }, [
+                  _vm._m(2),
+                  _vm._v(" "),
+                  _c(
+                    "form",
+                    {
+                      attrs: {
+                        method: "post",
+                        enctype: "multipart/form-data",
+                        action: "/patients_import"
+                      }
+                    },
+                    [
+                      _c("input", {
+                        attrs: { type: "hidden", name: "", id: "" }
+                      }),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "modal-body" }, [
+                        _c("div", { staticClass: "form-group" }, [
+                          _c("label", [
+                            _vm._v("Select excel file for upload (.csv)")
+                          ]),
+                          _c("br"),
+                          _vm._v(" "),
+                          _c("input", {
+                            staticClass: "w-100",
+                            staticStyle: {
+                              border: "1px solid rgba(0, 0, 0, 0.1)",
+                              "border-radius": "4px"
+                            },
+                            attrs: {
+                              type: "file",
+                              id: "excelcontent",
+                              name: "patients",
+                              accept: ".csv"
+                            },
+                            on: {
+                              change: function($event) {
+                                return _vm.selectFile($event)
+                              }
+                            }
+                          }),
+                          _vm._v(" "),
+                          _vm.progressbar_import
+                            ? _c(
+                                "div",
+                                {
+                                  staticClass: "progress",
+                                  staticStyle: { "margin-top": "15px" }
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "progress-bar progress-bar-striped active",
+                                      staticStyle: { width: "0%" },
+                                      attrs: {
+                                        role: "progressbar",
+                                        "aria-valuenow": "0",
+                                        "aria-valuemin": "0",
+                                        "aria-valuemax": "100"
+                                      }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "\n                      0%\n                    "
+                                      )
+                                    ]
+                                  )
+                                ]
+                              )
+                            : _vm._e()
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c("div", { staticClass: "modal-footer" }, [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-secondary",
+                            attrs: { type: "button", "data-dismiss": "modal" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                  Close\n                "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-primary",
+                            attrs: {
+                              type: "button",
+                              name: "upload",
+                              disabled: _vm.enableUpload === false
+                            },
+                            on: {
+                              click: function($event) {
+                                _vm.progressbar_import = true
+                                _vm.onSubmit()
+                              }
+                            }
+                          },
+                          [
+                            _vm._v(
+                              "\n                  Import\n                "
+                            )
+                          ]
+                        )
+                      ])
+                    ]
+                  )
+                ])
+              ])
+            ]
+          ),
+          _vm._v(" "),
+          _vm._m(3),
+          _vm._v(" "),
+          _c(
             "el-dialog",
             {
               attrs: {
@@ -110229,128 +111645,6 @@ var render = function() {
                       })
                     ],
                     1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Personnel",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "total_fee"
-                      }
-                    },
-                    [
-                      _c("el-input", {
-                        attrs: { autocomplete: "off" },
-                        model: {
-                          value: _vm.formMedical.personnel,
-                          callback: function($$v) {
-                            _vm.$set(_vm.formMedical, "personnel", $$v)
-                          },
-                          expression: "formMedical.personnel"
-                        }
-                      })
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Personnel Type",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "personnel_type"
-                      }
-                    },
-                    [
-                      _c(
-                        "el-select",
-                        {
-                          attrs: { placeholder: "Please select" },
-                          model: {
-                            value: _vm.form.personnel_type,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "personnel_type", $$v)
-                            },
-                            expression: "form.personnel_type"
-                          }
-                        },
-                        [
-                          _c("el-option", {
-                            attrs: { label: "Male", value: "1" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: { label: "Female", value: "2" }
-                          })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Contribution Type",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "contribution_type"
-                      }
-                    },
-                    [
-                      _c(
-                        "el-select",
-                        {
-                          attrs: { placeholder: "Please select" },
-                          model: {
-                            value: _vm.form.contribution_type,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "contribution_type", $$v)
-                            },
-                            expression: "form.contribution_type"
-                          }
-                        },
-                        [
-                          _c("el-option", {
-                            attrs: { label: "Male", value: "1" }
-                          }),
-                          _vm._v(" "),
-                          _c("el-option", {
-                            attrs: { label: "Female", value: "2" }
-                          })
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  ),
-                  _vm._v(" "),
-                  _c(
-                    "el-form-item",
-                    {
-                      attrs: {
-                        label: "Computed PF",
-                        "label-width": _vm.formLabelWidth,
-                        prop: "computed_pf"
-                      }
-                    },
-                    [
-                      _c("el-input", {
-                        attrs: { autocomplete: "off" },
-                        model: {
-                          value: _vm.form.computed_pf,
-                          callback: function($$v) {
-                            _vm.$set(_vm.form, "computed_pf", $$v)
-                          },
-                          expression: "form.computed_pf"
-                        }
-                      })
-                    ],
-                    1
                   )
                 ],
                 1
@@ -110369,7 +111663,7 @@ var render = function() {
                     {
                       on: {
                         click: function($event) {
-                          _vm.dialogFormVisible = false
+                          _vm.dialogMedicalFormVisible = false
                         }
                       }
                     },
@@ -110383,7 +111677,8 @@ var render = function() {
                           attrs: { type: "primary" },
                           on: {
                             click: function($event) {
-                              return _vm.addPatient()
+                              _vm.addMedicalRecord()
+                              _vm.openFullScreen2()
                             }
                           }
                         },
@@ -110804,9 +112099,141 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "col-sm-10", attrs: { align: "left" } }, [
+    return _c("div", { staticClass: "col-sm-6", attrs: { align: "left" } }, [
       _c("div", { staticStyle: { "margin-bottom": "10px" } })
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "ModalLabel" } }, [
+        _vm._v("Import Patient")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "exportModal",
+          tabindex: "-1",
+          "aria-labelledby": "ModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c(
+                "h5",
+                { staticClass: "modal-title", attrs: { id: "ModalLabel" } },
+                [_vm._v("Export Patient")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: {
+                    type: "button",
+                    "data-dismiss": "modal",
+                    "aria-label": "Close"
+                  }
+                },
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("×")
+                  ])
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: {
+                  method: "get",
+                  enctype: "multipart/form-data",
+                  action: "patients_export/"
+                }
+              },
+              [
+                _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", [_vm._v("Select excel file type")]),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        staticClass: "form-control",
+                        attrs: { name: "exceltype" }
+                      },
+                      [
+                        _c("option", { attrs: { value: "csv" } }, [
+                          _vm._v("CSV")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xlsx" } }, [
+                          _vm._v("XLSX")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xls" } }, [
+                          _vm._v("XLS")
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button", "data-dismiss": "modal" }
+                    },
+                    [_vm._v("\n                  Close\n                ")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "submit", name: "upload" }
+                    },
+                    [_vm._v("\n                  Export\n                ")]
+                  )
+                ])
+              ]
+            )
+          ])
+        ])
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -111407,21 +112834,7 @@ var render = function() {
           [
             _c(
               "el-table",
-              {
-                attrs: {
-                  data: _vm.pagedTableData.filter(function(data) {
-                    return (
-                      !_vm.search ||
-                      data.first_name
-                        .toLowerCase()
-                        .includes(_vm.search.toLowerCase()) ||
-                      data.philhealth_number
-                        .toLowerCase()
-                        .includes(_vm.search.toLowerCase())
-                    )
-                  })
-                }
-              },
+              { attrs: { data: _vm.pagedTableData } },
               [
                 _c("el-table-column", {
                   attrs: {
@@ -111432,7 +112845,12 @@ var render = function() {
                 }),
                 _vm._v(" "),
                 _c("el-table-column", {
-                  attrs: { width: "177", label: "Patient", prop: "first_name" }
+                  attrs: {
+                    width: "177",
+                    label: "Patient",
+                    prop: "first_name",
+                    "column-key": "ase"
+                  }
                 }),
                 _vm._v(" "),
                 _c("el-table-column", {
@@ -111504,6 +112922,37 @@ var render = function() {
                               staticClass: "item",
                               attrs: {
                                 effect: "light",
+                                content: "Add Contribution",
+                                placement: "top"
+                              }
+                            },
+                            [
+                              _c("el-button", {
+                                attrs: {
+                                  size: "mini",
+                                  type: "success",
+                                  icon: "el-icon-plus",
+                                  circle: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleAddRecord(
+                                      scope.$index,
+                                      scope.row
+                                    )
+                                  }
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "el-tooltip",
+                            {
+                              staticClass: "item",
+                              attrs: {
+                                effect: "light",
                                 content: "view",
                                 placement: "top"
                               }
@@ -111518,10 +112967,8 @@ var render = function() {
                                 },
                                 on: {
                                   click: function($event) {
-                                    return _vm.handleView(
-                                      scope.$index,
-                                      scope.row
-                                    )
+                                    _vm.handleView(scope.$index, scope.row)
+                                    _vm.hurts()
                                   }
                                 }
                               })
@@ -111855,6 +113302,14 @@ var render = function() {
                   attrs: {
                     property: "last_name",
                     label: "Lastname",
+                    width: "formLabelWidth"
+                  }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: {
+                    property: "total_fee",
+                    label: "Total",
                     width: "formLabelWidth"
                   }
                 })
@@ -124641,6 +126096,7 @@ Vue.component('record-component', __webpack_require__(/*! ./components/user/Reco
 Vue.component('restore-component', __webpack_require__(/*! ./components/user/RestoreComponent.vue */ "./resources/js/components/user/RestoreComponent.vue")["default"]);
 Vue.component('personnel-component', __webpack_require__(/*! ./components/user/PersonnelComponent.vue */ "./resources/js/components/user/PersonnelComponent.vue")["default"]);
 Vue.component('resetpass-component', __webpack_require__(/*! ./components/user/ResetPasswordComponent.vue */ "./resources/js/components/user/ResetPasswordComponent.vue")["default"]);
+Vue.component('medical-component', __webpack_require__(/*! ./components/user/MedicalRecordComponent.vue */ "./resources/js/components/user/MedicalRecordComponent.vue")["default"]);
 var app = new Vue({
   el: '#app'
 });
@@ -125170,6 +126626,75 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_template_id_317b179f___WEBPACK_IMPORTED_MODULE_0__["render"]; });
 
 /* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BudgetComponent_vue_vue_type_template_id_317b179f___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
+/***/ "./resources/js/components/user/MedicalRecordComponent.vue":
+/*!*****************************************************************!*\
+  !*** ./resources/js/components/user/MedicalRecordComponent.vue ***!
+  \*****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MedicalRecordComponent.vue?vue&type=template&id=02827578& */ "./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578&");
+/* harmony import */ var _MedicalRecordComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MedicalRecordComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _MedicalRecordComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/user/MedicalRecordComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MedicalRecordComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./MedicalRecordComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MedicalRecordComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578& ***!
+  \************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./MedicalRecordComponent.vue?vue&type=template&id=02827578& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
 
 
 

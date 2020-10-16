@@ -33,25 +33,19 @@
     </div>
     <div class="card">
       <div class="card-body">
-        <el-table
-          :data="
-            pagedTableData.filter(
-              (data) =>
-                !search ||
-                data.first_name.toLowerCase().includes(search.toLowerCase()) ||
-                data.philhealth_number
-                  .toLowerCase()
-                  .includes(search.toLowerCase())
-            )
-          "
-        >
+        <el-table :data="pagedTableData">
           <el-table-column
             width="115"
             label="Philhealth"
             prop="philhealth_number"
           >
           </el-table-column>
-          <el-table-column width="177" label="Patient" prop="first_name">
+          <el-table-column
+            width="177"
+            label="Patient"
+            prop="first_name"
+            column-key="ase"
+          >
           </el-table-column>
           <el-table-column width="100" label="Admit" prop="admission_date">
           </el-table-column>
@@ -75,6 +69,23 @@
               <el-tooltip
                 class="item"
                 effect="light"
+                content="Add Contribution"
+                placement="top"
+              >
+                <el-button
+                  size="mini"
+                  type="success"
+                  icon="el-icon-plus"
+                  circle
+                  @click="
+                    handleAddRecord(scope.$index, scope.row);
+                  "
+                >
+                </el-button>
+              </el-tooltip>
+              <el-tooltip
+                class="item"
+                effect="light"
                 content="view"
                 placement="top"
               >
@@ -83,7 +94,10 @@
                   type="info"
                   icon="el-icon-info"
                   circle
-                  @click="handleView(scope.$index, scope.row)"
+                  @click="
+                    handleView(scope.$index, scope.row);
+                    hurts();
+                  "
                 >
                 </el-button>
               </el-tooltip>
@@ -104,6 +118,7 @@
             </template>
           </el-table-column>
         </el-table>
+
         <div style="text-align: center">
           <el-pagination
             layout="prev, pager, next"
@@ -223,6 +238,11 @@
             label="Lastname"
             width="formLabelWidth"
           ></el-table-column>
+          <el-table-column
+            property="total_fee"
+            label="Total"
+            width="formLabelWidth"
+          ></el-table-column>
         </el-table>
       </el-dialog>
       <!-- Show Patient Details -->
@@ -236,7 +256,9 @@
 export default {
   data() {
     return {
+      filtered: [],
       page: 1,
+      total: 0,
       pageSize: 10,
       search: "",
       data: [],
@@ -313,7 +335,17 @@ export default {
   },
   computed: {
     pagedTableData() {
-      return this.data.slice(
+      if (this.search == null) return this.data;
+
+      this.filtered = this.data.filter(
+        (data) =>
+          !this.search ||
+          data.first_name.toLowerCase().includes(this.search.toLowerCase())
+      );
+
+      this.total = this.filtered.length;
+      return this.filtered.slice(
+        
         this.pageSize * this.page - this.pageSize,
         this.pageSize * this.page
       );
@@ -332,17 +364,32 @@ export default {
     handleDelete(index, row) {
       var data = this.data;
 
-              this.deleteRecord(row.id, (res_value) => {
-                if (res_value) {
-                  data.splice(data.indexOf(row), 1);
-                }
-              });
+      this.deleteRecord(row.id, (res_value) => {
+        if (res_value) {
+          data.splice(data.indexOf(row), 1);
+        }
+      });
+    },
+    handleAddRecord(index, row) {
+      //  console.log(row);
+      window.location.replace("medicalrecord/"+row.id);
     },
     handleView(index, row) {
-      console.log(row);
+     
       axios
         .post("personnel_get/" + row.id)
         .then((response) => {
+          // console.log(response.data.personnels);
+          var parent = parseFloat(row.total_fee.replace(/,/g, "")) / 2;
+          var child1 = parent;
+          var child2 = parent;
+          var gchild1 = child2 * 0.7;
+          var gchild2 = child2 * 0.3;
+          var cnt_of_type;
+          response.data.personnels.forEach((entry) => {
+              entry.total_fee = this.masknumber(gchild1);
+          });
+
           this.staff = response.data.personnels;
         })
         .catch(function (error) {});
@@ -386,10 +433,9 @@ export default {
           var _this = this;
           axios.post("delete_record/" + id).then(function (response) {
             if (response.status > 199 && response.status < 203) {
-             if (response.status > 199 && response.status < 203) {
-               _this.open_notif("success", "Success",  "Succesfully! Deleted");
-            
-            }
+              if (response.status > 199 && response.status < 203) {
+                _this.open_notif("success", "Success", "Succesfully! Deleted");
+              }
               _this.getRecord();
             }
           });

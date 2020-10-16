@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Budget;
 use App\Models\Personnel;
 use App\Models\MedicalRecord;
+use App\Models\Contribution;
 use Auth;
 use DB;
 use Dotenv\Store\File\Paths;
@@ -63,9 +64,16 @@ class UserController extends Controller
     {
         return view('roles.user.record');
     }
+
     public function restore()
     {
         return view('roles.user.restore');
+    }
+
+    public function medicalrecord($id)
+    {
+        return view('roles.user.medicalrecord')->with('id',$id);
+        // return ['redirect'=>route('/medicalrecord')];
     }
 
     public function getBudget()
@@ -109,6 +117,47 @@ class UserController extends Controller
     public function getPersonnels()
     {
         return Personnel::where('hospital_id', Auth::user()->hospital_id)->get();
+    }
+    
+    public function getPersonnellist(Request $request)
+    {
+        if($request->query!='')
+        {
+        $users = DB::table('personnels')
+                ->where('first_name', 'like', $request->get('query').'%')
+                ->get();
+        return $users;
+
+        }
+       
+    }
+    public function addContributionRecord(Request $request)
+    {
+        // dd($request);
+        for($i=0;$i<sizeof($request->personnel);$i++){
+            $contribution=new Contribution;
+            $contribution->type=$request->personnel[$i]['stafftype'];
+            $contribution->contribution=$request->personnel[$i]['contribution'];
+            $contribution->credit=$request->personnel[$i]['computed_pf'];
+            $contribution->status="paid";
+            $contribution->save();
+            $record=MedicalRecord::find($request->medical_record_id);
+            $record->personnels()->attach(Personnel::find($request->personnel[$i]['staff']), ['contribution_id' => $contribution->id]);
+           
+        } return $contribution;
+    }
+
+    public function addMedicalRecord(Request $request)
+    {
+       $record=new MedicalRecord;
+       $record->patient_id=$request->patient_id;
+       $record->admission_date=$request->admission_date;
+       $record->discharge_date=$request->discharge_date;
+       $record->final_diagnosis=$request->final_diagnosis;
+       $record->record_type=$request->record_type;
+       $record->total_fee=$request->total_fee;
+       $record->save();
+       return $record;
     }
 
     public function addPersonnel(userAddPersonnelRequest $request)
@@ -172,8 +221,10 @@ class UserController extends Controller
        
         // ->getQuery() // Optional: downgrade to non-eloquent builder so we don't build invalid User objects.
         // ->get();
-        $result = MedicalRecord::join('patients as p', 'medical_records.patient_id', '=', 'p.id')
-        ->where('p.hospital_id', Auth::user()->hospital_id)
+        $result = MedicalRecord::join('patients', 'medical_records.patient_id', '=', 'patients.id')
+        ->where('patients.hospital_id', Auth::user()->hospital_id)
+        ->select('medical_records.*','patients.first_name','patients.last_name','patients.middle_name',
+        'patients.name_suffix','patients.philhealth_number')
         ->get();
         return $result;
     }

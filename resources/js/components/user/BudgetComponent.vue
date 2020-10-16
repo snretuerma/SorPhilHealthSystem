@@ -217,6 +217,8 @@
 export default {
   data() {
     return {
+      progressbar_import: false,
+      enableUpload: false,
       loading: true,
       data: [],
       budgetInfo: [],
@@ -224,6 +226,7 @@ export default {
       dialogTableVisible: false,
       dialogFormVisible: false,
       formLabelWidth: "120px",
+      
       // Validation
       rules: {
         start_date: [
