@@ -15,7 +15,6 @@ class CreateContributionsTable extends Migration
     {
         Schema::create('contributions', function (Blueprint $table) {
             $table->id();
-            $table->string('type');
             $table->string('contribution')->nullable();
             $table->decimal('credit', 19, 4);
             $table->string('status');

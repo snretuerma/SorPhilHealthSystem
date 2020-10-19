@@ -52,7 +52,6 @@ class MedicalRecordSeeder extends Seeder
         foreach($records as $record)
         {
             $contribution = new Contribution;
-            $contribution->type = 'medical';
             $contribution->contribution = 'admitting';
             $contribution->credit = rand(1000,9999);
             $contribution->status = 'paid';

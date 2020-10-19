@@ -4827,6 +4827,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -4867,6 +4877,11 @@ __webpack_require__.r(__webpack_exports__);
           message: "Please select staff type.",
           trigger: "change"
         }],
+        designation: [{
+          required: true,
+          message: "Please select staff designation.",
+          trigger: "change"
+        }],
         sex: [{
           required: true,
           message: "Sex is required.",
@@ -4883,27 +4898,6 @@ __webpack_require__.r(__webpack_exports__);
           trigger: "change"
         }]
       },
-      titles: [{
-        prop: "name",
-        label: "Name",
-        width: "250px"
-      }, {
-        prop: "is_private",
-        label: "Type",
-        width: "150px"
-      }, {
-        prop: "sex",
-        label: "Sex",
-        width: "150px"
-      }, {
-        prop: "birthdate",
-        label: "Birthdate",
-        width: "150px"
-      }, {
-        prop: "hospital_code",
-        label: "Hospital",
-        width: "150px"
-      }],
       // Add Personnel form
       form: {
         id: "",
@@ -4914,6 +4908,7 @@ __webpack_require__.r(__webpack_exports__);
         sex: "",
         birthdate: "",
         is_private: "",
+        designation: "",
         hospital_code: "",
         codeholder: "",
         name: "",
@@ -4929,6 +4924,7 @@ __webpack_require__.r(__webpack_exports__);
         sex: "",
         birthdate: "",
         is_private: "",
+        designation: "",
         codeholder: "",
         name: ""
       },
@@ -4938,6 +4934,7 @@ __webpack_require__.r(__webpack_exports__);
         sex: "",
         birthdate: "",
         is_private: "",
+        designation: "",
         hospital_code: ""
       }]
     };
@@ -4984,6 +4981,7 @@ __webpack_require__.r(__webpack_exports__);
       this.dialogTableVisible = true;
       this.gridData[0].name = this.buildName(row.first_name, row.middle_name, row.last_name, row.name_suffix);
       this.gridData[0].is_private = row.is_private;
+      this.gridData[0].designation = row.designation;
       this.gridData[0].sex = row.sex;
       this.gridData[0].birthdate = row.birthdate;
       this.gridData[0].hospital_code = row.hospital_code;
@@ -4997,6 +4995,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.middle_name = row.middle_name;
       this.form.name_suffix = row.name_suffix;
       this.form.is_private = row.is_private;
+      this.form.designation = row.designation;
       this.form.sex = row.sex;
       this.form.birthdate = row.birthdate;
       this.form.codeholder = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code.indexOf(row.hospital_code) - 1;
@@ -5007,6 +5006,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form_check.middle_name = row.middle_name;
       this.form_check.name_suffix = row.name_suffix;
       this.form_check.is_private = row.is_private;
+      this.form_check.designation = row.designation;
       this.form_check.sex = row.sex;
       this.form_check.birthdate = row.birthdate;
       this.form_check.codeholder = this.form.codeholder;
@@ -5018,13 +5018,14 @@ __webpack_require__.r(__webpack_exports__);
 
       switch (mode) {
         case "add":
-          if (this.form.last_name == "" || this.form.first_name == "" || this.form.middle_name == "" || this.form.is_private == "" || this.form.sex == "" || this.form.birthdate == "" || this.form.codeholder == "") {
+          if (this.form.last_name == "" || this.form.first_name == "" || this.form.middle_name == "" || this.form.is_private == "" || this.form.designation == "" || this.form.sex == "" || this.form.birthdate == "" || this.form.codeholder == "") {
             this.open_notif("info", "Message", "Required fields were missing values.");
           } else {
             axios.post("add_personnel", this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
                 response.data.name = _this3.form.last_name + ", " + _this3.form.name_suffix + " " + _this3.form.first_name + " " + _this3.form.middle_name.slice(0, 1) + ". ";
                 response.data.is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this3.form.is_private)];
+                response.data.designation = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].designation[Number(_this3.form.designation)];
                 response.data.sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this3.form.sex)];
                 response.data.hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.hospital_code - 1)];
 
@@ -5044,7 +5045,7 @@ __webpack_require__.r(__webpack_exports__);
           break;
 
         case "edit":
-          if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate && this.form.codeholder == this.form_check.codeholder) {
+          if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.is_private == this.form_check.is_private && this.form.designation == this.form_check.designation && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate && this.form.codeholder == this.form_check.codeholder) {
             this.open_notif("info", "Message", "No Changes");
           } else {
             if (this.form.sex == "Male") {
@@ -5057,6 +5058,12 @@ __webpack_require__.r(__webpack_exports__);
               this.form.is_private = 0;
             } else if (this.form.is_private == "Non-private") {
               this.form.is_private = 1;
+            }
+
+            if (this.form.designation == "Medical") {
+              this.form.designation = 0;
+            } else if (this.form.designation == "Non-medical") {
+              this.form.designation = 1;
             }
 
             if (this.form.hospital_code == "DFBDSMH") {
@@ -5091,6 +5098,7 @@ __webpack_require__.r(__webpack_exports__);
                 _this3.data[parseInt(_this3.form.edit_object_index)].name_suffix = _this3.form.name_suffix;
                 _this3.data[parseInt(_this3.form.edit_object_index)].sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this3.form.sex)];
                 _this3.data[parseInt(_this3.form.edit_object_index)].is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this3.form.is_private)];
+                _this3.data[parseInt(_this3.form.edit_object_index)].designation = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].designation[Number(_this3.form.designation)];
                 _this3.data[parseInt(_this3.form.edit_object_index)].birthdate = _this3.form.birthdate;
                 _this3.data[parseInt(_this3.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.codeholder) - 1];
                 _this3.data[parseInt(_this3.form.edit_object_index)].name = _this3.form.name;
@@ -5136,6 +5144,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.middle_name = "";
       this.form.name_suffix = "";
       this.form.is_private = "";
+      this.form.designation = "";
       this.form.sex = "";
       this.form.birthdate = "";
       this.form.hospital_code = "";
@@ -5158,6 +5167,24 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return type;
+    },
+    assignDesignation: function assignDesignation(designation_value) {
+      var designation;
+
+      switch (designation_value) {
+        case 0:
+          designation = "Medical";
+          break;
+
+        case 1:
+          designation = "Non-medical";
+          break;
+
+        default:
+          designation = "Not Known";
+      }
+
+      return designation;
     },
     assignSex: function assignSex(sex_value) {
       var sex;
@@ -5192,6 +5219,7 @@ __webpack_require__.r(__webpack_exports__);
       element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
       element.sex = this.assignSex(element.sex);
       element.is_private = this.assignType(element.is_private);
+      element.designation = this.assignDesignation(element.designation);
     }
   },
   mounted: function mounted() {
@@ -7657,6 +7685,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -7697,6 +7735,11 @@ __webpack_require__.r(__webpack_exports__);
           message: "Please select staff type.",
           trigger: "change"
         }],
+        designation: [{
+          required: true,
+          message: "Please select staff designation.",
+          trigger: "change"
+        }],
         sex: [{
           required: true,
           message: "Sex is required.",
@@ -7708,23 +7751,6 @@ __webpack_require__.r(__webpack_exports__);
           trigger: "change"
         }]
       },
-      titles: [{
-        prop: "name",
-        label: "Name",
-        width: "250px"
-      }, {
-        prop: "is_private",
-        label: "Type",
-        width: "150px"
-      }, {
-        prop: "sex",
-        label: "Sex",
-        width: "150px"
-      }, {
-        prop: "birthdate",
-        label: "Birthdate",
-        width: "150px"
-      }],
       // Add Personnel form
       form: {
         id: "",
@@ -7735,6 +7761,7 @@ __webpack_require__.r(__webpack_exports__);
         sex: "",
         birthdate: "",
         is_private: "",
+        designation: "",
         name: "",
         formmode: "",
         edit_object_index: ""
@@ -7748,6 +7775,7 @@ __webpack_require__.r(__webpack_exports__);
         sex: "",
         birthdate: "",
         is_private: "",
+        designation: "",
         name: ""
       },
       // View info data
@@ -7755,7 +7783,8 @@ __webpack_require__.r(__webpack_exports__);
         name: "",
         sex: "",
         birthdate: "",
-        is_private: ""
+        is_private: "",
+        designation: ""
       }]
     };
   },
@@ -7798,6 +7827,7 @@ __webpack_require__.r(__webpack_exports__);
       this.dialogTableVisible = true;
       this.gridData[0].name = this.buildName(row.first_name, row.middle_name, row.last_name, row.name_suffix);
       this.gridData[0].is_private = row.is_private;
+      this.gridData[0].designation = row.designation;
       this.gridData[0].sex = row.sex;
       this.gridData[0].birthdate = row.birthdate;
     },
@@ -7810,6 +7840,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.middle_name = row.middle_name;
       this.form.name_suffix = row.name_suffix;
       this.form.is_private = row.is_private;
+      this.form.designation = row.designation;
       this.form.sex = row.sex;
       this.form.birthdate = row.birthdate;
       this.form.edit_object_index = this.data.indexOf(row);
@@ -7818,6 +7849,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form_check.middle_name = row.middle_name;
       this.form_check.name_suffix = row.name_suffix;
       this.form_check.is_private = row.is_private;
+      this.form_check.designation = row.designation;
       this.form_check.sex = row.sex;
       this.form_check.birthdate = row.birthdate;
       this.form_check.name = this.form_check.last_name + ", " + this.form_check.name_suffix + " " + this.form_check.first_name + " " + this.form_check.middle_name.slice(0, 1) + ". ";
@@ -7836,13 +7868,14 @@ __webpack_require__.r(__webpack_exports__);
 
       switch (mode) {
         case "add":
-          if (this.form.last_name == "" || this.form.first_name == "" || this.form.middle_name == "" || this.form.is_private == "" || this.form.sex == "" || this.form.birthdate == "") {
+          if (this.form.last_name == "" || this.form.first_name == "" || this.form.middle_name == "" || this.form.is_private == "" || this.form.designation == "" || this.form.sex == "" || this.form.birthdate == "") {
             this.open_notif("info", "Message", "Required fields were missing values.");
           } else {
             axios.post("add_personnel", this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
                 response.data.name = _this4.form.last_name + ", " + _this4.form.name_suffix + " " + _this4.form.first_name + " " + _this4.form.middle_name.slice(0, 1) + ". ";
                 response.data.is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this4.form.is_private)];
+                response.data.designation = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].designation[Number(_this4.form.designation)];
                 response.data.sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this4.form.sex)];
 
                 _this4.data.push(response.data);
@@ -7861,7 +7894,7 @@ __webpack_require__.r(__webpack_exports__);
           break;
 
         case "edit":
-          if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate) {
+          if (this.form.last_name == this.form_check.last_name && this.form.first_name == this.form_check.first_name && this.form.middle_name == this.form_check.middle_name && this.form.name_suffix == this.form_check.name_suffix && this.form.is_private == this.form_check.is_private && this.form.designation == this.form_check.designation && this.form.sex == this.form_check.sex && this.form.birthdate == this.form_check.birthdate) {
             this.open_notif("info", "Message", "No Changes");
           } else {
             if (this.form.sex == "Male") {
@@ -7876,6 +7909,12 @@ __webpack_require__.r(__webpack_exports__);
               this.form.is_private = 1;
             }
 
+            if (this.form.designation == "Medical") {
+              this.form.designation = 0;
+            } else if (this.form.designation == "Non-medical") {
+              this.form.designation = 1;
+            }
+
             this.form.name = this.form.last_name + ", " + this.form.name_suffix + " " + this.form.first_name + " " + this.form.middle_name.slice(0, 1) + ". ";
             axios.post("edit_personnel/" + this.form.id, this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
@@ -7888,6 +7927,7 @@ __webpack_require__.r(__webpack_exports__);
                 _this4.data[parseInt(_this4.form.edit_object_index)].name_suffix = _this4.form.name_suffix;
                 _this4.data[parseInt(_this4.form.edit_object_index)].sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this4.form.sex)];
                 _this4.data[parseInt(_this4.form.edit_object_index)].is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this4.form.is_private)];
+                _this4.data[parseInt(_this4.form.edit_object_index)].designation = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].designation[Number(_this4.form.designation)];
                 _this4.data[parseInt(_this4.form.edit_object_index)].birthdate = _this4.form.birthdate;
                 _this4.data[parseInt(_this4.form.edit_object_index)].name = _this4.form.name;
               }
@@ -7953,6 +7993,7 @@ __webpack_require__.r(__webpack_exports__);
       this.form.middle_name = "";
       this.form.name_suffix = "";
       this.form.is_private = "";
+      this.form.designation = "";
       this.form.sex = "";
       this.form.birthdate = "";
     },
@@ -7973,6 +8014,24 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return type;
+    },
+    assignDesignation: function assignDesignation(designation_value) {
+      var designation;
+
+      switch (designation_value) {
+        case 0:
+          designation = "Medical";
+          break;
+
+        case 1:
+          designation = "Non-medical";
+          break;
+
+        default:
+          designation = "Not Known";
+      }
+
+      return designation;
     },
     assignSex: function assignSex(sex_value) {
       var sex;
@@ -8007,6 +8066,7 @@ __webpack_require__.r(__webpack_exports__);
       element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
       element.sex = this.assignSex(element.sex);
       element.is_private = this.assignType(element.is_private);
+      element.designation = this.assignDesignation(element.designation);
     }
   },
   mounted: function mounted() {
@@ -107301,24 +107361,32 @@ var render = function() {
               },
               [
                 _c("el-table-column", {
-                  attrs: { width: "250", label: "Name", prop: "name" }
+                  attrs: { width: "220", label: "Name", prop: "name" }
                 }),
                 _vm._v(" "),
                 _c("el-table-column", {
-                  attrs: { width: "150", label: "Type", prop: "is_private" }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: { width: "150", label: "Sex", prop: "sex" }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: { width: "150", label: "Birthdate", prop: "birthdate" }
+                  attrs: { width: "120", label: "Type", prop: "is_private" }
                 }),
                 _vm._v(" "),
                 _c("el-table-column", {
                   attrs: {
-                    width: "150",
+                    width: "120",
+                    label: "Designation",
+                    prop: "designation"
+                  }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { width: "120", label: "Sex", prop: "sex" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { width: "120", label: "Birthdate", prop: "birthdate" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: {
+                    width: "120",
                     label: "Hospital",
                     prop: "hospital_code"
                   }
@@ -107669,6 +107737,50 @@ var render = function() {
                 "el-form-item",
                 {
                   attrs: {
+                    label: "Designation",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "designation"
+                  }
+                },
+                [
+                  _c(
+                    "el-radio-group",
+                    {
+                      model: {
+                        value: _vm.form.designation,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "designation", $$v)
+                        },
+                        expression: "form.designation"
+                      }
+                    },
+                    [
+                      _c("el-radio", { attrs: { label: "0" } }, [
+                        _vm._v("Medical")
+                      ]),
+                      _vm._v(" "),
+                      _c("el-radio", { attrs: { label: "1" } }, [
+                        _vm._v("Non-medical")
+                      ])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("br"),
+                  _vm._v(" "),
+                  _vm.errors.designation
+                    ? _c("span", { staticClass: "font-italic text-danger" }, [
+                        _c("small", [_vm._v(_vm._s(_vm.errors.designation[0]))])
+                      ])
+                    : _vm._e()
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
                     label: "Birthdate",
                     "label-width": _vm.formLabelWidth,
                     prop: "birthdate"
@@ -107851,22 +107963,30 @@ var render = function() {
             { attrs: { data: _vm.gridData } },
             [
               _c("el-table-column", {
-                attrs: { property: "name", label: "Name", width: "250" }
+                attrs: { property: "name", label: "Name", width: "210" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
-                attrs: { property: "is_private", label: "Type", width: "150" }
+                attrs: { property: "is_private", label: "Type", width: "100" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
-                attrs: { property: "sex", label: "Sex", width: "150" }
+                attrs: {
+                  property: "designation",
+                  label: "Designatioon",
+                  width: "110"
+                }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { property: "sex", label: "Sex", width: "100" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
                 attrs: {
                   property: "birthdate",
                   label: "Birthdate",
-                  width: "150"
+                  width: "100"
                 }
               }),
               _vm._v(" "),
@@ -107874,7 +107994,7 @@ var render = function() {
                 attrs: {
                   property: "hospital_code",
                   label: "Hospital",
-                  width: "150"
+                  width: "100"
                 }
               })
             ],
@@ -110813,15 +110933,23 @@ var render = function() {
                 }),
                 _vm._v(" "),
                 _c("el-table-column", {
-                  attrs: { width: "200", label: "Type", prop: "is_private" }
+                  attrs: { width: "130", label: "Type", prop: "is_private" }
                 }),
                 _vm._v(" "),
                 _c("el-table-column", {
-                  attrs: { width: "180", label: "Sex", prop: "sex" }
+                  attrs: {
+                    width: "130",
+                    label: "Designation",
+                    prop: "designation"
+                  }
                 }),
                 _vm._v(" "),
                 _c("el-table-column", {
-                  attrs: { width: "200", label: "Birthdate", prop: "birthdate" }
+                  attrs: { width: "130", label: "Sex", prop: "sex" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { width: "180", label: "Birthdate", prop: "birthdate" }
                 }),
                 _vm._v(" "),
                 _c("el-table-column", {
@@ -111200,6 +111328,50 @@ var render = function() {
                 "el-form-item",
                 {
                   attrs: {
+                    label: "Designation",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "designation"
+                  }
+                },
+                [
+                  _c(
+                    "el-radio-group",
+                    {
+                      model: {
+                        value: _vm.form.designation,
+                        callback: function($$v) {
+                          _vm.$set(_vm.form, "designation", $$v)
+                        },
+                        expression: "form.designation"
+                      }
+                    },
+                    [
+                      _c("el-radio", { attrs: { label: "0" } }, [
+                        _vm._v("Medical")
+                      ]),
+                      _vm._v(" "),
+                      _c("el-radio", { attrs: { label: "1" } }, [
+                        _vm._v("Non-medical")
+                      ])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c("br"),
+                  _vm._v(" "),
+                  _vm.errors.designation
+                    ? _c("span", { staticClass: "font-italic text-danger" }, [
+                        _c("small", [_vm._v(_vm._s(_vm.errors.designation[0]))])
+                      ])
+                    : _vm._e()
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
                     label: "Birthdate",
                     "label-width": _vm.formLabelWidth,
                     prop: "birthdate"
@@ -111308,22 +111480,30 @@ var render = function() {
             { attrs: { data: _vm.gridData } },
             [
               _c("el-table-column", {
-                attrs: { property: "name", label: "Name", width: "250" }
+                attrs: { property: "name", label: "Name", width: "200" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
-                attrs: { property: "is_private", label: "Type", width: "150" }
+                attrs: { property: "is_private", label: "Type", width: "130" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
-                attrs: { property: "sex", label: "Sex", width: "150" }
+                attrs: {
+                  property: "designation",
+                  label: "Designation",
+                  width: "130"
+                }
+              }),
+              _vm._v(" "),
+              _c("el-table-column", {
+                attrs: { property: "sex", label: "Sex", width: "130" }
               }),
               _vm._v(" "),
               _c("el-table-column", {
                 attrs: {
                   property: "birthdate",
                   label: "Birthdate",
-                  width: "150"
+                  width: "130"
                 }
               })
             ],
@@ -125270,14 +125450,15 @@ __webpack_require__.r(__webpack_exports__);
 /*!***********************************************************!*\
   !*** ./resources/js/components/user/PatientComponent.vue ***!
   \***********************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _PatientComponent_vue_vue_type_template_id_41400221___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PatientComponent.vue?vue&type=template&id=41400221& */ "./resources/js/components/user/PatientComponent.vue?vue&type=template&id=41400221&");
 /* harmony import */ var _PatientComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PatientComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/user/PatientComponent.vue?vue&type=script&lang=js&");
-/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _PatientComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _PatientComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -125307,7 +125488,7 @@ component.options.__file = "resources/js/components/user/PatientComponent.vue"
 /*!************************************************************************************!*\
   !*** ./resources/js/components/user/PatientComponent.vue?vue&type=script&lang=js& ***!
   \************************************************************************************/
-/*! exports provided: default */
+/*! no static exports found */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -125624,11 +125805,13 @@ var hospital_code = ["DFBDSMH", "DDH", "IDH", "SREDH", "VLPMDH", "MagMCH", "MatM
 var sex = ["Male", "Female"];
 var marital_status = ["Single", "Married", "Divorced", "Widowed", "Others/Prefer Not to Say"];
 var is_private = ["Private", "Non-Private"];
+var designation = ["Medical", "Non-Medical"];
 /* harmony default export */ __webpack_exports__["default"] = ({
   hospital_code: hospital_code,
   sex: sex,
   marital_status: marital_status,
-  is_private: is_private
+  is_private: is_private,
+  designation: designation
 });
 
 /***/ }),
