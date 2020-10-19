@@ -19,6 +19,8 @@ use App\Http\Requests\adminEditBudgetRequest;
 use App\Http\Requests\adminEditPatientRequest;
 use App\Http\Requests\adminEditPersonnelRequest;
 use App\Http\Requests\resetPassRequest;
+use App\Http\Requests\addHospitalRequest;
+use App\Http\Requests\editHospitalRequest;
 
 use Carbon\Carbon;
 
@@ -76,6 +78,7 @@ class AdminController extends Controller
         $personnel->last_name = $request->last_name;
         $personnel->name_suffix = $request->name_suffix;
         $personnel->is_private = $request->is_private;
+        $personnel->designation = $request->designation;
         $personnel->sex = $request->sex;
         $personnel->hospital_id = $request->codeholder;
         $personnel->save();
@@ -92,6 +95,7 @@ class AdminController extends Controller
         $personnel->last_name = $request->last_name;
         $personnel->name_suffix = $request->name_suffix;
         $personnel->is_private = $request->is_private;
+        $personnel->designation = $request->designation;
         $personnel->sex = $request->sex;
         $personnel->hospital_id = $request->codeholder;
         $personnel->save();
@@ -198,4 +202,5 @@ class AdminController extends Controller
         ->get();
         return $result;
     }
+
 }

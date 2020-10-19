@@ -772,6 +772,8 @@ export default {
            $("#importModal").modal('hide');
            _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
         });
+    }
+    ,
     masknumber: function (num) {
       num = parseFloat(num)
         .toFixed(2)
