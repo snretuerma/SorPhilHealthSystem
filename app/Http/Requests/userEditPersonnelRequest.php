@@ -29,6 +29,7 @@ class userEditPersonnelRequest extends FormRequest
             'middle_name' => 'required|max:50',
             'sex' => 'required',
             'is_private' => 'required',
+            'designation' => 'required',
             'birthdate' => 'required',
         ];
     }
@@ -40,6 +41,7 @@ class userEditPersonnelRequest extends FormRequest
             'middle_name.required' => 'Middlename is required',
             'sex.required' => 'Sex is required',
             'is_private.required' => 'Please choose staff type',
+            'designation.required' => 'Please choose staff designation',
             'birthdate.required' => 'Birthdate is required',
             'last.max' => 'Lastname should not be greater than 50 characters',
             'first.max' => 'Firstname should not be greater than 50 characters',

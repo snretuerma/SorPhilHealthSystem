@@ -22,11 +22,12 @@
             <div class="card-body">
                 <!-- Table -->
                 <el-table v-loading="loading" :data="ListData">
-                    <el-table-column width="250" label="Name" prop="name"></el-table-column>
-                    <el-table-column width="150" label="Type" prop="is_private"></el-table-column>
-                    <el-table-column width="150" label="Sex" prop="sex"></el-table-column>
-                    <el-table-column width="150" label="Birthdate" prop="birthdate"></el-table-column>
-					<el-table-column width="150" label="Hospital" prop="hospital_code"></el-table-column>
+                    <el-table-column width="220" label="Name" prop="name"></el-table-column>
+                    <el-table-column width="120" label="Type" prop="is_private"></el-table-column>
+                    <el-table-column width="120" label="Designation" prop="designation"></el-table-column>
+                    <el-table-column width="120" label="Sex" prop="sex"></el-table-column>
+                    <el-table-column width="120" label="Birthdate" prop="birthdate"></el-table-column>
+					<el-table-column width="120" label="Hospital" prop="hospital_code"></el-table-column>
                     <el-table-column width="250" align="right" fixed="right">
                     <template slot="header" slot-scope="scope">
                         <el-input v-model="search" size="mini" placeholder="Type to search"/>
@@ -108,6 +109,14 @@
                 <br />
                 <span class="font-italic text-danger" v-if="errors.is_private"><small>{{ errors.is_private[0] }}</small></span>
             </el-form-item>
+            <el-form-item label="Designation" :label-width="formLabelWidth" prop="designation">
+                <el-radio-group v-model="form.designation">
+                    <el-radio label="0">Medical</el-radio>
+                    <el-radio label="1">Non-medical</el-radio>
+                </el-radio-group>
+                <br />
+                <span class="font-italic text-danger" v-if="errors.designation"><small>{{ errors.designation[0] }}</small></span>
+            </el-form-item>
             <el-form-item label="Birthdate" :label-width="formLabelWidth" prop="birthdate">
                 <el-date-picker type="date" placeholder="Pick a date" v-model="form.birthdate" style="width: 100%" value-format="yyyy-MM-dd"></el-date-picker>
                 <span class="font-italic text-danger" v-if="errors.birthdate"><small>{{ errors.birthdate[0] }}</small></span>
@@ -140,11 +149,12 @@
         <!-- Show Personnel Details -->
 		<el-dialog title="Staff Info" :visible.sync="dialogTableVisible">
 			<el-table :data="gridData">
-				<el-table-column property="name" label="Name" width="250"></el-table-column>
-                <el-table-column property="is_private" label="Type" width="150"></el-table-column>
-				<el-table-column property="sex" label="Sex" width="150"></el-table-column>
-				<el-table-column property="birthdate" label="Birthdate" width="150"></el-table-column>
-				<el-table-column property="hospital_code" label="Hospital" width="150"></el-table-column>
+				<el-table-column property="name" label="Name" width="210"></el-table-column>
+                <el-table-column property="is_private" label="Type" width="100"></el-table-column>
+                <el-table-column property="designation" label="Designatioon" width="110"></el-table-column>
+				<el-table-column property="sex" label="Sex" width="100"></el-table-column>
+				<el-table-column property="birthdate" label="Birthdate" width="100"></el-table-column>
+				<el-table-column property="hospital_code" label="Hospital" width="100"></el-table-column>
 			</el-table>
 		</el-dialog>
 		<!-- Show Personnel Details -->
@@ -183,6 +193,9 @@ export default {
             is_private: [
             { required: true, message: "Please select staff type.", trigger: "change"}
             ],
+            designation: [
+            { required: true, message: "Please select staff designation.", trigger: "change"}
+            ],
             sex: [
 			{ required: true, message: "Sex is required.", trigger: "change" }
 			],
@@ -194,13 +207,6 @@ export default {
 			]
         },
 
-        titles: [
-            { prop: "name", label: "Name", width:"250px" },
-            { prop: "is_private", label: "Type", width:"150px" },
-			{ prop: "sex", label: "Sex", width:"150px" },
-			{ prop: "birthdate", label: "Birthdate", width:"150px" },
-			{ prop: "hospital_code", label: "Hospital", width:"150px" }
-        ],
         // Add Personnel form
         form: {
             id: "",
@@ -210,7 +216,8 @@ export default {
             name_suffix: "",
             sex: "",
             birthdate: "",
-			is_private: "",
+            is_private: "",
+            designation: "",
 			hospital_code: "",
         	codeholder: "",
             name: "",
@@ -225,7 +232,8 @@ export default {
             name_suffix: "",
             sex: "",
             birthdate: "",
-			is_private: "",
+            is_private: "",
+            designation: "",
 			codeholder: "",
             name: "",
         },
@@ -235,7 +243,8 @@ export default {
             name: "",
             sex: "",
             birthdate: "",
-			is_private: "",
+            is_private: "",
+            designation: "",
 			hospital_code: "",
 			},
 		],
@@ -285,6 +294,7 @@ export default {
 				row.name_suffix
             );
             this.gridData[0].is_private = row.is_private;
+            this.gridData[0].designation = row.designation;
 			this.gridData[0].sex = row.sex;
 			this.gridData[0].birthdate = row.birthdate;
 			this.gridData[0].hospital_code = row.hospital_code;
@@ -299,6 +309,7 @@ export default {
 			this.form.middle_name = row.middle_name;
             this.form.name_suffix = row.name_suffix;
             this.form.is_private = row.is_private;
+            this.form.designation = row.designation;
 			this.form.sex = row.sex;
 			this.form.birthdate = row.birthdate;
 			this.form.codeholder =
@@ -312,6 +323,7 @@ export default {
             this.form_check.middle_name = row.middle_name;
             this.form_check.name_suffix = row.name_suffix;
             this.form_check.is_private = row.is_private;
+            this.form_check.designation = row.designation;
             this.form_check.sex = row.sex;
 			this.form_check.birthdate = row.birthdate;
 			this.form_check.codeholder = this.form.codeholder;
@@ -335,6 +347,7 @@ export default {
                     this.form.first_name == "" ||
                     this.form.middle_name == "" ||
                     this.form.is_private == "" ||
+                    this.form.designation == "" ||
                     this.form.sex == "" ||
                     this.form.birthdate == "" ||
             		this.form.codeholder == ""
@@ -360,6 +373,8 @@ export default {
                             ". ";
                         response.data.is_private =
                             constants.is_private[Number(this.form.is_private)];
+                        response.data.designation =
+                            constants.designation[Number(this.form.designation)];
 						response.data.sex = constants.sex[Number(this.form.sex)];
 						response.data.hospital_code =
 							constants.hospital_code[
@@ -387,6 +402,8 @@ export default {
                     this.form.first_name == this.form_check.first_name &&
                     this.form.middle_name == this.form_check.middle_name &&
                     this.form.name_suffix == this.form_check.name_suffix &&
+                    this.form.is_private == this.form_check.is_private &&
+                    this.form.designation == this.form_check.designation &&
                     this.form.sex == this.form_check.sex &&
                     this.form.birthdate == this.form_check.birthdate &&
             		this.form.codeholder == this.form_check.codeholder
@@ -402,6 +419,11 @@ export default {
                     this.form.is_private = 0;
                     } else if (this.form.is_private == "Non-private") {
                     this.form.is_private = 1;
+                    }
+                    if (this.form.designation == "Medical") {
+                    this.form.designation = 0;
+                    } else if (this.form.designation == "Non-medical") {
+                    this.form.designation = 1;
 					}
 					if (this.form.hospital_code == "DFBDSMH") {
 					this.form.codeholder = 1;
@@ -457,6 +479,8 @@ export default {
                             constants.sex[Number(this.form.sex)];
                         this.data[parseInt(this.form.edit_object_index)].is_private =
                             constants.is_private[Number(this.form.is_private)];
+                        this.data[parseInt(this.form.edit_object_index)].designation =
+                            constants.designation[Number(this.form.designation)];
                         this.data[
                             parseInt(this.form.edit_object_index)
 						].birthdate = this.form.birthdate;
@@ -493,6 +517,7 @@ export default {
             this.form.middle_name = "";
             this.form.name_suffix = "";
             this.form.is_private = "";
+            this.form.designation = "";
             this.form.sex = "";
 			this.form.birthdate = "";
 			this.form.hospital_code = "";
@@ -511,6 +536,20 @@ export default {
                 type = "Not Known";
             }
             return type;
+        },
+        assignDesignation: function (designation_value) {
+            var designation;
+            switch (designation_value) {
+                case 0:
+                designation = "Medical";
+                break;
+                case 1:
+                designation = "Non-medical";
+                break;
+                default:
+                designation = "Not Known";
+            }
+            return designation;
         },
         assignSex: function (sex_value) {
             var sex;
@@ -553,6 +592,7 @@ export default {
             );
             element.sex = this.assignSex(element.sex);
             element.is_private = this.assignType(element.is_private);
+            element.designation = this.assignDesignation(element.designation);
         },
     },
     mounted() {

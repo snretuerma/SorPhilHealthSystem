@@ -120,6 +120,7 @@ class UserController extends Controller
         $personnel->last_name = $request->last_name;
         $personnel->name_suffix = $request->name_suffix;
         $personnel->is_private = $request->is_private;
+        $personnel->designation = $request->designation;
         $personnel->sex = $request->sex;
         $personnel->birthdate = $date;
         $personnel->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
@@ -135,6 +136,7 @@ class UserController extends Controller
         $personnel->last_name = $request->last_name;
         $personnel->name_suffix = $request->name_suffix;
         $personnel->is_private = $request->is_private;
+        $personnel->designation = $request->designation;
         $personnel->sex = $request->sex;
         $personnel->birthdate = Carbon::parse($request->birthdate)->format('Y-m-d');
         $personnel->save();

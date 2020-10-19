@@ -28,9 +28,15 @@ const is_private = [
     "Non-Private"
 ];
 
+const designation = [
+    "Medical",
+    "Non-Medical"
+];
+
 export default {
     hospital_code: hospital_code,
     sex: sex,
     marital_status: marital_status,
-    is_private: is_private
+    is_private: is_private,
+    designation: designation
 }
