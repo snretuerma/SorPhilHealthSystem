@@ -35,7 +35,7 @@
 					</template>
 					<template slot-scope="scope">
 						<el-tooltip class="item" effect="light" content="Add Medical Record" placement="top">
-							<el-button size="mini" type="success" icon="el-icon-plus" circle></el-button>
+							<el-button size="mini" type="success" icon="el-icon-plus" circle @click="handleAddMedical(scope.$index, scope.row)"></el-button>
 						</el-tooltip>
 						<el-tooltip class="item" effect="light" content="View" placement="top">
 							<el-button size="mini" type="info" icon="el-icon-info" circle @click="handleView(scope.$index, scope.row)"></el-button>
@@ -56,7 +56,6 @@
 						layout="prev, pager, next"
 						@current-change="handleCurrentChange"
 						@size-change="handleSizeChange"
-						hide-on-single-page="true"
 						:page-size="pageSize"
 						:total="paginateTotal"
 						>
@@ -140,7 +139,87 @@
 
 		</el-dialog>
 		<!-- Add Patient form ends here-->
+		   <!-- Add medical form -->
+        <el-dialog
+          title="Add Medical Record"
+          :visible.sync="dialogFormMedicalVisible"
+          top="0vh"
+        >
+          <el-form :model="formMedical" :rules="rules" ref="form">
+            <el-form-item
+              label="Admission Date"
+              :label-width="formLabelWidth"
+              prop="admission_date"
+            >
+              <el-date-picker
+                type="date"
+                placeholder="Pick a date"
+                v-model="formMedical.admission_date"
+                style="width: 100%"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
+            </el-form-item>
 
+            <el-form-item
+              label="Discharge Date"
+              :label-width="formLabelWidth"
+              prop="discharge_date"
+            >
+              <el-date-picker
+                type="date"
+                placeholder="Pick a date"
+                v-model="formMedical.discharge_date"
+                style="width: 100%"
+                value-format="yyyy-MM-dd"
+              ></el-date-picker>
+            </el-form-item>
+            <el-form-item
+              label="Final Diagnosis"
+              :label-width="formLabelWidth"
+              prop="final_diagnosis"
+            >
+              <el-input
+                v-model="formMedical.final_diagnosis"
+                autocomplete="off"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="Record Type"
+              :label-width="formLabelWidth"
+              prop="record_type"
+            >
+              <el-input
+                v-model="formMedical.record_type"
+                autocomplete="off"
+              ></el-input>
+            </el-form-item>
+            <el-form-item
+              label="Total Fee"
+              :label-width="formLabelWidth"
+              prop="total_fee"
+            >
+              <el-input
+                v-model="formMedical.total_fee"
+                autocomplete="off"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogMedicalFormVisible = false"
+              >Cancel</el-button
+            >
+            <el-button
+              v-if="this.formMedical.formmode == 'insert_data'"
+              type="primary"
+              @click="
+                addMedicalRecord();
+                formLoading();
+              "
+              >Save</el-button
+            >
+          </span>
+        </el-dialog>
+        <!-- Add medical form ends here-->
 		<!-- Show Patient Details -->
 		<el-dialog title="Patient Info" :visible.sync="dialogTableVisible">
 			<el-table :data="gridData">
@@ -264,11 +343,13 @@ export default {
 		search: "",
 		data: [],
 		errors: [],
+		staff:[],
 		dialogFormVisible_import_excel: false,
 		progressbar_import: false,
 		enableUpload: false,
 		dialogTableVisible: false,
 		dialogFormVisible: false,
+		dialogFormMedicalVisible:false,
 		formLabelWidth: "130px",
 		// Validation
 		rules: {
@@ -328,6 +409,17 @@ export default {
 			philhealth_number: "",
 			name: "",
 		},
+		// Add Medical form
+		formMedical: {
+			admission_date: "",
+			discharge_date: "",
+			final_diagnosis: "",
+			patient_id: "",
+			record_type: "",
+			total_fee: "",
+			is_private:"",
+			is_public:"",
+		},
 		// Show info data
 		gridData: [{
 			philhealth_number: "",
@@ -357,6 +449,18 @@ export default {
 		}
 	},
  	methods: {
+    addMedicalRecord() {
+      axios
+        .post("/user/medicalrecord_add", this.formMedical)
+        .then((response) => {
+          if (response.status > 199 && response.status < 203) {
+            this.open_notif("success", "Success", "Medical Record Save!");
+            this.dialogFormMedicalVisible = false;
+            this.formMedical = [];
+          }
+        })
+        .catch(function (error) {});
+    },
 		selectFile(event) {
 			if (event.target.value) {
 				this.enableUpload = true;
@@ -457,6 +561,12 @@ export default {
 						this.loading = false;
 				})
 				.catch(function (error) {});
+		},
+		handleAddMedical(index, row) {
+			this.dialogFormMedicalVisible = true;
+			this.formMedical.formmode = "insert_data";
+			this.formMedical.patient_id = row.id;
+			console.log(row);
 		},
 		handleView(index, row) {
 			this.dialogTableVisible = true;
@@ -745,9 +855,30 @@ export default {
 			element.sex = this.assignSex(element.sex);
 			element.marital_status = this.assignMaritalStatus(element.marital_status);
 		},
+		getStaff() {
+      axios
+        .get("/user/personnel_get")
+        .then((response) => {
+          response.data.forEach((element) => {
+			  if(element.designation==0)
+			  {
+				  if(element.is_private==0)
+				  {
+					  this.formMedical.is_private++;
+				  }else
+				  {
+					  this.formMedical.is_public++;
+				  }
+			  }
+          });
+          
+        })
+        .catch(function (error) {});
+    },
   	},
 	mounted() {
 		this.getPatients();
+		this.getStaff();
 	},
 };
 </script>

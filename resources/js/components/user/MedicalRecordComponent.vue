@@ -35,7 +35,7 @@
                     @select="handleSelect"
                   ></el-autocomplete>
                 </el-form-item>
-                <el-form-item label="Personnel" prop="personnel_type">
+                <!-- <el-form-item label="Personnel" prop="personnel_type">
                   <el-select v-model="personnel.stafftype" placeholder="choose">
                     <el-option label="Medical" value="medical"></el-option>
                     <el-option
@@ -43,7 +43,7 @@
                       value="non-medical"
                     ></el-option>
                   </el-select>
-                </el-form-item>
+                </el-form-item> -->
 
                 <el-form-item label="Contribution" prop="contribution_type">
                   <el-select
@@ -182,10 +182,14 @@ export default {
     },
     handleSelect(item) {
       var index = this.personnels.length-1;
-      this.personnels.forEach((entry)=>{
-        entry.patient_id=this.patientId;
-        entry.staff=item.id;
-      });
+      this.personnels[index]['is_parttime']=null;
+      this.personnels[index]['is_private']=null;
+      this.personnels[index]['designation']=null;
+      this.personnels[index]['is_parttime']=item.is_parttime;
+      this.personnels[index]['is_private']=item.is_private;
+      this.personnels[index]['designation']=item.designation;
+      console.log(index);
+      
     },
     querySearch(queryString, cb) {
       var links = this.staff;

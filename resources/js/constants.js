@@ -24,13 +24,13 @@ const marital_status = [
 ];
 
 const is_private = [
-    "Private",
-    "Non-Private"
+    "Non-Private",
+    "Private"
 ];
 
 const designation = [
-    "Medical",
-    "Non-Medical"
+    "Non-Medical",
+    "Medical"
 ];
 
 export default {

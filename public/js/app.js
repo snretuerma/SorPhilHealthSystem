@@ -6757,13 +6757,14 @@ var generateNewPersonnel = function generateNewPersonnel() {
       }
     },
     handleSelect: function handleSelect(item) {
-      var _this2 = this;
-
       var index = this.personnels.length - 1;
-      this.personnels.forEach(function (entry) {
-        entry.patient_id = _this2.patientId;
-        entry.staff = item.id;
-      });
+      this.personnels[index]['is_parttime'] = null;
+      this.personnels[index]['is_private'] = null;
+      this.personnels[index]['designation'] = null;
+      this.personnels[index]['is_parttime'] = item.is_parttime;
+      this.personnels[index]['is_private'] = item.is_private;
+      this.personnels[index]['designation'] = item.designation;
+      console.log(index);
     },
     querySearch: function querySearch(queryString, cb) {
       var links = this.staff;
@@ -6791,13 +6792,13 @@ var generateNewPersonnel = function generateNewPersonnel() {
       this.search_data = [];
     },
     getStaff: function getStaff() {
-      var _this3 = this;
+      var _this2 = this;
 
       axios.get("/user/personnel_get").then(function (response) {
         response.data.forEach(function (element) {
           element.value = element.first_name + " " + element.middle_name + " " + element.last_name + (element.name_suffix === null ? "" : " " + element.name_suffix);
         });
-        _this3.staff = response.data;
+        _this2.staff = response.data;
       })["catch"](function (error) {});
     }
   },
@@ -7074,6 +7075,85 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -7086,11 +7166,13 @@ __webpack_require__.r(__webpack_exports__);
       search: "",
       data: [],
       errors: [],
+      staff: [],
       dialogFormVisible_import_excel: false,
       progressbar_import: false,
       enableUpload: false,
       dialogTableVisible: false,
       dialogFormVisible: false,
+      dialogFormMedicalVisible: false,
       formLabelWidth: "130px",
       // Validation
       rules: {
@@ -7177,6 +7259,17 @@ __webpack_require__.r(__webpack_exports__);
         philhealth_number: "",
         name: ""
       },
+      // Add Medical form
+      formMedical: {
+        admission_date: "",
+        discharge_date: "",
+        final_diagnosis: "",
+        patient_id: "",
+        record_type: "",
+        total_fee: "",
+        is_private: "",
+        is_public: ""
+      },
       // Show info data
       gridData: [{
         philhealth_number: "",
@@ -7206,6 +7299,18 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    addMedicalRecord: function addMedicalRecord() {
+      var _this3 = this;
+
+      axios.post("/user/medicalrecord_add", this.formMedical).then(function (response) {
+        if (response.status > 199 && response.status < 203) {
+          _this3.open_notif("success", "Success", "Medical Record Save!");
+
+          _this3.dialogFormMedicalVisible = false;
+          _this3.formMedical = [];
+        }
+      })["catch"](function (error) {});
+    },
     selectFile: function selectFile(event) {
       if (event.target.value) {
         this.enableUpload = true;
@@ -7285,15 +7390,21 @@ __webpack_require__.r(__webpack_exports__);
       loading.close();
     },
     getPatients: function getPatients() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("patients_get").then(function (response) {
         response.data.forEach(function (element) {
-          _this3.buildPatientData(element);
+          _this4.buildPatientData(element);
         });
-        _this3.data = response.data;
-        _this3.loading = false;
+        _this4.data = response.data;
+        _this4.loading = false;
       })["catch"](function (error) {});
+    },
+    handleAddMedical: function handleAddMedical(index, row) {
+      this.dialogFormMedicalVisible = true;
+      this.formMedical.formmode = "insert_data";
+      this.formMedical.patient_id = row.id;
+      console.log(row);
     },
     handleView: function handleView(index, row) {
       this.dialogTableVisible = true;
@@ -7336,7 +7447,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     patientFunctions: function patientFunctions(mode) {
-      var _this4 = this;
+      var _this5 = this;
 
       switch (mode) {
         case "add":
@@ -7345,20 +7456,20 @@ __webpack_require__.r(__webpack_exports__);
           } else {
             axios.post("add_patient", this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
-                response.data.name = _this4.form.last_name + ", " + _this4.form.name_suffix + " " + _this4.form.first_name + " " + _this4.form.middle_name.slice(0, 1) + ". ";
-                response.data.sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this4.form.sex)];
-                response.data.marital_status = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].marital_status[Number(_this4.form.marital_status)];
+                response.data.name = _this5.form.last_name + ", " + _this5.form.name_suffix + " " + _this5.form.first_name + " " + _this5.form.middle_name.slice(0, 1) + ". ";
+                response.data.sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this5.form.sex)];
+                response.data.marital_status = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].marital_status[Number(_this5.form.marital_status)];
 
-                _this4.data.push(response.data);
+                _this5.data.push(response.data);
 
-                _this4.dialogFormVisible = false;
+                _this5.dialogFormVisible = false;
 
-                _this4.open_notif("success", "Success", "Patient added successfully");
+                _this5.open_notif("success", "Success", "Patient added successfully");
               } else {
-                _this4.open_notif("error", "System", "Failed to add patient");
+                _this5.open_notif("error", "System", "Failed to add patient");
               }
             })["catch"](function (error) {
-              _this4.errors = error.response.data.errors;
+              _this5.errors = error.response.data.errors;
             });
           }
 
@@ -7389,21 +7500,21 @@ __webpack_require__.r(__webpack_exports__);
             this.form.name = this.form.last_name + ", " + this.form.name_suffix + " " + this.form.first_name + " " + this.form.middle_name.slice(0, 1) + ". ";
             axios.post("patient_edit/" + this.form.id, this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
-                _this4.open_notif("success", "Success", "Changes has been saved");
+                _this5.open_notif("success", "Success", "Changes has been saved");
 
-                _this4.dialogFormVisible = false;
-                _this4.data[parseInt(_this4.form.edit_object_index)].last_name = _this4.form.last_name;
-                _this4.data[parseInt(_this4.form.edit_object_index)].first_name = _this4.form.first_name;
-                _this4.data[parseInt(_this4.form.edit_object_index)].middle_name = _this4.form.middle_name;
-                _this4.data[parseInt(_this4.form.edit_object_index)].name_suffix = _this4.form.name_suffix;
-                _this4.data[parseInt(_this4.form.edit_object_index)].sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this4.form.sex)];
-                _this4.data[parseInt(_this4.form.edit_object_index)].birthdate = _this4.form.birthdate;
-                _this4.data[parseInt(_this4.form.edit_object_index)].marital_status = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].marital_status[Number(_this4.form.marital_status)];
-                _this4.data[parseInt(_this4.form.edit_object_index)].philhealth_number = _this4.form.philhealth_number;
-                _this4.data[parseInt(_this4.form.edit_object_index)].name = _this4.form.name;
+                _this5.dialogFormVisible = false;
+                _this5.data[parseInt(_this5.form.edit_object_index)].last_name = _this5.form.last_name;
+                _this5.data[parseInt(_this5.form.edit_object_index)].first_name = _this5.form.first_name;
+                _this5.data[parseInt(_this5.form.edit_object_index)].middle_name = _this5.form.middle_name;
+                _this5.data[parseInt(_this5.form.edit_object_index)].name_suffix = _this5.form.name_suffix;
+                _this5.data[parseInt(_this5.form.edit_object_index)].sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this5.form.sex)];
+                _this5.data[parseInt(_this5.form.edit_object_index)].birthdate = _this5.form.birthdate;
+                _this5.data[parseInt(_this5.form.edit_object_index)].marital_status = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].marital_status[Number(_this5.form.marital_status)];
+                _this5.data[parseInt(_this5.form.edit_object_index)].philhealth_number = _this5.form.philhealth_number;
+                _this5.data[parseInt(_this5.form.edit_object_index)].name = _this5.form.name;
               }
             })["catch"](function (error) {
-              _this4.errors = error.response.data.errors;
+              _this5.errors = error.response.data.errors;
             });
           }
 
@@ -7411,7 +7522,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     deletePatient: function deletePatient(id, res) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
@@ -7419,7 +7530,7 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonText: "Cancel",
         type: "warning"
       }).then(function () {
-        var _this = _this5;
+        var _this = _this6;
         axios.post("patient_delete/" + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             _this.open_notif("success", "Success", "Deleted Successfully");
@@ -7428,7 +7539,7 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       })["catch"](function (action) {
-        _this5.open_notif("info", "Cancelled", "No Changes");
+        _this6.open_notif("info", "Cancelled", "No Changes");
       });
     },
     open_notif: function open_notif(status, title, message) {
@@ -7527,10 +7638,26 @@ __webpack_require__.r(__webpack_exports__);
       element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
       element.sex = this.assignSex(element.sex);
       element.marital_status = this.assignMaritalStatus(element.marital_status);
+    },
+    getStaff: function getStaff() {
+      var _this7 = this;
+
+      axios.get("/user/personnel_get").then(function (response) {
+        response.data.forEach(function (element) {
+          if (element.designation == 0) {
+            if (element.is_private == 0) {
+              _this7.formMedical.is_private++;
+            } else {
+              _this7.formMedical.is_public++;
+            }
+          }
+        });
+      })["catch"](function (error) {});
     }
   },
   mounted: function mounted() {
     this.getPatients();
+    this.getStaff();
   }
 });
 
@@ -7904,15 +8031,15 @@ __webpack_require__.r(__webpack_exports__);
             }
 
             if (this.form.is_private == "Private") {
-              this.form.is_private = 0;
-            } else if (this.form.is_private == "Non-private") {
               this.form.is_private = 1;
+            } else if (this.form.is_private == "Non-private") {
+              this.form.is_private = 0;
             }
 
             if (this.form.designation == "Medical") {
-              this.form.designation = 0;
-            } else if (this.form.designation == "Non-medical") {
               this.form.designation = 1;
+            } else if (this.form.designation == "Non-medical") {
+              this.form.designation = 0;
             }
 
             this.form.name = this.form.last_name + ", " + this.form.name_suffix + " " + this.form.first_name + " " + this.form.middle_name.slice(0, 1) + ". ";
@@ -8001,11 +8128,11 @@ __webpack_require__.r(__webpack_exports__);
       var type;
 
       switch (type_value) {
-        case 0:
+        case 1:
           type = "Private";
           break;
 
-        case 1:
+        case 0:
           type = "Non-private";
           break;
 
@@ -8019,11 +8146,11 @@ __webpack_require__.r(__webpack_exports__);
       var designation;
 
       switch (designation_value) {
-        case 0:
+        case 1:
           designation = "Medical";
           break;
 
-        case 1:
+        case 0:
           designation = "Non-medical";
           break;
 
@@ -109640,52 +109767,6 @@ var render = function() {
                                   "el-form-item",
                                   {
                                     attrs: {
-                                      label: "Personnel",
-                                      prop: "personnel_type"
-                                    }
-                                  },
-                                  [
-                                    _c(
-                                      "el-select",
-                                      {
-                                        attrs: { placeholder: "choose" },
-                                        model: {
-                                          value: personnel.stafftype,
-                                          callback: function($$v) {
-                                            _vm.$set(
-                                              personnel,
-                                              "stafftype",
-                                              $$v
-                                            )
-                                          },
-                                          expression: "personnel.stafftype"
-                                        }
-                                      },
-                                      [
-                                        _c("el-option", {
-                                          attrs: {
-                                            label: "Medical",
-                                            value: "medical"
-                                          }
-                                        }),
-                                        _vm._v(" "),
-                                        _c("el-option", {
-                                          attrs: {
-                                            label: "Non-medical",
-                                            value: "non-medical"
-                                          }
-                                        })
-                                      ],
-                                      1
-                                    )
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "el-form-item",
-                                  {
-                                    attrs: {
                                       label: "Contribution",
                                       prop: "contribution_type"
                                     }
@@ -110012,6 +110093,14 @@ var render = function() {
                                   type: "success",
                                   icon: "el-icon-plus",
                                   circle: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleAddMedical(
+                                      scope.$index,
+                                      scope.row
+                                    )
+                                  }
                                 }
                               })
                             ],
@@ -110127,7 +110216,6 @@ var render = function() {
                   attrs: {
                     background: "",
                     layout: "prev, pager, next",
-                    "hide-on-single-page": "true",
                     "page-size": _vm.pageSize,
                     total: _vm.paginateTotal
                   },
@@ -110505,6 +110593,203 @@ var render = function() {
                       }
                     },
                     [_vm._v("Save Changes")]
+                  )
+                : _vm._e()
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
+          attrs: {
+            title: "Add Medical Record",
+            visible: _vm.dialogFormMedicalVisible,
+            top: "0vh"
+          },
+          on: {
+            "update:visible": function($event) {
+              _vm.dialogFormMedicalVisible = $event
+            }
+          }
+        },
+        [
+          _c(
+            "el-form",
+            {
+              ref: "form",
+              attrs: { model: _vm.formMedical, rules: _vm.rules }
+            },
+            [
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Admission Date",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "admission_date"
+                  }
+                },
+                [
+                  _c("el-date-picker", {
+                    staticStyle: { width: "100%" },
+                    attrs: {
+                      type: "date",
+                      placeholder: "Pick a date",
+                      "value-format": "yyyy-MM-dd"
+                    },
+                    model: {
+                      value: _vm.formMedical.admission_date,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formMedical, "admission_date", $$v)
+                      },
+                      expression: "formMedical.admission_date"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Discharge Date",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "discharge_date"
+                  }
+                },
+                [
+                  _c("el-date-picker", {
+                    staticStyle: { width: "100%" },
+                    attrs: {
+                      type: "date",
+                      placeholder: "Pick a date",
+                      "value-format": "yyyy-MM-dd"
+                    },
+                    model: {
+                      value: _vm.formMedical.discharge_date,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formMedical, "discharge_date", $$v)
+                      },
+                      expression: "formMedical.discharge_date"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Final Diagnosis",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "final_diagnosis"
+                  }
+                },
+                [
+                  _c("el-input", {
+                    attrs: { autocomplete: "off" },
+                    model: {
+                      value: _vm.formMedical.final_diagnosis,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formMedical, "final_diagnosis", $$v)
+                      },
+                      expression: "formMedical.final_diagnosis"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Record Type",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "record_type"
+                  }
+                },
+                [
+                  _c("el-input", {
+                    attrs: { autocomplete: "off" },
+                    model: {
+                      value: _vm.formMedical.record_type,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formMedical, "record_type", $$v)
+                      },
+                      expression: "formMedical.record_type"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Total Fee",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "total_fee"
+                  }
+                },
+                [
+                  _c("el-input", {
+                    attrs: { autocomplete: "off" },
+                    model: {
+                      value: _vm.formMedical.total_fee,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formMedical, "total_fee", $$v)
+                      },
+                      expression: "formMedical.total_fee"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "dialog-footer",
+              attrs: { slot: "footer" },
+              slot: "footer"
+            },
+            [
+              _c(
+                "el-button",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.dialogMedicalFormVisible = false
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              ),
+              _vm._v(" "),
+              this.formMedical.formmode == "insert_data"
+                ? _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: {
+                        click: function($event) {
+                          _vm.addMedicalRecord()
+                          _vm.formLoading()
+                        }
+                      }
+                    },
+                    [_vm._v("Save")]
                   )
                 : _vm._e()
             ],
@@ -111302,11 +111587,11 @@ var render = function() {
                       }
                     },
                     [
-                      _c("el-radio", { attrs: { label: "0" } }, [
+                      _c("el-radio", { attrs: { label: "1" } }, [
                         _vm._v("Private")
                       ]),
                       _vm._v(" "),
-                      _c("el-radio", { attrs: { label: "1" } }, [
+                      _c("el-radio", { attrs: { label: "0" } }, [
                         _vm._v("Non-private")
                       ])
                     ],
@@ -111346,11 +111631,11 @@ var render = function() {
                       }
                     },
                     [
-                      _c("el-radio", { attrs: { label: "0" } }, [
+                      _c("el-radio", { attrs: { label: "1" } }, [
                         _vm._v("Medical")
                       ]),
                       _vm._v(" "),
-                      _c("el-radio", { attrs: { label: "1" } }, [
+                      _c("el-radio", { attrs: { label: "0" } }, [
                         _vm._v("Non-medical")
                       ])
                     ],
@@ -125450,15 +125735,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!***********************************************************!*\
   !*** ./resources/js/components/user/PatientComponent.vue ***!
   \***********************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _PatientComponent_vue_vue_type_template_id_41400221___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PatientComponent.vue?vue&type=template&id=41400221& */ "./resources/js/components/user/PatientComponent.vue?vue&type=template&id=41400221&");
 /* harmony import */ var _PatientComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PatientComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/user/PatientComponent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _PatientComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _PatientComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -125488,7 +125772,7 @@ component.options.__file = "resources/js/components/user/PatientComponent.vue"
 /*!************************************************************************************!*\
   !*** ./resources/js/components/user/PatientComponent.vue?vue&type=script&lang=js& ***!
   \************************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -125804,8 +126088,8 @@ __webpack_require__.r(__webpack_exports__);
 var hospital_code = ["DFBDSMH", "DDH", "IDH", "SREDH", "VLPMDH", "MagMCH", "MatMCH", "PGGMH", "PDMH"];
 var sex = ["Male", "Female"];
 var marital_status = ["Single", "Married", "Divorced", "Widowed", "Others/Prefer Not to Say"];
-var is_private = ["Private", "Non-Private"];
-var designation = ["Medical", "Non-Medical"];
+var is_private = ["Non-Private", "Private"];
+var designation = ["Non-Medical", "Medical"];
 /* harmony default export */ __webpack_exports__["default"] = ({
   hospital_code: hospital_code,
   sex: sex,

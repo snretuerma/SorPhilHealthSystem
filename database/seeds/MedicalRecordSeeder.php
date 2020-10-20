@@ -33,6 +33,10 @@ class MedicalRecordSeeder extends Seeder
             $record->final_diagnosis = $diagnosis[rand(0,18)];
             $record->record_type = rand(1,2) === 1 ? 'Credited' : 'IRM Deduction';
             $record->total_fee = rand(5000,99999);
+            $record->non_medical_fee=($record->total_fee/2);
+            $record->pooled_fee=(($record->total_fee/2)*.3);
+            $record->total_public_doctors=rand(1,5);
+            $record->total_private_doctors=rand(1,5);
             $record->save();
         }
 
@@ -45,6 +49,10 @@ class MedicalRecordSeeder extends Seeder
             $record->final_diagnosis = $diagnosis[rand(0,18)];
             $record->record_type = rand(1,2) === 1 ? 'Credited' : 'IRM Deduction';
             $record->total_fee = rand(5000,99999);
+            $record->non_medical_fee=($record->total_fee/2);
+            $record->pooled_fee=(($record->total_fee/2)*.3);
+            $record->total_public_doctors=rand(1,5);
+            $record->total_private_doctors=rand(1,5);
             $record->save();
         }
 

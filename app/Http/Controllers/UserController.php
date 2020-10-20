@@ -156,6 +156,10 @@ class UserController extends Controller
        $record->final_diagnosis=$request->final_diagnosis;
        $record->record_type=$request->record_type;
        $record->total_fee=$request->total_fee;
+       $record->non_medical_fee = $request->total_fee/2;
+       $record->pooled_fee = ($request->total_fee/2)*0.3;
+       $record->total_public_doctors;
+       $record->total_private_doctors;
        $record->save();
        return $record;
     }

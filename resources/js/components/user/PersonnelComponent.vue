@@ -105,16 +105,16 @@
             </el-form-item>
             <el-form-item label="Type" :label-width="formLabelWidth" prop="is_private">
                 <el-radio-group v-model="form.is_private">
-                    <el-radio label="0">Private</el-radio>
-                    <el-radio label="1">Non-private</el-radio>
+                    <el-radio label="1">Private</el-radio>
+                    <el-radio label="0">Non-private</el-radio>
                 </el-radio-group>
                 <br />
                 <span class="font-italic text-danger" v-if="errors.is_private"><small>{{ errors.is_private[0] }}</small></span>
             </el-form-item>
             <el-form-item label="Designation" :label-width="formLabelWidth" prop="designation">
                 <el-radio-group v-model="form.designation">
-                    <el-radio label="0">Medical</el-radio>
-                    <el-radio label="1">Non-medical</el-radio>
+                    <el-radio label="1">Medical</el-radio>
+                    <el-radio label="0">Non-medical</el-radio>
                 </el-radio-group>
                 <br />
                 <span class="font-italic text-danger" v-if="errors.designation"><small>{{ errors.designation[0] }}</small></span>
@@ -388,14 +388,14 @@ export default {
                     this.form.sex = 1;
                     }
                     if (this.form.is_private == "Private") {
-                    this.form.is_private = 0;
-                    } else if (this.form.is_private == "Non-private") {
                     this.form.is_private = 1;
+                    } else if (this.form.is_private == "Non-private") {
+                    this.form.is_private = 0;
                     }
                     if (this.form.designation == "Medical") {
-                    this.form.designation = 0;
-                    } else if (this.form.designation == "Non-medical") {
                     this.form.designation = 1;
+                    } else if (this.form.designation == "Non-medical") {
+                    this.form.designation = 0;
                     }
                     this.form.name =
                     this.form.last_name +
@@ -493,10 +493,10 @@ export default {
         assignType: function (type_value) {
             var type;
             switch (type_value) {
-                case 0:
+                case 1:
                 type = "Private";
                 break;
-                case 1:
+                case 0:
                 type = "Non-private";
                 break;
                 default:
@@ -507,10 +507,10 @@ export default {
         assignDesignation: function (designation_value) {
             var designation;
             switch (designation_value) {
-                case 0:
+                case 1:
                 designation = "Medical";
                 break;
-                case 1:
+                case 0:
                 designation = "Non-medical";
                 break;
                 default:
