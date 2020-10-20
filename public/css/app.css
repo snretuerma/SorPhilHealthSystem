@@ -589,7 +589,7 @@ body {
 .chiller-theme .sidebar-wrapper .sidebar-header,
 .chiller-theme .sidebar-wrapper .sidebar-search,
 .chiller-theme .sidebar-wrapper .sidebar-menu {
-  border-top: 1px solid #081a75;
+  border-top: 1px solid #636ca0;
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
@@ -617,7 +617,7 @@ body {
 }
 
 .page-wrapper.chiller-theme.toggled #close-sidebar {
-  color: #bdbdbd;
+  color: #ffffff;
 }
 
 .page-wrapper.chiller-theme.toggled #close-sidebar:hover {
@@ -645,8 +645,8 @@ body {
 
 .chiller-theme .sidebar-footer {
   background: #3B4783;
-  box-shadow: 0px -1px 5px #2b3980;
-  border-top: 1px solid #081a75;
+  box-shadow: 0px -1px 5px #636ca0;
+  border-top: 1px solid #636ca0;
 }
 
 .chiller-theme .sidebar-footer > a:first-child {
@@ -658,7 +658,7 @@ body {
 }
 
 .li.li {
-  border-bottom: 1px solid #081a75;
+  border-bottom: 1px solid #636ca0;
 }
 
 /*!
