@@ -31,24 +31,39 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::get('adminbudget_get', 'AdminController@getBudget');
     Route::post('adminedit_budget/{id}', 'AdminController@editBudget');
     Route::post('adminadd_budget', 'AdminController@addBudget');
+    Route::post('budget_import', 'AdminController@importExcel');
+    Route::get('/budget_export', 'AdminController@exportExcel');
 
     //Staffs
     Route::get('/adminPersonnel', 'AdminController@personnel')->name('adminPersonnel');
     Route::get('personnel_get', 'AdminController@getPersonnel');
     Route::post('add_personnel', 'AdminController@addPersonnel');
     Route::post('edit_personnel/{id}', 'AdminController@editPersonnel');
+    Route::post('personnels_import', 'AdminController@importExcel');
+    Route::get('/personnels_export', 'AdminController@exportExcel');
 
     //Patient
     Route::get('/adminPatient', 'AdminController@patient')->name('adminPatient');
     Route::get('patients_get', 'AdminController@getPatient');
     Route::post('add_patient', 'AdminController@addPatient');
     Route::post('edit_patient/{id}', 'AdminController@editPatient');
+    Route::post('patients_import', 'AdminController@importExcel');
+    Route::get('/patients_export', 'AdminController@exportExcel');
 
     Route::get('/adminrecord', 'AdminController@record')->name('adminrecord');
     Route::get('adminrecord_get', 'AdminController@getRecord');
     Route::get('adminrecord_get1', 'AdminController@getRecord1');
 
-
+    //Users
+    Route::get('/adminUsers', 'AdminController@users')->name('users');
+    Route::get('hospitals_get', 'AdminController@getHospitals');
+    Route::post('add_hospital', 'AdminController@addHospital');
+    Route::post('hospital_edit/{id}', 'AdminController@editHospital');
+    Route::post('add_user', 'AdminController@addUser');
+    Route::post('user_edit/{id}', 'AdminController@editUser');
+    Route::post('user_edit_resetpass/{id}', 'AdminController@editUserResetPass');
+    //Route::post('add_patient', 'AdminController@addPatient');
+    //Route::post('edit_patient/{id}', 'AdminController@editPatient');
 });
 Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('user');
@@ -59,23 +74,27 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('budget_get', 'UserController@getBudget');
     Route::post('add_budget', 'UserController@addBudget');
     Route::post('/edit_budget/{id}', 'UserController@editBudget');
+    Route::post('budget_import', 'UserController@importExcel');
+    Route::get('/budget_export', 'UserController@exportExcel');
     Route::post('budget_delete/{id}', 'UserController@deleteBudget');
-    Route::post('budget_import', 'UserController@importBudget');
-    Route::get('/budget_export', 'UserController@exportBudget');
     //Staffs
     Route::get('/personnel', 'UserController@personnel')->name('personnel');
     Route::get('personnel_get', 'UserController@getPersonnels');
     Route::post('add_personnel', 'UserController@addPersonnel');
     Route::post('/edit_personnel/{id}', 'UserController@editPersonnel');
     Route::post('personnel_delete/{id}', 'UserController@deletePersonnel');
+    Route::post('personnels_import', 'UserController@importExcel');
+    Route::get('/personnels_export', 'UserController@exportExcel');
+
     //Patients
     Route::get('/patients', 'UserController@patients')->name('patients');
     Route::get('patients_get', 'UserController@getPatients');
     Route::post('add_patient', 'UserController@addPatient');
-    Route::post('patients_import', 'UserController@importPatients');
-    Route::get('/patients_export', 'UserController@exportPatients');
     Route::post('patient_delete/{id}', 'UserController@deletePatient');
     Route::post('patient_edit/{id}', 'UserController@editPatient');
+    Route::post('patients_import', 'UserController@importExcel');
+    Route::get('/patients_export', 'UserController@exportExcel');
+
     //Records
     Route::get('/record', 'UserController@record')->name('record');
     Route::get('record_get', 'UserController@getRecord');

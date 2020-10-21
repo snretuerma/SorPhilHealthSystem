@@ -74,8 +74,8 @@
               </a>
             </li>
             <li class="sidebar li">
-              <a href="">
-                <i class="fa fa-users"></i><span>Users</span>
+              <a href="{{route('users')}}">
+                <i class="fa fa-users"></i><span>Hospitals & Users</span>
               </a>
             </li>
           </ul>

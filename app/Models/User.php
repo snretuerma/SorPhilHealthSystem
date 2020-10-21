@@ -14,7 +14,7 @@ class User extends Authenticatable
     use HasRoles;
 
     protected $guarded  = [
-        'username', 'password', 'hospital_id'
+        'username', 'password', 'hospital_id', 'email_address'
     ];
 
     protected $hidden = [

@@ -10,7 +10,14 @@ use App\Models\User;
 use App\Models\MedicalRecord;
 use Auth;
 use DB;
-use Dotenv\Store\File\Paths;;
+use Dotenv\Store\File\Paths;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\Admin\PatientImport;
+use App\Exports\Admin\PatientExport;
+use App\Imports\Admin\BudgetImport;
+use App\Exports\Admin\BudgetExport;
+use App\Imports\Admin\PersonnelImport;
+use App\Exports\Admin\PersonnelExport;
 
 use App\Http\Requests\adminAddBudgetRequest;
 use App\Http\Requests\adminAddPatientRequest;
@@ -21,6 +28,11 @@ use App\Http\Requests\adminEditPersonnelRequest;
 use App\Http\Requests\resetPassRequest;
 use App\Http\Requests\addHospitalRequest;
 use App\Http\Requests\editHospitalRequest;
+
+//use Illuminate\Notifications\Notification;
+use App\Notifications\AdminChanges;
+//use Illuminate\Routing\Route;
+use Notification;
 
 use Carbon\Carbon;
 
@@ -33,6 +45,7 @@ class AdminController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('role:admin');
+        date_default_timezone_set('Asia/Manila');
     }
 
     public function index()
@@ -202,5 +215,136 @@ class AdminController extends Controller
         ->get();
         return $result;
     }
+    
+    public function importExcel(Request $request)
+    {
+        $i_action = $request->i_action;
+        try {
+            switch ($i_action) {
+                case "BudgetImport":    
+                     $import = new BudgetImport;
+                     $postData = request()->file('budgets');
+                     Excel::import($import, $postData[0]);    
+                     return $import->getRowCount(); break;
+                case "PersonnelImport":
+                     $import = new PersonnelImport;
+                     $postData = request()->file('personnels');
+                     Excel::import($import, $postData[0]);   
+                     return $import->getRowCount_imported().'/'.$import->getRowCount(); break;
+                case "PatientImport":   
+                     $import = new PatientImport;
+                     $postData = request()->file('patients');
+                     Excel::import($import, $postData[0]);    
+                     return $import->getRowCount_imported().'/'.$import->getRowCount(); break;
+            }
+        } catch (\Error $ex) {
+            return "Error, something went wrong!";
+        }
+    }
+    public function exportExcel(Request $request) 
+    {
+        $date = Carbon::now()->format('Ymd_His');
+        $exceltype = $request->exceltype;
+        $e_action = $request->e_action;
 
+        if(isset($exceltype) && $exceltype != ""){
+            switch ($exceltype) {
+                case "csv":
+                    switch ($e_action) {
+                        case "BudgetExport":    return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.csv');       break;
+                        case "PersonnelExport": return Excel::download(new PersonnelExport, 'StaffsExportData_'.$date.'.csv');    break;
+                        case "PatientExport":   return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.csv');     break;
+                    } break;
+                case "xlsx":
+                    switch ($e_action) {
+                        case "BudgetExport":    return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.xlsx');       break;
+                        case "PersonnelExport": return Excel::download(new PersonnelExport, 'StaffsExportData_'.$date.'.xlsx');    break;
+                        case "PatientExport":   return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.xlsx');     break;
+                    } break;
+                case "xls":
+                    switch ($e_action) {
+                        case "BudgetExport":    return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.xls');       break;
+                        case "PersonnelExport": return Excel::download(new PersonnelExport, 'StaffsExportData_'.$date.'.xls');    break;
+                        case "PatientExport":   return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.xls');     break;
+                    } break;
+            }
+        }
+    }
+    //Users
+    public function users()
+    {
+        return view('roles.admin.users');
+    }
+    public function getHospitals()
+    {
+        return response()->json(
+            Hospital::select('*')->with('users')->get()
+        );  
+    }
+    public function addUser(Request $request)
+    {
+        if($request->notify === true){
+            $from = [
+                'name' => env('APP_NAME'),
+                'email' => env('MAIL_USERNAME'),
+                'hospital_code' => $request->hospital_code,
+                'changes' => $request->changes,
+            ];
+            Notification::route('mail', $request->hospital_email)->notify(new AdminChanges($from));
+        }         
+        $user = new User;
+        $user->username = trim($request->username);
+        $user->password = Hash::make(trim($request->password));
+        $user->hospital_id = $request->hospital_id;
+        $user->assignRole('user');
+        return $user->save();
+    }
+    public function addHospital(Request $request)
+    {
+        $hospital = new Hospital;
+        $hospital->name = trim($request->name);
+        $hospital->address = trim($request->address);
+        $hospital->hospital_code = trim($request->hospital_code);
+        $hospital->email_address = trim($request->email_address);
+        return $hospital->save();
+    }
+    public function editHospital(Request $request)
+    {
+        $hospital = Hospital::where('id', $request->id)->first();
+        $hospital->hospital_code = $request->hospital_code;
+        $hospital->name = $request->name;
+        $hospital->address = $request->address;
+        $hospital->email_address = $request->email_address;
+        return $hospital->save();
+    }
+    public function editUser(Request $request)
+    {
+        if($request->notify === true){
+            $from = [
+                'name' => env('APP_NAME'),
+                'email' => env('MAIL_USERNAME'),
+                'hospital_code' => $request->hospital_code,
+                'changes' => $request->changes,
+            ];
+            Notification::route('mail', $request->hospital_email)->notify(new AdminChanges($from));
+        }
+        $user = User::where('id', $request->id)->first();
+        $user->username = $request->username;
+        return $user->save();
+    }
+    public function editUserResetPass(Request $request)
+    {
+        if($request->notify === true){
+            $from = [
+                'name' => env('APP_NAME'),
+                'email' => env('MAIL_USERNAME'),
+                'hospital_code' => $request->hospital_code,
+                'changes' => $request->changes,
+            ];
+            Notification::route('mail', $request->hospital_email)->notify(new AdminChanges($from));
+        }
+        $user = User::where('id', $request->id)->first();
+        $user->password = Hash::make('password');
+        return $user->save();
+    }
 }

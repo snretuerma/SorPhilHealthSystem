@@ -176,6 +176,7 @@
 					</div>
 					<form method="get" enctype="multipart/form-data" action="patients_export/">
 						<input type="hidden" name="" id="" />
+						<input type="hidden" name="e_action" id="e_action" value="PatientExport">
 						<div class="modal-body">
 							<div class="form-group">
 								<label>Select excel file type</label><br />
@@ -208,6 +209,7 @@
 					</div>
 					<form method="post" enctype="multipart/form-data" action="/patients_import">
 					<input type="hidden" name="" id="" />
+					<input type="hidden" name="i_action" id="i_action" value="PatientImport">
 						<div class="modal-body">
 							<div class="form-group">
 								<label>Select excel file for upload (.csv)</label><br />
@@ -281,6 +283,8 @@ export default {
 		dialogTableVisible: false,
 		dialogFormVisible: false,
 		formLabelWidth: "130px",
+		progressbar_import: false,
+        enableUpload: false,
 		// Validation
 		rules: {
 			last_name: [
@@ -753,6 +757,63 @@ export default {
 			);
 			element.sex = this.assignSex(element.sex);
 			element.marital_status = this.assignMaritalStatus(element.marital_status);
+		},
+		selectFile(event){
+			if(event.target.value){
+				this.enableUpload = true;
+			}else{
+				this.enableUpload = false;
+			}
+		},
+		onSubmit(){
+			var _this = this;
+			var formData = new FormData();
+			formData.append("i_action", $("#i_action").val());
+			formData.append("patients[]", $("#excelcontent").get(0).files[0]);
+			axios.post( 'patients_import',
+				formData,
+				{
+					headers: {
+						'Content-Type': 'multipart/form-data'
+					},
+					onUploadProgress: function( progressEvent ) {
+					this.uploadPercentage = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+					
+					$('.progress-bar').css('width', this.uploadPercentage +'%').attr('aria-valuenow', this.uploadPercentage);
+					$('.progress-bar').html(this.uploadPercentage + "%");
+
+					}.bind(this)
+				}
+				).then(function(res){
+					setTimeout(function(){
+						_this.progressbar_import = false;
+						$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+						$('.progress-bar').html('0%');
+						$("#importModal").modal('hide');
+						$("#excelcontent").val('');
+						
+					},2000);
+					var total_imported = res.data;
+					var get_imported = total_imported.split('/');
+
+					if(get_imported[0] == 0 && get_imported[1] == 0){
+						_this.open_notif("warning", "Import", "No row to be import");
+					}else if(get_imported[0] == 0 && get_imported[1] > 0){
+						_this.open_notif("info", "Import", "All row already exist in the database");
+					}else if(get_imported[0] > 0 && get_imported[1] > 0){
+						_this.open_notif("success", "Import", "Successfully imported: " + res.data);
+						_this.getPatients();
+					}
+				
+				})
+				.catch(function(res){
+					_this.progressbar_import = false;
+					$('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+					$('.progress-bar').html('0%');
+					$("#excelcontent").val('');
+					$("#importModal").modal('hide');
+					_this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
+				});
 		},
   	},
 	mounted() {
