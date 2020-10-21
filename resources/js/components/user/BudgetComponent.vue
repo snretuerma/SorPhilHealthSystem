@@ -150,7 +150,7 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Import Patient</h5>
+                <h5 class="modal-title" id="ModalLabel">Import Budget</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
@@ -159,6 +159,7 @@
                 <input type="hidden" name="" id="">
                 <div class="modal-body">
                     <div class="form-group">
+                      <input type="hidden" name="i_action" id="i_action" value="BudgetImport">
                       <label>Select excel file for upload (.csv)</label><br>
                       <input type="file" @change="selectFile($event)" id="excelcontent" name="budgets" accept=".csv" class="w-100" style="border:1px solid rgba(0,0,0,0.1);border-radius:4px;"/>
                       <div v-if="progressbar_import" class="progress" style="margin-top:15px;">
@@ -183,13 +184,14 @@
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
-                <h5 class="modal-title" id="ModalLabel">Export Patient</h5>
+                <h5 class="modal-title" id="ModalLabel">Export Budget</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">&times;</span>
                 </button>
               </div>
               <form method="get" enctype="multipart/form-data" action="budget_export/">
                 <input type="hidden" name="" id="">
+                <input type="hidden" name="e_action" id="e_action" value="BudgetExport">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Select excel file type</label><br>
@@ -224,6 +226,8 @@ export default {
       dialogTableVisible: false,
       dialogFormVisible: false,
       formLabelWidth: "120px",
+      progressbar_import: false,
+      enableUpload: false,
       // Validation
       rules: {
         start_date: [
@@ -523,6 +527,7 @@ export default {
     onSubmit(){
       var _this = this;
       var formData = new FormData();
+      formData.append("i_action", $("#i_action").val());
       formData.append("budgets[]", $("#excelcontent").get(0).files[0]);
        axios.post( 'budget_import',
           formData,

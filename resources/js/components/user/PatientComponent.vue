@@ -27,7 +27,7 @@
       <!-- End Search Box -->
 
       <!-- Add Button -->
-      <div class="col-sm-6" align="right">
+      <div class="col-sm-6" align="right" style="margin-bottom:10px;">
         <el-button type="primary" size="medium" @click="formDialog('export_data')">Export</el-button>
         <el-button type="primary" size="medium" @click="formDialog('import_data')">Import</el-button>
         <el-button type="primary" size="medium" @click="formDialog('insert_data')">Add</el-button>
@@ -177,6 +177,7 @@
               </div>
               <form method="post" enctype="multipart/form-data" action="/patients_import">
                 <input type="hidden" name="" id="">
+                 <input type="hidden" name="i_action" id="i_action" value="PatientImport">
                 <div class="modal-body">
                     <div class="form-group">
                       <label>Select excel file for upload (.csv)</label><br>
@@ -210,6 +211,7 @@
               </div>
               <form method="get" enctype="multipart/form-data" action="patients_export/">
                 <input type="hidden" name="" id="">
+                <input type="hidden" name="e_action" id="e_action" value="PatientExport">
                 <div class="modal-body">
                     <div class="form-group">
                         <label>Select excel file type</label><br>
@@ -727,6 +729,7 @@ export default {
     onSubmit(){
       var _this = this;
       var formData = new FormData();
+      formData.append("i_action", $("#i_action").val());
       formData.append("patients[]", $("#excelcontent").get(0).files[0]);
        axios.post( 'patients_import',
           formData,
@@ -772,6 +775,7 @@ export default {
            $("#importModal").modal('hide');
            _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
         });
+    },
     masknumber: function (num) {
       num = parseFloat(num)
         .toFixed(2)
