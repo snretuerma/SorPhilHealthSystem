@@ -29,6 +29,7 @@ class adminAddPersonnelRequest extends FormRequest
             'middle_name' => 'required|max:50',
             'sex' => 'required',
             'is_private' => 'required',
+            'designation' => 'required',
             'birthdate' => 'required',
             'hospital_code' => 'required',
         ];
@@ -41,6 +42,7 @@ class adminAddPersonnelRequest extends FormRequest
             'middle_name.required' => 'Middlename is required',
             'sex.required' => 'Sex is required',
             'is_private.required' => 'Please choose staff type',
+            'designation.required' => 'Please choose staff designation',
             'birthdate.required' => 'Birthdate is required',
             'hospital_code.required' => 'Please choose a hospital',
             'last.max' => 'Lastname should not be greater than 50 characters',

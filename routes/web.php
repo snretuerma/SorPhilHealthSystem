@@ -74,10 +74,9 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('budget_get', 'UserController@getBudget');
     Route::post('add_budget', 'UserController@addBudget');
     Route::post('/edit_budget/{id}', 'UserController@editBudget');
-    Route::post('delete_budget/{id}', 'UserController@deleteBudget');
     Route::post('budget_import', 'UserController@importExcel');
     Route::get('/budget_export', 'UserController@exportExcel');
-
+    Route::post('budget_delete/{id}', 'UserController@deleteBudget');
     //Staffs
     Route::get('/personnel', 'UserController@personnel')->name('personnel');
     Route::get('personnel_get', 'UserController@getPersonnels');
