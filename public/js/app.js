@@ -6963,8 +6963,7 @@ var generateNewPersonnel = function generateNewPersonnel() {
   },
   computed: {},
   mounted: function mounted() {
-    this.getStaff(); // this.search();
-
+    this.getStaff();
     this.personnels.push(new generateNewPersonnel());
     this.medical_record_shared = (this.totalFee / 2 * 0.7).toFixed(2);
     this.medical_record_pooled = (this.totalFee / 2 * 0.3).toFixed(2);

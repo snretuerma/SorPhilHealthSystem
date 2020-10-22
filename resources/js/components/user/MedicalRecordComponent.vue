@@ -438,7 +438,6 @@ export default {
   computed: {},
   mounted() {
     this.getStaff();
-    // this.search();
     this.personnels.push(new generateNewPersonnel());
     this.medical_record_shared = ((this.totalFee / 2) * 0.7).toFixed(2);
     this.medical_record_pooled = ((this.totalFee / 2) * 0.3).toFixed(2);
