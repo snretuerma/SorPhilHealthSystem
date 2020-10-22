@@ -80,4 +80,5 @@ class BudgetExport implements FromQuery, WithHeadings, WithColumnWidths, WithSty
                 ->where('hospital_id', Auth::user()->hospital_id);
         return $budget;
     }
+    
 }

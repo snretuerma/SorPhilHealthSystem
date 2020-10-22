@@ -12,8 +12,13 @@
         <div class="row">
             <!-- Add Button -->
             <div class="col-sm-12" align="right" style="margin-bottom: 10px">
-                <el-button type="primary" size="medium" @click="formDialog('export_data')">Export</el-button>
-                <el-button type="primary" size="medium" @click="formDialog('import_data')">Import</el-button>
+                <el-dropdown @command="formDialog">
+                  <el-button type="primary">Excel<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item icon="el-icon-upload2" command="import_data">Import Data</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-download" command="export_data">Export Data</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
                 <el-button type="primary" @click="dialogFormVisible = true; form.formmode = 'add';clearFields();">Add</el-button>
             </div>
             <!-- End Button -->

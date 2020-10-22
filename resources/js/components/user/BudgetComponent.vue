@@ -12,6 +12,13 @@
         <div class="row">
             <!-- Add Button -->
             <div class="col-sm-12" align="right" style="margin-bottom: 10px">
+                <el-dropdown @command="formDialog">
+                  <el-button type="primary">Excel<i class="el-icon-arrow-down el-icon--right"></i></el-button>
+                  <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item icon="el-icon-upload2" command="import_data">Import Data</el-dropdown-item>
+                    <el-dropdown-item icon="el-icon-download" command="export_data">Export Data</el-dropdown-item>
+                  </el-dropdown-menu>
+                </el-dropdown>
                 <el-button type="primary" @click="dialogFormVisible = true; form.formmode = 'add';clearFields();">Add</el-button>
             </div>
             <!-- End Button -->
@@ -158,6 +165,22 @@
                 <input type="hidden" name="e_action" id="e_action" value="BudgetExport">
                 <div class="modal-body">
                     <div class="form-group">
+                            <!--<div class="row" style="background-color:green;">
+                                <div class="col-6" style="background-color:pink;">
+                                  <label>Select excel file type</label><br>
+                                  <input type="text" value="">
+                                </div>
+                                <div class="col-6" style="background-color:yellow;">
+                                  <label>Select excel file type</label><br>
+                                  <input type="text" value="">
+                                </div>
+                            </div>
+                            <label>Filter</label><br>
+                            <div class="input-group input-daterange dt">
+                                <input type="date" class="form-control" name="filter_from">
+                                <div class="input-group-addon ct">to</div>
+                                <input type="date" class="form-control" name="filter_to">
+                            </div>-->
                         <label>Select excel file type</label><br>
                         <select name="exceltype" class="form-control">
                           <option value="csv">CSV</option>
