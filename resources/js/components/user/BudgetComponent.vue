@@ -165,16 +165,7 @@
                 <input type="hidden" name="e_action" id="e_action" value="BudgetExport">
                 <div class="modal-body">
                     <div class="form-group">
-                            <!--<div class="row" style="background-color:green;">
-                                <div class="col-6" style="background-color:pink;">
-                                  <label>Select excel file type</label><br>
-                                  <input type="text" value="">
-                                </div>
-                                <div class="col-6" style="background-color:yellow;">
-                                  <label>Select excel file type</label><br>
-                                  <input type="text" value="">
-                                </div>
-                            </div>
+                            <!--
                             <label>Filter</label><br>
                             <div class="input-group input-daterange dt">
                                 <input type="date" class="form-control" name="filter_from">
