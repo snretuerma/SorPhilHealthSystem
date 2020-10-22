@@ -33,10 +33,21 @@ const designation = [
     "Medical"
 ];
 
+const contributionType=[
+    "Attending Physician",
+    "Requesting Physician",
+    "Surgeon Physician",
+    "Health Care Physician",
+    "ER Physician",
+    "Anesthesiologist",
+    "Co-management",
+    "Admitting"
+];
 export default {
     hospital_code: hospital_code,
     sex: sex,
     marital_status: marital_status,
     is_private: is_private,
-    designation: designation
+    designation: designation,
+    contributionType:contributionType
 }

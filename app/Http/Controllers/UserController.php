@@ -72,7 +72,12 @@ class UserController extends Controller
 
     public function medicalrecord($id)
     {
-        return view('roles.user.medicalrecord')->with('id',$id);
+        $total=MedicalRecord::find($id)->select('total_fee')->first();
+        $data=[
+            'id'=>$id,
+            'total_fee'=>$total->total_fee
+        ];
+        return view('roles.user.medicalrecord')->with($data);
         // return ['redirect'=>route('/medicalrecord')];
     }
 
