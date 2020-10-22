@@ -141,9 +141,8 @@ class UserController extends Controller
         // dd($request);
         for($i=0;$i<sizeof($request->personnel);$i++){
             $contribution=new Contribution;
-            $contribution->type=$request->personnel[$i]['stafftype'];
             $contribution->contribution=$request->personnel[$i]['contribution'];
-            $contribution->credit=$request->personnel[$i]['computed_pf'];
+            $contribution->credit=$request->personnel[$i]['computePF'];
             $contribution->status="paid";
             $contribution->save();
             $record=MedicalRecord::find($request->medical_record_id);

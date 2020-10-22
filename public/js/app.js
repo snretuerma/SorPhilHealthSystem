@@ -6566,6 +6566,7 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../constants.js */ "./resources/js/constants.js");
 //
 //
 //
@@ -6659,14 +6660,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+
+
 var generateNewPersonnel = function generateNewPersonnel() {
   return {
     contribution: "",
-    patient_id: "",
+    contributionType: "",
     state: "",
-    stafftype: "",
-    staff: "",
-    query: ""
+    staff: ""
   };
 };
 
@@ -6685,6 +6687,7 @@ var generateNewPersonnel = function generateNewPersonnel() {
         comanage: 0,
         admitting: 0
       },
+      disableSelect: [],
       medical_record_id: "",
       medical_record_pooled: "",
       medical_record_shared: "",
@@ -6794,8 +6797,12 @@ var generateNewPersonnel = function generateNewPersonnel() {
 
           _this2.personnels.forEach(function (element1) {
             if (element1.contribution == "0") {
-              element1.computePF = holder.toFixed(2);
-            } // else
+              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2);
+            } // else if(element1.contribution=="1") {
+            //   console.log("wewe");
+            //   element.computePF=Number(holder)-(holder-Number(this.medical_record_shared*.10)).toFixed(2);
+            // }
+            // else
             // {
             //     element1.computePF=((this.medical_record_shared * this.data.requesting)-holder).toFixed(2);
             // }
@@ -6808,8 +6815,7 @@ var generateNewPersonnel = function generateNewPersonnel() {
 
           _this2.personnels.forEach(function (element1) {
             if (element1.contribution == "0") {
-              element1.computePF = holder.toFixed(2);
-              ;
+              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);;
             }
           });
         } else if (element.contribution == "3") {
@@ -6819,8 +6825,7 @@ var generateNewPersonnel = function generateNewPersonnel() {
 
           _this2.personnels.forEach(function (element1) {
             if (element1.contribution == "0") {
-              element1.computePF = holder.toFixed(2);
-              ;
+              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);;
             }
           });
         } else if (element.contribution == "4") {
@@ -6830,8 +6835,7 @@ var generateNewPersonnel = function generateNewPersonnel() {
 
           _this2.personnels.forEach(function (element1) {
             if (element1.contribution == "0") {
-              element1.computePF = holder.toFixed(2);
-              ;
+              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);;
             }
           });
         } else if (element.contribution == "5") {
@@ -6841,8 +6845,7 @@ var generateNewPersonnel = function generateNewPersonnel() {
 
           _this2.personnels.forEach(function (element1) {
             if (element1.contribution == "0") {
-              element1.computePF = holder.toFixed(2);
-              ;
+              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);;
             }
           });
         } else if (element.contribution == "6") {
@@ -6852,8 +6855,7 @@ var generateNewPersonnel = function generateNewPersonnel() {
 
           _this2.personnels.forEach(function (element1) {
             if (element1.contribution == "0") {
-              element1.computePF = holder.toFixed(2);
-              ;
+              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);;
             }
           });
         } else if (element.contribution == "7") {
@@ -6863,23 +6865,24 @@ var generateNewPersonnel = function generateNewPersonnel() {
 
           _this2.personnels.forEach(function (element1) {
             if (element1.contribution == "0") {
-              element1.computePF = holder.toFixed(2);
+              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);
             }
           });
         } else {
           holder = Number(holder).toFixed(2);
           total = Number(holder);
-          element.computePF = Number(_this2.medical_record_shared).toFixed(2); // this.personnels.forEach((element1)=>{
-          //   if(element1.contribution=="0")
-          //   {
-          //     element1.computePF=(holder/this.data.attending).toFixed(2);
-          //   }
-          //   else
-          //   {
-          //     element1.computePF=Number(holder)-(Number(this.data.requesting) * Number(this.medical_record_shared)).toFixed(2);
-          //   }
-          // })
-          //   this.personnels.forEach((element1)=>{
+          element.computePF = Number(_this2.medical_record_shared).toFixed(2);
+
+          _this2.personnels.forEach(function (element1) {
+            if (element.contribution == "0") {
+              element1.computePF = (holder / _this2.data.attending).toFixed(2);
+            } // else 
+            // {
+            //   console.log("1-7")
+            //   element1.computePF=Number(holder)-(Number(this.data.requesting) * Number(this.medical_record_shared)).toFixed(2);
+            // }
+
+          }); //   this.personnels.forEach((element1)=>{
           //     holder=(Number(element.computePF)/Number(this.data.attending)).toFixed(2);
           //     if(element1.contribution=="0")
           //     {
@@ -6890,11 +6893,13 @@ var generateNewPersonnel = function generateNewPersonnel() {
           //       // element1.computePF=holder-(this.medical_record_shared*.10);
           //     }
           //   })
+
         }
       });
     },
     addStaff: function addStaff() {
-      this.personnels.push(new generateNewPersonnel()); // this.getStaffCode();
+      this.personnels.push(new generateNewPersonnel());
+      this.disableSelect.push(false); // this.getStaffCode();
     },
     removeStaff: function removeStaff() {
       if (this.personnels.length > 1) {
@@ -6917,7 +6922,9 @@ var generateNewPersonnel = function generateNewPersonnel() {
       var links = this.staff;
       var results = queryString ? links.filter(this.createFilter(queryString)) : links; // call callback function to return suggestions
 
-      console.log(results);
+      this.personnels.forEach(function (element) {
+        element.staff = results[0].id;
+      });
       cb(results);
     },
     createFilter: function createFilter(queryString) {
@@ -6926,6 +6933,9 @@ var generateNewPersonnel = function generateNewPersonnel() {
       };
     },
     onSubmit: function onSubmit() {
+      this.personnels.forEach(function (element) {
+        element.contributionType = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].contributionType[Number(element.contribution)];
+      });
       var data = {
         medical_record_id: this.medicalRecordId,
         personnel: this.personnels
@@ -6969,6 +6979,7 @@ var generateNewPersonnel = function generateNewPersonnel() {
     this.medical_record_pooled = (this.totalFee / 2 * 0.3).toFixed(2);
     this.personnels[0].contribution = "0";
     this.getStaffCode();
+    this.disableSelect.push(true);
   }
 });
 
@@ -109938,6 +109949,9 @@ var render = function() {
                                     _c(
                                       "el-select",
                                       {
+                                        attrs: {
+                                          disabled: _vm.disableSelect[index]
+                                        },
                                         on: { change: _vm.getStaffCode },
                                         model: {
                                           value: personnel.contribution,

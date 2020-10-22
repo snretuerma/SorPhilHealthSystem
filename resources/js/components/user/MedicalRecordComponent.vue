@@ -50,6 +50,7 @@
                   <el-select
                     @change="getStaffCode"
                     v-model="personnel.contribution"
+                    :disabled="disableSelect[index]"
                   >
                     <el-option
                       label="Attending Physician"
@@ -92,13 +93,12 @@
   </el-card>
 </template>
 <script>
+import constants from "../../constants.js";
 const generateNewPersonnel = () => ({
   contribution: "",
-  patient_id: "",
+  contributionType:"",
   state: "",
-  stafftype: "",
-  staff: "",
-  query: "",
+  staff:"",
 });
 export default {
   props: ["medicalRecordId", "totalFee"],
@@ -124,7 +124,7 @@ export default {
         comanage: 0,
         admitting: 0,
       },
-
+      disableSelect:[],
       medical_record_id: "",
       medical_record_pooled: "",
       medical_record_shared: "",
@@ -240,8 +240,13 @@ export default {
           this.personnels.forEach((element1)=>{
             if(element1.contribution=="0")
             {
-              element1.computePF=(holder).toFixed(2);
+              
+              element1.computePF=(holder/ Number(this.data.attending)).toFixed(2);
             }
+            // else if(element1.contribution=="1") {
+            //   console.log("wewe");
+            //   element.computePF=Number(holder)-(holder-Number(this.medical_record_shared*.10)).toFixed(2);
+            // }
             // else
             // {
             //     element1.computePF=((this.medical_record_shared * this.data.requesting)-holder).toFixed(2);
@@ -257,7 +262,8 @@ export default {
           this.personnels.forEach((element1)=>{
             if(element1.contribution=="0")
             {
-              element1.computePF=(holder).toFixed(2);;
+               element1.computePF=(holder/ Number(this.data.attending)).toFixed(2);
+              // element1.computePF=(holder).toFixed(2);;
             }
           })
         } else if (element.contribution == "3") {
@@ -269,7 +275,8 @@ export default {
          this.personnels.forEach((element1)=>{
             if(element1.contribution=="0")
             {
-              element1.computePF=(holder).toFixed(2);;
+              element1.computePF=(holder/ Number(this.data.attending)).toFixed(2);
+              // element1.computePF=(holder).toFixed(2);;
             }
           })
         } else if (element.contribution == "4") {
@@ -281,7 +288,8 @@ export default {
           this.personnels.forEach((element1)=>{
             if(element1.contribution=="0")
             {
-              element1.computePF=(holder).toFixed(2);;
+              element1.computePF=(holder/ Number(this.data.attending)).toFixed(2);
+              // element1.computePF=(holder).toFixed(2);;
             }
           })
         } else if (element.contribution == "5") {
@@ -293,7 +301,8 @@ export default {
           this.personnels.forEach((element1)=>{
             if(element1.contribution=="0")
             {
-              element1.computePF=(holder).toFixed(2);;
+              element1.computePF=(holder/ Number(this.data.attending)).toFixed(2);
+              // element1.computePF=(holder).toFixed(2);;
             }
           })
         } else if (element.contribution == "6") {
@@ -305,7 +314,8 @@ export default {
           this.personnels.forEach((element1)=>{
             if(element1.contribution=="0")
             {
-              element1.computePF=(holder).toFixed(2);;
+              element1.computePF=(holder/ Number(this.data.attending)).toFixed(2);
+              // element1.computePF=(holder).toFixed(2);;
             }
           })
         } else if (element.contribution == "7") {
@@ -317,7 +327,8 @@ export default {
           this.personnels.forEach((element1)=>{
             if(element1.contribution=="0")
             {
-              element1.computePF=(holder).toFixed(2);
+              element1.computePF=(holder/ Number(this.data.attending)).toFixed(2);
+              // element1.computePF=(holder).toFixed(2);
             }
           })
         } 
@@ -325,16 +336,17 @@ export default {
            holder = Number(holder).toFixed(2);
            total = Number(holder);
           element.computePF = Number(this.medical_record_shared).toFixed(2);
-          // this.personnels.forEach((element1)=>{
-          //   if(element1.contribution=="0")
-          //   {
-          //     element1.computePF=(holder/this.data.attending).toFixed(2);
-          //   }
-          //   else
-          //   {
-          //     element1.computePF=Number(holder)-(Number(this.data.requesting) * Number(this.medical_record_shared)).toFixed(2);
-          //   }
-          // })
+          this.personnels.forEach((element1)=>{
+            if(element.contribution=="0")
+            {
+              element1.computePF=(holder/this.data.attending).toFixed(2);
+            }
+            // else 
+            // {
+            //   console.log("1-7")
+            //   element1.computePF=Number(holder)-(Number(this.data.requesting) * Number(this.medical_record_shared)).toFixed(2);
+            // }
+          })
         
          
         
@@ -356,6 +368,7 @@ export default {
     },
     addStaff() {
       this.personnels.push(new generateNewPersonnel());
+      this.disableSelect.push(false);
       // this.getStaffCode();
     },
     removeStaff() {
@@ -380,7 +393,9 @@ export default {
         ? links.filter(this.createFilter(queryString))
         : links;
       // call callback function to return suggestions
-      console.log(results);
+      this.personnels.forEach((element)=>{
+        element.staff=results[0].id;
+      });
       cb(results);
     },
     createFilter(queryString) {
@@ -391,6 +406,9 @@ export default {
       };
     },
     onSubmit() {
+      this.personnels.forEach((element)=>{
+        element.contributionType=constants.contributionType[Number(element.contribution)];
+      });
       var data = {
         medical_record_id: this.medicalRecordId,
         personnel: this.personnels,
@@ -443,6 +461,7 @@ export default {
     this.medical_record_pooled = ((this.totalFee / 2) * 0.3).toFixed(2);
     this.personnels[0].contribution="0";
     this.getStaffCode();
+    this.disableSelect.push(true);
   },
 };
 </script>
