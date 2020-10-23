@@ -6661,6 +6661,91 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 var generateNewPersonnel = function generateNewPersonnel() {
@@ -6687,6 +6772,7 @@ var generateNewPersonnel = function generateNewPersonnel() {
         comanage: 0,
         admitting: 0
       },
+      errors: [],
       disableSelect: [],
       medical_record_id: "",
       medical_record_pooled: "",
@@ -6699,9 +6785,16 @@ var generateNewPersonnel = function generateNewPersonnel() {
       is_private: "",
       state: "",
       personnels: [],
+      attending: [],
+      others: [],
       search_data: [],
       rules: {
         personnel: [{
+          required: true,
+          message: "Please input Personnel name",
+          trigger: "blur"
+        }],
+        attending: [{
           required: true,
           message: "Please input Personnel name",
           trigger: "blur"
@@ -6759,150 +6852,71 @@ var generateNewPersonnel = function generateNewPersonnel() {
       var _this2 = this;
 
       this.data.attending = 0;
-      this.data.requesting = 0;
-      this.data.surgeon = 0;
-      this.data.er = 0;
-      this.data.admitting = 0;
-      this.data.comanage = 0;
-      this.data.anesthe = 0;
-      this.data.health = 0;
-      this.personnels.forEach(function (element) {
+      this.attending.forEach(function (element) {
         if (element.contribution == 0) {
           _this2.data.attending += 1;
-        } else if (element.contribution == 1) {
-          _this2.data.requesting += 1;
-        } else if (element.contribution == 2) {
-          _this2.data.surgeon += 1;
-        } else if (element.contribution == 3) {
-          _this2.data.health += 1;
-        } else if (element.contribution == 4) {
-          _this2.data.er += 1;
-        } else if (element.contribution == 5) {
-          _this2.data.anesthe += 1;
-        } else if (element.contribution == 6) {
-          _this2.data.comanage += 1;
-        } else {
-          _this2.data.admitting += 1;
         }
       });
       var holder = 0;
       var total = 0;
       holder = this.medical_record_shared;
-      this.personnels.forEach(function (element) {
-        if (element.contribution == "1") {
-          holder = holder - Number(_this2.medical_record_shared * 0.1).toFixed(2);
-          total = holder;
-          console.log("holder 1_" + holder);
-          element.computePF = Number(Number(_this2.medical_record_shared * 0.1)).toFixed(2);
+      this.attending.forEach(function (element) {
+        holder = Number(holder).toFixed(2);
+        total = Number(holder);
 
-          _this2.personnels.forEach(function (element1) {
-            if (element1.contribution == "0") {
-              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2);
-            } // else if(element1.contribution=="1") {
-            //   console.log("wewe");
-            //   element.computePF=Number(holder)-(holder-Number(this.medical_record_shared*.10)).toFixed(2);
-            // }
-            // else
-            // {
-            //     element1.computePF=((this.medical_record_shared * this.data.requesting)-holder).toFixed(2);
-            // }
+        _this2.personnels.forEach(function (element) {
+          if (element.contribution == "1") {
+            total = total - _this2.medical_record_shared * .1;
+            element.computePF = (_this2.medical_record_shared * .1).toFixed(2);
+          } else if (element.contribution == "2") {
+            total = total - _this2.medical_record_shared * .1;
+            element.computePF = Number(_this2.medical_record_shared * .1).toFixed(2);
+          } else if (element.contribution == "3") {
+            total = total - _this2.medical_record_shared * .1;
+            element.computePF = Number(_this2.medical_record_shared * .1).toFixed(2);
+          } else if (element.contribution == "4") {
+            total = total - _this2.medical_record_shared * .1;
+            element.computePF = Number(_this2.medical_record_shared * .1).toFixed(2);
+          } else if (element.contribution == "5") {
+            total = total - _this2.medical_record_shared * .3;
+            element.computePF = Number(_this2.medical_record_shared * .3).toFixed(2);
+          } else if (element.contribution == "6") {
+            total = total - _this2.medical_record_shared * .2;
+            element.computePF = Number(_this2.medical_record_shared * .2).toFixed(2);
+          } else if (element.contribution == "7") {
+            total = total - _this2.medical_record_shared * .1;
+            element.computePF = Number(_this2.medical_record_shared * .1).toFixed(2);
+          }
+        });
 
-          });
-        } else if (element.contribution == "2") {
-          holder = holder - Number(_this2.medical_record_shared * 0.1).toFixed(2);
-          total = holder;
-          element.computePF = Number(Number(_this2.medical_record_shared * 0.1)).toFixed(2);
+        console.log(" total " + total);
 
-          _this2.personnels.forEach(function (element1) {
-            if (element1.contribution == "0") {
-              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);;
-            }
-          });
-        } else if (element.contribution == "3") {
-          holder = holder - Number(_this2.medical_record_shared * 0.1).toFixed(2);
-          total = holder;
-          element.computePF = Number(Number(_this2.medical_record_shared * 0.1)).toFixed(2);
-
-          _this2.personnels.forEach(function (element1) {
-            if (element1.contribution == "0") {
-              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);;
-            }
-          });
-        } else if (element.contribution == "4") {
-          holder = holder - Number(_this2.medical_record_shared * 0.1).toFixed(2);
-          total = holder;
-          element.computePF = Number(Number(_this2.medical_record_shared * 0.1)).toFixed(2);
-
-          _this2.personnels.forEach(function (element1) {
-            if (element1.contribution == "0") {
-              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);;
-            }
-          });
-        } else if (element.contribution == "5") {
-          holder = holder - Number(_this2.medical_record_shared * 0.3).toFixed(2);
-          total = holder;
-          element.computePF = Number(Number(_this2.medical_record_shared * 0.3)).toFixed(2);
-
-          _this2.personnels.forEach(function (element1) {
-            if (element1.contribution == "0") {
-              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);;
-            }
-          });
-        } else if (element.contribution == "6") {
-          holder = holder - Number(_this2.medical_record_shared * 0.2).toFixed(2);
-          total = holder;
-          element.computePF = Number(Number(_this2.medical_record_shared * 0.2)).toFixed(2);
-
-          _this2.personnels.forEach(function (element1) {
-            if (element1.contribution == "0") {
-              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);;
-            }
-          });
-        } else if (element.contribution == "7") {
-          holder = holder - Number(_this2.medical_record_shared * 0.1).toFixed(2);
-          total = holder;
-          element.computePF = Number(Number(_this2.medical_record_shared * 0.1)).toFixed(2);
-
-          _this2.personnels.forEach(function (element1) {
-            if (element1.contribution == "0") {
-              element1.computePF = (holder / Number(_this2.data.attending)).toFixed(2); // element1.computePF=(holder).toFixed(2);
-            }
-          });
-        } else {
-          holder = Number(holder).toFixed(2);
-          total = Number(holder);
-          element.computePF = Number(_this2.medical_record_shared).toFixed(2);
-
-          _this2.personnels.forEach(function (element1) {
-            if (element.contribution == "0") {
-              element1.computePF = (holder / _this2.data.attending).toFixed(2);
-            } // else 
-            // {
-            //   console.log("1-7")
-            //   element1.computePF=Number(holder)-(Number(this.data.requesting) * Number(this.medical_record_shared)).toFixed(2);
-            // }
-
-          }); //   this.personnels.forEach((element1)=>{
-          //     holder=(Number(element.computePF)/Number(this.data.attending)).toFixed(2);
-          //     if(element1.contribution=="0")
-          //     {
-          //       element1.computePF=holder;
-          //     }
-          //     else
-          //     {
-          //       // element1.computePF=holder-(this.medical_record_shared*.10);
-          //     }
-          //   })
-
-        }
+        _this2.attending.forEach(function (element1) {
+          if (element.contribution == "0") {
+            element1.computePF = (total / _this2.data.attending).toFixed(2);
+          }
+        });
       });
     },
     addStaff: function addStaff() {
       this.personnels.push(new generateNewPersonnel());
-      this.disableSelect.push(false); // this.getStaffCode();
+    },
+    addAttending: function addAttending() {
+      this.attending.push(new generateNewPersonnel());
+      this.attending[Number(this.attending.length) - 1].contribution = "0";
+      this.disableSelect.push(true);
+      this.getStaffCode();
+    },
+    removeAttending: function removeAttending() {
+      if (this.attending.length > 1) {
+        this.attending.pop(this.attending[this.attending.length - 1]);
+        this.disableSelect.pop(this.disableSelect[this.disableSelect.length - 1]);
+      }
+
+      this.getStaffCode();
     },
     removeStaff: function removeStaff() {
-      if (this.personnels.length > 1) {
+      if (this.personnels.length >= 0) {
         this.personnels.pop(this.personnels[this.personnels.length - 1]);
       }
 
@@ -6913,18 +6927,42 @@ var generateNewPersonnel = function generateNewPersonnel() {
       this.personnels[index]["is_parttime"] = null;
       this.personnels[index]["is_private"] = null;
       this.personnels[index]["designation"] = null;
+      this.personnels[index]["staff"] = null;
       this.personnels[index]["is_parttime"] = item.is_parttime;
       this.personnels[index]["is_private"] = item.is_private;
       this.personnels[index]["designation"] = item.designation;
-      console.log(index);
+      this.personnels[index]["staff"] = item.id;
+      console.log(item);
+    },
+    handleSelectAttending: function handleSelectAttending(item) {
+      var index = this.attending.length - 1;
+      this.attending[index]["is_parttime"] = null;
+      this.attending[index]["is_private"] = null;
+      this.attending[index]["designation"] = null;
+      this.attending[index]["staff"] = null;
+      this.attending[index]["is_parttime"] = item.is_parttime;
+      this.attending[index]["is_private"] = item.is_private;
+      this.attending[index]["designation"] = item.designation;
+      this.attending[index]["staff"] = item.id;
+      console.log(item);
     },
     querySearch: function querySearch(queryString, cb) {
       var links = this.staff;
       var results = queryString ? links.filter(this.createFilter(queryString)) : links; // call callback function to return suggestions
+      // this.personnels.forEach((element) => {
+      //   element.staff = results[0].id;
+      // });
 
-      this.personnels.forEach(function (element) {
-        element.staff = results[0].id;
-      });
+      cb(results);
+    },
+    querySearchAttending: function querySearchAttending(queryString, cb) {
+      var links = this.staff;
+      var results = queryString ? links.filter(this.createFilter(queryString)) : links; // call callback function to return suggestions
+      // console.log(results);
+      // this.attending.forEach((element) => {
+      //   element.staff = results[0].id;
+      // });
+
       cb(results);
     },
     createFilter: function createFilter(queryString) {
@@ -6933,16 +6971,70 @@ var generateNewPersonnel = function generateNewPersonnel() {
       };
     },
     onSubmit: function onSubmit() {
+      var _this3 = this;
+
       this.personnels.forEach(function (element) {
         element.contributionType = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].contributionType[Number(element.contribution)];
+
+        _this3.others.push(element);
+      });
+      this.attending.forEach(function (element) {
+        element.contributionType = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].contributionType[Number(element.contribution)];
+
+        _this3.others.push(element);
       });
       var data = {
         medical_record_id: this.medicalRecordId,
-        personnel: this.personnels
+        personnel: this.others
       };
-      axios.post("/user/contrirecord_add", data).then(function (response) {
-        console.log(response.data);
-      })["catch"](function (error) {});
+      var errorCounter = 0;
+      this.others.forEach(function (element) {
+        if (element.state == "" || element.computePF == "" || element.contribution == null || element.contribution == "") {
+          errorCounter++;
+        }
+      });
+
+      if (errorCounter == 0) {
+        axios.post("/user/contrirecord_add", data).then(function (response) {
+          if (response.data.status == 200) {
+            _this3.open_notif('success', 'Success', 'Contribution added successfully');
+
+            window.location.href = "http://localhost:8000/user/record";
+          }
+        })["catch"](function (error) {});
+      } else {
+        this.open_notif("info", "Message", "Required fields were missing values");
+      }
+
+      this.others = [];
+      errorCounter = 0;
+    },
+    open_notif: function open_notif(status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      }
     },
     getName: function getName(name) {
       this.personnels.query = name;
@@ -6950,15 +7042,15 @@ var generateNewPersonnel = function generateNewPersonnel() {
     },
     computePF: function computePF() {},
     getStaff: function getStaff() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("/user/personnel_get").then(function (response) {
         response.data.forEach(function (element) {
           if (element.designation == 1) {
             if (element.is_private == 1) {
-              _this3.is_private++;
+              _this4.is_private++;
             } else {
-              _this3.is_public++;
+              _this4.is_public++;
             }
 
             element.value = element.first_name + " " + element.middle_name + " " + element.last_name + (element.name_suffix === null ? "" : " " + element.name_suffix);
@@ -6966,18 +7058,18 @@ var generateNewPersonnel = function generateNewPersonnel() {
             element.value = "";
           }
         });
-        _this3.staff = response.data;
-        console.log(_this3.staff);
+        _this4.staff = response.data;
+        console.log(_this4.staff);
       })["catch"](function (error) {});
     }
   },
   computed: {},
   mounted: function mounted() {
     this.getStaff();
-    this.personnels.push(new generateNewPersonnel());
+    this.attending.push(new generateNewPersonnel());
     this.medical_record_shared = (this.totalFee / 2 * 0.7).toFixed(2);
     this.medical_record_pooled = (this.totalFee / 2 * 0.3).toFixed(2);
-    this.personnels[0].contribution = "0";
+    this.attending[0].contribution = "0";
     this.getStaffCode();
     this.disableSelect.push(true);
   }
@@ -109857,10 +109949,10 @@ var render = function() {
         { attrs: { "label-width": "120px", size: "small" } },
         [
           _c("el-row", [
-            _vm.personnels.length >= 1
+            _vm.attending.length >= 1
               ? _c(
                   "div",
-                  _vm._l(_vm.personnels, function(personnel, index) {
+                  _vm._l(_vm.attending, function(doctor, index) {
                     return _c(
                       "div",
                       { key: index },
@@ -109881,7 +109973,7 @@ var render = function() {
                                     slot: "header"
                                   },
                                   [
-                                    _c("span", [_vm._v("Card name")]),
+                                    _c("span", [_vm._v("Attending Physician")]),
                                     _vm._v(" "),
                                     _c(
                                       "el-form-item",
@@ -109894,7 +109986,9 @@ var render = function() {
                                                   float: "right",
                                                   padding: "3px 0"
                                                 },
-                                                on: { click: _vm.removeStaff }
+                                                on: {
+                                                  click: _vm.removeAttending
+                                                }
                                               },
                                               [_vm._v("Close")]
                                             )
@@ -109911,8 +110005,7 @@ var render = function() {
                                   {
                                     attrs: {
                                       label: "Personnel",
-                                      "label-width": _vm.formLabelWidth,
-                                      prop: "personnel"
+                                      "label-width": _vm.formLabelWidth
                                     }
                                   },
                                   [
@@ -109920,31 +110013,46 @@ var render = function() {
                                       staticClass: "inline-input",
                                       attrs: {
                                         width: "200px",
-                                        "fetch-suggestions": _vm.querySearch,
+                                        "fetch-suggestions":
+                                          _vm.querySearchAttending,
                                         placeholder: "Please Input",
                                         "trigger-on-focus": false
                                       },
-                                      on: { select: _vm.handleSelect },
+                                      on: { select: _vm.handleSelectAttending },
                                       model: {
-                                        value: personnel.state,
+                                        value: doctor.state,
                                         callback: function($$v) {
-                                          _vm.$set(personnel, "state", $$v)
+                                          _vm.$set(doctor, "state", $$v)
                                         },
-                                        expression: "personnel.state"
+                                        expression: "doctor.state"
                                       }
-                                    })
+                                    }),
+                                    _vm._v(" "),
+                                    _c("br"),
+                                    _vm._v(" "),
+                                    _vm.errors.state
+                                      ? _c(
+                                          "span",
+                                          {
+                                            staticClass:
+                                              "font-italic text-danger"
+                                          },
+                                          [
+                                            _c("small", [
+                                              _vm._v(
+                                                _vm._s(_vm.errors.state[0])
+                                              )
+                                            ])
+                                          ]
+                                        )
+                                      : _vm._e()
                                   ],
                                   1
                                 ),
                                 _vm._v(" "),
                                 _c(
                                   "el-form-item",
-                                  {
-                                    attrs: {
-                                      label: "Contribution",
-                                      prop: "contribution_type"
-                                    }
-                                  },
+                                  { attrs: { label: "Contribution" } },
                                   [
                                     _c(
                                       "el-select",
@@ -109954,15 +110062,15 @@ var render = function() {
                                         },
                                         on: { change: _vm.getStaffCode },
                                         model: {
-                                          value: personnel.contribution,
+                                          value: doctor.contribution,
                                           callback: function($$v) {
                                             _vm.$set(
-                                              personnel,
+                                              doctor,
                                               "contribution",
                                               $$v
                                             )
                                           },
-                                          expression: "personnel.contribution"
+                                          expression: "doctor.contribution"
                                         }
                                       },
                                       [
@@ -110043,6 +110151,245 @@ var render = function() {
                                         autocomplete: "off"
                                       },
                                       model: {
+                                        value: doctor.computePF,
+                                        callback: function($$v) {
+                                          _vm.$set(doctor, "computePF", $$v)
+                                        },
+                                        expression: "doctor.computePF"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  }),
+                  0
+                )
+              : _vm._e(),
+            _vm._v(" "),
+            _vm.personnels.length >= 1
+              ? _c(
+                  "div",
+                  _vm._l(_vm.personnels, function(personnel, index) {
+                    return _c(
+                      "div",
+                      { key: index },
+                      [
+                        _c(
+                          "el-col",
+                          { attrs: { span: 12 } },
+                          [
+                            _c(
+                              "el-card",
+                              { staticClass: "box-card" },
+                              [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "clearfix",
+                                    attrs: { slot: "header" },
+                                    slot: "header"
+                                  },
+                                  [
+                                    _c("span", [_vm._v("Physician")]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "el-form-item",
+                                      [
+                                        index >= 0
+                                          ? _c(
+                                              "el-button",
+                                              {
+                                                staticStyle: {
+                                                  float: "right",
+                                                  padding: "3px 0"
+                                                },
+                                                on: { click: _vm.removeStaff }
+                                              },
+                                              [_vm._v("Close")]
+                                            )
+                                          : _vm._e()
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Personnel",
+                                      "label-width": _vm.formLabelWidth
+                                    }
+                                  },
+                                  [
+                                    _c("el-autocomplete", {
+                                      staticClass: "inline-input",
+                                      attrs: {
+                                        width: "200px",
+                                        "fetch-suggestions": _vm.querySearch,
+                                        placeholder: "Please Input",
+                                        "trigger-on-focus": false
+                                      },
+                                      on: { select: _vm.handleSelect },
+                                      model: {
+                                        value: personnel.state,
+                                        callback: function($$v) {
+                                          _vm.$set(personnel, "state", $$v)
+                                        },
+                                        expression: "personnel.state"
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("br"),
+                                    _vm._v(" "),
+                                    _vm.errors.state
+                                      ? _c(
+                                          "span",
+                                          {
+                                            staticClass:
+                                              "font-italic text-danger"
+                                          },
+                                          [
+                                            _c("small", [
+                                              _vm._v(
+                                                _vm._s(_vm.errors.state[0])
+                                              )
+                                            ])
+                                          ]
+                                        )
+                                      : _vm._e()
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Contribution",
+                                      prop: "contribution_type"
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "el-select",
+                                      {
+                                        on: { change: _vm.getStaffCode },
+                                        model: {
+                                          value: personnel.contribution,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              personnel,
+                                              "contribution",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "personnel.contribution"
+                                        }
+                                      },
+                                      [
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Requesting Physician",
+                                            value: "1"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Surgeon Physician",
+                                            value: "2"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Health Care Physician",
+                                            value: "3"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "ER Physician",
+                                            value: "4"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Anesthesiologist",
+                                            value: "5"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Co-management",
+                                            value: "6"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Admitting",
+                                            value: "7"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c("br"),
+                                    _vm._v(" "),
+                                    _vm.errors.contributionType
+                                      ? _c(
+                                          "span",
+                                          {
+                                            staticClass:
+                                              "font-italic text-danger"
+                                          },
+                                          [
+                                            _c("small", [
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm.errors.contributionType[0]
+                                                )
+                                              )
+                                            ])
+                                          ]
+                                        )
+                                      : _vm._e()
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Computed PF",
+                                      "label-width": _vm.formLabelWidth
+                                    }
+                                  },
+                                  [
+                                    _c("el-input", {
+                                      attrs: {
+                                        readonly: "",
+                                        autocomplete: "off"
+                                      },
+                                      model: {
                                         value: personnel.computePF,
                                         callback: function($$v) {
                                           _vm.$set(personnel, "computePF", $$v)
@@ -110074,16 +110421,27 @@ var render = function() {
               _c(
                 "el-button",
                 { attrs: { type: "primary" }, on: { click: _vm.onSubmit } },
-                [_vm._v("Create")]
+                [_vm._v("Save")]
               ),
               _vm._v(" "),
-              _c("el-button", { on: { click: _vm.getStaffCode } }, [
-                _vm._v("Compute")
-              ]),
+              _c(
+                "el-button",
+                {
+                  attrs: { type: "primary" },
+                  on: {
+                    click: function($event) {
+                      return _vm.addAttending()
+                    }
+                  }
+                },
+                [_vm._v("Attending")]
+              ),
               _vm._v(" "),
-              _c("el-button", { on: { click: _vm.addStaff } }, [
-                _vm._v("Add Staff")
-              ])
+              _c(
+                "el-button",
+                { attrs: { type: "primary" }, on: { click: _vm.addStaff } },
+                [_vm._v("Add Staff")]
+              )
             ],
             1
           )
