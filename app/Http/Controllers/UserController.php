@@ -13,10 +13,10 @@ use Auth;
 use DB;
 use Dotenv\Store\File\Paths;
 use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\PatientImport;
-use App\Exports\PatientExport;
-use App\Imports\BudgetImport;
-use App\Exports\BudgetExport;
+use App\Imports\User\PatientImport;
+use App\Exports\User\PatientExport;
+use App\Imports\User\BudgetImport;
+use App\Exports\User\BudgetExport;
 use App\Http\Requests\userAddBudgetRequest;
 use App\Http\Requests\userAddPatientRequest;
 use App\Http\Requests\userAddPersonnelRequest;
@@ -28,6 +28,8 @@ use App\Http\Requests\resetPassRequest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Redirector;
 use Illuminate\Validation\ValidationException;
+use App\Imports\User\PersonnelImport;
+use App\Exports\User\PersonnelExport;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -342,9 +344,10 @@ class UserController extends Controller
             return "Error, something went wrong!";
         }
     }
-    public function exportPatients(Request $request)
+
+    public function importExcel(Request $request)
     {
-        $date = Carbon::now()->format('Ymd_His');
+        $i_action = $request->i_action;
 
         if (isset($_GET['exceltype']) && $_GET['exceltype'] != "") {
             if ($_GET['exceltype'] == "csv") {
@@ -356,28 +359,57 @@ class UserController extends Controller
             }
         }
     }
+    
     public function importBudget(Request $request)
     {
         try {
-            $import = new BudgetImport;
-            $postData = request()->file('budgets');
-            Excel::import($import, $postData[0]);
-            return $import->getRowCount();
+            switch ($i_action) {
+                case "BudgetImport":    
+                     $import = new BudgetImport;
+                     $postData = request()->file('budgets');
+                     Excel::import($import, $postData[0]);    
+                     return $import->getRowCount(); break;
+                case "PersonnelImport":
+                     $import = new PersonnelImport;
+                     $postData = request()->file('personnels');
+                     Excel::import($import, $postData[0]);   
+                     return $import->getRowCount_imported().'/'.$import->getRowCount(); break;
+                case "PatientImport":   
+                     $import = new PatientImport;
+                     $postData = request()->file('patients');
+                     Excel::import($import, $postData[0]);    
+                     return $import->getRowCount_imported().'/'.$import->getRowCount(); break;
+            }
         } catch (\Error $ex) {
             return "Error, something went wrong!";
         }
     }
-    public function exportBudget(Request $request)
+    public function exportExcel(Request $request) 
     {
         $date = Carbon::now()->format('Ymd_His');
+        $exceltype = $request->exceltype;
+        $e_action = $request->e_action;
 
-        if (isset($_GET['exceltype']) && $_GET['exceltype'] != "") {
-            if ($_GET['exceltype'] == "csv") {
-                return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.csv');
-            } elseif ($_GET['exceltype'] == "xlsx") {
-                return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.xlsx');
-            } elseif ($_GET['exceltype'] == "xls") {
-                return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.xls');
+        if(isset($exceltype) && $exceltype != ""){
+            switch ($exceltype) {
+                case "csv":
+                    switch ($e_action) {
+                        case "BudgetExport":    return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.csv');       break;
+                        case "PersonnelExport": return Excel::download(new PersonnelExport, 'StaffsExportData_'.$date.'.csv');    break;
+                        case "PatientExport":   return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.csv');     break;
+                    } break;
+                case "xlsx":
+                    switch ($e_action) {
+                        case "BudgetExport":    return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.xlsx');       break;
+                        case "PersonnelExport": return Excel::download(new PersonnelExport, 'StaffsExportData_'.$date.'.xlsx');    break;
+                        case "PatientExport":   return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.xlsx');     break;
+                    } break;
+                case "xls":
+                    switch ($e_action) {
+                        case "BudgetExport":    return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.xls');       break;
+                        case "PersonnelExport": return Excel::download(new PersonnelExport, 'StaffsExportData_'.$date.'.xls');    break;
+                        case "PatientExport":   return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.xls');     break;
+                    } break;
             }
         }
     }

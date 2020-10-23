@@ -12,6 +12,8 @@
         <div class="row">
             <!-- Add Button -->
             <div class="col-sm-12" align="right" style="margin-bottom: 10px">
+                <el-button type="primary" size="medium" @click="formDialog('export_data')">Export</el-button>
+                <el-button type="primary" size="medium" @click="formDialog('import_data')">Import</el-button>
                 <el-button type="primary" @click="dialogFormVisible = true; form.formmode = 'add';clearFields();">Add</el-button>
             </div>
             <!-- End Button -->
@@ -69,6 +71,73 @@
             </div>
         </div>
         <!-- Footer ends -->
+
+        <!-- Import patient via excel file-->
+        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Import Staffs</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form method="post" enctype="multipart/form-data" action="/personnels_import">
+                <input type="hidden" name="" id="">
+                 <input type="hidden" name="i_action" id="i_action" value="PersonnelImport">
+                <div class="modal-body">
+                    <div class="form-group">
+                      <label>Select excel file for upload (.csv)</label><br>
+                      <input type="file" @change="selectFile($event)" id="excelcontent" name="personnels" accept=".csv" class="w-100" style="border:1px solid rgba(0,0,0,0.1);border-radius:4px;"/>
+                      <div v-if="progressbar_import" class="progress" style="margin-top:15px;">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                          0%
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" name="upload" class="btn btn-primary" v-on:click="progressbar_import=true; onSubmit()" v-bind:disabled="enableUpload === false">Import</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Import excel end-->
+
+        <!-- Export excel-->
+        <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Export Staffs</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form method="get" enctype="multipart/form-data" action="personnels_export/">
+                <input type="hidden" name="" id="">
+                <input type="hidden" name="e_action" id="e_action" value="PersonnelExport">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Select excel file type</label><br>
+                        <select name="exceltype" class="form-control">
+                          <option value="csv">CSV</option>
+                          <option value="xlsx">XLSX</option>
+                          <option value="xls">XLS</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" name="upload" class="btn btn-primary" >Export</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Export excel end-->
 
         <!-- Add/Edit Personnel form -->
         <el-dialog
@@ -154,17 +223,19 @@ export default {
     data() {
         return {
         page: 1,
-		pageSize: 10,
+	    	pageSize: 10,
         loading: true,
         search: "",
         data: [],
         errors: [],
         dialogFormVisible_import_excel: false,
-		progressbar_import: false,
-		enableUpload: false,
+	    	progressbar_import: false,
+	    	enableUpload: false,
         dialogTableVisible: false,
         dialogFormVisible: false,
         formLabelWidth: "120px",
+        progressbar_import: false,
+        enableUpload: false,
         // Validation
         rules: {
             last_name: [
@@ -470,16 +541,16 @@ export default {
             });
         },
         open_notif: function (status, title, message) {
-			if (status == "success") {
-				this.$notify.success({ title: title, message: message, offset: 0, });
-			} else if (status == "error") {
-				this.$notify.error({ title: title, message: message, offset: 0, });
-			} else if (status == "info") {
-				this.$notify.info({ title: title, message: message, offset: 0, });
-			} else if (status == "warning") {
-				this.$notify.warning({ title: title, message: message, offset: 0, });
-			}
-		},
+          if (status == "success") {
+            this.$notify.success({ title: title, message: message, offset: 0, });
+          } else if (status == "error") {
+            this.$notify.error({ title: title, message: message, offset: 0, });
+          } else if (status == "info") {
+            this.$notify.info({ title: title, message: message, offset: 0, });
+          } else if (status == "warning") {
+            this.$notify.warning({ title: title, message: message, offset: 0, });
+          }
+        },
         clearFields: function () {
             this.form.last_name = "";
             this.form.first_name = "";
@@ -560,6 +631,70 @@ export default {
             element.sex = this.assignSex(element.sex);
             element.is_private = this.assignType(element.is_private);
             element.designation = this.assignDesignation(element.designation);
+        },
+        formDialog: function (id) {
+          if(id == "import_data"){
+            $("#importModal").modal({backdrop: 'static', keyboard: false});
+          }else if(id == "export_data"){
+            $("#exportModal").modal({backdrop: 'static', keyboard: false});
+          }
+        },
+        selectFile(event){
+          if(event.target.value){
+            this.enableUpload = true;
+          }else{
+            this.enableUpload = false;
+          }
+        },
+        onSubmit(){
+          var _this = this;
+          var formData = new FormData();
+          formData.append("i_action", $("#i_action").val());
+          formData.append("personnels[]", $("#excelcontent").get(0).files[0]);
+            axios.post( 'personnels_import',
+              formData,
+              {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: function( progressEvent ) {
+                  this.uploadPercentage = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+                
+                  $('.progress-bar').css('width', this.uploadPercentage +'%').attr('aria-valuenow', this.uploadPercentage);
+                  $('.progress-bar').html(this.uploadPercentage + "%");
+
+                }.bind(this)
+              }
+            ).then(function(res){
+              setTimeout(function(){
+                _this.progressbar_import = false;
+                $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+                $('.progress-bar').html('0%');
+                $("#importModal").modal('hide');
+                $("#excelcontent").val('');
+                
+              },2000);
+              var total_imported = res.data;
+              var get_imported = total_imported.split('/');
+
+              if(get_imported[0] == 0 && get_imported[1] == 0){
+                _this.open_notif("warning", "Import", "No row to be import");
+              }else if(get_imported[0] == 0 && get_imported[1] > 0){
+                _this.open_notif("info", "Import", "All row already exist in the database");
+              }else if(get_imported[0] > 0 && get_imported[1] > 0){
+                _this.open_notif("success", "Import", "Successfully imported: " + res.data);
+                _this.getPersonnel();
+              }
+              
+            })
+            .catch(function(res){
+                _this.progressbar_import = false;
+                $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+                $('.progress-bar').html('0%');
+                $("#excelcontent").val('');
+                $("#importModal").modal('hide');
+                _this.open_notif("error", "Message", "FAILURE!! Something went wrong!" + res);
+            });
         },
     },
     mounted() {

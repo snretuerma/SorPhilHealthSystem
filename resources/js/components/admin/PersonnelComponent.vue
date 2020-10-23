@@ -12,6 +12,8 @@
         <div class="row">
             <!-- Add Button -->
             <div class="col-sm-12" align="right" style="margin-bottom: 10px">
+                <el-button type="primary" size="medium" @click="formDialog('export_data')">Export</el-button>
+                <el-button type="primary" size="medium" @click="formDialog('import_data')">Import</el-button>
                 <el-button type="primary" @click="dialogFormVisible = true; form.formmode = 'add';clearFields();">Add</el-button>
             </div>
             <!-- End Button -->
@@ -27,7 +29,7 @@
                     <el-table-column width="120" label="Designation" prop="designation"></el-table-column>
                     <el-table-column width="120" label="Sex" prop="sex"></el-table-column>
                     <el-table-column width="120" label="Birthdate" prop="birthdate"></el-table-column>
-					<el-table-column width="120" label="Hospital" prop="hospital_code"></el-table-column>
+				      	<el-table-column width="120" label="Hospital" prop="hospital_code"></el-table-column>
                     <el-table-column width="250" align="right" fixed="right">
                     <template slot="header" slot-scope="scope">
                         <el-input v-model="search" size="mini" placeholder="Type to search"/>
@@ -146,18 +148,85 @@
         </el-dialog>
         <!-- Add Personnel form ends here-->
 
+        <!-- Import patient via excel file-->
+        <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Import Staffs</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form method="post" enctype="multipart/form-data" action="/personnels_import">
+                <input type="hidden" name="" id="">
+                <input type="hidden" name="i_action" id="i_action" value="PersonnelImport">
+                <div class="modal-body">
+                    <div class="form-group">
+                      <label>Select excel file for upload (.csv)</label><br>
+                      <input type="file" @change="selectFile($event)" id="excelcontent" name="personnels" accept=".csv" class="w-100" style="border:1px solid rgba(0,0,0,0.1);border-radius:4px;"/>
+                      <div v-if="progressbar_import" class="progress" style="margin-top:15px;">
+                        <div class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width:0%">
+                          0%
+                        </div>
+                      </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="button" name="upload" class="btn btn-primary" v-on:click="progressbar_import=true; onSubmit()" v-bind:disabled="enableUpload === false">Import</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Import excel end-->
+
+        <!-- Export excel-->
+        <div class="modal fade" id="exportModal" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="ModalLabel">Export Staffs</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <form method="get" enctype="multipart/form-data" action="personnels_export/">
+                <input type="hidden" name="" id="">
+                <input type="hidden" name="e_action" id="e_action" value="PersonnelExport">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Select excel file type</label><br>
+                        <select name="exceltype" class="form-control">
+                          <option value="csv">CSV</option>
+                          <option value="xlsx">XLSX</option>
+                          <option value="xls">XLS</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" name="upload" class="btn btn-primary" >Export</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!-- Export excel end-->
+
         <!-- Show Personnel Details -->
-		<el-dialog title="Staff Info" :visible.sync="dialogTableVisible">
-			<el-table :data="gridData">
-				<el-table-column property="name" label="Name" width="210"></el-table-column>
-                <el-table-column property="is_private" label="Type" width="100"></el-table-column>
-                <el-table-column property="designation" label="Designatioon" width="110"></el-table-column>
-				<el-table-column property="sex" label="Sex" width="100"></el-table-column>
-				<el-table-column property="birthdate" label="Birthdate" width="100"></el-table-column>
-				<el-table-column property="hospital_code" label="Hospital" width="100"></el-table-column>
-			</el-table>
-		</el-dialog>
-		<!-- Show Personnel Details -->
+          <el-dialog title="Staff Info" :visible.sync="dialogTableVisible">
+            <el-table :data="gridData">
+              <el-table-column property="name" label="Name" width="210"></el-table-column>
+                      <el-table-column property="is_private" label="Type" width="100"></el-table-column>
+                      <el-table-column property="designation" label="Designatioon" width="110"></el-table-column>
+              <el-table-column property="sex" label="Sex" width="100"></el-table-column>
+              <el-table-column property="birthdate" label="Birthdate" width="100"></el-table-column>
+              <el-table-column property="hospital_code" label="Hospital" width="100"></el-table-column>
+            </el-table>
+          </el-dialog>
+        <!-- Show Personnel Details -->
     </div>
 </template>
 
@@ -168,43 +237,45 @@ export default {
     data() {
         return {
         page: 1,
-		pageSize: 10,
+	    	pageSize: 10,
         loading: true,
         search: "",
         data: [],
         errors: [],
         dialogFormVisible_import_excel: false,
-		progressbar_import: false,
-		enableUpload: false,
+	     	progressbar_import: false,
+	    	enableUpload: false,
         dialogTableVisible: false,
         dialogFormVisible: false,
         formLabelWidth: "120px",
+        progressbar_import: false,
+        enableUpload: false,
         // Validation
         rules: {
             last_name: [
             { required: true, message: "Lastname is required.", trigger: "blur" },
             ],
             first_name: [
-			{ required: true, message: "Firstname is required.", trigger: "blur" }
-			],
-			middle_name: [
-			{ required: true, message: "Middlename is required.", trigger: "blur" }
-			],
-            is_private: [
-            { required: true, message: "Please select staff type.", trigger: "change"}
+            { required: true, message: "Firstname is required.", trigger: "blur" }
             ],
-            designation: [
-            { required: true, message: "Please select staff designation.", trigger: "change"}
+            middle_name: [
+            { required: true, message: "Middlename is required.", trigger: "blur" }
             ],
-            sex: [
-			{ required: true, message: "Sex is required.", trigger: "change" }
-			],
-			birthdate: [
-			{ required: true, message: "Please pick a date.", trigger: "change" }
-			],
-			hospital_code: [
-			{ required: true, message: "Please select a hospital.", trigger: "change" }
-			]
+                  is_private: [
+                  { required: true, message: "Please select staff type.", trigger: "change"}
+                  ],
+                  designation: [
+                  { required: true, message: "Please select staff designation.", trigger: "change"}
+                  ],
+                  sex: [
+            { required: true, message: "Sex is required.", trigger: "change" }
+            ],
+            birthdate: [
+            { required: true, message: "Please pick a date.", trigger: "change" }
+            ],
+            hospital_code: [
+            { required: true, message: "Please select a hospital.", trigger: "change" }
+            ]
         },
 
         // Add Personnel form
@@ -218,8 +289,8 @@ export default {
             birthdate: "",
             is_private: "",
             designation: "",
-			hospital_code: "",
-        	codeholder: "",
+		      	hospital_code: "",
+          	codeholder: "",
             name: "",
             formmode: "",
             edit_object_index: "",
@@ -234,7 +305,7 @@ export default {
             birthdate: "",
             is_private: "",
             designation: "",
-			codeholder: "",
+		      	codeholder: "",
             name: "",
         },
         // View info data
@@ -245,9 +316,9 @@ export default {
             birthdate: "",
             is_private: "",
             designation: "",
-			hospital_code: "",
-			},
-		],
+            hospital_code: "",
+            },
+          ],
         };
     },
     computed: {
@@ -259,12 +330,12 @@ export default {
         }
     },
     methods: {
-		 onChange: function (event) {
-			this.form.codeholder = event;
-		},
-        handleCurrentChange(val) {
-			this.page = val;
-		},
+        onChange: function (event) {
+          this.form.codeholder = event;
+        },
+            handleCurrentChange(val) {
+          this.page = val;
+        },
         formLoading: function () {
             const loading = this.$loading({
                 lock: true,
@@ -286,47 +357,46 @@ export default {
                 .catch(function (error) {});
         },
         handleView(index, row) {
-			this.dialogTableVisible = true;
-			this.gridData[0].name = this.buildName(
-				row.first_name,
-				row.middle_name,
-				row.last_name,
-				row.name_suffix
+			  this.dialogTableVisible = true;
+			  this.gridData[0].name = this.buildName(
+            row.first_name,
+            row.middle_name,
+            row.last_name,
+            row.name_suffix
             );
             this.gridData[0].is_private = row.is_private;
             this.gridData[0].designation = row.designation;
-			this.gridData[0].sex = row.sex;
-			this.gridData[0].birthdate = row.birthdate;
-			this.gridData[0].hospital_code = row.hospital_code;
+            this.gridData[0].sex = row.sex;
+            this.gridData[0].birthdate = row.birthdate;
+            this.gridData[0].hospital_code = row.hospital_code;
         },
         handleEdit(index, row) {
-			this.clearFields();
-			this.form.id = row.id;
-			this.form.formmode = "edit";
+            this.clearFields();
+            this.form.id = row.id;
+            this.form.formmode = "edit";
 
-			this.form.last_name = row.last_name;
-			this.form.first_name = row.first_name;
-			this.form.middle_name = row.middle_name;
+            this.form.last_name = row.last_name;
+            this.form.first_name = row.first_name;
+            this.form.middle_name = row.middle_name;
             this.form.name_suffix = row.name_suffix;
             this.form.is_private = row.is_private;
             this.form.designation = row.designation;
-			this.form.sex = row.sex;
-			this.form.birthdate = row.birthdate;
-			this.form.codeholder =
-                constants.hospital_code.indexOf(row.hospital_code) - 1;
+            this.form.sex = row.sex;
+            this.form.birthdate = row.birthdate;
+            this.form.codeholder = constants.hospital_code.indexOf(row.hospital_code) - 1;
             this.form.hospital_code = row.hospital_code;
 
-			this.form.edit_object_index = this.data.indexOf(row);
+		      	this.form.edit_object_index = this.data.indexOf(row);
 
-			this.form_check.last_name = row.last_name;
+		      	this.form_check.last_name = row.last_name;
             this.form_check.first_name = row.first_name;
             this.form_check.middle_name = row.middle_name;
             this.form_check.name_suffix = row.name_suffix;
             this.form_check.is_private = row.is_private;
             this.form_check.designation = row.designation;
             this.form_check.sex = row.sex;
-			this.form_check.birthdate = row.birthdate;
-			this.form_check.codeholder = this.form.codeholder;
+            this.form_check.birthdate = row.birthdate;
+            this.form_check.codeholder = this.form.codeholder;
             
             this.form_check.name =
             this.form_check.last_name +
@@ -337,7 +407,7 @@ export default {
             " " +
             this.form_check.middle_name.slice(0, 1) +
             ". ";
-			this.dialogFormVisible = true;
+		      	this.dialogFormVisible = true;
         },
         personnelFunctions: function (mode) {
             switch (mode) {
@@ -375,11 +445,11 @@ export default {
                             constants.is_private[Number(this.form.is_private)];
                         response.data.designation =
                             constants.designation[Number(this.form.designation)];
-						response.data.sex = constants.sex[Number(this.form.sex)];
-						response.data.hospital_code =
-							constants.hospital_code[
-							Number(this.form.hospital_code - 1)
-							];
+                        response.data.sex = constants.sex[Number(this.form.sex)];
+                        response.data.hospital_code =
+                          constants.hospital_code[
+                          Number(this.form.hospital_code - 1)
+                          ];
                         this.data.push(response.data);
                         this.dialogFormVisible = false;
                         this.open_notif(
@@ -519,9 +589,9 @@ export default {
             this.form.is_private = "";
             this.form.designation = "";
             this.form.sex = "";
-			this.form.birthdate = "";
-			this.form.hospital_code = "";
-			this.form.codeholder = "";
+            this.form.birthdate = "";
+            this.form.hospital_code = "";
+            this.form.codeholder = "";
         },
         assignType: function (type_value) {
             var type;
@@ -593,6 +663,70 @@ export default {
             element.sex = this.assignSex(element.sex);
             element.is_private = this.assignType(element.is_private);
             element.designation = this.assignDesignation(element.designation);
+        },
+        formDialog: function (id) {
+          if(id == "import_data"){
+            $("#importModal").modal({backdrop: 'static', keyboard: false});
+          }else if(id == "export_data"){
+            $("#exportModal").modal({backdrop: 'static', keyboard: false});
+          }
+        },
+        selectFile(event){
+          if(event.target.value){
+            this.enableUpload = true;
+          }else{
+            this.enableUpload = false;
+          }
+        },
+        onSubmit(){
+          var _this = this;
+          var formData = new FormData();
+          formData.append("i_action", $("#i_action").val());
+          formData.append("personnels[]", $("#excelcontent").get(0).files[0]);
+            axios.post( 'personnels_import',
+              formData,
+              {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: function( progressEvent ) {
+                  this.uploadPercentage = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+                
+                  $('.progress-bar').css('width', this.uploadPercentage +'%').attr('aria-valuenow', this.uploadPercentage);
+                  $('.progress-bar').html(this.uploadPercentage + "%");
+
+                }.bind(this)
+              }
+            ).then(function(res){
+              setTimeout(function(){
+                _this.progressbar_import = false;
+                $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+                $('.progress-bar').html('0%');
+                $("#importModal").modal('hide');
+                $("#excelcontent").val('');
+                
+              },2000);
+              var total_imported = res.data;
+              var get_imported = total_imported.split('/');
+
+              if(get_imported[0] == 0 && get_imported[1] == 0){
+                _this.open_notif("warning", "Import", "No row to be import");
+              }else if(get_imported[0] == 0 && get_imported[1] > 0){
+                _this.open_notif("info", "Import", "All row already exist in the database");
+              }else if(get_imported[0] > 0 && get_imported[1] > 0){
+                _this.open_notif("success", "Import", "Successfully imported: " + res.data);
+                _this.getPersonnel();
+              }
+              
+            })
+            .catch(function(res){
+                _this.progressbar_import = false;
+                $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+                $('.progress-bar').html('0%');
+                $("#excelcontent").val('');
+                $("#importModal").modal('hide');
+                _this.open_notif("error", "Message", "FAILURE!! Something went wrong!" + res);
+            });
         },
     },
     mounted() {

@@ -18,6 +18,7 @@ class CreateHospitalsTable extends Migration
             $table->string('name');
             $table->string('address');
             $table->string('hospital_code');
+            $table->string('email_address');
             $table->timestamps();
             $table->softDeletes();
         });
