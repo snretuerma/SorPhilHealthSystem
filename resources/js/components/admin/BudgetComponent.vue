@@ -147,14 +147,6 @@ export default {
             end_date: [ { required: true, message: "End date is required.", trigger: "blur" } ],
             hospital_code: [ { required: true, message: "Hospital code is required.", trigger: "blur" } ],
         },
-
-        titles: [
-            { prop: "start_date", label: "Start date"},
-            { prop: "total", label: "Amount"},
-            { prop: "end_date", label: "End date"},
-            { prop: "hospital_code", label: "Hospital"},
-        ],
-
         // Add form
         form: {
             id: "",

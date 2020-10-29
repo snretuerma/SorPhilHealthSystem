@@ -308,14 +308,6 @@ export default {
             { required: true, message: "Please select a hospital.", trigger: "blur" }
             ]
 		},
-		titles: [
-			{ prop: "name", label: "Name", width:"250px" },
-			{ prop: "sex", label: "Sex", width:"150px" },
-			{ prop: "birthdate", label: "Birthdate", width:"150px" },
-			{ prop: "marital_status", label: "Marital Status", width:"250px" },
-            { prop: "philhealth_number", label: "PhilHealth #", width:"150px" },
-            { prop: "hospital_code", label: "Hospital", width:"150px" }
-		],
 		// Add Patient form
 		form: {
 			id: "",

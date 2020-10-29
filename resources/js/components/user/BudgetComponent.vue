@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="row">
         <div class="col-sm-12">
-            <h2>Budget List</h2>
+            <h2 class="font-weight-bold"><i class="fa fa-coins"></i>&nbsp;&nbsp;Budget</h2>
         </div>
         </div>
         <hr />
@@ -107,7 +107,7 @@
                 <el-table-column property="end_date" label="End Date" width="150"></el-table-column>
             </el-table>
         </el-dialog>
-        <!-- Show Personnel Details -->   
+        <!-- Show Personnel Details -->
     </div>
 </template>
 
@@ -132,12 +132,6 @@ export default {
             total: [ { required: true, message: "Amount is required.", trigger: "blur" } ],
             end_date: [ { required: true, message: "End date is required.", trigger: "blur" } ]
         },
-
-        titles: [
-            { prop: "start_date", label: "Start date"},
-            { prop: "total", label: "Amount"},
-            { prop: "end_date", label: "End date"}
-        ],
 
         // Add form
         form: {
@@ -203,7 +197,7 @@ export default {
                 this.loading = false;
                 })
                 .catch(function (error) {
-                    
+
                 });
         },
         handleView(index, row) {
@@ -226,7 +220,7 @@ export default {
 			this.form_check.start_date = row.start_date;
             this.form_check.total = row.total;
             this.form_check.end_date = row.end_date;
-            
+
 			this.dialogFormVisible = true;
         },
         handleDelete(index, row) {

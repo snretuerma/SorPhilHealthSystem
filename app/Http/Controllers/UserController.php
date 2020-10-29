@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Budget;
 use App\Models\Personnel;
 use App\Models\MedicalRecord;
+use App\Models\Contribution;
 use Auth;
 use DB;
 use Dotenv\Store\File\Paths;
@@ -27,6 +28,7 @@ use App\Http\Requests\resetPassRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Psy\CodeCleaner\FunctionReturnInWriteContextPass;
 
 class UserController extends Controller
 {
@@ -37,16 +39,19 @@ class UserController extends Controller
         date_default_timezone_set('Asia/Manila');
     }
 
+    // User Role Index View
     public function index()
     {
         return view('roles.user.index');
     }
 
+    //User Role Reset Password View
     public function resetView()
     {
         return view('roles.user.reset');
     }
 
+    //User Role Reset Password function
     public function resetPass(resetPassRequest $request)
     {
         $new_pass = User::find(Auth::user()->id);
@@ -99,13 +104,13 @@ class UserController extends Controller
     {
         return Budget::where('id', $request->id)->delete();
     }
-    
+
     //Staffs
     public function personnel()
     {
         return view('roles.user.personnel');
     }
- 
+
     public function getPersonnels()
     {
         return Personnel::where('hospital_id', Auth::user()->hospital_id)->get();
@@ -158,7 +163,7 @@ class UserController extends Controller
         return Patient::where('hospital_id', Auth::user()->hospital_id)->get();
     }
 
-    
+
     public function getRecord()
     {
         // $result = MedicalRecord::join('patients as p', 'medical_records.patient_id', '=', 'p.id')
@@ -171,7 +176,7 @@ class UserController extends Controller
         // 'ps.first_name as psfname','ps.middle_name as psmname','ps.last_name as pslname',
         // 'h.hospital_code as hcode','medical_records.admission_date','medical_records.discharge_date')
         // ->whereNull('medical_records.deleted_at')
-       
+
         // ->getQuery() // Optional: downgrade to non-eloquent builder so we don't build invalid User objects.
         // ->get();
         $result = MedicalRecord::join('patients as p', 'medical_records.patient_id', '=', 'p.id')
@@ -257,7 +262,7 @@ class UserController extends Controller
             return "Error, something went wrong!";
         }
     }
-    public function exportPatients(Request $request) 
+    public function exportPatients(Request $request)
     {
         $date = Carbon::now()->format('Ymd_His');
 
@@ -282,7 +287,7 @@ class UserController extends Controller
             return "Error, something went wrong!";
         }
     }
-    public function exportBudget(Request $request) 
+    public function exportBudget(Request $request)
     {
         $date = Carbon::now()->format('Ymd_His');
 
@@ -296,5 +301,27 @@ class UserController extends Controller
             }
         }
     }
-	
+
+    public function getRecentMedicalRecord()
+    {
+        $result = MedicalRecord::join('patients as p', 'medical_records.patient_id', '=', 'p.id')
+        ->where('p.hospital_id', Auth::user()->hospital_id)->orderby('admission_date','desc')->limit(7)->get();
+        return $result;
+    }
+
+    public function getRecentContribution()
+    {
+        $result = MedicalRecord::join('records_personnels as rp','medical_records.id','=','rp.medical_record_id')
+        ->join('personnels as ps','rp.personnel_id','=','ps.id')
+        ->join('hospitals as h', 'ps.hospital_id', '=', 'h.id')
+        ->join('contributions as c','rp.contribution_id','=','c.id')
+        ->select('c.created_at','ps.last_name', 'ps.first_name', 'ps.middle_name', 'ps.name_suffix', 'medical_records.record_type', 'c.contribution', 'c.credit', 'c.status')
+        ->where('h.id', Auth::user()->hospital_id)->orderby('created_at', 'desc')->limit(7)
+        ->getQuery() // Optional: downgrade to non-eloquent builder so we don't build invalid User objects.
+        ->get();
+
+        return $result;
+        // return Contribution::orderby('created_at', 'desc')->limit(7)->get();
+    }
+
 }

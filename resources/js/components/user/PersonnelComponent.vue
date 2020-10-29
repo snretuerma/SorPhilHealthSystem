@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="row">
             <div class="col-sm-12">
-                <h2>Staffs List</h2>
+                <h2 class="font-weight-bold"><i class="fa fa-user-md"></i>&nbsp;&nbsp;Staff List</h2>
             </div>
         </div>
         <hr />
@@ -296,7 +296,7 @@ export default {
             this.form_check.designation = row.designation;
             this.form_check.sex = row.sex;
             this.form_check.birthdate = row.birthdate;
-            
+
             this.form_check.name =
             this.form_check.last_name +
             ", " +

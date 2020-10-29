@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <div class="col-sm-12">
-        <h2>Record List</h2>
+        <h2 class="font-weight-bold"><i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Records</h2>
       </div>
     </div>
     <hr />
@@ -270,25 +270,6 @@ export default {
           value: "",
         },
       ],
-      titles: [
-        {
-          prop: "philhealth",
-          label: "Philhealth No.",
-          width: "150px",
-        },
-        {
-          prop: "pfname",
-          label: "Patient",
-        },
-        {
-          prop: "admission_date",
-          label: "Admit",
-        },
-        {
-          prop: "discharge_date",
-          label: "Discharge",
-        },
-      ],
       gridData: [
         {
           psfname: "",
@@ -388,7 +369,7 @@ export default {
             if (response.status > 199 && response.status < 203) {
              if (response.status > 199 && response.status < 203) {
                _this.open_notif("success", "Success",  "Succesfully! Deleted");
-            
+
             }
               _this.getRecord();
             }
