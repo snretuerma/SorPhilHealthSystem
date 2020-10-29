@@ -304,5 +304,17 @@ class UserController extends Controller
             }
         }
     }
+    //user dashboard
+    public function getCommonDisease(Request $request)
+    {
+        // dd($request);
+        //return MedicalRecord::where('hospital_id', Auth::user()->hospital_id)->get();
+    
+        $medical = MedicalRecord::join('patients as p', 'medical_records.patient_id', '=', 'p.id')->with('contributions')
+       // ->select('medical_records.id','medical_records.admission_date','medical_records.final_diagnosis','p.hospital_id')
+        ->where('p.hospital_id', Auth::user()->hospital_id)
+        ->get();
+        return $medical;
+    }
 
 }

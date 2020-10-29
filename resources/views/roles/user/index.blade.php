@@ -4,9 +4,8 @@
 <!-- Header -->
 <div class="row">
   <div class="col-sm-12">
-    <h2>User Dashboard</h2>
+      <userdashboard-component></userdashboard-component>
   </div>
 </div>
-<hr />
 <!-- End Header -->
 @endsection

@@ -8,6 +8,8 @@
 require('./bootstrap');
 require('./custom');
 
+var Chart = require('chart.js');
+
 window.Vue = require('vue');
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
@@ -45,7 +47,12 @@ Vue.component('record-component', require('./components/user/RecordComponent.vue
 Vue.component('restore-component', require('./components/user/RestoreComponent.vue').default);
 Vue.component('personnel-component', require('./components/user/PersonnelComponent.vue').default);
 Vue.component('resetpass-component', require('./components/user/ResetPasswordComponent.vue').default);
+
+//Vue.component('user-component', require('./components/user/chart/ChartComponent.vue').default);
+Vue.component('userdashboard-component', require('./components/user/chart/UserDashboard.vue').default);
+
 const app = new Vue({
     el: '#app'
 });
 
+//require('./components/user/chart/chart');
