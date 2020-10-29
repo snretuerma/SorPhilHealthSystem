@@ -41,8 +41,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     //Patient
     Route::get('/adminPatient', 'AdminController@patient')->name('adminPatient');
     Route::get('patients_get', 'AdminController@getPatient');
-    Route::post('add_patient', 'AdminController@addPatient');
-    Route::post('edit_patient/{id}', 'AdminController@editPatient');
+    Route::post('patient_add', 'AdminController@addPatient');
+    Route::post('patient_edit/{id}', 'AdminController@editPatient');
 
     Route::get('/adminrecord', 'AdminController@record')->name('adminrecord');
     Route::get('adminrecord_get', 'AdminController@getRecord');

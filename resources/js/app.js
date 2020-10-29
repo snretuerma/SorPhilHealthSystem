@@ -32,6 +32,7 @@ Vue.use(VueDataTables);
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
 //Admin
+Vue.component('admindashboard-component', require('./components/admin/DashboardComponent.vue').default);
 Vue.component('users-component', require('./components/admin/UserComponent.vue').default);
 Vue.component('adminbudget-component', require('./components/admin/BudgetComponent.vue').default);
 Vue.component('adminpersonnel-component', require('./components/admin/PersonnelComponent.vue').default);
@@ -40,13 +41,14 @@ Vue.component('adminrecord-component', require('./components/admin/RecordCompone
 Vue.component('resetpassadmin-component', require('./components/admin/ResetPasswordComponent.vue').default);
 
 //Users
+Vue.component('dashboard-component', require('./components/user/DashboardComponent.vue').default);
 Vue.component('patient-component', require('./components/user/PatientComponent.vue').default);
 Vue.component('budget-component', require('./components/user/BudgetComponent.vue').default);
 Vue.component('record-component', require('./components/user/RecordComponent.vue').default);
 Vue.component('restore-component', require('./components/user/RestoreComponent.vue').default);
 Vue.component('personnel-component', require('./components/user/PersonnelComponent.vue').default);
 Vue.component('resetpass-component', require('./components/user/ResetPasswordComponent.vue').default);
-Vue.component('dashboard-component', require('./components/user/DashboardComponent.vue').default);
+
 const app = new Vue({
     el: '#app'
 });

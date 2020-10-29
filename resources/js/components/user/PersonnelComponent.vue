@@ -51,7 +51,7 @@
                         layout="prev, pager, next"
                         @current-change="handleCurrentChange"
                         :page-size="pageSize"
-                        :total="data.length">
+                        :total="total">
                     </el-pagination>
                 </div>
                 <!-- End table -->
@@ -228,11 +228,30 @@ export default {
         };
     },
     computed: {
+        searching() {
+            if (!this.search) {
+                this.total = this.data.length;
+                return this.data;
+            }
+            this.page = 1;
+            return this.data.filter(
+                data =>
+                    data.first_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.last_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase())
+            );
+        },
         ListData() {
-            if(this.search == null) return this.data;
-            this.filtered = this.data.filter(data => !this.search || data.first_name.toLowerCase().includes(this.search.toLowerCase()) || data.last_name.toLowerCase().includes(this.search.toLowerCase()));
-            this.total = this.filtered.length;
-            return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
+            this.total = this.searching.length;
+
+            return this.searching.slice(
+                this.pageSize * this.page - this.pageSize,
+                this.pageSize * this.page
+            );
+            console.log(this.total);
         }
     },
     methods: {
