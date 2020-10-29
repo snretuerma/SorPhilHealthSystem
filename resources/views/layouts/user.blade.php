@@ -52,7 +52,11 @@
             <li class="header-menu">
               <span>General</span>
             </li>
-
+            <li class="sidebar li">
+              <a href="{{ url('user') }}">
+                <i class="fa fa-tachometer-alt"></i><span>Dashboard</span>
+              </a>
+            </li>
             <li class="sidebar li">
               <a href="{{route('budget')}}">
                 <i class="fa fa-coins"></i><span>Budget</span>

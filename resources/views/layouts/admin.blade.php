@@ -38,7 +38,7 @@
             <span class="user-name">
               <strong>{{ Auth::user()->username }}</strong>
             </span>
-            <span class="user-role">User</span>
+            <span class="user-role">Administrator</span>
             <span class="user-status">
               <i class="fa fa-circle"></i>
               <span>Online</span>
@@ -52,7 +52,11 @@
             <li class="header-menu">
               <span>General</span>
             </li>
-
+            <li class="sidebar li">
+              <a href="{{ url('admin') }}">
+                <i class="fa fa-tachometer-alt"></i><span>Dashboard</span>
+              </a>
+            </li>
             <li class="sidebar li">
               <a href="{{route('adminbudget')}}">
                 <i class="fa fa-coins"></i><span>Budget</span>

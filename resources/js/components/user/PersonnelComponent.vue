@@ -3,7 +3,7 @@
         <!-- Header -->
         <div class="row">
             <div class="col-sm-12">
-                <h2>Staffs List</h2>
+                <h2 class="font-weight-bold"><i class="fa fa-user-md"></i>&nbsp;&nbsp;Staff List</h2>
             </div>
         </div>
         <hr />
@@ -58,7 +58,7 @@
                         layout="prev, pager, next"
                         @current-change="handleCurrentChange"
                         :page-size="pageSize"
-                        :total="data.length">
+                        :total="total">
                     </el-pagination>
                 </div>
                 <!-- End table -->
@@ -304,11 +304,30 @@ export default {
         };
     },
     computed: {
+        searching() {
+            if (!this.search) {
+                this.total = this.data.length;
+                return this.data;
+            }
+            this.page = 1;
+            return this.data.filter(
+                data =>
+                    data.first_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.last_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase())
+            );
+        },
         ListData() {
-            if(this.search == null) return this.data;
-            this.filtered = this.data.filter(data => !this.search || data.first_name.toLowerCase().includes(this.search.toLowerCase()) || data.last_name.toLowerCase().includes(this.search.toLowerCase()));
-            this.total = this.filtered.length;
-            return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
+            this.total = this.searching.length;
+
+            return this.searching.slice(
+                this.pageSize * this.page - this.pageSize,
+                this.pageSize * this.page
+            );
+            console.log(this.total);
         }
     },
     methods: {
@@ -372,7 +391,7 @@ export default {
             this.form_check.designation = row.designation;
             this.form_check.sex = row.sex;
             this.form_check.birthdate = row.birthdate;
-            
+
             this.form_check.name =
             this.form_check.last_name +
             ", " +

@@ -101,13 +101,16 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('personnel_get/{id}', 'UserController@getPersonnel');
     Route::post('delete_record/{id}', 'UserController@deleteRecord');
 
-    //Restore 
+    //Restore
     Route::get('/restore', 'UserController@restore')->name('restore');
     Route::get('restore_get', 'UserController@getRestore');//to get deleted medical records
     Route::post('edit_restore/{id}', 'UserController@editRestore');
 
     Route::get('get_common_disease', 'UserController@getCommonDisease');
 
+    //Dashboard
+    Route::get('recentMedicalRecord_get', 'UserController@getRecentMedicalRecord');
+    Route::get('recentContribution_get', 'UserController@getRecentContribution');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');

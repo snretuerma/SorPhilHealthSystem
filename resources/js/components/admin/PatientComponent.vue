@@ -3,7 +3,7 @@
 		<!-- Header -->
 		<div class="row">
 			<div class="col-sm-12">
-				<h2>Admin Patient List</h2>
+				<h2 class="font-weight-bold"><i class="fa fa-hospital-user"></i>&nbsp;&nbsp;Admin Patient List</h2>
 			</div>
 		</div>
 		<hr />
@@ -59,7 +59,7 @@
 						layout="prev, pager, next"
 						@current-change="handleCurrentChange"
 						:page-size="pageSize"
-						:total="data.length">
+						:total="total">
 					</el-pagination>
 				</div>
 				<!-- End table -->
@@ -317,14 +317,6 @@ export default {
             { required: true, message: "Please select a hospital.", trigger: "blur" }
             ]
 		},
-		titles: [
-			{ prop: "name", label: "Name", width:"250px" },
-			{ prop: "sex", label: "Sex", width:"150px" },
-			{ prop: "birthdate", label: "Birthdate", width:"150px" },
-			{ prop: "marital_status", label: "Marital Status", width:"250px" },
-            { prop: "philhealth_number", label: "PhilHealth #", width:"150px" },
-            { prop: "hospital_code", label: "Hospital", width:"150px" }
-		],
 		// Add Patient form
 		form: {
 			id: "",
@@ -367,12 +359,36 @@ export default {
 		};
 	},
 	computed: {
-		ListData() {
-			if(this.search == null) return this.data;
-			this.filtered = this.data.filter(data => !this.search || data.first_name.toLowerCase().includes(this.search.toLowerCase()) || data.last_name.toLowerCase().includes(this.search.toLowerCase()) || data.philhealth_number.toLowerCase().includes(this.search.toLowerCase()));
-			this.total = this.filtered.length;
-			return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
-		}
+		searching() {
+            if (!this.search) {
+                this.total = this.data.length;
+                return this.data;
+            }
+            this.page = 1;
+            return this.data.filter(
+                data =>
+                    data.first_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.last_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.philhealth_number
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.hospital_code
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase())
+            );
+        },
+        ListData() {
+            this.total = this.searching.length;
+
+            return this.searching.slice(
+                this.pageSize * this.page - this.pageSize,
+                this.pageSize * this.page
+            );
+        }
 	},
  	methods: {
 		selectFile(event) {
@@ -518,7 +534,7 @@ export default {
 			this.form_check.marital_status = row.marital_status;
             this.form_check.philhealth_number = row.philhealth_number;
             this.form_check.codeholder = this.form.codeholder;
-            
+
             this.form_check.name =
 			this.form_check.last_name +
 			", " +
@@ -550,7 +566,7 @@ export default {
 					);
 				} else {
 					axios
-					.post("add_patient", this.form)
+                    .post("patient_add", this.form)
 					.then((response) => {
 						if (response.status > 199 && response.status < 203) {
 						response.data.name =

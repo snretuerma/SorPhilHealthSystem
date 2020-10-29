@@ -284,28 +284,6 @@ export default {
           value: "",
         },
       ],
-      titles: [
-        {
-          prop: "patient.philhealth_number",
-          label: "Philhealth No.",
-        },
-        {
-          prop: "patient.first_name",
-          label: "Patient",
-        },
-        {
-          prop: "patient.hospital_id",
-          label: "Hospital",
-        },
-        {
-          prop: "admission_date",
-          label: "Admit",
-        },
-        {
-          prop: "discharge_date",
-          label: "Discharge",
-        },
-      ],
       gridData: [
         {
           psfname: "",

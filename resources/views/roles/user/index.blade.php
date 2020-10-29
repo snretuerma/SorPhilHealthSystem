@@ -8,4 +8,5 @@
   </div>
 </div>
 <!-- End Header -->
+<!--<dashboard-component></dashboard-component>-->
 @endsection

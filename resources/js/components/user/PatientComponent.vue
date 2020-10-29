@@ -3,7 +3,7 @@
 		<!-- Header -->
 		<div class="row">
 			<div class="col-sm-12">
-				<h2>Patient List</h2>
+				<h2 class="font-weight-bold"><i class="fa fa-hospital-user"></i>&nbsp;&nbsp;Patient List</h2>
 			</div>
 		</div>
 		<hr />
@@ -30,7 +30,7 @@
 				<!-- Table -->
 				<el-table v-loading="loading" :data="listData">
 					<el-table-column width="150" label="PhilHealth No." prop="philhealth_number"></el-table-column>
-					<el-table-column width="250" label="Name" prop="name" sortable></el-table-column>
+					<el-table-column width="250" label="Name" prop="name"></el-table-column>
 					<el-table-column width="130" label="Sex" prop="sex"></el-table-column>
 					<el-table-column width="150" label="Birthdate" prop="birthdate"></el-table-column>
 					<el-table-column width="180" label="Marital Status" prop="marital_status"></el-table-column>
@@ -57,15 +57,12 @@
 
 				<div style="text-align: center">
 					<el-pagination
-						background
-						layout="prev, pager, next"
-						@current-change="handleCurrentChange"
-						@size-change="handleSizeChange"
-						hide-on-single-page="true"
-						:page-size="pageSize"
-						:total="paginateTotal"
-						>
-					</el-pagination>
+                        background
+                        layout="prev, pager, next"
+                        @current-change="handleCurrentChange"
+                        :page-size="pageSize"
+                        :total="total">
+                    </el-pagination>
 				</div>
 				<!-- End table -->
 			</div>
@@ -265,6 +262,7 @@ import constants from "../../constants.js";
 export default {
 	data() {
 		return {
+        filteredLength: 0,
 		page: 1,
 		pageSize: 10,
 		loading: true,
@@ -301,13 +299,6 @@ export default {
 			{ required: true, message: "PhilHealth No. is required.", trigger: "blur" }
 			]
 		},
-		titles: [
-			{ prop: "name", label: "Name", width:"250px" },
-			{ prop: "sex", label: "Sex", width:"150px" },
-			{ prop: "birthdate", label: "Birthdate", width:"150px" },
-			{ prop: "marital_status", label: "Marital Status", width:"250px" },
-			{ prop: "philhealth_number", label: "PhilHealth #" }
-		],
 		// Add Patient form
 		form: {
 			id: "",
@@ -346,22 +337,20 @@ export default {
 		};
 	},
 	computed: {
-		listData() {
-			if(this.search == null)return this.data;
-			
-			this.filtered = this.data.filter(data  => !this.search || data.first_name.toLowerCase().includes(this.search.toLowerCase()) || data.last_name.toLowerCase().includes(this.search.toLowerCase()) || data.philhealth_number.toLowerCase().includes(this.search.toLowerCase()));
-			this.total = this.filtered.length;
-			var temp = this.page;
-			return this.filtered.slice(this.pageSize * temp - this.pageSize, this.pageSize * temp);
-			
-			
-		},
-		paginateTotal(){
-			console.log(this.data.length);	
-			if(this.search == null)  return this.data.length;
-			if(this.filtered != null) return this.filtered.length;
-			
-		}
+		searching() {
+            if (!this.search) {
+                this.total = this.data.length;
+                return this.data;
+            }
+            this.page = 1;
+            return this.data.filter(data => data.first_name.toLowerCase().includes(this.search.toLowerCase())|| data.last_name.toLowerCase().includes(this.search.toLowerCase())|| data.philhealth_number.toLowerCase().includes(this.search.toLowerCase()));
+        },
+        listData() {
+            this.total = this.searching.length;
+
+            return this.searching.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
+            console.log(this.total);
+            },
 	},
  	methods: {
 		selectFile(event){
@@ -431,9 +420,6 @@ export default {
 		handleCurrentChange(val) {
 			this.page = val;
 		},
-		handleSizeChange(val) {
-			this.pageSize = val;
-		},
 		formLoading: function () {
 			const loading = this.$loading({
 				lock: true,
@@ -491,7 +477,7 @@ export default {
 			this.form_check.birthdate = row.birthdate;
 			this.form_check.marital_status = row.marital_status;
 			this.form_check.philhealth_number = row.philhealth_number;
-			
+
 			this.form_check.name =
 			this.form_check.last_name +
 			", " +
@@ -692,22 +678,22 @@ export default {
 			return (last_name + " " + suffix + ", " + first_name + " " + middle_name.slice(0, 1) + ".").trim();
 		},
 		assignSex: function (sex_value) {
-			var sex;
-			switch (sex_value) {
-				case 0:
-				sex = "Male";
-				break;
-				case 1:
-				sex = "Female";
-				break;
-				case 9:
-				sex = "Not Applicable";
-				break;
-				default:
-				sex = "Not Known";
-		}
-		return sex;
-		},
+            var sex;
+            switch (sex_value) {
+                case 0:
+                sex = "Male";
+                break;
+                case 1:
+                sex = "Female";
+                break;
+                case 9:
+                sex = "Not Applicable";
+                break;
+                default:
+                sex = "Not Known";
+				}
+				return sex;
+        },
 		assignMaritalStatus: function (marital_status_value) {
 			var marital_status;
 			switch (marital_status_value) {
