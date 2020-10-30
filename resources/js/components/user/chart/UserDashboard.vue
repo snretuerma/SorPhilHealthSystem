@@ -6,7 +6,6 @@
                     <el-card
                         class="box-card"
                         shadow="always"
-                        style="background-color:rgba(0,0,0,0);"
                     >
                         <div slot="header" class="clearfix">
                             <span style="font-size:1rem;"
@@ -355,13 +354,13 @@ export default {
                             _this.totalComputedPF = "";
                             _this.totalComputedPF =
                                 "₱ " +
-                                _this.format_number(totalComputedPF.toFixed(2));
+                                _this.format_number(totalComputedPF.toFixed(4));
                         }
                         if (filterby == "pooledFee") {
                             _this.totalPooledFee = "";
                             _this.totalPooledFee =
                                 "₱ " +
-                                _this.format_number(totalPooledFee.toFixed(2));
+                                _this.format_number(totalPooledFee.toFixed(4));
                         }
                     }
                     break;
@@ -485,18 +484,18 @@ export default {
                     });
                     _this.chartDataReceivePF = [];
                     _this.chartDataReceivePF.push(
-                        Number(_.sum(_this.monjan).toFixed(2)),
-                        Number(_.sum(_this.monfeb).toFixed(2)),
-                        Number(_.sum(_this.monmar).toFixed(2)),
-                        Number(_.sum(_this.monapr).toFixed(2)),
-                        Number(_.sum(_this.monmay).toFixed(2)),
-                        Number(_.sum(_this.monjune).toFixed(2)),
-                        Number(_.sum(_this.monjuly).toFixed(2)),
-                        Number(_.sum(_this.monaug).toFixed(2)),
-                        Number(_.sum(_this.monsept).toFixed(2)),
-                        Number(_.sum(_this.monoct).toFixed(2)),
-                        Number(_.sum(_this.monnov).toFixed(2)),
-                        Number(_.sum(_this.mondec).toFixed(2))
+                        Number(_.sum(_this.monjan).toFixed(4)),
+                        Number(_.sum(_this.monfeb).toFixed(4)),
+                        Number(_.sum(_this.monmar).toFixed(4)),
+                        Number(_.sum(_this.monapr).toFixed(4)),
+                        Number(_.sum(_this.monmay).toFixed(4)),
+                        Number(_.sum(_this.monjune).toFixed(4)),
+                        Number(_.sum(_this.monjuly).toFixed(4)),
+                        Number(_.sum(_this.monaug).toFixed(4)),
+                        Number(_.sum(_this.monsept).toFixed(4)),
+                        Number(_.sum(_this.monoct).toFixed(4)),
+                        Number(_.sum(_this.monnov).toFixed(4)),
+                        Number(_.sum(_this.mondec).toFixed(4))
                     );
                     _this.chartRePF.destroy();
                     _this.chartReceivePF();
@@ -645,18 +644,18 @@ export default {
                     _this.chartCommonDisease();
 
                     _this.chartDataReceivePF.push(
-                        Number(_.sum(_this.monjan).toFixed(2)),
-                        Number(_.sum(_this.monfeb).toFixed(2)),
-                        Number(_.sum(_this.monmar).toFixed(2)),
-                        Number(_.sum(_this.monapr).toFixed(2)),
-                        Number(_.sum(_this.monmay).toFixed(2)),
-                        Number(_.sum(_this.monjune).toFixed(2)),
-                        Number(_.sum(_this.monjuly).toFixed(2)),
-                        Number(_.sum(_this.monaug).toFixed(2)),
-                        Number(_.sum(_this.monsept).toFixed(2)),
-                        Number(_.sum(_this.monoct).toFixed(2)),
-                        Number(_.sum(_this.monnov).toFixed(2)),
-                        Number(_.sum(_this.mondec).toFixed(2))
+                        Number(_.sum(_this.monjan).toFixed(4)),
+                        Number(_.sum(_this.monfeb).toFixed(4)),
+                        Number(_.sum(_this.monmar).toFixed(4)),
+                        Number(_.sum(_this.monapr).toFixed(4)),
+                        Number(_.sum(_this.monmay).toFixed(4)),
+                        Number(_.sum(_this.monjune).toFixed(4)),
+                        Number(_.sum(_this.monjuly).toFixed(4)),
+                        Number(_.sum(_this.monaug).toFixed(4)),
+                        Number(_.sum(_this.monsept).toFixed(4)),
+                        Number(_.sum(_this.monoct).toFixed(4)),
+                        Number(_.sum(_this.monnov).toFixed(4)),
+                        Number(_.sum(_this.mondec).toFixed(4))
                     );
                     _this.chartReceivePF();
 
@@ -685,12 +684,12 @@ export default {
                     //total pooled fee
                     _this.totalPooledFee = "";
                     _this.totalPooledFee =
-                        "₱ " + _this.format_number(totalPooledFee.toFixed(2));
+                        "₱ " + _this.format_number(totalPooledFee.toFixed(4));
 
                     //total computed pf
                     _this.totalComputedPF = "";
                     _this.totalComputedPF =
-                        "₱ " + _this.format_number(totalComputedPF.toFixed(2));
+                        "₱ " + _this.format_number(totalComputedPF.toFixed(4));
                 }
             });
         },
@@ -891,8 +890,8 @@ export default {
 }
 @media (min-width: 768px){
     .col-md-6 {
-        flex: 0 0 50%;
-        max-width: 50%;
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
     }
     .con{
         padding-left:4px !important;

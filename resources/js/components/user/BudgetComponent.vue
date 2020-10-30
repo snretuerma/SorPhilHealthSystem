@@ -328,6 +328,8 @@ export default {
             dialogTableVisible: false,
             dialogFormVisible: false,
             formLabelWidth: "120px",
+            enableUpload: false,
+            progressbar_import: false,
             // Validation
             rules: {
                 start_date: [
