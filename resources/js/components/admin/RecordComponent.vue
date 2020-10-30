@@ -408,6 +408,13 @@ export default {
     },
     handleView(index, row) {
       console.log(row);
+      axios
+        .get("adminpersonnel_get/" + row.id)
+        .then((response) => {
+          this.staff = response.data.personnels;
+        })
+        .catch(function (error) {});
+      this.dialogTableVisible = true;
     },
     handleDelete(index, row) {
       console.log(index, row);

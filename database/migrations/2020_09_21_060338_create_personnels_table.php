@@ -23,6 +23,7 @@ class CreatePersonnelsTable extends Migration
             $table->unsignedTinyInteger('sex');
             $table->date('birthdate');
             $table->boolean('is_private');
+            $table->boolean('is_parttime');
             $table->boolean('designation');
             $table->timestamps();
             $table->softDeletes();

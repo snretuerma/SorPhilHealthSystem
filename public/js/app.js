@@ -3663,6 +3663,76 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -3679,6 +3749,8 @@ __webpack_require__.r(__webpack_exports__);
       dialogTableVisible: false,
       dialogFormVisible: false,
       formLabelWidth: "120px",
+      progressbar_import: false,
+      enableUpload: false,
       // Validation
       rules: {
         start_date: [{
@@ -3744,11 +3816,11 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     ListData: function ListData() {
-      var _this = this;
+      var _this2 = this;
 
       if (this.search == null) return this.data;
       this.filtered = this.data.filter(function (data) {
-        return !_this.search || data.first_name.toLowerCase().includes(_this.search.toLowerCase()) || data.last_name.toLowerCase().includes(_this.search.toLowerCase());
+        return !_this2.search || data.first_name.toLowerCase().includes(_this2.search.toLowerCase()) || data.last_name.toLowerCase().includes(_this2.search.toLowerCase());
       });
       this.total = this.filtered.length;
       return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
@@ -3774,14 +3846,14 @@ __webpack_require__.r(__webpack_exports__);
       loading.close();
     },
     getBudget: function getBudget() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get("adminbudget_get").then(function (response) {
         response.data.forEach(function (entry) {
-          entry.total = _this2.masknumber(entry.total);
+          entry.total = _this3.masknumber(entry.total);
         });
-        _this2.data = response.data;
-        _this2.loading = false;
+        _this3.data = response.data;
+        _this3.loading = false;
       })["catch"](function (error) {});
     },
     handleView: function handleView(index, row) {
@@ -3808,7 +3880,7 @@ __webpack_require__.r(__webpack_exports__);
       this.dialogFormVisible = true;
     },
     budgetFunctions: function budgetFunctions(mode) {
-      var _this3 = this;
+      var _this4 = this;
 
       switch (mode) {
         case "add":
@@ -3818,19 +3890,19 @@ __webpack_require__.r(__webpack_exports__);
             axios.post("adminadd_budget", this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
                 var total = response.data.total;
-                response.data.total = _this3.masknumber(_this3.form.total);
-                response.data.hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.hospital_code - 1)];
+                response.data.total = _this4.masknumber(_this4.form.total);
+                response.data.hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this4.form.hospital_code - 1)];
 
-                _this3.data.push(response.data);
+                _this4.data.push(response.data);
 
-                _this3.dialogFormVisible = false;
+                _this4.dialogFormVisible = false;
 
-                _this3.open_notif("success", "Success", "Budget added successfully");
+                _this4.open_notif("success", "Success", "Budget added successfully");
               } else {
-                _this3.open_notif("error", "System", "Failed to add budget");
+                _this4.open_notif("error", "System", "Failed to add budget");
               }
             })["catch"](function (error) {
-              _this3.errors = error.response.data.errors;
+              _this4.errors = error.response.data.errors;
             });
           }
 
@@ -3863,17 +3935,17 @@ __webpack_require__.r(__webpack_exports__);
             this.form.total = parseFloat(this.form.total.replace(/,/g, ""));
             axios.post("adminedit_budget/" + this.form.id, this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
-                _this3.open_notif("success", "Success", "Changes has been saved");
+                _this4.open_notif("success", "Success", "Changes has been saved");
 
-                _this3.dialogFormVisible = false;
-                _this3.data[parseInt(_this3.form.edit_object_index)].start_date = _this3.form.start_date;
-                _this3.data[parseInt(_this3.form.edit_object_index)].total = _this3.masknumber(_this3.form.total);
+                _this4.dialogFormVisible = false;
+                _this4.data[parseInt(_this4.form.edit_object_index)].start_date = _this4.form.start_date;
+                _this4.data[parseInt(_this4.form.edit_object_index)].total = _this4.masknumber(_this4.form.total);
                 ;
-                _this3.data[parseInt(_this3.form.edit_object_index)].end_date = _this3.form.end_date;
-                _this3.data[parseInt(_this3.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.codeholder) - 1];
+                _this4.data[parseInt(_this4.form.edit_object_index)].end_date = _this4.form.end_date;
+                _this4.data[parseInt(_this4.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this4.form.codeholder) - 1];
               }
             })["catch"](function (error) {
-              _this3.errors = error.response.data.errors;
+              _this4.errors = error.response.data.errors;
             });
           }
 
@@ -3913,6 +3985,68 @@ __webpack_require__.r(__webpack_exports__);
       this.form.end_date = "";
       this.form.hospital_code = "";
       this.form.codeholder = "";
+    },
+    formDialog: function formDialog(id) {
+      if (id == "import_data") {
+        $("#importModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      } else if (id == "export_data") {
+        $("#exportModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      }
+    },
+    selectFile: function selectFile(event) {
+      if (event.target.value) {
+        this.enableUpload = true;
+      } else {
+        this.enableUpload = false;
+      }
+    },
+    onSubmit: function onSubmit() {
+      var _this = this;
+
+      var formData = new FormData();
+      formData.append("i_action", $("#i_action").val());
+      formData.append("budgets[]", $("#excelcontent").get(0).files[0]);
+      axios.post('budget_import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: function (progressEvent) {
+          this.uploadPercentage = parseInt(Math.round(progressEvent.loaded * 100 / progressEvent.total));
+          $('.progress-bar').css('width', this.uploadPercentage + '%').attr('aria-valuenow', this.uploadPercentage);
+          $('.progress-bar').html(this.uploadPercentage + "%");
+        }.bind(this)
+      }).then(function (res) {
+        setTimeout(function () {
+          _this.progressbar_import = false;
+          $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+          $('.progress-bar').html('0%');
+          $("#importModal").modal('hide');
+          $("#excelcontent").val('');
+        }, 2000);
+        var total_imported = res.data;
+
+        if (total_imported == 0) {
+          _this.open_notif("warning", "Import", "No row to be import");
+        } else if (total_imported > 0) {
+          _this.open_notif("success", "Import", "Successfully imported: " + res.data + " row");
+
+          _this.getBudget();
+        }
+      })["catch"](function (res) {
+        _this.progressbar_import = false;
+        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+        $('.progress-bar').html('0%');
+        $("#excelcontent").val('');
+        $("#importModal").modal('hide');
+
+        _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
+      });
     }
   },
   mounted: function mounted() {
@@ -4197,12 +4331,20 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 
+
+var _methods;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {
+    var _ref;
+
+    return _ref = {
       page: 1,
       pageSize: 10,
       loading: true,
@@ -4214,115 +4356,106 @@ __webpack_require__.r(__webpack_exports__);
       enableUpload: false,
       dialogTableVisible: false,
       dialogFormVisible: false,
-      formLabelWidth: "130px",
-      // Validation
-      rules: {
-        last_name: [{
-          required: true,
-          message: "Lastname is required.",
-          trigger: "blur"
-        }],
-        first_name: [{
-          required: true,
-          message: "Firstname is required.",
-          trigger: "blur"
-        }],
-        middle_name: [{
-          required: true,
-          message: "Middlename is required.",
-          trigger: "blur"
-        }],
-        sex: [{
-          required: true,
-          message: "Sex is required.",
-          trigger: "change"
-        }],
-        birthdate: [{
-          required: true,
-          message: "Please pick a date",
-          trigger: "change"
-        }],
-        marital_status: [{
-          required: true,
-          message: "Please select a marital status.",
-          trigger: "change"
-        }],
-        philhealth_number: [{
-          required: true,
-          message: "PhilHealth No. is required.",
-          trigger: "blur"
-        }],
-        hospital_code: [{
-          required: true,
-          message: "Please select a hospital.",
-          trigger: "blur"
-        }]
-      },
-      titles: [{
-        prop: "name",
-        label: "Name",
-        width: "250px"
-      }, {
-        prop: "sex",
-        label: "Sex",
-        width: "150px"
-      }, {
-        prop: "birthdate",
-        label: "Birthdate",
-        width: "150px"
-      }, {
-        prop: "marital_status",
-        label: "Marital Status",
-        width: "250px"
-      }, {
-        prop: "philhealth_number",
-        label: "PhilHealth #",
-        width: "150px"
-      }, {
-        prop: "hospital_code",
-        label: "Hospital",
-        width: "150px"
+      formLabelWidth: "130px"
+    }, _defineProperty(_ref, "progressbar_import", false), _defineProperty(_ref, "enableUpload", false), _defineProperty(_ref, "rules", {
+      last_name: [{
+        required: true,
+        message: "Lastname is required.",
+        trigger: "blur"
       }],
-      // Add Patient form
-      form: {
-        id: "",
-        last_name: "",
-        first_name: "",
-        middle_name: "",
-        name_suffix: "",
-        sex: "",
-        birthdate: "",
-        marital_status: "",
-        philhealth_number: "",
-        hospital_code: "",
-        codeholder: "",
-        name: "",
-        formmode: "",
-        edit_object_index: ""
-      },
-      // Edit form check
-      form_check: {
-        last_name: "",
-        first_name: "",
-        middle_name: "",
-        name_suffix: "",
-        sex: "",
-        birthdate: "",
-        marital_status: "",
-        philhealth_number: "",
-        codeholder: "",
-        name: ""
-      },
-      // Show info data
-      gridData: [{
-        philhealth_number: "",
-        name: "",
-        sex: "",
-        birthdate: "",
-        marital_status: "",
-        hospital_code: ""
+      first_name: [{
+        required: true,
+        message: "Firstname is required.",
+        trigger: "blur"
+      }],
+      middle_name: [{
+        required: true,
+        message: "Middlename is required.",
+        trigger: "blur"
+      }],
+      sex: [{
+        required: true,
+        message: "Sex is required.",
+        trigger: "change"
+      }],
+      birthdate: [{
+        required: true,
+        message: "Please pick a date",
+        trigger: "change"
+      }],
+      marital_status: [{
+        required: true,
+        message: "Please select a marital status.",
+        trigger: "change"
+      }],
+      philhealth_number: [{
+        required: true,
+        message: "PhilHealth No. is required.",
+        trigger: "blur"
+      }],
+      hospital_code: [{
+        required: true,
+        message: "Please select a hospital.",
+        trigger: "blur"
       }]
-    };
+    }), _defineProperty(_ref, "titles", [{
+      prop: "name",
+      label: "Name",
+      width: "250px"
+    }, {
+      prop: "sex",
+      label: "Sex",
+      width: "150px"
+    }, {
+      prop: "birthdate",
+      label: "Birthdate",
+      width: "150px"
+    }, {
+      prop: "marital_status",
+      label: "Marital Status",
+      width: "250px"
+    }, {
+      prop: "philhealth_number",
+      label: "PhilHealth #",
+      width: "150px"
+    }, {
+      prop: "hospital_code",
+      label: "Hospital",
+      width: "150px"
+    }]), _defineProperty(_ref, "form", {
+      id: "",
+      last_name: "",
+      first_name: "",
+      middle_name: "",
+      name_suffix: "",
+      sex: "",
+      birthdate: "",
+      marital_status: "",
+      philhealth_number: "",
+      hospital_code: "",
+      codeholder: "",
+      name: "",
+      formmode: "",
+      edit_object_index: ""
+    }), _defineProperty(_ref, "form_check", {
+      last_name: "",
+      first_name: "",
+      middle_name: "",
+      name_suffix: "",
+      sex: "",
+      birthdate: "",
+      marital_status: "",
+      philhealth_number: "",
+      codeholder: "",
+      name: ""
+    }), _defineProperty(_ref, "gridData", [{
+      philhealth_number: "",
+      name: "",
+      sex: "",
+      birthdate: "",
+      marital_status: "",
+      hospital_code: ""
+    }]), _ref;
   },
   computed: {
     ListData: function ListData() {
@@ -4336,7 +4469,7 @@ __webpack_require__.r(__webpack_exports__);
       return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
     }
   },
-  methods: {
+  methods: (_methods = {
     selectFile: function selectFile(event) {
       if (event.target.value) {
         this.enableUpload = true;
@@ -4656,7 +4789,57 @@ __webpack_require__.r(__webpack_exports__);
       element.sex = this.assignSex(element.sex);
       element.marital_status = this.assignMaritalStatus(element.marital_status);
     }
-  },
+  }, _defineProperty(_methods, "selectFile", function selectFile(event) {
+    if (event.target.value) {
+      this.enableUpload = true;
+    } else {
+      this.enableUpload = false;
+    }
+  }), _defineProperty(_methods, "onSubmit", function onSubmit() {
+    var _this = this;
+
+    var formData = new FormData();
+    formData.append("i_action", $("#i_action").val());
+    formData.append("patients[]", $("#excelcontent").get(0).files[0]);
+    axios.post('patients_import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      },
+      onUploadProgress: function (progressEvent) {
+        this.uploadPercentage = parseInt(Math.round(progressEvent.loaded * 100 / progressEvent.total));
+        $('.progress-bar').css('width', this.uploadPercentage + '%').attr('aria-valuenow', this.uploadPercentage);
+        $('.progress-bar').html(this.uploadPercentage + "%");
+      }.bind(this)
+    }).then(function (res) {
+      setTimeout(function () {
+        _this.progressbar_import = false;
+        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+        $('.progress-bar').html('0%');
+        $("#importModal").modal('hide');
+        $("#excelcontent").val('');
+      }, 2000);
+      var total_imported = res.data;
+      var get_imported = total_imported.split('/');
+
+      if (get_imported[0] == 0 && get_imported[1] == 0) {
+        _this.open_notif("warning", "Import", "No row to be import");
+      } else if (get_imported[0] == 0 && get_imported[1] > 0) {
+        _this.open_notif("info", "Import", "All row already exist in the database");
+      } else if (get_imported[0] > 0 && get_imported[1] > 0) {
+        _this.open_notif("success", "Import", "Successfully imported: " + res.data);
+
+        _this.getPatients();
+      }
+    })["catch"](function (res) {
+      _this.progressbar_import = false;
+      $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+      $('.progress-bar').html('0%');
+      $("#excelcontent").val('');
+      $("#importModal").modal('hide');
+
+      _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
+    });
+  }), _methods),
   mounted: function mounted() {
     this.getPatients();
   }
@@ -4837,12 +5020,85 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {
+    var _ref;
+
+    return _ref = {
       page: 1,
       pageSize: 10,
       loading: true,
@@ -4854,98 +5110,90 @@ __webpack_require__.r(__webpack_exports__);
       enableUpload: false,
       dialogTableVisible: false,
       dialogFormVisible: false,
-      formLabelWidth: "120px",
-      // Validation
-      rules: {
-        last_name: [{
-          required: true,
-          message: "Lastname is required.",
-          trigger: "blur"
-        }],
-        first_name: [{
-          required: true,
-          message: "Firstname is required.",
-          trigger: "blur"
-        }],
-        middle_name: [{
-          required: true,
-          message: "Middlename is required.",
-          trigger: "blur"
-        }],
-        is_private: [{
-          required: true,
-          message: "Please select staff type.",
-          trigger: "change"
-        }],
-        designation: [{
-          required: true,
-          message: "Please select staff designation.",
-          trigger: "change"
-        }],
-        sex: [{
-          required: true,
-          message: "Sex is required.",
-          trigger: "change"
-        }],
-        birthdate: [{
-          required: true,
-          message: "Please pick a date.",
-          trigger: "change"
-        }],
-        hospital_code: [{
-          required: true,
-          message: "Please select a hospital.",
-          trigger: "change"
-        }]
-      },
-      // Add Personnel form
-      form: {
-        id: "",
-        last_name: "",
-        first_name: "",
-        middle_name: "",
-        name_suffix: "",
-        sex: "",
-        birthdate: "",
-        is_private: "",
-        designation: "",
-        hospital_code: "",
-        codeholder: "",
-        name: "",
-        formmode: "",
-        edit_object_index: ""
-      },
-      // Edit Personnel form check
-      form_check: {
-        last_name: "",
-        first_name: "",
-        middle_name: "",
-        name_suffix: "",
-        sex: "",
-        birthdate: "",
-        is_private: "",
-        designation: "",
-        codeholder: "",
-        name: ""
-      },
-      // View info data
-      gridData: [{
-        name: "",
-        sex: "",
-        birthdate: "",
-        is_private: "",
-        designation: "",
-        hospital_code: ""
+      formLabelWidth: "120px"
+    }, _defineProperty(_ref, "progressbar_import", false), _defineProperty(_ref, "enableUpload", false), _defineProperty(_ref, "rules", {
+      last_name: [{
+        required: true,
+        message: "Lastname is required.",
+        trigger: "blur"
+      }],
+      first_name: [{
+        required: true,
+        message: "Firstname is required.",
+        trigger: "blur"
+      }],
+      middle_name: [{
+        required: true,
+        message: "Middlename is required.",
+        trigger: "blur"
+      }],
+      is_private: [{
+        required: true,
+        message: "Please select staff type.",
+        trigger: "change"
+      }],
+      designation: [{
+        required: true,
+        message: "Please select staff designation.",
+        trigger: "change"
+      }],
+      sex: [{
+        required: true,
+        message: "Sex is required.",
+        trigger: "change"
+      }],
+      birthdate: [{
+        required: true,
+        message: "Please pick a date.",
+        trigger: "change"
+      }],
+      hospital_code: [{
+        required: true,
+        message: "Please select a hospital.",
+        trigger: "change"
       }]
-    };
+    }), _defineProperty(_ref, "form", {
+      id: "",
+      last_name: "",
+      first_name: "",
+      middle_name: "",
+      name_suffix: "",
+      sex: "",
+      birthdate: "",
+      is_private: "",
+      designation: "",
+      hospital_code: "",
+      codeholder: "",
+      name: "",
+      formmode: "",
+      edit_object_index: ""
+    }), _defineProperty(_ref, "form_check", {
+      last_name: "",
+      first_name: "",
+      middle_name: "",
+      name_suffix: "",
+      sex: "",
+      birthdate: "",
+      is_private: "",
+      designation: "",
+      codeholder: "",
+      name: ""
+    }), _defineProperty(_ref, "gridData", [{
+      name: "",
+      sex: "",
+      birthdate: "",
+      is_private: "",
+      designation: "",
+      hospital_code: ""
+    }]), _ref;
   },
   computed: {
     ListData: function ListData() {
-      var _this = this;
+      var _this2 = this;
 
       if (this.search == null) return this.data;
       this.filtered = this.data.filter(function (data) {
-        return !_this.search || data.first_name.toLowerCase().includes(_this.search.toLowerCase()) || data.last_name.toLowerCase().includes(_this.search.toLowerCase());
+        return !_this2.search || data.first_name.toLowerCase().includes(_this2.search.toLowerCase()) || data.last_name.toLowerCase().includes(_this2.search.toLowerCase());
       });
       this.total = this.filtered.length;
       return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
@@ -4967,14 +5215,14 @@ __webpack_require__.r(__webpack_exports__);
       loading.close();
     },
     getPersonnels: function getPersonnels() {
-      var _this2 = this;
+      var _this3 = this;
 
       axios.get("personnel_get").then(function (response) {
         response.data.forEach(function (element) {
-          _this2.buildPersonnelData(element);
+          _this3.buildPersonnelData(element);
         });
-        _this2.data = response.data;
-        _this2.loading = false;
+        _this3.data = response.data;
+        _this3.loading = false;
       })["catch"](function (error) {});
     },
     handleView: function handleView(index, row) {
@@ -5014,7 +5262,7 @@ __webpack_require__.r(__webpack_exports__);
       this.dialogFormVisible = true;
     },
     personnelFunctions: function personnelFunctions(mode) {
-      var _this3 = this;
+      var _this4 = this;
 
       switch (mode) {
         case "add":
@@ -5023,22 +5271,22 @@ __webpack_require__.r(__webpack_exports__);
           } else {
             axios.post("add_personnel", this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
-                response.data.name = _this3.form.last_name + ", " + _this3.form.name_suffix + " " + _this3.form.first_name + " " + _this3.form.middle_name.slice(0, 1) + ". ";
-                response.data.is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this3.form.is_private)];
-                response.data.designation = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].designation[Number(_this3.form.designation)];
-                response.data.sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this3.form.sex)];
-                response.data.hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.hospital_code - 1)];
+                response.data.name = _this4.form.last_name + ", " + _this4.form.name_suffix + " " + _this4.form.first_name + " " + _this4.form.middle_name.slice(0, 1) + ". ";
+                response.data.is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this4.form.is_private)];
+                response.data.designation = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].designation[Number(_this4.form.designation)];
+                response.data.sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this4.form.sex)];
+                response.data.hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this4.form.hospital_code - 1)];
 
-                _this3.data.push(response.data);
+                _this4.data.push(response.data);
 
-                _this3.dialogFormVisible = false;
+                _this4.dialogFormVisible = false;
 
-                _this3.open_notif("success", "Success", "Staff added successfully");
+                _this4.open_notif("success", "Success", "Staff added successfully");
               } else {
-                _this3.open_notif("error", "System", "Failed to add personnel");
+                _this4.open_notif("error", "System", "Failed to add personnel");
               }
             })["catch"](function (error) {
-              _this3.errors = error.response.data.errors;
+              _this4.errors = error.response.data.errors;
             });
           }
 
@@ -5089,22 +5337,22 @@ __webpack_require__.r(__webpack_exports__);
             this.form.name = this.form.last_name + ", " + this.form.name_suffix + " " + this.form.first_name + " " + this.form.middle_name.slice(0, 1) + ". ";
             axios.post("edit_personnel/" + this.form.id, this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
-                _this3.open_notif("success", "Success", "Changes has been saved");
+                _this4.open_notif("success", "Success", "Changes has been saved");
 
-                _this3.dialogFormVisible = false;
-                _this3.data[parseInt(_this3.form.edit_object_index)].last_name = _this3.form.last_name;
-                _this3.data[parseInt(_this3.form.edit_object_index)].first_name = _this3.form.first_name;
-                _this3.data[parseInt(_this3.form.edit_object_index)].middle_name = _this3.form.middle_name;
-                _this3.data[parseInt(_this3.form.edit_object_index)].name_suffix = _this3.form.name_suffix;
-                _this3.data[parseInt(_this3.form.edit_object_index)].sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this3.form.sex)];
-                _this3.data[parseInt(_this3.form.edit_object_index)].is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this3.form.is_private)];
-                _this3.data[parseInt(_this3.form.edit_object_index)].designation = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].designation[Number(_this3.form.designation)];
-                _this3.data[parseInt(_this3.form.edit_object_index)].birthdate = _this3.form.birthdate;
-                _this3.data[parseInt(_this3.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this3.form.codeholder) - 1];
-                _this3.data[parseInt(_this3.form.edit_object_index)].name = _this3.form.name;
+                _this4.dialogFormVisible = false;
+                _this4.data[parseInt(_this4.form.edit_object_index)].last_name = _this4.form.last_name;
+                _this4.data[parseInt(_this4.form.edit_object_index)].first_name = _this4.form.first_name;
+                _this4.data[parseInt(_this4.form.edit_object_index)].middle_name = _this4.form.middle_name;
+                _this4.data[parseInt(_this4.form.edit_object_index)].name_suffix = _this4.form.name_suffix;
+                _this4.data[parseInt(_this4.form.edit_object_index)].sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this4.form.sex)];
+                _this4.data[parseInt(_this4.form.edit_object_index)].is_private = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].is_private[Number(_this4.form.is_private)];
+                _this4.data[parseInt(_this4.form.edit_object_index)].designation = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].designation[Number(_this4.form.designation)];
+                _this4.data[parseInt(_this4.form.edit_object_index)].birthdate = _this4.form.birthdate;
+                _this4.data[parseInt(_this4.form.edit_object_index)].hospital_code = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(_this4.form.codeholder) - 1];
+                _this4.data[parseInt(_this4.form.edit_object_index)].name = _this4.form.name;
               }
             })["catch"](function (error) {
-              _this3.errors = error.response.data.errors;
+              _this4.errors = error.response.data.errors;
             });
           }
 
@@ -5220,6 +5468,71 @@ __webpack_require__.r(__webpack_exports__);
       element.sex = this.assignSex(element.sex);
       element.is_private = this.assignType(element.is_private);
       element.designation = this.assignDesignation(element.designation);
+    },
+    formDialog: function formDialog(id) {
+      if (id == "import_data") {
+        $("#importModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      } else if (id == "export_data") {
+        $("#exportModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      }
+    },
+    selectFile: function selectFile(event) {
+      if (event.target.value) {
+        this.enableUpload = true;
+      } else {
+        this.enableUpload = false;
+      }
+    },
+    onSubmit: function onSubmit() {
+      var _this = this;
+
+      var formData = new FormData();
+      formData.append("i_action", $("#i_action").val());
+      formData.append("personnels[]", $("#excelcontent").get(0).files[0]);
+      axios.post('personnels_import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: function (progressEvent) {
+          this.uploadPercentage = parseInt(Math.round(progressEvent.loaded * 100 / progressEvent.total));
+          $('.progress-bar').css('width', this.uploadPercentage + '%').attr('aria-valuenow', this.uploadPercentage);
+          $('.progress-bar').html(this.uploadPercentage + "%");
+        }.bind(this)
+      }).then(function (res) {
+        setTimeout(function () {
+          _this.progressbar_import = false;
+          $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+          $('.progress-bar').html('0%');
+          $("#importModal").modal('hide');
+          $("#excelcontent").val('');
+        }, 2000);
+        var total_imported = res.data;
+        var get_imported = total_imported.split('/');
+
+        if (get_imported[0] == 0 && get_imported[1] == 0) {
+          _this.open_notif("warning", "Import", "No row to be import");
+        } else if (get_imported[0] == 0 && get_imported[1] > 0) {
+          _this.open_notif("info", "Import", "All row already exist in the database");
+        } else if (get_imported[0] > 0 && get_imported[1] > 0) {
+          _this.open_notif("success", "Import", "Successfully imported: " + res.data);
+
+          _this.getPersonnel();
+        }
+      })["catch"](function (res) {
+        _this.progressbar_import = false;
+        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+        $('.progress-bar').html('0%');
+        $("#excelcontent").val('');
+        $("#importModal").modal('hide');
+
+        _this.open_notif("error", "Message", "FAILURE!! Something went wrong!" + res);
+      });
     }
   },
   mounted: function mounted() {
@@ -5630,13 +5943,19 @@ __webpack_require__.r(__webpack_exports__);
       this.page = val;
     },
     handleView: function handleView(index, row) {
+      var _this3 = this;
+
       console.log(row);
+      axios.get("adminpersonnel_get/" + row.id).then(function (response) {
+        _this3.staff = response.data.personnels;
+      })["catch"](function (error) {});
+      this.dialogTableVisible = true;
     },
     handleDelete: function handleDelete(index, row) {
       console.log(index, row);
     },
     deleteRecord: function deleteRecord(id, res) {
-      var _this3 = this;
+      var _this4 = this;
 
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
@@ -5644,7 +5963,7 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonText: "Cancel",
         type: "warning"
       }).then(function () {
-        var _this = _this3;
+        var _this = _this4;
         axios.post("delete_record/" + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             _this.$message({
@@ -5656,14 +5975,14 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       })["catch"](function (action) {
-        _this3.$message({
+        _this4.$message({
           type: "success",
           message: action === "cancel" ? "Canceled" : "No changes"
         });
       });
     },
     getRecord: function getRecord() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.get("adminrecord_get").then(function (response) {
         response.data.forEach(function (entry) {
@@ -5674,10 +5993,10 @@ __webpack_require__.r(__webpack_exports__);
           }
 
           entry.hospital_id = _constants__WEBPACK_IMPORTED_MODULE_0__["default"].hospital_code[Number(entry.hospital_id) - 1];
-          entry.total_fee = _this4.masknumber(entry.total_fee);
+          entry.total_fee = _this5.masknumber(entry.total_fee);
         });
-        _this4.data = response.data;
-        console.log(_this4.data);
+        _this5.data = response.data;
+        console.log(_this5.data);
       })["catch"](function (error) {});
     },
     clearfield: function clearfield() {
@@ -6016,6 +6335,47 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -6024,42 +6384,68 @@ __webpack_require__.r(__webpack_exports__);
 
     return {
       data: [],
-      budgetInfo: [],
+      userdata: [],
+      formUser: {
+        username: '',
+        password: '',
+        repassword: '',
+        hospital_id: ''
+      },
+      userdialog_title: "",
       rules: {
-        start_date: [{
+        hospital_code: [{
           required: true,
-          message: "Start date is required.",
+          message: "Hospital Code is required.",
           trigger: "blur"
         }],
-        total: [{
+        name: [{
           required: true,
-          message: "Amount is required.",
+          message: "Hospital Name is required.",
           trigger: "blur"
         }],
-        end_date: [{
+        address: [{
           required: true,
-          message: "End date is required.",
+          message: "Hospital Location is required.",
+          trigger: "blur"
+        }],
+        email_address: [{
+          type: 'email',
+          required: true,
+          message: "Please input correct email address",
+          trigger: ['blur', 'change']
+        }]
+      },
+      rulesUser: {
+        username: [{
+          required: true,
+          message: "Username is required.",
+          trigger: "blur"
+        }],
+        password: [{
+          required: true,
+          message: "Password is required.",
+          trigger: "blur"
+        }],
+        repassword: [{
+          required: true,
+          message: "Confirm Password is required.",
           trigger: "blur"
         }]
       },
       filters: [{
-        prop: ["start_date", "amount", "end_date"],
+        prop: ["hospital_name", "address", "email_address"],
         value: ""
       }],
       titles: [{
-        prop: "start_date",
-        label: "Start date"
+        prop: "hospital_name",
+        label: "Hospital",
+        width: "400px"
       }, {
-        prop: "total",
-        label: "Amount"
+        prop: "address",
+        label: "Address / Location"
       }, {
-        prop: "end_date",
-        label: "End date"
-      }],
-      gridData: [{
-        start_date: "",
-        total: "",
-        end_date: ""
+        prop: "email_address",
+        label: "Email address"
       }],
       actionCol: {
         label: "Actions",
@@ -6068,6 +6454,32 @@ __webpack_require__.r(__webpack_exports__);
         },
         buttons: [{
           props: {
+            type: "success",
+            icon: "el-icon-user-solid",
+            circle: true,
+            size: "mini"
+          },
+          handler: function handler(row) {
+            _this2.hospital_id = row.id;
+            _this2.formUser.hospital_id = row.id;
+            _this2.userdialog_title = row.hospital_code + " - User Account";
+            _this2.hospital_email = row.email_address;
+            _this2.hospital_code = row.hospital_code;
+
+            var data = _this2.data[parseInt(_this2.data.indexOf(row))].users;
+
+            _this2.data_hospital_index = parseInt(_this2.data.indexOf(row));
+            data.forEach(function (entry) {
+              var date = new Date(entry.created_at);
+              entry.created_at = (date.getMonth() > 8 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + '/' + (date.getDate() > 9 ? date.getDate() : '0' + date.getDate()) + '/' + date.getFullYear();
+              var date = new Date(entry.updated_at);
+              entry.updated_at = (date.getMonth() > 8 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + '/' + (date.getDate() > 9 ? date.getDate() : '0' + date.getDate()) + '/' + date.getFullYear();
+            });
+            _this2.userdata = data;
+            _this2.dialogFormVisible_user = true;
+          }
+        }, {
+          props: {
             type: "primary",
             icon: "el-icon-edit",
             circle: true,
@@ -6075,111 +6487,286 @@ __webpack_require__.r(__webpack_exports__);
           },
           handler: function handler(row) {
             _this2.form.id = row.id;
-            _this2.form.formmode = 'edit';
+            _this2.form.hospital_code = row.hospital_code;
+            _this2.form.name = row.name;
+            _this2.form.address = row.address;
+            _this2.form.email_address = row.email_address;
+            _this2.form_check.hospital_code = row.hospital_code;
+            _this2.form_check.name = row.name;
+            _this2.form_check.address = row.address;
+            _this2.form_check.email_address = row.email_address;
+            _this2.form.edit_object_index = _this2.data.indexOf(row);
             _this2.dialogFormVisible = true;
-            _this2.form.start_date = row.start_date;
-            _this2.form.total = row.total;
-            _this2.form.end_date = row.end_date;
-          }
-        }, {
-          props: {
-            type: "danger",
-            icon: "el-icon-delete",
-            circle: true,
-            size: "mini"
-          },
-          handler: function handler(row) {
-            var data = _this2.data;
-
-            _this2.deletePatients(row.id, function (res_value) {
-              if (res_value) {
-                data.splice(data.indexOf(row), 1);
-              }
-            });
+            _this2.form.formmode = 'edit_hospital';
           }
         }]
       },
       layout: "pagination, table",
       dialogTableVisible: false,
       dialogFormVisible: false,
+      dialogFormVisible_user: false,
       form: {
         id: "",
-        start_date: "",
-        total: "",
-        end_date: "",
+        hospital_code: "",
+        name: "",
+        address: "",
+        email_address: "",
+        edit_object_index: "",
         formmode: ""
       },
-      formLabelWidth: "120px"
+      form_check: {
+        hospital_code: "",
+        name: "",
+        address: "",
+        email_address: ""
+      },
+      formLabelWidth: "120px",
+      formLabelWidth_user: "120px",
+      alert_match: '',
+      hospital_id: "",
+      hospital_row: "",
+      search: '',
+      data_hospital_index: '',
+      hospital_email: '',
+      hospital_code: '',
+      notify: false
     };
   },
   methods: {
-    deleteUser: function deleteUser(id, res) {
+    checkmatch: function checkmatch(event) {
+      if (this.formUser.password == this.formUser.repassword && this.formUser.password != '' && this.formUser.repassword != '') {
+        this.alert_match = 1;
+      } else if (this.formUser.password != this.formUser.repassword && this.formUser.password != '' && this.formUser.repassword != '') {
+        this.alert_match = 2;
+      } else {
+        this.alert_match = '';
+      }
+    },
+    getHospital: function getHospital() {
       var _this3 = this;
 
-      this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
-        distinguishCancelAndClose: true,
-        confirmButtonText: "Delete",
-        cancelButtonText: "Cancel",
-        type: "warning"
-      }).then(function () {
-        var _this = _this3;
-        axios.post("delete_user/" + id).then(function (response) {
-          if (response.status > 199 && response.status < 203) {
-            _this.$message({
-              type: "warning",
-              message: "Succesfully! Deleted"
-            });
-
-            res(id);
-          }
+      axios.get("hospitals_get").then(function (response) {
+        response.data.forEach(function (entry) {
+          entry.hospital_name = entry.name + " (" + entry.hospital_code + ")";
         });
-      })["catch"](function (action) {
-        _this3.$message({
-          type: "success",
-          message: action === "cancel" ? "Canceled" : "No changes"
-        });
-      });
-    },
-    getUser: function getUser() {
-      var _this4 = this;
-
-      axios.get("user_get").then(function (response) {
-        _this4.data = response.data;
+        _this3.data = response.data;
       })["catch"](function (error) {});
     },
     clearfield: function clearfield() {
-      this.form.start_date = "";
-      this.form.total = "";
-      this.form.end_date = "";
+      this.form.hospital_code = "";
+      this.form.name = "";
+      this.form.address = "";
+      this.form.email_address = "";
     },
-    addUser: function addUser(mode) {
+    open_notif: function open_notif(status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      }
+    },
+    formDialog: function formDialog(mode) {
+      var _this4 = this;
+
+      function validateEmail(email) {
+        var re = /\S+@\S+\.\S+/;
+        return re.test(email);
+      }
+
       switch (mode) {
-        case 'add':
-          alert('add'); // axios
-          //   .post("add_budget", this.form)
-          //   .then((response) => {
-          //     this.data.push(this.form);
-          //     this.dialogFormVisible = false;
-          //   })
-          //   .catch(function (error) {});
+        case 'add_hospital':
+          if (validateEmail(this.form.email_address) === true && this.form.hospital_code != "" && this.form.name != "" && this.form.address != "" && this.form.email_address != "") {
+            axios.post("add_hospital", this.form).then(function (response) {
+              if (response.status > 199 && response.status < 203) {
+                _this4.getHospital();
+
+                _this4.open_notif("success", "Success", "Hospital added successfully");
+
+                _this4.dialogFormVisible = false;
+
+                _this4.clearfield();
+              } else {
+                _this4.open_notif("error", "System", "Failed to add hospital");
+              }
+            })["catch"](function (error) {
+              _this4.errors = error.response.data.errors;
+            });
+          } else {
+            this.open_notif("warning", "System", "Make sure you input valid");
+          }
 
           break;
 
-        case 'edit':
-          alert('edit'); // axios
-          //   .post("edit_budget", this.form)
-          //   .then((response) => {
-          //     this.data.push(this.form);
-          //     this.dialogFormVisible = false;
-          //   })
-          //   .catch(function (error) {});
+        case 'edit_hospital':
+          var _this = this;
+
+          if (this.form.hospital_code == this.form_check.hospital_code && this.form.name == this.form_check.name && this.form.address == this.form_check.address && this.form.email_address == this.form_check.email_address) {
+            _this.open_notif("info", "Message", "No Changes");
+          } else {
+            if (validateEmail(this.form.email_address) === true) {
+              axios.post("hospital_edit/" + this.form.id, this.form).then(function (response) {
+                if (response.status > 199 && response.status < 203) {
+                  _this.open_notif("success", "Success", "Changes has been saved");
+
+                  _this4.dialogFormVisible = false;
+
+                  _this4.clearfield();
+
+                  _this.getHospital();
+                }
+              })["catch"](function (error) {});
+            } else {
+              this.open_notif("warning", "System", "Please input correct email address");
+            }
+          }
 
           break;
       }
+    },
+    addUser: function addUser() {
+      var _this5 = this;
+
+      var _this = this;
+
+      this.formUser.hospital_email = this.hospital_email;
+      this.formUser.hospital_code = this.hospital_code;
+      this.formUser.changes = "System administrator added a new user, with the username '" + this.formUser.username + "'";
+      this.formUser.notify = this.notify;
+
+      if (this.formUser.password == this.formUser.repassword) {
+        axios.post("add_user", this.formUser).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            axios.get("hospitals_get").then(function (response) {
+              if (response.status > 199 && response.status < 203) {
+                response.data.forEach(function (entry) {
+                  entry.hospital_name = entry.name + " (" + entry.hospital_code + ")";
+                });
+                _this.data = response.data;
+
+                var data = _this.data[parseInt(_this.data_hospital_index)].users;
+
+                data.forEach(function (entry) {
+                  var date = new Date(entry.created_at);
+                  entry.created_at = (date.getMonth() > 8 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + '/' + (date.getDate() > 9 ? date.getDate() : '0' + date.getDate()) + '/' + date.getFullYear();
+                  var date = new Date(entry.updated_at);
+                  entry.updated_at = (date.getMonth() > 8 ? date.getMonth() + 1 : '0' + (date.getMonth() + 1)) + '/' + (date.getDate() > 9 ? date.getDate() : '0' + date.getDate()) + '/' + date.getFullYear();
+                });
+                _this.userdata = data;
+                _this.formUser.username = '';
+                _this.formUser.password = '';
+                _this.formUser.repassword = '';
+                _this.alert_match = '';
+              }
+            })["catch"](function (error) {});
+
+            _this.open_notif("success", "Success", "User added successfully");
+          } else {
+            _this5.open_notif("error", "System", "Failed to add user");
+          }
+        })["catch"](function (error) {//this.errors = error.response.data.errors;
+        });
+      } else {
+        this.open_notif("warning", "Invalid", "Password confirm didn't match");
+      }
+    },
+    handleEditUser: function handleEditUser(index, row) {
+      var _this6 = this;
+
+      row.hospital_email = this.hospital_email;
+      row.hospital_code = this.hospital_code;
+      row.notify = this.notify;
+      var old_username = row.username;
+      var rowusername = row.username;
+      this.$prompt('Please input username', 'Edit user', {
+        confirmButtonText: 'SAVE CHANGES',
+        cancelButtonText: 'Cancel',
+        closeOnPressEscape: false,
+        closeOnClickModal: false,
+        inputValue: row.username,
+        beforeClose: function beforeClose(action, instance, done) {
+          if (action === 'confirm') {
+            if (instance._data.inputValue != null && instance._data.inputValue != '') {
+              if (old_username === instance._data.inputValue) {
+                _this6.open_notif("info", "System", "No changes has been made");
+              } else {
+                instance.confirmButtonLoading = true;
+                instance.confirmButtonText = 'Saving...';
+                row.username = instance._data.inputValue;
+                row.changes = "System administrator edit the existing user '" + old_username + "' to '" + instance._data.inputValue + "'";
+                axios.post("user_edit/" + row.id, row).then(function (response) {
+                  if (response.status > 199 && response.status < 203) {
+                    setTimeout(function () {
+                      done();
+                      setTimeout(function () {
+                        instance.confirmButtonLoading = false;
+                      }, 200);
+                    }, 2000);
+                  }
+                })["catch"](function (error) {
+                  row.username = rowusername;
+                });
+              }
+            } else {
+              row.username = rowusername;
+
+              _this6.open_notif('warning', 'Invalid!', 'Field required');
+            }
+          } else {
+            done();
+          }
+        }
+      }).then(function (_ref) {
+        var value = _ref.value;
+
+        _this6.open_notif("success", "Success", "Changes has been saved");
+      })["catch"](function () {
+        _this6.open_notif('info', 'Cancelled', 'No changes');
+      });
+    },
+    handleEditUser_reset: function handleEditUser_reset(index, row) {
+      var _this7 = this;
+
+      row.hospital_email = this.hospital_email;
+      row.hospital_code = this.hospital_code;
+      row.changes = "System administrator reset user password to default for '" + row.username + "'";
+      row.notify = this.notify;
+      this.$confirm('This will reset password to default. Continue?', 'Warning', {
+        confirmButtonText: 'RESET PASSWORD',
+        cancelButtonText: 'Cancel',
+        type: 'warning'
+      }).then(function () {
+        axios.post("user_edit_resetpass/" + row.id, row).then(function (response) {
+          if (response.status > 199 && response.status < 203) {
+            _this7.open_notif("success", "Success", "Reset password to default, changes has been saved");
+          }
+        })["catch"](function (error) {});
+      })["catch"](function () {
+        _this7.open_notif('info', 'Cancelled', 'No changes');
+      });
     }
   },
   mounted: function mounted() {
-    this.getBudget();
+    this.getHospital();
   }
 });
 
@@ -6194,6 +6781,74 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -6322,6 +6977,8 @@ __webpack_require__.r(__webpack_exports__);
       dialogTableVisible: false,
       dialogFormVisible: false,
       formLabelWidth: "120px",
+      progressbar_import: false,
+      enableUpload: false,
       // Validation
       rules: {
         start_date: [{
@@ -6542,10 +7199,808 @@ __webpack_require__.r(__webpack_exports__);
       this.form.start_date = "";
       this.form.total = "";
       this.form.end_date = "";
+    },
+    formDialog: function formDialog(id) {
+      if (id == "import_data") {
+        $("#importModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      } else if (id == "export_data") {
+        $("#exportModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      }
+    },
+    selectFile: function selectFile(event) {
+      if (event.target.value) {
+        this.enableUpload = true;
+      } else {
+        this.enableUpload = false;
+      }
+    },
+    onSubmit: function onSubmit() {
+      var _this = this;
+
+      var formData = new FormData();
+      formData.append("i_action", $("#i_action").val());
+      formData.append("budgets[]", $("#excelcontent").get(0).files[0]);
+      axios.post('budget_import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: function (progressEvent) {
+          this.uploadPercentage = parseInt(Math.round(progressEvent.loaded * 100 / progressEvent.total));
+          $('.progress-bar').css('width', this.uploadPercentage + '%').attr('aria-valuenow', this.uploadPercentage);
+          $('.progress-bar').html(this.uploadPercentage + "%");
+        }.bind(this)
+      }).then(function (res) {
+        setTimeout(function () {
+          _this.progressbar_import = false;
+          $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+          $('.progress-bar').html('0%');
+          $("#importModal").modal('hide');
+          $("#excelcontent").val('');
+        }, 2000);
+        var total_imported = res.data;
+
+        if (total_imported == 0) {
+          _this.open_notif("warning", "Import", "No row to be import");
+        } else if (total_imported > 0) {
+          _this.open_notif("success", "Import", "Successfully imported: " + res.data + " row");
+
+          _this.getBudget();
+        }
+      })["catch"](function (res) {
+        _this.progressbar_import = false;
+        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+        $('.progress-bar').html('0%');
+        $("#excelcontent").val('');
+        $("#importModal").modal('hide');
+
+        _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
+      });
     }
   },
   mounted: function mounted() {
     this.getBudget();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _constants_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../constants.js */ "./resources/js/constants.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+var generateNewPersonnel = function generateNewPersonnel() {
+  return {
+    contribution: "",
+    contributionType: "",
+    state: "",
+    staff: ""
+  };
+};
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ["medicalRecordId", "totalFee", "contributionRecords"],
+  data: function data() {
+    return {
+      contributionType: ["Attending Physician", "Requesting Physician", "Surgeon Physician", "Health Care Physician", "ER Physician", "Anesthesiologist", "Co-management", "Admitting"],
+      file: {
+        id: "",
+        medical_record: "",
+        item: "",
+        total: 0
+      },
+      data: {
+        attending: 0,
+        requesting: 0,
+        surgeon: 0,
+        health: 0,
+        er: 0,
+        anesthe: 0,
+        comanage: 0,
+        admitting: 0
+      },
+      errors: [],
+      disableSelect: [],
+      medical_record_id: "",
+      medical_record_pooled: "",
+      medical_record_shared: "",
+      personellType: [],
+      formLabelWidth: "120px",
+      staff: [],
+      query: "",
+      is_public: "",
+      is_private: "",
+      state: "",
+      personnels: [],
+      attending: [],
+      others: [],
+      search_data: [],
+      rules: {
+        personnel: [{
+          required: true,
+          message: "Please input Personnel name",
+          trigger: "blur"
+        }],
+        attending: [{
+          required: true,
+          message: "Please input Personnel name",
+          trigger: "blur"
+        }],
+        personnel_type: [{
+          required: true,
+          message: "Please input Personnel type",
+          trigger: "blur"
+        }],
+        contribution_type: [{
+          required: true,
+          message: "Please input Contribution type",
+          trigger: "blur"
+        }]
+      }
+    };
+  },
+  methods: {
+    triggerClose: function triggerClose() {
+      // console.log(this.container);
+      this.$emit("add-close");
+    },
+    save: function save() {
+      var _this2 = this;
+
+      var validCount = 0;
+      var formAmount = this.personnels.length + 1;
+      this.$refs.personnels.validate(function (valid) {
+        if (valid) {
+          validCount++;
+        }
+      });
+      this.personnels.forEach(function (personnel, index) {
+        _this2.$refs["dynamicFieldsForm".concat(index)][0].validate(function (valid) {
+          if (valid) {
+            validCount++;
+          }
+        });
+      });
+
+      if (validCount === formAmount) {
+        this.$message.success("通过所有验证"); // 通过所有验证，进行后续处理
+      }
+    },
+    submitForm: function submitForm(formName) {
+      this.$refs[formName].validate(function (valid) {
+        if (valid) {
+          alert("submit!");
+        } else {
+          console.log("error submit!!");
+          return false;
+        }
+      });
+    },
+    resetForm: function resetForm(formName) {
+      this.$refs[formName].resetFields();
+    },
+    getStaffCode: function getStaffCode() {
+      var _this3 = this;
+
+      this.data.attending = 0;
+      this.data.requesting = 0;
+      this.data.surgeon = 0;
+      this.data.health = 0;
+      this.data.er = 0;
+      this.data.anesthe = 0;
+      this.data.comanage = 0;
+      this.data.admitting = 0;
+      this.attending.forEach(function (element) {
+        if (element.contribution == 0) {
+          _this3.data.attending += 1;
+        }
+      });
+      this.personnels.forEach(function (element) {
+        if (element.contribution == 1) {
+          _this3.data.requesting += 1;
+        } else if (element.contribution == 2) {
+          _this3.data.surgeon += 1;
+        } else if (element.contribution == 3) {
+          _this3.data.health += 1;
+        } else if (element.contribution == 4) {
+          _this3.data.er += 1;
+        } else if (element.contribution == 5) {
+          _this3.data.anesthe += 1;
+        } else if (element.contribution == 6) {
+          _this3.data.comanage += 1;
+        } else if (element.contribution == 7) {
+          _this3.data.admitting += 1;
+        }
+      });
+      var holder = 0;
+      var total = 0;
+      this.attending.forEach(function (element) {
+        holder = _this3.medical_record_shared; // holder = Number(holder).toFixed(2);
+
+        total = Number(holder);
+
+        _this3.personnels.forEach(function (element) {
+          if (element.contribution == "1") {
+            total = total - _this3.medical_record_shared * 0.1;
+            element.computePF = _this3.masknumber(_this3.medical_record_shared * 0.1, false);
+          } else if (element.contribution == "2") {
+            total = total - _this3.medical_record_shared * 0.1;
+            element.computePF = _this3.masknumber(_this3.medical_record_shared * 0.1, false);
+          } else if (element.contribution == "3") {
+            total = total - _this3.medical_record_shared * 0.1;
+            element.computePF = _this3.masknumber(_this3.medical_record_shared * 0.1, false);
+          } else if (element.contribution == "4") {
+            total = total - _this3.medical_record_shared * 0.1;
+            element.computePF = _this3.masknumber(_this3.medical_record_shared * 0.1, false);
+          } else if (element.contribution == "5") {
+            total = total - _this3.medical_record_shared * 0.3;
+            element.computePF = _this3.masknumber(_this3.medical_record_shared * 0.3, false);
+          } else if (element.contribution == "6") {
+            total = total - _this3.medical_record_shared * 0.2;
+            element.computePF = _this3.masknumber(_this3.medical_record_shared * 0.2, false);
+          } else if (element.contribution == "7") {
+            total = total - _this3.medical_record_shared * 0.1;
+            element.computePF = _this3.masknumber(_this3.medical_record_shared * 0.1, false);
+          }
+        }); // console.log(" total "+ total);
+
+
+        if (_this3.contributionRecords.type == undefined) {
+          _this3.attending.forEach(function (element1) {
+            if (element.contribution == "0") {
+              element1.computePF = _this3.masknumber(total / _this3.data.attending, false);
+            }
+          });
+        } else {
+          var temp = _this3.data.requesting * (_this3.medical_record_shared * 0.1) + _this3.data.surgeon * (_this3.medical_record_shared * 0.1) + _this3.data.health * (_this3.medical_record_shared * 0.1) + _this3.data.er * (_this3.medical_record_shared * 0.1) + _this3.data.anesthe * (_this3.medical_record_shared * 0.3) + _this3.data.comanage * (_this3.medical_record_shared * 0.2) + _this3.data.admitting * (_this3.medical_record_shared * 0.1);
+          total = Number(_this3.contributionRecords.totalContributions - temp) / (Number(_this3.contributionRecords.totalAttending) + Number(_this3.data.attending));
+          _this3.file.total = total;
+
+          _this3.attending.forEach(function (element1) {
+            if (element.contribution == "0") {
+              element1.computePF = _this3.masknumber(total, false);
+            }
+          });
+        }
+      });
+      this.personnels.forEach(function (element) {
+        if (element.contribution == "1") {
+          total = Number(_this3.totalFee) / 2 * 0.7 * 0.1;
+          element.computePF = _this3.masknumber(total, false);
+        } else if (element.contribution == "2") {
+          total = Number(_this3.totalFee) / 2 * 0.7 * 0.1;
+          element.computePF = _this3.masknumber(total, false);
+        } else if (element.contribution == "3") {
+          total = Number(_this3.totalFee) / 2 * 0.7 * 0.1;
+          element.computePF = _this3.masknumber(total, false);
+        } else if (element.contribution == "4") {
+          total = Number(_this3.totalFee) / 2 * 0.7 * 0.1;
+          element.computePF = _this3.masknumber(total, false);
+        } else if (element.contribution == "5") {
+          total = Number(_this3.totalFee) / 2 * 0.7 * 0.3;
+          element.computePF = _this3.masknumber(total, false);
+        } else if (element.contribution == "6") {
+          total = Number(_this3.totalFee) / 2 * 0.7 * 0.2;
+          element.computePF = _this3.masknumber(total, false);
+        } else if (element.contribution == "7") {
+          total = Number(_this3.totalFee) / 2 * 0.7 * 0.1;
+          element.computePF = _this3.masknumber(total, false);
+        }
+      });
+    },
+    addStaff: function addStaff() {
+      this.personnels.push(new generateNewPersonnel());
+    },
+    addAttending: function addAttending() {
+      if (this.contributionRecords.type == undefined) {
+        this.attending.push(new generateNewPersonnel());
+        this.attending[Number(this.attending.length) - 1].contribution = "0";
+        this.disableSelect.push(true);
+        this.getStaffCode();
+      } else {
+        this.attending.push(new generateNewPersonnel());
+        this.attending[Number(this.attending.length) - 1].contribution = "0";
+        this.disableSelect.push(true);
+        this.getStaffCode();
+      }
+    },
+    removeAttending: function removeAttending() {
+      if (this.contributionRecords.type == undefined) {
+        if (this.attending.length > 1) {
+          this.attending.pop(this.attending[this.attending.length - 1]);
+          this.disableSelect.pop(this.disableSelect[this.disableSelect.length - 1]);
+        }
+      } else {
+        if (this.attending.length >= 0) {
+          this.attending.pop(this.attending[this.attending.length - 1]);
+          this.disableSelect.pop(this.disableSelect[this.disableSelect.length - 1]);
+        }
+      }
+
+      this.getStaffCode();
+    },
+    removeStaff: function removeStaff() {
+      if (this.personnels.length >= 0) {
+        this.personnels.pop(this.personnels[this.personnels.length - 1]);
+      }
+
+      this.getStaffCode();
+    },
+    handleSelect: function handleSelect(item) {
+      var index = this.personnels.length - 1;
+      this.personnels[index]["is_parttime"] = null;
+      this.personnels[index]["is_private"] = null;
+      this.personnels[index]["designation"] = null;
+      this.personnels[index]["staff"] = null;
+      this.personnels[index]["is_parttime"] = item.is_parttime;
+      this.personnels[index]["is_private"] = item.is_private;
+      this.personnels[index]["designation"] = item.designation;
+      this.personnels[index]["staff"] = item.id; // console.log(item);
+    },
+    handleSelectAttending: function handleSelectAttending(item) {
+      var index = this.attending.length - 1;
+      this.attending[index]["is_parttime"] = null;
+      this.attending[index]["is_private"] = null;
+      this.attending[index]["designation"] = null;
+      this.attending[index]["staff"] = null;
+      this.attending[index]["is_parttime"] = item.is_parttime;
+      this.attending[index]["is_private"] = item.is_private;
+      this.attending[index]["designation"] = item.designation;
+      this.attending[index]["staff"] = item.id; // console.log(item);
+    },
+    querySearch: function querySearch(queryString, cb) {
+      var links = this.staff;
+      var results = queryString ? links.filter(this.createFilter(queryString)) : links; // call callback function to return suggestions
+      // this.personnels.forEach((element) => {
+      //   element.staff = results[0].id;
+      // });
+
+      cb(results);
+    },
+    querySearchAttending: function querySearchAttending(queryString, cb) {
+      var links = this.staff;
+      var results = queryString ? links.filter(this.createFilter(queryString)) : links; // call callback function to return suggestions
+      // console.log(results);
+      // this.attending.forEach((element) => {
+      //   element.staff = results[0].id;
+      // });
+
+      cb(results);
+    },
+    createFilter: function createFilter(queryString) {
+      return function (link) {
+        return link.value.toLowerCase().indexOf(queryString.toLowerCase()) === 0;
+      };
+    },
+    onSubmit: function onSubmit() {
+      var _this4 = this;
+
+      this.personnels.forEach(function (element) {
+        element.contributionType = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].contributionType[Number(element.contribution)];
+
+        _this4.others.push(element);
+      });
+      this.attending.forEach(function (element) {
+        element.contributionType = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].contributionType[Number(element.contribution)];
+
+        _this4.others.push(element);
+      });
+      var data = {
+        medical_record_id: this.medicalRecordId,
+        personnel: this.others
+      };
+      var errorCounter = 0;
+      this.others.forEach(function (element) {
+        if (element.state == "" || element.computePF == "" || element.contribution == null || element.contribution == "") {
+          errorCounter++;
+        }
+      });
+
+      if (errorCounter == 0) {
+        axios.post("/user/contrirecord_add", data).then(function (response) {
+          if (response.data.status == 200) {
+            _this4.open_notif("success", "Success", "Contribution added successfully");
+
+            _this4.triggerClose();
+          }
+        })["catch"](function (error) {});
+
+        if (this.contributionRecords.type == true) {
+          this.file.item = this.contributionRecords;
+          this.file.total = Number(this.contributionRecords.totalAttending) * Number(this.contributionRecords.contributions[0].credit);
+          this.personnels.forEach(function (element) {
+            console.log(element.computePF);
+            _this4.file.total = Number(Number(_this4.file.total) - Number(element.computePF));
+          });
+          this.file.total /= this.attending.length + this.contributionRecords.totalAttending;
+          console.log(this.contributionRecords.contributions[0].credit + " current all attending pf " + this.file.total + "= total " + this.attending.length + "=length of attending current" + this.contributionRecords.totalAttending + " before attending");
+
+          var _this = this;
+
+          axios.post("contribution_edit/" + this.contributionRecords.contributions[0].id, _this.file).then(function (response) {
+            console.log(response.status);
+
+            if (response.status > 199 && response.status < 203) {
+              _this.open_notif("success", "Success", "Contribution added successfully"); // _this.triggerClose();
+
+            }
+          })["catch"](function (error) {});
+        }
+      } else {
+        this.open_notif("info", "Message", "Required fields were missing values");
+      }
+
+      this.others = [];
+      errorCounter = 0;
+    },
+    open_notif: function open_notif(status, title, message) {
+      if (status == "success") {
+        this.$notify.success({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "error") {
+        this.$notify.error({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "info") {
+        this.$notify.info({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      } else if (status == "warning") {
+        this.$notify.warning({
+          title: title,
+          message: message,
+          offset: 0
+        });
+      }
+    },
+    masknumber: function masknumber(theform, mode) {
+      // num = parseFloat(num)
+      //   .toFixed(2)
+      //   .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      // return num;
+      var num = theform,
+          rounded;
+
+      if (mode == true) {
+        var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,4})?/)[0].replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      } else {
+        var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,4})?/)[0];
+      }
+
+      return with2Decimals;
+    },
+    getName: function getName(name) {
+      this.personnels.query = name;
+      this.search_data = [];
+    },
+    computePF: function computePF() {},
+    getStaff: function getStaff() {
+      var _this5 = this;
+
+      axios.get("/user/personnel_get").then(function (response) {
+        response.data.forEach(function (element) {
+          if (element.designation == 1) {
+            if (element.is_private == 1) {
+              _this5.is_private++;
+            } else {
+              _this5.is_public++;
+            }
+
+            element.value = element.first_name + " " + element.middle_name + " " + element.last_name + (element.name_suffix === null ? "" : " " + element.name_suffix);
+          } else {
+            element.value = "";
+          }
+        });
+        _this5.staff = response.data; // console.log(this.staff);
+      })["catch"](function (error) {});
+    }
+  },
+  computed: {},
+  mounted: function mounted() {
+    console.log(this.contributionRecords.type);
+
+    if (this.contributionRecords.type == undefined) {
+      this.getStaff();
+      this.attending.push(new generateNewPersonnel());
+      this.medical_record_shared = this.totalFee / 2 * 0.7;
+      this.medical_record_pooled = this.totalFee / 2 * 0.3;
+      this.attending[0].contribution = "0";
+      this.getStaffCode();
+      this.disableSelect.push(true);
+    } else {
+      this.getStaff();
+      this.getStaffCode();
+      this.medical_record_shared = Number(this.totalFee / 2 * 0.7);
+      this.medical_record_pooled = this.totalFee / 2 * 0.3;
+    }
   }
 });
 
@@ -6815,6 +8270,87 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -6827,11 +8363,13 @@ __webpack_require__.r(__webpack_exports__);
       search: "",
       data: [],
       errors: [],
+      staff: [],
       dialogFormVisible_import_excel: false,
       progressbar_import: false,
       enableUpload: false,
       dialogTableVisible: false,
       dialogFormVisible: false,
+      dialogFormMedicalVisible: false,
       formLabelWidth: "130px",
       // Validation
       rules: {
@@ -6918,6 +8456,17 @@ __webpack_require__.r(__webpack_exports__);
         philhealth_number: "",
         name: ""
       },
+      // Add Medical form
+      formMedical: {
+        admission_date: "",
+        discharge_date: "",
+        final_diagnosis: "",
+        patient_id: "",
+        record_type: "",
+        total_fee: "",
+        is_private: "",
+        is_public: ""
+      },
       // Show info data
       gridData: [{
         philhealth_number: "",
@@ -6947,6 +8496,18 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
+    addMedicalRecord: function addMedicalRecord() {
+      var _this3 = this;
+
+      axios.post("/user/medicalrecord_add", this.formMedical).then(function (response) {
+        if (response.status > 199 && response.status < 203) {
+          _this3.open_notif("success", "Success", "Medical Record Save!");
+
+          _this3.dialogFormMedicalVisible = false;
+          _this3.formMedical = [];
+        }
+      })["catch"](function (error) {});
+    },
     selectFile: function selectFile(event) {
       if (event.target.value) {
         this.enableUpload = true;
@@ -6958,26 +8519,27 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       var formData = new FormData();
+      formData.append("i_action", $("#i_action").val());
       formData.append("patients[]", $("#excelcontent").get(0).files[0]);
-      axios.post("patients_import", formData, {
+      axios.post('patients_import', formData, {
         headers: {
-          "Content-Type": "multipart/form-data"
+          'Content-Type': 'multipart/form-data'
         },
         onUploadProgress: function (progressEvent) {
           this.uploadPercentage = parseInt(Math.round(progressEvent.loaded * 100 / progressEvent.total));
-          $(".progress-bar").css("width", this.uploadPercentage + "%").attr("aria-valuenow", this.uploadPercentage);
-          $(".progress-bar").html(this.uploadPercentage + "%");
+          $('.progress-bar').css('width', this.uploadPercentage + '%').attr('aria-valuenow', this.uploadPercentage);
+          $('.progress-bar').html(this.uploadPercentage + "%");
         }.bind(this)
       }).then(function (res) {
         setTimeout(function () {
           _this.progressbar_import = false;
-          $(".progress-bar").css("width", "0%").attr("aria-valuenow", 0);
-          $(".progress-bar").html("0%");
-          $("#importModal").modal("hide");
-          $("#excelcontent").val("");
+          $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+          $('.progress-bar').html('0%');
+          $("#importModal").modal('hide');
+          $("#excelcontent").val('');
         }, 2000);
         var total_imported = res.data;
-        var get_imported = total_imported.split("/");
+        var get_imported = total_imported.split('/');
 
         if (get_imported[0] == 0 && get_imported[1] == 0) {
           _this.open_notif("warning", "Import", "No row to be import");
@@ -6990,10 +8552,10 @@ __webpack_require__.r(__webpack_exports__);
         }
       })["catch"](function (res) {
         _this.progressbar_import = false;
-        $(".progress-bar").css("width", "0%").attr("aria-valuenow", 0);
-        $(".progress-bar").html("0%");
-        $("#excelcontent").val("");
-        $("#importModal").modal("hide");
+        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+        $('.progress-bar').html('0%');
+        $("#excelcontent").val('');
+        $("#importModal").modal('hide');
 
         _this.open_notif("error", "Message", "FAILURE!! Something went wrong!");
       });
@@ -7026,15 +8588,21 @@ __webpack_require__.r(__webpack_exports__);
       loading.close();
     },
     getPatients: function getPatients() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get("patients_get").then(function (response) {
         response.data.forEach(function (element) {
-          _this3.buildPatientData(element);
+          _this4.buildPatientData(element);
         });
-        _this3.data = response.data;
-        _this3.loading = false;
+        _this4.data = response.data;
+        _this4.loading = false;
       })["catch"](function (error) {});
+    },
+    handleAddMedical: function handleAddMedical(index, row) {
+      this.dialogFormMedicalVisible = true;
+      this.formMedical.formmode = "insert_data";
+      this.formMedical.patient_id = row.id;
+      console.log(row);
     },
     handleView: function handleView(index, row) {
       this.dialogTableVisible = true;
@@ -7077,7 +8645,7 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     patientFunctions: function patientFunctions(mode) {
-      var _this4 = this;
+      var _this5 = this;
 
       switch (mode) {
         case "add":
@@ -7086,20 +8654,20 @@ __webpack_require__.r(__webpack_exports__);
           } else {
             axios.post("add_patient", this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
-                response.data.name = _this4.form.last_name + ", " + _this4.form.name_suffix + " " + _this4.form.first_name + " " + _this4.form.middle_name.slice(0, 1) + ". ";
-                response.data.sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this4.form.sex)];
-                response.data.marital_status = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].marital_status[Number(_this4.form.marital_status)];
+                response.data.name = _this5.form.last_name + ", " + _this5.form.name_suffix + " " + _this5.form.first_name + " " + _this5.form.middle_name.slice(0, 1) + ". ";
+                response.data.sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this5.form.sex)];
+                response.data.marital_status = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].marital_status[Number(_this5.form.marital_status)];
 
-                _this4.data.push(response.data);
+                _this5.data.push(response.data);
 
-                _this4.dialogFormVisible = false;
+                _this5.dialogFormVisible = false;
 
-                _this4.open_notif("success", "Success", "Patient added successfully");
+                _this5.open_notif("success", "Success", "Patient added successfully");
               } else {
-                _this4.open_notif("error", "System", "Failed to add patient");
+                _this5.open_notif("error", "System", "Failed to add patient");
               }
             })["catch"](function (error) {
-              _this4.errors = error.response.data.errors;
+              _this5.errors = error.response.data.errors;
             });
           }
 
@@ -7130,21 +8698,21 @@ __webpack_require__.r(__webpack_exports__);
             this.form.name = this.form.last_name + ", " + this.form.name_suffix + " " + this.form.first_name + " " + this.form.middle_name.slice(0, 1) + ". ";
             axios.post("patient_edit/" + this.form.id, this.form).then(function (response) {
               if (response.status > 199 && response.status < 203) {
-                _this4.open_notif("success", "Success", "Changes has been saved");
+                _this5.open_notif("success", "Success", "Changes has been saved");
 
-                _this4.dialogFormVisible = false;
-                _this4.data[parseInt(_this4.form.edit_object_index)].last_name = _this4.form.last_name;
-                _this4.data[parseInt(_this4.form.edit_object_index)].first_name = _this4.form.first_name;
-                _this4.data[parseInt(_this4.form.edit_object_index)].middle_name = _this4.form.middle_name;
-                _this4.data[parseInt(_this4.form.edit_object_index)].name_suffix = _this4.form.name_suffix;
-                _this4.data[parseInt(_this4.form.edit_object_index)].sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this4.form.sex)];
-                _this4.data[parseInt(_this4.form.edit_object_index)].birthdate = _this4.form.birthdate;
-                _this4.data[parseInt(_this4.form.edit_object_index)].marital_status = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].marital_status[Number(_this4.form.marital_status)];
-                _this4.data[parseInt(_this4.form.edit_object_index)].philhealth_number = _this4.form.philhealth_number;
-                _this4.data[parseInt(_this4.form.edit_object_index)].name = _this4.form.name;
+                _this5.dialogFormVisible = false;
+                _this5.data[parseInt(_this5.form.edit_object_index)].last_name = _this5.form.last_name;
+                _this5.data[parseInt(_this5.form.edit_object_index)].first_name = _this5.form.first_name;
+                _this5.data[parseInt(_this5.form.edit_object_index)].middle_name = _this5.form.middle_name;
+                _this5.data[parseInt(_this5.form.edit_object_index)].name_suffix = _this5.form.name_suffix;
+                _this5.data[parseInt(_this5.form.edit_object_index)].sex = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].sex[Number(_this5.form.sex)];
+                _this5.data[parseInt(_this5.form.edit_object_index)].birthdate = _this5.form.birthdate;
+                _this5.data[parseInt(_this5.form.edit_object_index)].marital_status = _constants_js__WEBPACK_IMPORTED_MODULE_0__["default"].marital_status[Number(_this5.form.marital_status)];
+                _this5.data[parseInt(_this5.form.edit_object_index)].philhealth_number = _this5.form.philhealth_number;
+                _this5.data[parseInt(_this5.form.edit_object_index)].name = _this5.form.name;
               }
             })["catch"](function (error) {
-              _this4.errors = error.response.data.errors;
+              _this5.errors = error.response.data.errors;
             });
           }
 
@@ -7152,7 +8720,7 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     deletePatient: function deletePatient(id, res) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
@@ -7160,7 +8728,7 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonText: "Cancel",
         type: "warning"
       }).then(function () {
-        var _this = _this5;
+        var _this = _this6;
         axios.post("patient_delete/" + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             _this.open_notif("success", "Success", "Deleted Successfully");
@@ -7169,7 +8737,7 @@ __webpack_require__.r(__webpack_exports__);
           }
         });
       })["catch"](function (action) {
-        _this5.open_notif("info", "Cancelled", "No Changes");
+        _this6.open_notif("info", "Cancelled", "No Changes");
       });
     },
     open_notif: function open_notif(status, title, message) {
@@ -7268,10 +8836,26 @@ __webpack_require__.r(__webpack_exports__);
       element.name = this.buildName(element.first_name, element.middle_name, element.last_name, element.name_suffix);
       element.sex = this.assignSex(element.sex);
       element.marital_status = this.assignMaritalStatus(element.marital_status);
+    },
+    getStaff: function getStaff() {
+      var _this7 = this;
+
+      axios.get("/user/personnel_get").then(function (response) {
+        response.data.forEach(function (element) {
+          if (element.designation == 0) {
+            if (element.is_private == 0) {
+              _this7.formMedical.is_private++;
+            } else {
+              _this7.formMedical.is_public++;
+            }
+          }
+        });
+      })["catch"](function (error) {});
     }
   },
   mounted: function mounted() {
     this.getPatients();
+    this.getStaff();
   }
 });
 
@@ -7436,12 +9020,85 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
-    return {
+    var _ref;
+
+    return _ref = {
       page: 1,
       pageSize: 10,
       loading: true,
@@ -7453,81 +9110,73 @@ __webpack_require__.r(__webpack_exports__);
       enableUpload: false,
       dialogTableVisible: false,
       dialogFormVisible: false,
-      formLabelWidth: "120px",
-      // Validation
-      rules: {
-        last_name: [{
-          required: true,
-          message: "Lastname is required.",
-          trigger: "blur"
-        }],
-        first_name: [{
-          required: true,
-          message: "Firstname is required.",
-          trigger: "blur"
-        }],
-        middle_name: [{
-          required: true,
-          message: "Middlename is required.",
-          trigger: "blur"
-        }],
-        is_private: [{
-          required: true,
-          message: "Please select staff type.",
-          trigger: "change"
-        }],
-        designation: [{
-          required: true,
-          message: "Please select staff designation.",
-          trigger: "change"
-        }],
-        sex: [{
-          required: true,
-          message: "Sex is required.",
-          trigger: "change"
-        }],
-        birthdate: [{
-          required: true,
-          message: "Please pick a date.",
-          trigger: "change"
-        }]
-      },
-      // Add Personnel form
-      form: {
-        id: "",
-        last_name: "",
-        first_name: "",
-        middle_name: "",
-        name_suffix: "",
-        sex: "",
-        birthdate: "",
-        is_private: "",
-        designation: "",
-        name: "",
-        formmode: "",
-        edit_object_index: ""
-      },
-      // Edit Personnel form check
-      form_check: {
-        last_name: "",
-        first_name: "",
-        middle_name: "",
-        name_suffix: "",
-        sex: "",
-        birthdate: "",
-        is_private: "",
-        designation: "",
-        name: ""
-      },
-      // View info data
-      gridData: [{
-        name: "",
-        sex: "",
-        birthdate: "",
-        is_private: "",
-        designation: ""
+      formLabelWidth: "120px"
+    }, _defineProperty(_ref, "progressbar_import", false), _defineProperty(_ref, "enableUpload", false), _defineProperty(_ref, "rules", {
+      last_name: [{
+        required: true,
+        message: "Lastname is required.",
+        trigger: "blur"
+      }],
+      first_name: [{
+        required: true,
+        message: "Firstname is required.",
+        trigger: "blur"
+      }],
+      middle_name: [{
+        required: true,
+        message: "Middlename is required.",
+        trigger: "blur"
+      }],
+      is_private: [{
+        required: true,
+        message: "Please select staff type.",
+        trigger: "change"
+      }],
+      designation: [{
+        required: true,
+        message: "Please select staff designation.",
+        trigger: "change"
+      }],
+      sex: [{
+        required: true,
+        message: "Sex is required.",
+        trigger: "change"
+      }],
+      birthdate: [{
+        required: true,
+        message: "Please pick a date.",
+        trigger: "change"
       }]
-    };
+    }), _defineProperty(_ref, "form", {
+      id: "",
+      last_name: "",
+      first_name: "",
+      middle_name: "",
+      name_suffix: "",
+      sex: "",
+      birthdate: "",
+      is_private: "",
+      designation: "",
+      name: "",
+      formmode: "",
+      edit_object_index: ""
+    }), _defineProperty(_ref, "form_check", {
+      last_name: "",
+      first_name: "",
+      middle_name: "",
+      name_suffix: "",
+      sex: "",
+      birthdate: "",
+      is_private: "",
+      designation: "",
+      name: ""
+    }), _defineProperty(_ref, "gridData", [{
+      name: "",
+      sex: "",
+      birthdate: "",
+      is_private: "",
+      designation: ""
+    }]), _ref;
   },
   computed: {
     ListData: function ListData() {
@@ -7645,15 +9294,15 @@ __webpack_require__.r(__webpack_exports__);
             }
 
             if (this.form.is_private == "Private") {
-              this.form.is_private = 0;
-            } else if (this.form.is_private == "Non-private") {
               this.form.is_private = 1;
+            } else if (this.form.is_private == "Non-private") {
+              this.form.is_private = 0;
             }
 
             if (this.form.designation == "Medical") {
-              this.form.designation = 0;
-            } else if (this.form.designation == "Non-medical") {
               this.form.designation = 1;
+            } else if (this.form.designation == "Non-medical") {
+              this.form.designation = 0;
             }
 
             this.form.name = this.form.last_name + ", " + this.form.name_suffix + " " + this.form.first_name + " " + this.form.middle_name.slice(0, 1) + ". ";
@@ -7742,11 +9391,11 @@ __webpack_require__.r(__webpack_exports__);
       var type;
 
       switch (type_value) {
-        case 0:
+        case 1:
           type = "Private";
           break;
 
-        case 1:
+        case 0:
           type = "Non-private";
           break;
 
@@ -7760,11 +9409,11 @@ __webpack_require__.r(__webpack_exports__);
       var designation;
 
       switch (designation_value) {
-        case 0:
+        case 1:
           designation = "Medical";
           break;
 
-        case 1:
+        case 0:
           designation = "Non-medical";
           break;
 
@@ -7808,6 +9457,71 @@ __webpack_require__.r(__webpack_exports__);
       element.sex = this.assignSex(element.sex);
       element.is_private = this.assignType(element.is_private);
       element.designation = this.assignDesignation(element.designation);
+    },
+    formDialog: function formDialog(id) {
+      if (id == "import_data") {
+        $("#importModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      } else if (id == "export_data") {
+        $("#exportModal").modal({
+          backdrop: 'static',
+          keyboard: false
+        });
+      }
+    },
+    selectFile: function selectFile(event) {
+      if (event.target.value) {
+        this.enableUpload = true;
+      } else {
+        this.enableUpload = false;
+      }
+    },
+    onSubmit: function onSubmit() {
+      var _this = this;
+
+      var formData = new FormData();
+      formData.append("i_action", $("#i_action").val());
+      formData.append("personnels[]", $("#excelcontent").get(0).files[0]);
+      axios.post('personnels_import', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: function (progressEvent) {
+          this.uploadPercentage = parseInt(Math.round(progressEvent.loaded * 100 / progressEvent.total));
+          $('.progress-bar').css('width', this.uploadPercentage + '%').attr('aria-valuenow', this.uploadPercentage);
+          $('.progress-bar').html(this.uploadPercentage + "%");
+        }.bind(this)
+      }).then(function (res) {
+        setTimeout(function () {
+          _this.progressbar_import = false;
+          $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+          $('.progress-bar').html('0%');
+          $("#importModal").modal('hide');
+          $("#excelcontent").val('');
+        }, 2000);
+        var total_imported = res.data;
+        var get_imported = total_imported.split('/');
+
+        if (get_imported[0] == 0 && get_imported[1] == 0) {
+          _this.open_notif("warning", "Import", "No row to be import");
+        } else if (get_imported[0] == 0 && get_imported[1] > 0) {
+          _this.open_notif("info", "Import", "All row already exist in the database");
+        } else if (get_imported[0] > 0 && get_imported[1] > 0) {
+          _this.open_notif("success", "Import", "Successfully imported: " + res.data);
+
+          _this.getPersonnel();
+        }
+      })["catch"](function (res) {
+        _this.progressbar_import = false;
+        $('.progress-bar').css('width', '0%').attr('aria-valuenow', 0);
+        $('.progress-bar').html('0%');
+        $("#excelcontent").val('');
+        $("#importModal").modal('hide');
+
+        _this.open_notif("error", "Message", "FAILURE!! Something went wrong!" + res);
+      });
     }
   },
   mounted: function mounted() {
@@ -8059,12 +9773,80 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      container: [],
+      filtered: [],
       page: 1,
+      total: 0,
       pageSize: 10,
       search: "",
       data: [],
@@ -8132,33 +9914,126 @@ __webpack_require__.r(__webpack_exports__);
   },
   computed: {
     pagedTableData: function pagedTableData() {
-      return this.data.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
+      var _this2 = this;
+
+      if (this.search == null) return this.data;
+      this.filtered = this.data.filter(function (data) {
+        return !_this2.search || data.first_name.toLowerCase().includes(_this2.search.toLowerCase());
+      });
+      this.total = this.filtered.length;
+      return this.filtered.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
     }
   },
   methods: {
-    masknumber: function masknumber(num) {
-      num = parseFloat(num).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-      return num;
+    triggerAdd: function triggerAdd(mode) {
+      var _this3 = this;
+
+      switch (mode) {
+        case "update":
+          var counter = 0;
+          var holder = 0.00;
+          this.container.type = true;
+          this.container.contributions.forEach(function (element) {
+            if (element.contribution == "Attending Physician") {
+              counter += 1;
+              _this3.container.totalAttending = counter; // console.log(element.credit);
+
+              var temp = parseFloat(element.credit).toFixed(2);
+              holder = (Number(holder) + Number(temp)).toFixed(2);
+              _this3.container.totalContributions = Number(holder);
+            }
+          });
+          this.container.total_fee = parseFloat(this.container.total_fee.replace(/,/g, ""));
+          break;
+
+        default:
+          this.container.total_fee = parseFloat(this.container.total_fee.replace(/,/g, ""));
+      } // console.log(this.container);
+
+
+      console.log(this.container);
+      this.$emit("add-trigger", this.container);
+    },
+    masknumber: function masknumber(theform) {
+      // num = parseFloat(num)
+      //   .toFixed(2)
+      //   .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      // return num;
+      var num = theform,
+          rounded;
+      var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,4})?/)[0].replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      return with2Decimals;
     },
     setPage: function setPage(val) {
       this.page = val;
     },
     handleDelete: function handleDelete(index, row) {
+      var _this4 = this;
+
       var data = this.data;
-      this.deleteRecord(row.id, function (res_value) {
+      this.deleteRecord("delete_record/", row.id, function (res_value) {
         if (res_value) {
           data.splice(data.indexOf(row), 1);
+
+          _this4.getRecord();
         }
       });
     },
-    handleView: function handleView(index, row) {
-      var _this2 = this;
+    handleDeleteContribution: function handleDeleteContribution(index, row) {
+      var _this5 = this;
 
-      console.log(row);
-      axios.post("personnel_get/" + row.id).then(function (response) {
-        _this2.staff = response.data.personnels;
-      })["catch"](function (error) {});
+      var data = this.staff;
+      this.deleteRecord("contribution_delete/", row.cid, function (res_value) {
+        if (res_value) {
+          _this5.recomputePF(row.total_fee);
+
+          data.splice(data.indexOf(row), 1);
+
+          _this5.getRecord();
+        }
+      });
+    },
+    recomputePF: function recomputePF(pf) {
+      var a = 0;
+      var tempAmount = 0;
+      var numOfAttending = this.staff.filter(function (element) {
+        return element.contribution == "Attending Physician";
+      });
+      this.staff.forEach(function (element) {
+        if (element.contribution == "Attending Physician") {
+          tempAmount = element.total_fee;
+        }
+      });
+      a = parseFloat(pf.replace(/,/g, "")) / numOfAttending.length; // this.staff.forEach((element)=>{
+      //   if(element.contribution=="Attending Physician") {
+      //    element.total_fee=amount;
+      //   }
+      // })
+    },
+    handleAddRecord: function handleAddRecord(index, row) {
+      this.container = row; // window.location.replace("medicalrecord/" + row.id);
+
+      this.container.total_fee = parseFloat(this.container.total_fee.replace(/,/g, "")); // console.log(this.container);
+      // console.log(this.container)
+
+      this.$emit("add-trigger", this.container);
+    },
+    handleView: function handleView(index, row) {
+      // console.log(row);
+      this.container = row;
+      this.personnel_get(index, row);
       this.dialogTableVisible = true;
+    },
+    personnel_get: function personnel_get(index, row) {
+      var _this6 = this;
+
+      axios.post("personnel_get/" + row.id).then(function (response) {
+        response.data.forEach(function (entry) {
+          var temp = entry.total_fee;
+          entry.total_fee = _this6.masknumber(temp);
+        });
+        _this6.staff = response.data;
+      })["catch"](function (error) {});
     },
     open_notif: function open_notif(status, title, message) {
       if (status == "success") {
@@ -8187,8 +10062,8 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
-    deleteRecord: function deleteRecord(id) {
-      var _this3 = this;
+    deleteRecord: function deleteRecord(route, id, cb) {
+      var _this7 = this;
 
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
@@ -8196,28 +10071,28 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonText: "Cancel",
         type: "warning"
       }).then(function () {
-        var _this = _this3;
-        axios.post("delete_record/" + id).then(function (response) {
+        var _this = _this7;
+        axios.post(route + id).then(function (response) {
           if (response.status > 199 && response.status < 203) {
             if (response.status > 199 && response.status < 203) {
               _this.open_notif("success", "Success", "Succesfully! Deleted");
             }
 
-            _this.getRecord();
+            cb(id);
           }
         });
       })["catch"](function (action) {
-        _this3.$message({
+        _this7.$message({
           type: "success",
           message: action === "cancel" ? "Canceled" : "No changes"
         });
       });
     },
     getRecord: function getRecord() {
-      var _this4 = this;
+      var _this8 = this;
 
       axios.get("record_get").then(function (response) {
-        console.log(response.data);
+        // console.log(response.data);
         response.data.forEach(function (entry) {
           if (entry.name_suffix == null) {
             entry.first_name = entry.first_name + " " + entry.middle_name.slice(0, 1) + ". " + entry.last_name;
@@ -8227,9 +10102,11 @@ __webpack_require__.r(__webpack_exports__);
           //   constants.hospital_code[Number(entry.patient.hospital_id) - 1];
 
 
-          entry.total_fee = _this4.masknumber(entry.total_fee);
+          entry.total_fee = _this8.masknumber(entry.total_fee);
+          entry.totalPersonnel = entry.contributions.length;
         });
-        _this4.data = response.data; //   console.log(response.data);
+        _this8.data = response.data; // console.log(this.data);
+        //   console.log(response.data);
       })["catch"](function (error) {});
     },
     clearfield: function clearfield() {
@@ -8274,6 +10151,55 @@ __webpack_require__.r(__webpack_exports__);
   },
   mounted: function mounted() {
     this.getRecord();
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/RecordContainer.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib??ref--4-0!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/RecordContainer.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _user_RecordComponent__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../user/RecordComponent */ "./resources/js/components/user/RecordComponent.vue");
+/* harmony import */ var _user_MedicalRecordComponent__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../user/MedicalRecordComponent */ "./resources/js/components/user/MedicalRecordComponent.vue");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+  data: function data() {
+    return {
+      records: [],
+      trigger: false
+    };
+  },
+  methods: {
+    addFormTrigger: function addFormTrigger(data) {
+      this.trigger = true;
+      this.records = data;
+    },
+    closeFormTrigger: function closeFormTrigger() {
+      this.trigger = false;
+    }
+  },
+  mounted: function mounted() {
+    console.log(this.records);
+  },
+  components: {
+    RecordContainer: _user_RecordComponent__WEBPACK_IMPORTED_MODULE_0__["default"],
+    MedicContainer: _user_MedicalRecordComponent__WEBPACK_IMPORTED_MODULE_1__["default"]
   }
 });
 
@@ -105406,6 +107332,32 @@ var render = function() {
             _c(
               "el-button",
               {
+                attrs: { type: "primary", size: "medium" },
+                on: {
+                  click: function($event) {
+                    return _vm.formDialog("export_data")
+                  }
+                }
+              },
+              [_vm._v("Export")]
+            ),
+            _vm._v(" "),
+            _c(
+              "el-button",
+              {
+                attrs: { type: "primary", size: "medium" },
+                on: {
+                  click: function($event) {
+                    return _vm.formDialog("import_data")
+                  }
+                }
+              },
+              [_vm._v("Import")]
+            ),
+            _vm._v(" "),
+            _c(
+              "el-button",
+              {
                 attrs: { type: "primary" },
                 on: {
                   click: function($event) {
@@ -105884,7 +107836,141 @@ var render = function() {
           )
         ],
         1
-      )
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "importModal",
+            tabindex: "-1",
+            "aria-labelledby": "ModalLabel",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c("div", { staticClass: "modal-dialog" }, [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  attrs: {
+                    method: "post",
+                    enctype: "multipart/form-data",
+                    action: "/budget_import"
+                  }
+                },
+                [
+                  _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                  _vm._v(" "),
+                  _c("input", {
+                    attrs: {
+                      type: "hidden",
+                      name: "i_action",
+                      id: "i_action",
+                      value: "BudgetImport"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", [
+                        _vm._v("Select excel file for upload (.csv)")
+                      ]),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "w-100",
+                        staticStyle: {
+                          border: "1px solid rgba(0,0,0,0.1)",
+                          "border-radius": "4px"
+                        },
+                        attrs: {
+                          type: "file",
+                          id: "excelcontent",
+                          name: "budgets",
+                          accept: ".csv"
+                        },
+                        on: {
+                          change: function($event) {
+                            return _vm.selectFile($event)
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _vm.progressbar_import
+                        ? _c(
+                            "div",
+                            {
+                              staticClass: "progress",
+                              staticStyle: { "margin-top": "15px" }
+                            },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "progress-bar progress-bar-striped active",
+                                  staticStyle: { width: "0%" },
+                                  attrs: {
+                                    role: "progressbar",
+                                    "aria-valuenow": "0",
+                                    "aria-valuemin": "0",
+                                    "aria-valuemax": "100"
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                      0%\n                    "
+                                  )
+                                ]
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Close")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: {
+                          type: "button",
+                          name: "upload",
+                          disabled: _vm.enableUpload === false
+                        },
+                        on: {
+                          click: function($event) {
+                            _vm.progressbar_import = true
+                            _vm.onSubmit()
+                          }
+                        }
+                      },
+                      [_vm._v("Import")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _vm._m(3)
     ],
     1
   )
@@ -105913,6 +107999,147 @@ var staticRenderFns = [
         ])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "ModalLabel" } }, [
+        _vm._v("Import Budget")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "exportModal",
+          tabindex: "-1",
+          "aria-labelledby": "ModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c(
+                "h5",
+                { staticClass: "modal-title", attrs: { id: "ModalLabel" } },
+                [_vm._v("Export Budget")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: {
+                    type: "button",
+                    "data-dismiss": "modal",
+                    "aria-label": "Close"
+                  }
+                },
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("×")
+                  ])
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: {
+                  method: "get",
+                  enctype: "multipart/form-data",
+                  action: "budget_export/"
+                }
+              },
+              [
+                _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                _vm._v(" "),
+                _c("input", {
+                  attrs: {
+                    type: "hidden",
+                    name: "e_action",
+                    id: "e_action",
+                    value: "BudgetExport"
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", [_vm._v("Select excel file type")]),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        staticClass: "form-control",
+                        attrs: { name: "exceltype" }
+                      },
+                      [
+                        _c("option", { attrs: { value: "csv" } }, [
+                          _vm._v("CSV")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xlsx" } }, [
+                          _vm._v("XLSX")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xls" } }, [
+                          _vm._v("XLS")
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button", "data-dismiss": "modal" }
+                    },
+                    [_vm._v("Close")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "submit", name: "upload" }
+                    },
+                    [_vm._v("Export")]
+                  )
+                ])
+              ]
+            )
+          ])
+        ])
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -106728,6 +108955,15 @@ var render = function() {
                 [
                   _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
                   _vm._v(" "),
+                  _c("input", {
+                    attrs: {
+                      type: "hidden",
+                      name: "i_action",
+                      id: "i_action",
+                      value: "PatientImport"
+                    }
+                  }),
+                  _vm._v(" "),
                   _c("div", { staticClass: "modal-body" }, [
                     _c("div", { staticClass: "form-group" }, [
                       _c("label", [
@@ -106906,6 +109142,15 @@ var staticRenderFns = [
               [
                 _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
                 _vm._v(" "),
+                _c("input", {
+                  attrs: {
+                    type: "hidden",
+                    name: "e_action",
+                    id: "e_action",
+                    value: "PatientExport"
+                  }
+                }),
+                _vm._v(" "),
                 _c("div", { staticClass: "modal-body" }, [
                   _c("div", { staticClass: "form-group" }, [
                     _c("label", [_vm._v("Select excel file type")]),
@@ -107021,6 +109266,32 @@ var render = function() {
             attrs: { align: "right" }
           },
           [
+            _c(
+              "el-button",
+              {
+                attrs: { type: "primary", size: "medium" },
+                on: {
+                  click: function($event) {
+                    return _vm.formDialog("export_data")
+                  }
+                }
+              },
+              [_vm._v("Export")]
+            ),
+            _vm._v(" "),
+            _c(
+              "el-button",
+              {
+                attrs: { type: "primary", size: "medium" },
+                on: {
+                  click: function($event) {
+                    return _vm.formDialog("import_data")
+                  }
+                }
+              },
+              [_vm._v("Import")]
+            ),
+            _vm._v(" "),
             _c(
               "el-button",
               {
@@ -107647,6 +109918,140 @@ var render = function() {
       ),
       _vm._v(" "),
       _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "importModal",
+            tabindex: "-1",
+            "aria-labelledby": "ModalLabel",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c("div", { staticClass: "modal-dialog" }, [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  attrs: {
+                    method: "post",
+                    enctype: "multipart/form-data",
+                    action: "/personnels_import"
+                  }
+                },
+                [
+                  _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                  _vm._v(" "),
+                  _c("input", {
+                    attrs: {
+                      type: "hidden",
+                      name: "i_action",
+                      id: "i_action",
+                      value: "PersonnelImport"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", [
+                        _vm._v("Select excel file for upload (.csv)")
+                      ]),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "w-100",
+                        staticStyle: {
+                          border: "1px solid rgba(0,0,0,0.1)",
+                          "border-radius": "4px"
+                        },
+                        attrs: {
+                          type: "file",
+                          id: "excelcontent",
+                          name: "personnels",
+                          accept: ".csv"
+                        },
+                        on: {
+                          change: function($event) {
+                            return _vm.selectFile($event)
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _vm.progressbar_import
+                        ? _c(
+                            "div",
+                            {
+                              staticClass: "progress",
+                              staticStyle: { "margin-top": "15px" }
+                            },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "progress-bar progress-bar-striped active",
+                                  staticStyle: { width: "0%" },
+                                  attrs: {
+                                    role: "progressbar",
+                                    "aria-valuenow": "0",
+                                    "aria-valuemin": "0",
+                                    "aria-valuemax": "100"
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                          0%\n                        "
+                                  )
+                                ]
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Close")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: {
+                          type: "button",
+                          name: "upload",
+                          disabled: _vm.enableUpload === false
+                        },
+                        on: {
+                          click: function($event) {
+                            _vm.progressbar_import = true
+                            _vm.onSubmit()
+                          }
+                        }
+                      },
+                      [_vm._v("Import")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _vm._m(3),
+      _vm._v(" "),
+      _c(
         "el-dialog",
         {
           attrs: { title: "Staff Info", visible: _vm.dialogTableVisible },
@@ -107730,6 +110135,147 @@ var staticRenderFns = [
         ])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "ModalLabel" } }, [
+        _vm._v("Import Staffs")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "exportModal",
+          tabindex: "-1",
+          "aria-labelledby": "ModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c(
+                "h5",
+                { staticClass: "modal-title", attrs: { id: "ModalLabel" } },
+                [_vm._v("Export Staffs")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: {
+                    type: "button",
+                    "data-dismiss": "modal",
+                    "aria-label": "Close"
+                  }
+                },
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("×")
+                  ])
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: {
+                  method: "get",
+                  enctype: "multipart/form-data",
+                  action: "personnels_export/"
+                }
+              },
+              [
+                _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                _vm._v(" "),
+                _c("input", {
+                  attrs: {
+                    type: "hidden",
+                    name: "e_action",
+                    id: "e_action",
+                    value: "PersonnelExport"
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", [_vm._v("Select excel file type")]),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        staticClass: "form-control",
+                        attrs: { name: "exceltype" }
+                      },
+                      [
+                        _c("option", { attrs: { value: "csv" } }, [
+                          _vm._v("CSV")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xlsx" } }, [
+                          _vm._v("XLSX")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xls" } }, [
+                          _vm._v("XLS")
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button", "data-dismiss": "modal" }
+                    },
+                    [_vm._v("Close")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "submit", name: "upload" }
+                    },
+                    [_vm._v("Export")]
+                  )
+                ])
+              ]
+            )
+          ])
+        ])
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -108458,7 +111004,7 @@ var render = function() {
                 click: function($event) {
                   _vm.clearfield()
                   _vm.dialogFormVisible = true
-                  _vm.form.formmode = "add"
+                  _vm.form.formmode = "add_hospital"
                 }
               }
             },
@@ -108469,254 +111015,512 @@ var render = function() {
       )
     ]),
     _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "card" },
-      [
-        _c(
-          "div",
-          { staticClass: "card-body" },
-          [
-            _c(
-              "data-tables",
-              {
-                attrs: {
-                  data: _vm.data,
-                  "page-size": 10,
-                  filters: _vm.filters,
-                  "pagination-props": { pageSizes: [10, 20, 50] },
-                  "action-col": _vm.actionCol
-                }
-              },
-              [
-                _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
-                  _vm._v("Table Empty")
-                ]),
-                _vm._v(" "),
-                _vm._l(_vm.titles, function(title) {
-                  return _c("el-table-column", {
-                    key: title.label,
-                    attrs: {
-                      prop: title.prop,
-                      label: title.label,
-                      sortable: "custom"
-                    }
-                  })
-                }),
-                _vm._v(" "),
-                _c("p", { attrs: { slot: "append" }, slot: "append" })
-              ],
-              2
-            ),
-            _vm._v(" "),
-            _c(
-              "el-dialog",
-              {
-                attrs: {
-                  title: "Budget Details",
-                  visible: _vm.dialogFormVisible,
-                  top: "0vh"
-                },
-                on: {
-                  "update:visible": function($event) {
-                    _vm.dialogFormVisible = $event
-                  }
-                }
-              },
-              [
-                _c(
-                  "el-form",
-                  { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
-                  [
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "Start date",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "start_date"
-                        }
-                      },
-                      [
-                        _c("el-date-picker", {
-                          staticStyle: { width: "100%" },
-                          attrs: {
-                            type: "date",
-                            placeholder: "Pick a date",
-                            "value-format": "yyyy-MM-dd"
-                          },
-                          model: {
-                            value: _vm.form.start_date,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "start_date", $$v)
-                            },
-                            expression: "form.start_date"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "Amount",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "total"
-                        }
-                      },
-                      [
-                        _c("el-input", {
-                          attrs: { autocomplete: "off" },
-                          model: {
-                            value: _vm.form.total,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "total", $$v)
-                            },
-                            expression: "form.total"
-                          }
-                        })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "el-form-item",
-                      {
-                        attrs: {
-                          label: "End date",
-                          "label-width": _vm.formLabelWidth,
-                          prop: "end_date"
-                        }
-                      },
-                      [
-                        _c("el-date-picker", {
-                          staticStyle: { width: "100%" },
-                          attrs: {
-                            type: "date",
-                            placeholder: "Pick a date",
-                            "value-format": "yyyy-MM-dd"
-                          },
-                          model: {
-                            value: _vm.form.end_date,
-                            callback: function($$v) {
-                              _vm.$set(_vm.form, "end_date", $$v)
-                            },
-                            expression: "form.end_date"
-                          }
-                        })
-                      ],
-                      1
-                    )
-                  ],
-                  1
-                ),
-                _vm._v(" "),
-                _c(
-                  "span",
-                  {
-                    staticClass: "dialog-footer",
-                    attrs: { slot: "footer" },
-                    slot: "footer"
-                  },
-                  [
-                    _c(
-                      "el-button",
-                      {
-                        on: {
-                          click: function($event) {
-                            _vm.dialogFormVisible = false
-                          }
-                        }
-                      },
-                      [_vm._v("Cancel")]
-                    ),
-                    _vm._v(" "),
-                    _vm.form.formmode == "add"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                _vm.clearfield()
-                                _vm.addBudget("add")
-                              }
-                            }
-                          },
-                          [_vm._v("Save")]
-                        )
-                      : _vm._e(),
-                    _vm._v(" "),
-                    _vm.form.formmode == "edit"
-                      ? _c(
-                          "el-button",
-                          {
-                            attrs: { type: "primary" },
-                            on: {
-                              click: function($event) {
-                                _vm.clearfield()
-                                _vm.addBudget("edit")
-                              }
-                            }
-                          },
-                          [_vm._v("Save changes")]
-                        )
-                      : _vm._e()
-                  ],
-                  1
-                )
-              ],
-              1
-            )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c(
-          "el-dialog",
-          {
-            attrs: { title: "Budget Details", visible: _vm.dialogTableVisible },
-            on: {
-              "update:visible": function($event) {
-                _vm.dialogTableVisible = $event
+    _c("div", { staticClass: "card" }, [
+      _c(
+        "div",
+        { staticClass: "card-body" },
+        [
+          _c(
+            "data-tables",
+            {
+              attrs: {
+                data: _vm.data,
+                "page-size": 10,
+                filters: _vm.filters,
+                "pagination-props": { pageSizes: [10, 20, 50] },
+                "action-col": _vm.actionCol
               }
-            }
-          },
-          [
-            _c(
-              "el-table",
-              { attrs: { data: _vm.gridData } },
-              [
-                _c("el-table-column", {
+            },
+            [
+              _c("div", { attrs: { slot: "empty" }, slot: "empty" }, [
+                _vm._v("Table Empty")
+              ]),
+              _vm._v(" "),
+              _vm._l(_vm.titles, function(title) {
+                return _c("el-table-column", {
+                  key: title.label,
                   attrs: {
-                    property: "start_date",
-                    label: "Start date",
-                    width: "200"
-                  }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: { property: "total", label: "Total", width: "200" }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: {
-                    property: "end_date",
-                    label: "End date",
-                    width: "formLabelWidth"
+                    prop: title.prop,
+                    label: title.label,
+                    width: title.width,
+                    sortable: "custom"
                   }
                 })
-              ],
-              1
-            )
-          ],
-          1
-        )
-      ],
-      1
-    )
+              }),
+              _vm._v(" "),
+              _c("p", { attrs: { slot: "append" }, slot: "append" })
+            ],
+            2
+          ),
+          _vm._v(" "),
+          _c(
+            "el-dialog",
+            {
+              attrs: {
+                title: "Hospital Details",
+                visible: _vm.dialogFormVisible,
+                top: "2vh"
+              },
+              on: {
+                "update:visible": function($event) {
+                  _vm.dialogFormVisible = $event
+                }
+              }
+            },
+            [
+              _c(
+                "el-form",
+                { ref: "form", attrs: { model: _vm.form, rules: _vm.rules } },
+                [
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Hospital Code",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "hospital_code"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.hospital_code,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "hospital_code", $$v)
+                          },
+                          expression: "form.hospital_code"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Hospital Name",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "name"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.name,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "name", $$v)
+                          },
+                          expression: "form.name"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Location",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "address"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.address,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "address", $$v)
+                          },
+                          expression: "form.address"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    {
+                      attrs: {
+                        label: "Email Address",
+                        "label-width": _vm.formLabelWidth,
+                        prop: "email_address"
+                      }
+                    },
+                    [
+                      _c("el-input", {
+                        attrs: { autocomplete: "off" },
+                        model: {
+                          value: _vm.form.email_address,
+                          callback: function($$v) {
+                            _vm.$set(_vm.form, "email_address", $$v)
+                          },
+                          expression: "form.email_address"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  staticClass: "dialog-footer",
+                  attrs: { slot: "footer" },
+                  slot: "footer"
+                },
+                [
+                  _c(
+                    "el-button",
+                    {
+                      on: {
+                        click: function($event) {
+                          _vm.dialogFormVisible = false
+                        }
+                      }
+                    },
+                    [_vm._v("Cancel")]
+                  ),
+                  _vm._v(" "),
+                  _vm.form.formmode == "add_hospital"
+                    ? _c(
+                        "el-button",
+                        {
+                          attrs: { type: "primary" },
+                          on: {
+                            click: function($event) {
+                              return _vm.formDialog("add_hospital")
+                            }
+                          }
+                        },
+                        [_vm._v("Save")]
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.form.formmode == "edit_hospital"
+                    ? _c(
+                        "el-button",
+                        {
+                          attrs: { type: "primary" },
+                          on: {
+                            click: function($event) {
+                              return _vm.formDialog("edit_hospital")
+                            }
+                          }
+                        },
+                        [_vm._v("Save changes")]
+                      )
+                    : _vm._e()
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "el-dialog",
+            {
+              attrs: {
+                title: _vm.userdialog_title,
+                visible: _vm.dialogFormVisible_user,
+                top: "2vh",
+                width: "80%",
+                "close-on-click-modal": false,
+                "close-on-press-escape": false
+              },
+              on: {
+                "update:visible": function($event) {
+                  _vm.dialogFormVisible_user = $event
+                }
+              }
+            },
+            [
+              _c(
+                "el-tooltip",
+                {
+                  attrs: {
+                    content: "Notify user for your changes via email",
+                    placement: "top"
+                  }
+                },
+                [
+                  _c("el-switch", {
+                    staticStyle: { float: "right" },
+                    model: {
+                      value: _vm.notify,
+                      callback: function($$v) {
+                        _vm.notify = $$v
+                      },
+                      expression: "notify"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form",
+                {
+                  ref: "formUser",
+                  staticClass: "demo-form-inline",
+                  attrs: {
+                    inline: true,
+                    model: _vm.formUser,
+                    rules: _vm.rulesUser
+                  }
+                },
+                [
+                  _vm.alert_match === 1
+                    ? _c("el-alert", {
+                        attrs: {
+                          title: "Password match",
+                          type: "success",
+                          "show-icon": ""
+                        }
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _vm.alert_match === 2
+                    ? _c("el-alert", {
+                        attrs: {
+                          title: "Password didn't match",
+                          type: "warning",
+                          "show-icon": ""
+                        }
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "", prop: "username" } },
+                    [
+                      _c("el-input", {
+                        attrs: { size: "small", placeholder: "* Username" },
+                        model: {
+                          value: _vm.formUser.username,
+                          callback: function($$v) {
+                            _vm.$set(_vm.formUser, "username", $$v)
+                          },
+                          expression: "formUser.username"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "", prop: "password" } },
+                    [
+                      _c("el-input", {
+                        attrs: {
+                          placeholder: "* Password",
+                          size: "small",
+                          "show-password": ""
+                        },
+                        nativeOn: {
+                          input: function($event) {
+                            return _vm.checkmatch($event)
+                          }
+                        },
+                        model: {
+                          value: _vm.formUser.password,
+                          callback: function($$v) {
+                            _vm.$set(_vm.formUser, "password", $$v)
+                          },
+                          expression: "formUser.password"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    { attrs: { label: "", prop: "repassword" } },
+                    [
+                      _c("el-input", {
+                        attrs: {
+                          placeholder: "* Confirm password",
+                          size: "small",
+                          "show-password": ""
+                        },
+                        nativeOn: {
+                          input: function($event) {
+                            return _vm.checkmatch($event)
+                          }
+                        },
+                        model: {
+                          value: _vm.formUser.repassword,
+                          callback: function($$v) {
+                            _vm.$set(_vm.formUser, "repassword", $$v)
+                          },
+                          expression: "formUser.repassword"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "el-form-item",
+                    [
+                      _c(
+                        "el-button",
+                        {
+                          attrs: {
+                            type: "primary",
+                            size: "small",
+                            disabled:
+                              _vm.formUser.username == "" ||
+                              _vm.formUser.password == "" ||
+                              _vm.formUser.repassword == ""
+                          },
+                          on: { click: _vm.addUser }
+                        },
+                        [_vm._v("Add new user")]
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-table",
+                {
+                  staticStyle: { width: "100%" },
+                  attrs: {
+                    data: _vm.userdata.filter(function(userdata) {
+                      return (
+                        !_vm.search ||
+                        userdata.username
+                          .toLowerCase()
+                          .includes(_vm.search.toLowerCase())
+                      )
+                    })
+                  }
+                },
+                [
+                  _c("el-table-column", {
+                    attrs: { label: "Username", prop: "username" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: { label: "Created at", prop: "created_at" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: { label: "Updated at", prop: "updated_at" }
+                  }),
+                  _vm._v(" "),
+                  _c("el-table-column", {
+                    attrs: { align: "right" },
+                    scopedSlots: _vm._u([
+                      {
+                        key: "header",
+                        fn: function(scope) {
+                          return [
+                            _c("el-input", {
+                              attrs: {
+                                size: "small",
+                                placeholder: "Type to search username"
+                              },
+                              model: {
+                                value: _vm.search,
+                                callback: function($$v) {
+                                  _vm.search = $$v
+                                },
+                                expression: "search"
+                              }
+                            })
+                          ]
+                        }
+                      },
+                      {
+                        key: "default",
+                        fn: function(scope) {
+                          return [
+                            _c(
+                              "el-button",
+                              {
+                                attrs: { size: "mini", type: "danger" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleEditUser_reset(
+                                      scope.$index,
+                                      scope.row
+                                    )
+                                  }
+                                }
+                              },
+                              [_vm._v("Reset Password")]
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "el-button",
+                              {
+                                attrs: { size: "mini", type: "primary" },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleEditUser(
+                                      scope.$index,
+                                      scope.row
+                                    )
+                                  }
+                                }
+                              },
+                              [_vm._v("Edit")]
+                            )
+                          ]
+                        }
+                      }
+                    ])
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "span",
+                {
+                  staticClass: "dialog-footer",
+                  attrs: { slot: "footer" },
+                  slot: "footer"
+                },
+                [
+                  _c(
+                    "el-button",
+                    {
+                      on: {
+                        click: function($event) {
+                          _vm.dialogFormVisible_user = false
+                        }
+                      }
+                    },
+                    [_vm._v("Close")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ])
   ])
 }
 var staticRenderFns = [
@@ -108725,7 +111529,9 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col-sm-12" }, [_c("h2", [_vm._v("User List")])])
+      _c("div", { staticClass: "col-sm-12" }, [
+        _c("h2", [_vm._v("Hospital List")])
+      ])
     ])
   }
 ]
@@ -109190,7 +111996,141 @@ var render = function() {
           )
         ],
         1
-      )
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "importModal",
+            tabindex: "-1",
+            "aria-labelledby": "ModalLabel",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c("div", { staticClass: "modal-dialog" }, [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  attrs: {
+                    method: "post",
+                    enctype: "multipart/form-data",
+                    action: "/budget_import"
+                  }
+                },
+                [
+                  _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("input", {
+                        attrs: {
+                          type: "hidden",
+                          name: "i_action",
+                          id: "i_action",
+                          value: "BudgetImport"
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c("label", [
+                        _vm._v("Select excel file for upload (.csv)")
+                      ]),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "w-100",
+                        staticStyle: {
+                          border: "1px solid rgba(0,0,0,0.1)",
+                          "border-radius": "4px"
+                        },
+                        attrs: {
+                          type: "file",
+                          id: "excelcontent",
+                          name: "budgets",
+                          accept: ".csv"
+                        },
+                        on: {
+                          change: function($event) {
+                            return _vm.selectFile($event)
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _vm.progressbar_import
+                        ? _c(
+                            "div",
+                            {
+                              staticClass: "progress",
+                              staticStyle: { "margin-top": "15px" }
+                            },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "progress-bar progress-bar-striped active",
+                                  staticStyle: { width: "0%" },
+                                  attrs: {
+                                    role: "progressbar",
+                                    "aria-valuenow": "0",
+                                    "aria-valuemin": "0",
+                                    "aria-valuemax": "100"
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                      0%\n                    "
+                                  )
+                                ]
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Close")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: {
+                          type: "button",
+                          name: "upload",
+                          disabled: _vm.enableUpload === false
+                        },
+                        on: {
+                          click: function($event) {
+                            _vm.progressbar_import = true
+                            _vm.onSubmit()
+                          }
+                        }
+                      },
+                      [_vm._v("Import")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _vm._m(3)
     ],
     1
   )
@@ -109219,8 +112159,930 @@ var staticRenderFns = [
         ])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "ModalLabel" } }, [
+        _vm._v("Import Budget")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "exportModal",
+          tabindex: "-1",
+          "aria-labelledby": "ModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c(
+                "h5",
+                { staticClass: "modal-title", attrs: { id: "ModalLabel" } },
+                [_vm._v("Export Budget")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: {
+                    type: "button",
+                    "data-dismiss": "modal",
+                    "aria-label": "Close"
+                  }
+                },
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("×")
+                  ])
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: {
+                  method: "get",
+                  enctype: "multipart/form-data",
+                  action: "budget_export/"
+                }
+              },
+              [
+                _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                _vm._v(" "),
+                _c("input", {
+                  attrs: {
+                    type: "hidden",
+                    name: "e_action",
+                    id: "e_action",
+                    value: "BudgetExport"
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", [_vm._v("Select excel file type")]),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        staticClass: "form-control",
+                        attrs: { name: "exceltype" }
+                      },
+                      [
+                        _c("option", { attrs: { value: "csv" } }, [
+                          _vm._v("CSV")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xlsx" } }, [
+                          _vm._v("XLSX")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xls" } }, [
+                          _vm._v("XLS")
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button", "data-dismiss": "modal" }
+                    },
+                    [_vm._v("Close")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "submit", name: "upload" }
+                    },
+                    [_vm._v("Export")]
+                  )
+                ])
+              ]
+            )
+          ])
+        ])
+      ]
+    )
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578&":
+/*!******************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578& ***!
+  \******************************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "el-card",
+    { staticClass: "box-card" },
+    [
+      _c("div", { staticClass: "row" }, [
+        _c("div", { staticClass: "col-sm-6" }, [
+          _c("h3", [_vm._v("Medical Record Staff")])
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "col-sm-6", attrs: { align: "right" } },
+          [
+            _c(
+              "el-row",
+              [
+                _c(
+                  "el-button",
+                  {
+                    attrs: { type: "primary", size: "medium" },
+                    on: {
+                      click: function($event) {
+                        return _vm.onSubmit()
+                      }
+                    }
+                  },
+                  [_vm._v("Save")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "el-button",
+                  {
+                    attrs: { type: "primary", size: "medium" },
+                    on: {
+                      click: function($event) {
+                        return _vm.addAttending()
+                      }
+                    }
+                  },
+                  [_vm._v("Attending")]
+                ),
+                _vm._v(" "),
+                _c(
+                  "el-button",
+                  {
+                    attrs: { type: "primary", size: "medium" },
+                    on: { click: _vm.addStaff }
+                  },
+                  [_vm._v("Add Staff")]
+                )
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ]),
+      _vm._v(" "),
+      _c("hr"),
+      _vm._v(" "),
+      _c(
+        "el-form",
+        { attrs: { "label-width": "120px", size: "small" } },
+        [
+          _c("el-row", [
+            _vm.contributionRecords.type == undefined
+              ? _c(
+                  "div",
+                  _vm._l(_vm.attending, function(doctor, index) {
+                    return _c(
+                      "div",
+                      { key: index },
+                      [
+                        _c(
+                          "el-col",
+                          { attrs: { span: 12 } },
+                          [
+                            _c(
+                              "el-card",
+                              { staticClass: "box-card" },
+                              [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "clearfix",
+                                    attrs: { slot: "header" },
+                                    slot: "header"
+                                  },
+                                  [
+                                    _c("span", [_vm._v("Attending Physician")]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "el-form-item",
+                                      [
+                                        index >= 0
+                                          ? _c(
+                                              "el-button",
+                                              {
+                                                staticStyle: {
+                                                  float: "right",
+                                                  padding: "3px 0"
+                                                },
+                                                on: {
+                                                  click: _vm.removeAttending
+                                                }
+                                              },
+                                              [_vm._v("Close")]
+                                            )
+                                          : _vm._e()
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Personnel",
+                                      "label-width": _vm.formLabelWidth
+                                    }
+                                  },
+                                  [
+                                    _c("el-autocomplete", {
+                                      staticClass: "inline-input",
+                                      attrs: {
+                                        width: "200px",
+                                        "fetch-suggestions":
+                                          _vm.querySearchAttending,
+                                        placeholder: "Please Input",
+                                        "trigger-on-focus": false
+                                      },
+                                      on: { select: _vm.handleSelectAttending },
+                                      model: {
+                                        value: doctor.state,
+                                        callback: function($$v) {
+                                          _vm.$set(doctor, "state", $$v)
+                                        },
+                                        expression: "doctor.state"
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("br"),
+                                    _vm._v(" "),
+                                    _vm.errors.state
+                                      ? _c(
+                                          "span",
+                                          {
+                                            staticClass:
+                                              "font-italic text-danger"
+                                          },
+                                          [
+                                            _c("small", [
+                                              _vm._v(
+                                                _vm._s(_vm.errors.state[0])
+                                              )
+                                            ])
+                                          ]
+                                        )
+                                      : _vm._e()
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  { attrs: { label: "Contribution" } },
+                                  [
+                                    _c(
+                                      "el-select",
+                                      {
+                                        attrs: {
+                                          disabled: _vm.disableSelect[index]
+                                        },
+                                        on: { change: _vm.getStaffCode },
+                                        model: {
+                                          value: doctor.contribution,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              doctor,
+                                              "contribution",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "doctor.contribution"
+                                        }
+                                      },
+                                      [
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Attending Physician",
+                                            value: "0"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Requesting Physician",
+                                            value: "1"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Surgeon Physician",
+                                            value: "2"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Health Care Physician",
+                                            value: "3"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "ER Physician",
+                                            value: "4"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Anesthesiologist",
+                                            value: "5"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Co-management",
+                                            value: "6"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Admitting",
+                                            value: "7"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Computed PF",
+                                      "label-width": _vm.formLabelWidth
+                                    }
+                                  },
+                                  [
+                                    _c("el-input", {
+                                      attrs: {
+                                        readonly: "",
+                                        autocomplete: "off"
+                                      },
+                                      model: {
+                                        value: doctor.computePF,
+                                        callback: function($$v) {
+                                          _vm.$set(doctor, "computePF", $$v)
+                                        },
+                                        expression: "doctor.computePF"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  }),
+                  0
+                )
+              : _c(
+                  "div",
+                  _vm._l(_vm.attending, function(doctor, index) {
+                    return _c(
+                      "div",
+                      { key: index },
+                      [
+                        _c(
+                          "el-col",
+                          { attrs: { span: 12 } },
+                          [
+                            _c(
+                              "el-card",
+                              { staticClass: "box-card" },
+                              [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "clearfix",
+                                    attrs: { slot: "header" },
+                                    slot: "header"
+                                  },
+                                  [
+                                    _c("span", [_vm._v("Attending Physician")]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "el-form-item",
+                                      [
+                                        index >= 0
+                                          ? _c(
+                                              "el-button",
+                                              {
+                                                staticStyle: {
+                                                  float: "right",
+                                                  padding: "3px 0"
+                                                },
+                                                on: {
+                                                  click: _vm.removeAttending
+                                                }
+                                              },
+                                              [_vm._v("Close")]
+                                            )
+                                          : _vm._e()
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Personnel",
+                                      "label-width": _vm.formLabelWidth
+                                    }
+                                  },
+                                  [
+                                    _c("el-autocomplete", {
+                                      staticClass: "inline-input",
+                                      attrs: {
+                                        width: "200px",
+                                        "fetch-suggestions":
+                                          _vm.querySearchAttending,
+                                        placeholder: "Please Input",
+                                        "trigger-on-focus": false
+                                      },
+                                      on: { select: _vm.handleSelectAttending },
+                                      model: {
+                                        value: doctor.state,
+                                        callback: function($$v) {
+                                          _vm.$set(doctor, "state", $$v)
+                                        },
+                                        expression: "doctor.state"
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("br"),
+                                    _vm._v(" "),
+                                    _vm.errors.state
+                                      ? _c(
+                                          "span",
+                                          {
+                                            staticClass:
+                                              "font-italic text-danger"
+                                          },
+                                          [
+                                            _c("small", [
+                                              _vm._v(
+                                                _vm._s(_vm.errors.state[0])
+                                              )
+                                            ])
+                                          ]
+                                        )
+                                      : _vm._e()
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  { attrs: { label: "Contribution" } },
+                                  [
+                                    _c(
+                                      "el-select",
+                                      {
+                                        attrs: {
+                                          disabled: _vm.disableSelect[index]
+                                        },
+                                        on: { change: _vm.getStaffCode },
+                                        model: {
+                                          value: doctor.contribution,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              doctor,
+                                              "contribution",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "doctor.contribution"
+                                        }
+                                      },
+                                      [
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Attending Physician",
+                                            value: "0"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Requesting Physician",
+                                            value: "1"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Surgeon Physician",
+                                            value: "2"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Health Care Physician",
+                                            value: "3"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "ER Physician",
+                                            value: "4"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Anesthesiologist",
+                                            value: "5"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Co-management",
+                                            value: "6"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Admitting",
+                                            value: "7"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Computed PF",
+                                      "label-width": _vm.formLabelWidth
+                                    }
+                                  },
+                                  [
+                                    _c("el-input", {
+                                      attrs: {
+                                        readonly: "",
+                                        autocomplete: "off"
+                                      },
+                                      model: {
+                                        value: doctor.computePF,
+                                        callback: function($$v) {
+                                          _vm.$set(doctor, "computePF", $$v)
+                                        },
+                                        expression: "doctor.computePF"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  }),
+                  0
+                ),
+            _vm._v(" "),
+            _vm.personnels.length >= 1
+              ? _c(
+                  "div",
+                  _vm._l(_vm.personnels, function(personnel, index) {
+                    return _c(
+                      "div",
+                      { key: index },
+                      [
+                        _c(
+                          "el-col",
+                          { attrs: { span: 12 } },
+                          [
+                            _c(
+                              "el-card",
+                              { staticClass: "box-card" },
+                              [
+                                _c(
+                                  "div",
+                                  {
+                                    staticClass: "clearfix",
+                                    attrs: { slot: "header" },
+                                    slot: "header"
+                                  },
+                                  [
+                                    _c("span", [_vm._v("Physician")]),
+                                    _vm._v(" "),
+                                    _c(
+                                      "el-form-item",
+                                      [
+                                        index >= 0
+                                          ? _c(
+                                              "el-button",
+                                              {
+                                                staticStyle: {
+                                                  float: "right",
+                                                  padding: "3px 0"
+                                                },
+                                                on: { click: _vm.removeStaff }
+                                              },
+                                              [_vm._v("Close")]
+                                            )
+                                          : _vm._e()
+                                      ],
+                                      1
+                                    )
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Personnel",
+                                      "label-width": _vm.formLabelWidth
+                                    }
+                                  },
+                                  [
+                                    _c("el-autocomplete", {
+                                      staticClass: "inline-input",
+                                      attrs: {
+                                        width: "200px",
+                                        "fetch-suggestions": _vm.querySearch,
+                                        placeholder: "Please Input",
+                                        "trigger-on-focus": false
+                                      },
+                                      on: { select: _vm.handleSelect },
+                                      model: {
+                                        value: personnel.state,
+                                        callback: function($$v) {
+                                          _vm.$set(personnel, "state", $$v)
+                                        },
+                                        expression: "personnel.state"
+                                      }
+                                    }),
+                                    _vm._v(" "),
+                                    _c("br"),
+                                    _vm._v(" "),
+                                    _vm.errors.state
+                                      ? _c(
+                                          "span",
+                                          {
+                                            staticClass:
+                                              "font-italic text-danger"
+                                          },
+                                          [
+                                            _c("small", [
+                                              _vm._v(
+                                                _vm._s(_vm.errors.state[0])
+                                              )
+                                            ])
+                                          ]
+                                        )
+                                      : _vm._e()
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Contribution",
+                                      prop: "contribution_type"
+                                    }
+                                  },
+                                  [
+                                    _c(
+                                      "el-select",
+                                      {
+                                        on: { change: _vm.getStaffCode },
+                                        model: {
+                                          value: personnel.contribution,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              personnel,
+                                              "contribution",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "personnel.contribution"
+                                        }
+                                      },
+                                      [
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Requesting Physician",
+                                            value: "1"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Surgeon Physician",
+                                            value: "2"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Health Care Physician",
+                                            value: "3"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "ER Physician",
+                                            value: "4"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Anesthesiologist",
+                                            value: "5"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Co-management",
+                                            value: "6"
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c("el-option", {
+                                          attrs: {
+                                            label: "Admitting",
+                                            value: "7"
+                                          }
+                                        })
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c("br"),
+                                    _vm._v(" "),
+                                    _vm.errors.contributionType
+                                      ? _c(
+                                          "span",
+                                          {
+                                            staticClass:
+                                              "font-italic text-danger"
+                                          },
+                                          [
+                                            _c("small", [
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm.errors.contributionType[0]
+                                                )
+                                              )
+                                            ])
+                                          ]
+                                        )
+                                      : _vm._e()
+                                  ],
+                                  1
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "el-form-item",
+                                  {
+                                    attrs: {
+                                      label: "Computed PF",
+                                      "label-width": _vm.formLabelWidth
+                                    }
+                                  },
+                                  [
+                                    _c("el-input", {
+                                      attrs: {
+                                        readonly: "",
+                                        autocomplete: "off"
+                                      },
+                                      model: {
+                                        value: personnel.computePF,
+                                        callback: function($$v) {
+                                          _vm.$set(personnel, "computePF", $$v)
+                                        },
+                                        expression: "personnel.computePF"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  }),
+                  0
+                )
+              : _vm._e()
+          ])
+        ],
+        1
+      )
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -109399,6 +113261,14 @@ var render = function() {
                                   type: "success",
                                   icon: "el-icon-plus",
                                   circle: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleAddMedical(
+                                      scope.$index,
+                                      scope.row
+                                    )
+                                  }
                                 }
                               })
                             ],
@@ -109514,7 +113384,6 @@ var render = function() {
                   attrs: {
                     background: "",
                     layout: "prev, pager, next",
-                    "hide-on-single-page": "true",
                     "page-size": _vm.pageSize,
                     total: _vm.paginateTotal
                   },
@@ -109904,6 +113773,203 @@ var render = function() {
       _c(
         "el-dialog",
         {
+          attrs: {
+            title: "Add Medical Record",
+            visible: _vm.dialogFormMedicalVisible,
+            top: "0vh"
+          },
+          on: {
+            "update:visible": function($event) {
+              _vm.dialogFormMedicalVisible = $event
+            }
+          }
+        },
+        [
+          _c(
+            "el-form",
+            {
+              ref: "form",
+              attrs: { model: _vm.formMedical, rules: _vm.rules }
+            },
+            [
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Admission Date",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "admission_date"
+                  }
+                },
+                [
+                  _c("el-date-picker", {
+                    staticStyle: { width: "100%" },
+                    attrs: {
+                      type: "date",
+                      placeholder: "Pick a date",
+                      "value-format": "yyyy-MM-dd"
+                    },
+                    model: {
+                      value: _vm.formMedical.admission_date,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formMedical, "admission_date", $$v)
+                      },
+                      expression: "formMedical.admission_date"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Discharge Date",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "discharge_date"
+                  }
+                },
+                [
+                  _c("el-date-picker", {
+                    staticStyle: { width: "100%" },
+                    attrs: {
+                      type: "date",
+                      placeholder: "Pick a date",
+                      "value-format": "yyyy-MM-dd"
+                    },
+                    model: {
+                      value: _vm.formMedical.discharge_date,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formMedical, "discharge_date", $$v)
+                      },
+                      expression: "formMedical.discharge_date"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Final Diagnosis",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "final_diagnosis"
+                  }
+                },
+                [
+                  _c("el-input", {
+                    attrs: { autocomplete: "off" },
+                    model: {
+                      value: _vm.formMedical.final_diagnosis,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formMedical, "final_diagnosis", $$v)
+                      },
+                      expression: "formMedical.final_diagnosis"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Record Type",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "record_type"
+                  }
+                },
+                [
+                  _c("el-input", {
+                    attrs: { autocomplete: "off" },
+                    model: {
+                      value: _vm.formMedical.record_type,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formMedical, "record_type", $$v)
+                      },
+                      expression: "formMedical.record_type"
+                    }
+                  })
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "el-form-item",
+                {
+                  attrs: {
+                    label: "Total Fee",
+                    "label-width": _vm.formLabelWidth,
+                    prop: "total_fee"
+                  }
+                },
+                [
+                  _c("el-input", {
+                    attrs: { autocomplete: "off" },
+                    model: {
+                      value: _vm.formMedical.total_fee,
+                      callback: function($$v) {
+                        _vm.$set(_vm.formMedical, "total_fee", $$v)
+                      },
+                      expression: "formMedical.total_fee"
+                    }
+                  })
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c(
+            "span",
+            {
+              staticClass: "dialog-footer",
+              attrs: { slot: "footer" },
+              slot: "footer"
+            },
+            [
+              _c(
+                "el-button",
+                {
+                  on: {
+                    click: function($event) {
+                      _vm.dialogMedicalFormVisible = false
+                    }
+                  }
+                },
+                [_vm._v("Cancel")]
+              ),
+              _vm._v(" "),
+              this.formMedical.formmode == "insert_data"
+                ? _c(
+                    "el-button",
+                    {
+                      attrs: { type: "primary" },
+                      on: {
+                        click: function($event) {
+                          _vm.addMedicalRecord()
+                          _vm.formLoading()
+                        }
+                      }
+                    },
+                    [_vm._v("Save")]
+                  )
+                : _vm._e()
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "el-dialog",
+        {
           attrs: { title: "Patient Info", visible: _vm.dialogTableVisible },
           on: {
             "update:visible": function($event) {
@@ -109983,6 +114049,15 @@ var render = function() {
                 },
                 [
                   _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                  _vm._v(" "),
+                  _c("input", {
+                    attrs: {
+                      type: "hidden",
+                      name: "i_action",
+                      id: "i_action",
+                      value: "PatientImport"
+                    }
+                  }),
                   _vm._v(" "),
                   _c("div", { staticClass: "modal-body" }, [
                     _c("div", { staticClass: "form-group" }, [
@@ -110162,6 +114237,15 @@ var staticRenderFns = [
               [
                 _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
                 _vm._v(" "),
+                _c("input", {
+                  attrs: {
+                    type: "hidden",
+                    name: "e_action",
+                    id: "e_action",
+                    value: "PatientExport"
+                  }
+                }),
+                _vm._v(" "),
                 _c("div", { staticClass: "modal-body" }, [
                   _c("div", { staticClass: "form-group" }, [
                     _c("label", [_vm._v("Select excel file type")]),
@@ -110277,6 +114361,32 @@ var render = function() {
             attrs: { align: "right" }
           },
           [
+            _c(
+              "el-button",
+              {
+                attrs: { type: "primary", size: "medium" },
+                on: {
+                  click: function($event) {
+                    return _vm.formDialog("export_data")
+                  }
+                }
+              },
+              [_vm._v("Export")]
+            ),
+            _vm._v(" "),
+            _c(
+              "el-button",
+              {
+                attrs: { type: "primary", size: "medium" },
+                on: {
+                  click: function($event) {
+                    return _vm.formDialog("import_data")
+                  }
+                }
+              },
+              [_vm._v("Import")]
+            ),
+            _vm._v(" "),
             _c(
               "el-button",
               {
@@ -110493,6 +114603,140 @@ var render = function() {
       _vm._m(1),
       _vm._v(" "),
       _c(
+        "div",
+        {
+          staticClass: "modal fade",
+          attrs: {
+            id: "importModal",
+            tabindex: "-1",
+            "aria-labelledby": "ModalLabel",
+            "aria-hidden": "true"
+          }
+        },
+        [
+          _c("div", { staticClass: "modal-dialog" }, [
+            _c("div", { staticClass: "modal-content" }, [
+              _vm._m(2),
+              _vm._v(" "),
+              _c(
+                "form",
+                {
+                  attrs: {
+                    method: "post",
+                    enctype: "multipart/form-data",
+                    action: "/personnels_import"
+                  }
+                },
+                [
+                  _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                  _vm._v(" "),
+                  _c("input", {
+                    attrs: {
+                      type: "hidden",
+                      name: "i_action",
+                      id: "i_action",
+                      value: "PersonnelImport"
+                    }
+                  }),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-body" }, [
+                    _c("div", { staticClass: "form-group" }, [
+                      _c("label", [
+                        _vm._v("Select excel file for upload (.csv)")
+                      ]),
+                      _c("br"),
+                      _vm._v(" "),
+                      _c("input", {
+                        staticClass: "w-100",
+                        staticStyle: {
+                          border: "1px solid rgba(0,0,0,0.1)",
+                          "border-radius": "4px"
+                        },
+                        attrs: {
+                          type: "file",
+                          id: "excelcontent",
+                          name: "personnels",
+                          accept: ".csv"
+                        },
+                        on: {
+                          change: function($event) {
+                            return _vm.selectFile($event)
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _vm.progressbar_import
+                        ? _c(
+                            "div",
+                            {
+                              staticClass: "progress",
+                              staticStyle: { "margin-top": "15px" }
+                            },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass:
+                                    "progress-bar progress-bar-striped active",
+                                  staticStyle: { width: "0%" },
+                                  attrs: {
+                                    role: "progressbar",
+                                    "aria-valuenow": "0",
+                                    "aria-valuemin": "0",
+                                    "aria-valuemax": "100"
+                                  }
+                                },
+                                [
+                                  _vm._v(
+                                    "\n                          0%\n                        "
+                                  )
+                                ]
+                              )
+                            ]
+                          )
+                        : _vm._e()
+                    ])
+                  ]),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "modal-footer" }, [
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-secondary",
+                        attrs: { type: "button", "data-dismiss": "modal" }
+                      },
+                      [_vm._v("Close")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-primary",
+                        attrs: {
+                          type: "button",
+                          name: "upload",
+                          disabled: _vm.enableUpload === false
+                        },
+                        on: {
+                          click: function($event) {
+                            _vm.progressbar_import = true
+                            _vm.onSubmit()
+                          }
+                        }
+                      },
+                      [_vm._v("Import")]
+                    )
+                  ])
+                ]
+              )
+            ])
+          ])
+        ]
+      ),
+      _vm._v(" "),
+      _vm._m(3),
+      _vm._v(" "),
+      _c(
         "el-dialog",
         {
           attrs: {
@@ -110689,11 +114933,11 @@ var render = function() {
                       }
                     },
                     [
-                      _c("el-radio", { attrs: { label: "0" } }, [
+                      _c("el-radio", { attrs: { label: "1" } }, [
                         _vm._v("Private")
                       ]),
                       _vm._v(" "),
-                      _c("el-radio", { attrs: { label: "1" } }, [
+                      _c("el-radio", { attrs: { label: "0" } }, [
                         _vm._v("Non-private")
                       ])
                     ],
@@ -110733,11 +114977,11 @@ var render = function() {
                       }
                     },
                     [
-                      _c("el-radio", { attrs: { label: "0" } }, [
+                      _c("el-radio", { attrs: { label: "1" } }, [
                         _vm._v("Medical")
                       ]),
                       _vm._v(" "),
-                      _c("el-radio", { attrs: { label: "1" } }, [
+                      _c("el-radio", { attrs: { label: "0" } }, [
                         _vm._v("Non-medical")
                       ])
                     ],
@@ -110927,6 +115171,147 @@ var staticRenderFns = [
         ])
       ])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header" }, [
+      _c("h5", { staticClass: "modal-title", attrs: { id: "ModalLabel" } }, [
+        _vm._v("Import Staffs")
+      ]),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      {
+        staticClass: "modal fade",
+        attrs: {
+          id: "exportModal",
+          tabindex: "-1",
+          "aria-labelledby": "ModalLabel",
+          "aria-hidden": "true"
+        }
+      },
+      [
+        _c("div", { staticClass: "modal-dialog" }, [
+          _c("div", { staticClass: "modal-content" }, [
+            _c("div", { staticClass: "modal-header" }, [
+              _c(
+                "h5",
+                { staticClass: "modal-title", attrs: { id: "ModalLabel" } },
+                [_vm._v("Export Staffs")]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "close",
+                  attrs: {
+                    type: "button",
+                    "data-dismiss": "modal",
+                    "aria-label": "Close"
+                  }
+                },
+                [
+                  _c("span", { attrs: { "aria-hidden": "true" } }, [
+                    _vm._v("×")
+                  ])
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "form",
+              {
+                attrs: {
+                  method: "get",
+                  enctype: "multipart/form-data",
+                  action: "personnels_export/"
+                }
+              },
+              [
+                _c("input", { attrs: { type: "hidden", name: "", id: "" } }),
+                _vm._v(" "),
+                _c("input", {
+                  attrs: {
+                    type: "hidden",
+                    name: "e_action",
+                    id: "e_action",
+                    value: "PersonnelExport"
+                  }
+                }),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-body" }, [
+                  _c("div", { staticClass: "form-group" }, [
+                    _c("label", [_vm._v("Select excel file type")]),
+                    _c("br"),
+                    _vm._v(" "),
+                    _c(
+                      "select",
+                      {
+                        staticClass: "form-control",
+                        attrs: { name: "exceltype" }
+                      },
+                      [
+                        _c("option", { attrs: { value: "csv" } }, [
+                          _vm._v("CSV")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xlsx" } }, [
+                          _vm._v("XLSX")
+                        ]),
+                        _vm._v(" "),
+                        _c("option", { attrs: { value: "xls" } }, [
+                          _vm._v("XLS")
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "modal-footer" }, [
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-secondary",
+                      attrs: { type: "button", "data-dismiss": "modal" }
+                    },
+                    [_vm._v("Close")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "button",
+                    {
+                      staticClass: "btn btn-primary",
+                      attrs: { type: "submit", name: "upload" }
+                    },
+                    [_vm._v("Export")]
+                  )
+                ])
+              ]
+            )
+          ])
+        ])
+      ]
+    )
   }
 ]
 render._withStripped = true
@@ -110966,164 +115351,201 @@ var render = function() {
           { staticClass: "card-body" },
           [
             _c(
-              "el-table",
-              {
-                attrs: {
-                  data: _vm.pagedTableData.filter(function(data) {
-                    return (
-                      !_vm.search ||
-                      data.first_name
-                        .toLowerCase()
-                        .includes(_vm.search.toLowerCase()) ||
-                      data.philhealth_number
-                        .toLowerCase()
-                        .includes(_vm.search.toLowerCase())
-                    )
-                  })
-                }
-              },
+              "div",
+              { attrs: { id: "test" } },
               [
-                _c("el-table-column", {
-                  attrs: {
-                    width: "115",
-                    label: "Philhealth",
-                    prop: "philhealth_number"
-                  }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: { width: "177", label: "Patient", prop: "first_name" }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: {
-                    width: "100",
-                    label: "Admit",
-                    prop: "admission_date"
-                  }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: {
-                    width: "110",
-                    label: "Discharge",
-                    prop: "discharge_date"
-                  }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: {
-                    width: "125",
-                    label: "Diagnosis",
-                    prop: "final_diagnosis"
-                  }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: {
-                    width: "115",
-                    label: "Record type",
-                    prop: "record_type"
-                  }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: { width: "115", label: "Total fee", prop: "total_fee" }
-                }),
-                _vm._v(" "),
-                _c("el-table-column", {
-                  attrs: { width: "130", align: "right", fixed: "right" },
-                  scopedSlots: _vm._u([
-                    {
-                      key: "header",
-                      fn: function(scope) {
-                        return [
-                          _c("el-input", {
-                            attrs: {
-                              size: "mini",
-                              placeholder: "Type to search"
-                            },
-                            model: {
-                              value: _vm.search,
-                              callback: function($$v) {
-                                _vm.search = $$v
-                              },
-                              expression: "search"
-                            }
-                          })
-                        ]
+                _c(
+                  "el-table",
+                  { attrs: { data: _vm.pagedTableData } },
+                  [
+                    _c("el-table-column", {
+                      attrs: {
+                        width: "115",
+                        label: "Philhealth",
+                        prop: "philhealth_number"
                       }
-                    },
-                    {
-                      key: "default",
-                      fn: function(scope) {
-                        return [
-                          _c(
-                            "el-tooltip",
-                            {
-                              staticClass: "item",
-                              attrs: {
-                                effect: "light",
-                                content: "view",
-                                placement: "top"
-                              }
-                            },
-                            [
-                              _c("el-button", {
+                    }),
+                    _vm._v(" "),
+                    _c("el-table-column", {
+                      attrs: {
+                        width: "177",
+                        label: "Patient",
+                        prop: "first_name",
+                        "column-key": "ase"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("el-table-column", {
+                      attrs: {
+                        width: "100",
+                        label: "Admit",
+                        prop: "admission_date"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("el-table-column", {
+                      attrs: {
+                        width: "110",
+                        label: "Discharge",
+                        prop: "discharge_date"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("el-table-column", {
+                      attrs: {
+                        width: "125",
+                        label: "Diagnosis",
+                        prop: "final_diagnosis"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("el-table-column", {
+                      attrs: {
+                        width: "115",
+                        label: "Record type",
+                        prop: "record_type"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("el-table-column", {
+                      attrs: {
+                        width: "115",
+                        label: "Total fee",
+                        prop: "total_fee"
+                      }
+                    }),
+                    _vm._v(" "),
+                    _c("el-table-column", {
+                      attrs: { width: "130", align: "right", fixed: "right" },
+                      scopedSlots: _vm._u([
+                        {
+                          key: "header",
+                          fn: function(scope) {
+                            return [
+                              _c("el-input", {
                                 attrs: {
                                   size: "mini",
-                                  type: "info",
-                                  icon: "el-icon-info",
-                                  circle: ""
+                                  placeholder: "Type to search"
                                 },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.handleView(
-                                      scope.$index,
-                                      scope.row
-                                    )
-                                  }
+                                model: {
+                                  value: _vm.search,
+                                  callback: function($$v) {
+                                    _vm.search = $$v
+                                  },
+                                  expression: "search"
                                 }
                               })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "el-tooltip",
-                            {
-                              staticClass: "item",
-                              attrs: {
-                                effect: "light",
-                                content: "delete",
-                                placement: "top"
-                              }
-                            },
-                            [
-                              _c("el-button", {
-                                attrs: {
-                                  size: "mini",
-                                  type: "danger",
-                                  icon: "el-icon-delete",
-                                  circle: ""
-                                },
-                                on: {
-                                  click: function($event) {
-                                    return _vm.handleDelete(
-                                      scope.$index,
-                                      scope.row
-                                    )
+                            ]
+                          }
+                        },
+                        {
+                          key: "default",
+                          fn: function(scope) {
+                            return [
+                              scope.row.totalPersonnel == 0
+                                ? _c(
+                                    "el-tooltip",
+                                    {
+                                      staticClass: "item",
+                                      attrs: {
+                                        effect: "light",
+                                        content: "Add Contribution",
+                                        placement: "top"
+                                      }
+                                    },
+                                    [
+                                      _c("el-button", {
+                                        attrs: {
+                                          size: "mini",
+                                          type: "success",
+                                          icon: "el-icon-plus",
+                                          circle: ""
+                                        },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.handleAddRecord(
+                                              scope.$index,
+                                              scope.row
+                                            )
+                                          }
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              scope.row.totalPersonnel > 0
+                                ? _c(
+                                    "el-tooltip",
+                                    {
+                                      staticClass: "item",
+                                      attrs: {
+                                        effect: "light",
+                                        content: "view",
+                                        placement: "top"
+                                      }
+                                    },
+                                    [
+                                      _c("el-button", {
+                                        attrs: {
+                                          size: "mini",
+                                          type: "info",
+                                          icon: "el-icon-info",
+                                          circle: ""
+                                        },
+                                        on: {
+                                          click: function($event) {
+                                            return _vm.handleView(
+                                              scope.$index,
+                                              scope.row
+                                            )
+                                          }
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
+                              _c(
+                                "el-tooltip",
+                                {
+                                  staticClass: "item",
+                                  attrs: {
+                                    effect: "light",
+                                    content: "delete",
+                                    placement: "top"
                                   }
-                                }
-                              })
-                            ],
-                            1
-                          )
-                        ]
-                      }
-                    }
-                  ])
-                })
+                                },
+                                [
+                                  _c("el-button", {
+                                    attrs: {
+                                      size: "mini",
+                                      type: "danger",
+                                      icon: "el-icon-delete",
+                                      circle: ""
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.handleDelete(
+                                          scope.$index,
+                                          scope.row
+                                        )
+                                      }
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ]
+                          }
+                        }
+                      ])
+                    })
+                  ],
+                  1
+                )
               ],
               1
             ),
@@ -111391,6 +115813,28 @@ var render = function() {
             }
           },
           [
+            _c("div", { staticClass: "row" }, [
+              _c(
+                "div",
+                { staticClass: "col-sm-12", attrs: { align: "right" } },
+                [
+                  _c(
+                    "el-button",
+                    {
+                      attrs: { right: "", type: "primary", size: "medium" },
+                      on: {
+                        click: function($event) {
+                          return _vm.triggerAdd("update")
+                        }
+                      }
+                    },
+                    [_vm._v("Add Staff")]
+                  )
+                ],
+                1
+              )
+            ]),
+            _vm._v(" "),
             _c(
               "el-table",
               { attrs: { data: _vm.staff } },
@@ -111415,8 +115859,60 @@ var render = function() {
                   attrs: {
                     property: "last_name",
                     label: "Lastname",
-                    width: "formLabelWidth"
+                    width: "200"
                   }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: { property: "total_fee", label: "Total", width: "200" }
+                }),
+                _vm._v(" "),
+                _c("el-table-column", {
+                  attrs: {
+                    align: "right",
+                    fixed: "right",
+                    label: "Action",
+                    width: "formLabelWidth"
+                  },
+                  scopedSlots: _vm._u([
+                    {
+                      key: "default",
+                      fn: function(scopePersonnel) {
+                        return [
+                          _c(
+                            "el-tooltip",
+                            {
+                              staticClass: "item",
+                              attrs: {
+                                effect: "light",
+                                content: "delete",
+                                placement: "top"
+                              }
+                            },
+                            [
+                              _c("el-button", {
+                                attrs: {
+                                  size: "mini",
+                                  type: "danger",
+                                  icon: "el-icon-delete",
+                                  circle: ""
+                                },
+                                on: {
+                                  click: function($event) {
+                                    return _vm.handleDeleteContribution(
+                                      scopePersonnel.$index,
+                                      scopePersonnel.row
+                                    )
+                                  }
+                                }
+                              })
+                            ],
+                            1
+                          )
+                        ]
+                      }
+                    }
+                  ])
                 })
               ],
               1
@@ -111441,6 +115937,49 @@ var staticRenderFns = [
     ])
   }
 ]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/RecordContainer.vue?vue&type=template&id=00b6bb97&":
+/*!***********************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib??vue-loader-options!./resources/js/components/user/RecordContainer.vue?vue&type=template&id=00b6bb97& ***!
+  \***********************************************************************************************************************************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "render", function() { return render; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return staticRenderFns; });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    [
+      _vm.trigger == false
+        ? _c("record-container", { on: { "add-trigger": _vm.addFormTrigger } })
+        : _vm._e(),
+      _vm._v(" "),
+      _vm.trigger == true
+        ? _c("medic-container", {
+            attrs: {
+              "contribution-records": _vm.records,
+              "medical-record-id": _vm.records.id,
+              "total-fee": _vm.records.total_fee
+            },
+            on: { "add-close": _vm.closeFormTrigger }
+          })
+        : _vm._e()
+    ],
+    1
+  )
+}
+var staticRenderFns = []
 render._withStripped = true
 
 
@@ -124197,10 +128736,11 @@ Vue.component('resetpassadmin-component', __webpack_require__(/*! ./components/a
 
 Vue.component('patient-component', __webpack_require__(/*! ./components/user/PatientComponent.vue */ "./resources/js/components/user/PatientComponent.vue")["default"]);
 Vue.component('budget-component', __webpack_require__(/*! ./components/user/BudgetComponent.vue */ "./resources/js/components/user/BudgetComponent.vue")["default"]);
-Vue.component('record-component', __webpack_require__(/*! ./components/user/RecordComponent.vue */ "./resources/js/components/user/RecordComponent.vue")["default"]);
+Vue.component('record-component', __webpack_require__(/*! ./components/user/RecordContainer.vue */ "./resources/js/components/user/RecordContainer.vue")["default"]);
 Vue.component('restore-component', __webpack_require__(/*! ./components/user/RestoreComponent.vue */ "./resources/js/components/user/RestoreComponent.vue")["default"]);
 Vue.component('personnel-component', __webpack_require__(/*! ./components/user/PersonnelComponent.vue */ "./resources/js/components/user/PersonnelComponent.vue")["default"]);
 Vue.component('resetpass-component', __webpack_require__(/*! ./components/user/ResetPasswordComponent.vue */ "./resources/js/components/user/ResetPasswordComponent.vue")["default"]);
+Vue.component('medical-component', __webpack_require__(/*! ./components/user/MedicalRecordComponent.vue */ "./resources/js/components/user/MedicalRecordComponent.vue")["default"]);
 var app = new Vue({
   el: '#app'
 });
@@ -124735,19 +129275,87 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/user/MedicalRecordComponent.vue":
+/*!*****************************************************************!*\
+  !*** ./resources/js/components/user/MedicalRecordComponent.vue ***!
+  \*****************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MedicalRecordComponent.vue?vue&type=template&id=02827578& */ "./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578&");
+/* harmony import */ var _MedicalRecordComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MedicalRecordComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _MedicalRecordComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/user/MedicalRecordComponent.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js&":
+/*!******************************************************************************************!*\
+  !*** ./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js& ***!
+  \******************************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MedicalRecordComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./MedicalRecordComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MedicalRecordComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578&":
+/*!************************************************************************************************!*\
+  !*** ./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578& ***!
+  \************************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./MedicalRecordComponent.vue?vue&type=template&id=02827578& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/MedicalRecordComponent.vue?vue&type=template&id=02827578&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MedicalRecordComponent_vue_vue_type_template_id_02827578___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/user/PatientComponent.vue":
 /*!***********************************************************!*\
   !*** ./resources/js/components/user/PatientComponent.vue ***!
   \***********************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _PatientComponent_vue_vue_type_template_id_41400221___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./PatientComponent.vue?vue&type=template&id=41400221& */ "./resources/js/components/user/PatientComponent.vue?vue&type=template&id=41400221&");
 /* harmony import */ var _PatientComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./PatientComponent.vue?vue&type=script&lang=js& */ "./resources/js/components/user/PatientComponent.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _PatientComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _PatientComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -124777,7 +129385,7 @@ component.options.__file = "resources/js/components/user/PatientComponent.vue"
 /*!************************************************************************************!*\
   !*** ./resources/js/components/user/PatientComponent.vue?vue&type=script&lang=js& ***!
   \************************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -124943,6 +129551,75 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/user/RecordContainer.vue":
+/*!**********************************************************!*\
+  !*** ./resources/js/components/user/RecordContainer.vue ***!
+  \**********************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _RecordContainer_vue_vue_type_template_id_00b6bb97___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./RecordContainer.vue?vue&type=template&id=00b6bb97& */ "./resources/js/components/user/RecordContainer.vue?vue&type=template&id=00b6bb97&");
+/* harmony import */ var _RecordContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./RecordContainer.vue?vue&type=script&lang=js& */ "./resources/js/components/user/RecordContainer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+
+var component = Object(_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__["default"])(
+  _RecordContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__["default"],
+  _RecordContainer_vue_vue_type_template_id_00b6bb97___WEBPACK_IMPORTED_MODULE_0__["render"],
+  _RecordContainer_vue_vue_type_template_id_00b6bb97___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"],
+  false,
+  null,
+  null,
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/user/RecordContainer.vue"
+/* harmony default export */ __webpack_exports__["default"] = (component.exports);
+
+/***/ }),
+
+/***/ "./resources/js/components/user/RecordContainer.vue?vue&type=script&lang=js&":
+/*!***********************************************************************************!*\
+  !*** ./resources/js/components/user/RecordContainer.vue?vue&type=script&lang=js& ***!
+  \***********************************************************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RecordContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/babel-loader/lib??ref--4-0!../../../../node_modules/vue-loader/lib??vue-loader-options!./RecordContainer.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/RecordContainer.vue?vue&type=script&lang=js&");
+/* empty/unused harmony star reexport */ /* harmony default export */ __webpack_exports__["default"] = (_node_modules_babel_loader_lib_index_js_ref_4_0_node_modules_vue_loader_lib_index_js_vue_loader_options_RecordContainer_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__["default"]); 
+
+/***/ }),
+
+/***/ "./resources/js/components/user/RecordContainer.vue?vue&type=template&id=00b6bb97&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/user/RecordContainer.vue?vue&type=template&id=00b6bb97& ***!
+  \*****************************************************************************************/
+/*! exports provided: render, staticRenderFns */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RecordContainer_vue_vue_type_template_id_00b6bb97___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib??vue-loader-options!./RecordContainer.vue?vue&type=template&id=00b6bb97& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js?!./node_modules/vue-loader/lib/index.js?!./resources/js/components/user/RecordContainer.vue?vue&type=template&id=00b6bb97&");
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "render", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RecordContainer_vue_vue_type_template_id_00b6bb97___WEBPACK_IMPORTED_MODULE_0__["render"]; });
+
+/* harmony reexport (safe) */ __webpack_require__.d(__webpack_exports__, "staticRenderFns", function() { return _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_RecordContainer_vue_vue_type_template_id_00b6bb97___WEBPACK_IMPORTED_MODULE_0__["staticRenderFns"]; });
+
+
+
+/***/ }),
+
 /***/ "./resources/js/components/user/ResetPasswordComponent.vue":
 /*!*****************************************************************!*\
   !*** ./resources/js/components/user/ResetPasswordComponent.vue ***!
@@ -125093,14 +129770,16 @@ __webpack_require__.r(__webpack_exports__);
 var hospital_code = ["DFBDSMH", "DDH", "IDH", "SREDH", "VLPMDH", "MagMCH", "MatMCH", "PGGMH", "PDMH"];
 var sex = ["Male", "Female"];
 var marital_status = ["Single", "Married", "Divorced", "Widowed", "Others/Prefer Not to Say"];
-var is_private = ["Private", "Non-Private"];
-var designation = ["Medical", "Non-Medical"];
+var is_private = ["Non-Private", "Private"];
+var designation = ["Non-Medical", "Medical"];
+var contributionType = ["Attending Physician", "Requesting Physician", "Surgeon Physician", "Health Care Physician", "ER Physician", "Anesthesiologist", "Co-management", "Admitting"];
 /* harmony default export */ __webpack_exports__["default"] = ({
   hospital_code: hospital_code,
   sex: sex,
   marital_status: marital_status,
   is_private: is_private,
-  designation: designation
+  designation: designation,
+  contributionType: contributionType
 });
 
 /***/ }),
@@ -125160,8 +129839,8 @@ jQuery(function ($) {
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! C:\Users\dypau\Desktop\Awtzgege\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! C:\Users\dypau\Desktop\Awtzgege\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! C:\Users\DyXy\Desktop\philhealth\SorPhilHealthSystem\resources\js\app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! C:\Users\DyXy\Desktop\philhealth\SorPhilHealthSystem\resources\sass\app.scss */"./resources/sass/app.scss");
 
 
 /***/ })

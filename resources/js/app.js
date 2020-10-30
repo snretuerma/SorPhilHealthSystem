@@ -41,10 +41,11 @@ Vue.component('resetpassadmin-component', require('./components/admin/ResetPassw
 //Users
 Vue.component('patient-component', require('./components/user/PatientComponent.vue').default);
 Vue.component('budget-component', require('./components/user/BudgetComponent.vue').default);
-Vue.component('record-component', require('./components/user/RecordComponent.vue').default);
+Vue.component('record-component', require('./components/user/RecordContainer.vue').default);
 Vue.component('restore-component', require('./components/user/RestoreComponent.vue').default);
 Vue.component('personnel-component', require('./components/user/PersonnelComponent.vue').default);
 Vue.component('resetpass-component', require('./components/user/ResetPasswordComponent.vue').default);
+Vue.component('medical-component', require('./components/user/MedicalRecordComponent.vue').default);
 const app = new Vue({
     el: '#app'
 });

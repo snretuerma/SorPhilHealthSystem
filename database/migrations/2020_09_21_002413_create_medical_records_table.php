@@ -22,6 +22,10 @@ class CreateMedicalRecordsTable extends Migration
             $table->string('final_diagnosis');
             $table->string('record_type');
             $table->decimal('total_fee', 19, 4);
+            $table->decimal('non_medical_fee', 19, 4);
+            $table->decimal('pooled_fee', 19, 4);
+            $table->unsignedTinyInteger('total_public_doctors');
+            $table->unsignedTinyInteger('total_private_doctors');
             $table->timestamps();
             $table->softDeletes();
         });

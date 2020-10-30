@@ -23,6 +23,7 @@ class PersonnelSeeder extends Seeder
             $personnel->sex = rand(0, 1);
             $personnel->birthdate = $faker->date;
             $personnel->is_private = rand(0, 1) === 1 ? true : false;
+            $personnel->is_parttime = rand(0, 1) === 1 ? true : false;
             $personnel->designation = rand(0, 1) === 1 ? true : false;
             $personnel->hospital()->associate(Hospital::find(1)->id);
             $personnel->save();
