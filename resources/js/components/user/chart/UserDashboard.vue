@@ -861,11 +861,6 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.small {
-    /*max-width: 800px;
-    max-height: 500px;
-    margin:  50px auto;*/
-}
 .text {
     font-size: 14px;
 }
@@ -879,9 +874,6 @@ export default {
 }
 .clearfix:after {
     clear: both;
-}
-.box-card {
-    /* width: 480px;*/
 }
 .el-card.is-always-shadow,
 .el-card.is-hover-shadow:focus,
