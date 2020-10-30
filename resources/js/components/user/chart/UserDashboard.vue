@@ -3,14 +3,11 @@
         <div>
             <el-row :gutter="12">
                 <el-col :span="12">
-                    <el-card
-                        class="box-card"
-                        shadow="always"
-                        style="background-color:rgba(0,0,0,0);"
-                    >
+                    <el-card class="box-card" shadow="always">
                         <div slot="header" class="clearfix">
+                            <i class="fa fa-funnel-dollar fa-2x"></i>
                             <span style="font-size:1rem;"
-                                >Total computed PF -
+                                >&nbsp;&nbsp;Total computed PF -
                             </span>
                             <el-date-picker
                                 v-model="filterTotalComputedPF"
@@ -49,8 +46,9 @@
                 <el-col :span="12">
                     <el-card class="box-card" shadow="always">
                         <div slot="header" class="clearfix">
+                            <i class="fa fa-file-invoice-dollar fa-2x"></i>
                             <span style="font-size:1rem;"
-                                >Total pooled PF -
+                                >&nbsp;&nbsp;Total pooled PF -
                             </span>
                             <el-date-picker
                                 v-model="filterTotalPooledFee"
@@ -89,93 +87,97 @@
             </el-row>
         </div>
         <br />
-        <div class="row">
-            <div class="col-md-6 med">
-                <div class="card">
-                    <div class="card-body">
-                        <i class="fa fa-file-medical-alt fa-lg"></i
-                        ><span class="text-wrap font-weight-bold"
-                            >&nbsp;&nbsp;Recent Medical Records</span
-                        >
-                        <hr />
-                        <!-- Table -->
-                        <el-table v-loading="loading" :data="data">
-                            <el-table-column
-                                width="120"
-                                label="Admission date"
-                                prop="admission_date"
-                            ></el-table-column>
-                            <el-table-column
-                                width="120"
-                                label="Discharge date"
-                                prop="discharge_date"
-                            ></el-table-column>
-                            <el-table-column
-                                width="150"
-                                label="Final Diagnosis"
-                                prop="final_diagnosis"
-                            ></el-table-column>
-                            <el-table-column
-                                width="120"
-                                label="Record Type"
-                                prop="record_type"
-                            ></el-table-column>
-                            <el-table-column
-                                width="120"
-                                label="Total Fee"
-                                prop="total_fee"
-                            ></el-table-column>
-                        </el-table>
-                        <!--End table -->
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 con">
-                <div class="card">
-                    <div class="card-body">
-                        <i class="fa fa-hand-holding-usd fa-lg"></i
-                        ><span class="text-wrap font-weight-bold"
-                            >&nbsp;&nbsp;Recent Contributions</span
-                        >
-                        <hr />
-                        <!-- Table -->
-                        <el-table v-loading="loading" :data="data1">
-                            <el-table-column
-                                width="200"
-                                label="Name"
-                                prop="name"
-                            ></el-table-column>
-                            <el-table-column
-                                width="120"
-                                label="Type"
-                                prop="record_type"
-                            ></el-table-column>
-                            <el-table-column
-                                width="120"
-                                label="Contribution"
-                                prop="contribution"
-                            ></el-table-column>
-                            <el-table-column
-                                width="120"
-                                label="Credit"
-                                prop="credit"
-                            ></el-table-column>
-                            <el-table-column
-                                width="80"
-                                label="Status"
-                                prop="status"
-                            ></el-table-column>
-                        </el-table>
-                        <!--End table -->
-                    </div>
-                </div>
-            </div>
+        <div>
+            <el-row :gutter="12">
+                <el-col :span="12">
+                    <el-card class="box-card" shadow="always">
+                        <div slot="header" class="clearfix">
+                            <i class="fa fa-file-medical-alt fa-2x"></i>
+                            <span style="font-size:1rem;">&nbsp;&nbsp;Recent Medical Records</span>
+                        </div>
+                        <div>
+                            <!-- Table -->
+                            <el-table v-loading="loading" :data="data">
+                                <el-table-column
+                                    width="120"
+                                    label="Admission date"
+                                    prop="admission_date"
+                                ></el-table-column>
+                                <el-table-column
+                                    width="120"
+                                    label="Discharge date"
+                                    prop="discharge_date"
+                                ></el-table-column>
+                                <el-table-column
+                                    width="150"
+                                    label="Final Diagnosis"
+                                    prop="final_diagnosis"
+                                ></el-table-column>
+                                <el-table-column
+                                    width="120"
+                                    label="Record Type"
+                                    prop="record_type"
+                                ></el-table-column>
+                                <el-table-column
+                                    width="120"
+                                    label="Total Fee"
+                                    prop="total_fee"
+                                ></el-table-column>
+                            </el-table>
+                            <!--End table -->
+                        </div>
+                    </el-card>
+                </el-col>
+                <el-col :span="12">
+                    <el-card class="box-card" shadow="always">
+                        <div slot="header" class="clearfix">
+                            <i class="fa fa-hand-holding-usd fa-2x"></i>
+                            <span style="font-size:1rem;">&nbsp;&nbsp;Recent Contributions</span>
+                        </div>
+                        <div>
+                            <!-- Table -->
+                            <el-table v-loading="loading" :data="data1">
+                                <el-table-column
+                                    width="200"
+                                    label="Name"
+                                    prop="name"
+                                ></el-table-column>
+                                <el-table-column
+                                    width="120"
+                                    label="Type"
+                                    prop="record_type"
+                                ></el-table-column>
+                                <el-table-column
+                                    width="120"
+                                    label="Contribution"
+                                    prop="contribution"
+                                ></el-table-column>
+                                <el-table-column
+                                    width="120"
+                                    label="Credit"
+                                    prop="credit"
+                                ></el-table-column>
+                                <el-table-column
+                                    width="80"
+                                    label="Status"
+                                    prop="status"
+                                ></el-table-column>
+                            </el-table>
+                            <!--End table -->
+                        </div>
+                    </el-card>
+                </el-col>
+            </el-row>
         </div>
         <br />
         <div>
             <el-row :gutter="12">
                 <el-col :span="12">
                     <el-card class="box-card" shadow="always">
+                        <div slot="header" class="clearfix">
+                            <i class="fa fa-bacteria fa-2x"></i>
+                            <span style="font-size:1rem;">&nbsp;&nbsp;Most Common Illness</span>
+                        </div>
                         <el-button
                             size="mini"
                             @click="
@@ -223,6 +225,10 @@
                 </el-col>
                 <el-col :span="12">
                     <el-card class="box-card" shadow="always">
+                        <div slot="header" class="clearfix">
+                            <i class="fa fa-calendar-alt fa-2x"></i>
+                            <span style="font-size:1rem;">&nbsp;&nbsp;Received Professional Fee Comparison per Month</span>
+                        </div>
                         <el-date-picker
                             v-model="filterReceivePF"
                             @change="
@@ -283,7 +289,7 @@ export default {
             chartRePF: [],
             loading: false,
             data: [],
-            data1: [],
+            data1: []
         };
     },
     created() {},
@@ -854,7 +860,7 @@ export default {
 <style lang="css" scoped>
 .small {
     /*max-width: 800px;
-    max-height: 500px; 
+    max-height: 500px;
     margin:  50px auto;*/
 }
 .text {
@@ -885,23 +891,23 @@ export default {
 
 @media only screen and (max-width: 990px) {
     .el-col-12 {
-       width: 100% !important;
-       margin-bottom: 15px;
-    } 
+        width: 100% !important;
+        margin-bottom: 15px;
+    }
 }
-@media (min-width: 768px){
+@media (min-width: 768px) {
     .col-md-6 {
-        flex: 0 0 50%;
-        max-width: 50%;
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
     }
-    .con{
-        padding-left:4px !important;
+    .con {
+        padding-left: 4px !important;
     }
-    .med{
-        padding-right:4px !important;
+    .med {
+        padding-right: 4px !important;
     }
 }
-@media (max-width: 768px){
+@media (max-width: 768px) {
     .col-md-6 {
         flex: 0 0 100% !important;
         max-width: 100% !important;
