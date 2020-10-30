@@ -71,7 +71,7 @@ class AdminController extends Controller
         return view('roles.admin.personnel');
     }
 
-    public function getPersonnel()
+    public function getPersonnels()
     {
         $personnel = DB::table('personnels')
             ->join('hospitals', 'personnels.hospital_id', '=', 'hospitals.id')
@@ -209,6 +209,7 @@ class AdminController extends Controller
         $patient->save();
         return $patient;
     }
+    //Record
     public function getRecord()
     {
         $result = MedicalRecord::join('patients as p', 'medical_records.patient_id', '=', 'p.id')
@@ -241,12 +242,18 @@ class AdminController extends Controller
             return "Error, something went wrong!";
         }
     }
+    
+    public function getPersonnel(Request $request){
+        $result=MedicalRecord::select('*')->where('id',$request->id)
+        ->with('personnels','contributions')->first();
+        return response()->json($result);
+    }
+    
     public function exportExcel(Request $request) 
     {
         $date = Carbon::now()->format('Ymd_His');
         $exceltype = $request->exceltype;
         $e_action = $request->e_action;
-
         if(isset($exceltype) && $exceltype != ""){
             switch ($exceltype) {
                 case "csv":
