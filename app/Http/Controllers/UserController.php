@@ -143,27 +143,28 @@ class UserController extends Controller
     {
         // dd($request);
         foreach ($request->personnel as $personnel) {
-            if ($personnel['state'] == ""  || $personnel['computePF'] == "" ) {
+            if ($personnel['state'] == ""  || $personnel['computePF'] == "") {
                 throw ValidationException::withMessages([
                     'state' => ['Personnel is required'],
-                    'computePF' =>['ComputePF is required']
+                    'computePF' => ['ComputePF is required']
                 ]);
             }
         }
-        for($i=0;$i<sizeof($request->personnel);$i++){
-            $contribution=new Contribution;
-            $contribution->contribution=$request->personnel[$i]['contributionType'];
-            $contribution->credit=$request->personnel[$i]['computePF'];
-            $contribution->status="paid";
+        for ($i = 0; $i < sizeof($request->personnel); $i++) {
+            $contribution = new Contribution;
+            $contribution->contribution = $request->personnel[$i]['contributionType'];
+            $contribution->credit = $request->personnel[$i]['computePF'];
+            $contribution->status = "paid";
             $contribution->save();
-            $record=MedicalRecord::find($request->medical_record_id);
-            $record->personnels()->attach(Personnel::find($request->personnel[$i]['staff']), ['contribution_id' => $contribution->id]);  
+            $record = MedicalRecord::find($request->medical_record_id);
+            $record->personnels()->attach(Personnel::find($request->personnel[$i]['staff']), ['contribution_id' => $contribution->id]);
         }
-        return ['message'=>'success','status'=>'200'];
+        return ['message' => 'success', 'status' => '200'];
     }
 
     public function addMedicalRecord(Request $request)
     {
+        // dd($request);
         $record = new MedicalRecord;
         $record->patient_id = $request->patient_id;
         $record->admission_date = $request->admission_date;
@@ -173,8 +174,8 @@ class UserController extends Controller
         $record->total_fee = $request->total_fee;
         $record->non_medical_fee = $request->total_fee / 2;
         $record->pooled_fee = ($request->total_fee / 2) * 0.3;
-        $record->total_public_doctors;
-        $record->total_private_doctors;
+        $record->total_public_doctors = $request->is_public;
+        $record->total_private_doctors = $request->is_private;
         $record->save();
         return $record;
     }
@@ -243,6 +244,7 @@ class UserController extends Controller
         // ->getQuery() // Optional: downgrade to non-eloquent builder so we don't build invalid User objects.
         // ->get();
         $result = MedicalRecord::join('patients', 'medical_records.patient_id', '=', 'patients.id')
+            ->with('personnels', 'contributions')
             ->where('patients.hospital_id', Auth::user()->hospital_id)
             ->select(
                 'medical_records.*',
@@ -253,12 +255,34 @@ class UserController extends Controller
                 'patients.philhealth_number'
             )
             ->get();
-        return $result;
+        return response()->json($result);
     }
     public function getPersonnel(Request $request)
     {
-        $result = MedicalRecord::select('*')->where('id', $request->id)
-            ->with('personnels', 'contributions')->first();
+
+        // $result = MedicalRecord::select('*')->where('id', $request->id)
+        //     ->with('personnels', 'contributions')->first();
+        // return response()->json($result);
+
+        $result = MedicalRecord::select(
+            'ps.last_name as last_name',
+            'ps.first_name as first_name',
+            'ps.middle_name as middle_name',
+            'ps.name_suffix',
+            'c.credit  as total_fee',
+            'c.id as cid',
+            'ps.id as pid',
+            'medical_records.id as mid',
+            'c.contribution',
+            'c.deleted_at'
+        )
+            ->join('records_personnels as rp', 'medical_records.id', '=', 'rp.medical_record_id')
+            ->join('personnels as ps', 'rp.personnel_id', '=', 'ps.id')
+            ->join('contributions as c', 'rp.contribution_id', '=', 'c.id')
+            ->where('medical_records.id', $request->id)
+            ->where('c.deleted_at', null)
+            ->getQuery() // Optional: downgrade to non-eloquent builder so we don't build invalid User objects.
+            ->get();
         return response()->json($result);
     }
     public function getRestore()
@@ -324,6 +348,23 @@ class UserController extends Controller
         $restore = MedicalRecord::withTrashed()->find($request->id)->restore();
         return $restore;
     }
+
+    public function editContribution(Request $request)
+    {   
+        // foreach ($request->item['contributions'] as $contribution) {
+            
+        // }
+        // dd(sizeof($request->item['contributions'])-1);
+        $i = (sizeof($request->item['contributions'])-1) ;
+        for($i;$i >=0;$i--) {
+            if ($request->item['contributions'][$i]['contribution'] == "Attending Physician") {
+                $result = Contribution::find($request->item['contributions'][$i]['id']);
+                $result->credit = $request->total;
+                $result->save();
+            }
+        }
+    }
+
     public function deletePatient(Request $req)
     {
         return Patient::where('id', $req->id)->delete();
@@ -332,6 +373,10 @@ class UserController extends Controller
     public function deleteRecord(Request $req)
     {
         return MedicalRecord::where('id', $req->id)->delete();
+    }
+    public function deleteContribution(Request $req)
+    {
+        return Contribution::where('id', $req->id)->delete();
     }
     public function importPatients(Request $request)
     {
@@ -359,57 +404,81 @@ class UserController extends Controller
             }
         }
     }
-    
+
     public function importBudget(Request $request)
     {
         try {
             switch ($i_action) {
-                case "BudgetImport":    
-                     $import = new BudgetImport;
-                     $postData = request()->file('budgets');
-                     Excel::import($import, $postData[0]);    
-                     return $import->getRowCount(); break;
+                case "BudgetImport":
+                    $import = new BudgetImport;
+                    $postData = request()->file('budgets');
+                    Excel::import($import, $postData[0]);
+                    return $import->getRowCount();
+                    break;
                 case "PersonnelImport":
-                     $import = new PersonnelImport;
-                     $postData = request()->file('personnels');
-                     Excel::import($import, $postData[0]);   
-                     return $import->getRowCount_imported().'/'.$import->getRowCount(); break;
-                case "PatientImport":   
-                     $import = new PatientImport;
-                     $postData = request()->file('patients');
-                     Excel::import($import, $postData[0]);    
-                     return $import->getRowCount_imported().'/'.$import->getRowCount(); break;
+                    $import = new PersonnelImport;
+                    $postData = request()->file('personnels');
+                    Excel::import($import, $postData[0]);
+                    return $import->getRowCount_imported() . '/' . $import->getRowCount();
+                    break;
+                case "PatientImport":
+                    $import = new PatientImport;
+                    $postData = request()->file('patients');
+                    Excel::import($import, $postData[0]);
+                    return $import->getRowCount_imported() . '/' . $import->getRowCount();
+                    break;
             }
         } catch (\Error $ex) {
             return "Error, something went wrong!";
         }
     }
-    public function exportExcel(Request $request) 
+    public function exportExcel(Request $request)
     {
         $date = Carbon::now()->format('Ymd_His');
         $exceltype = $request->exceltype;
         $e_action = $request->e_action;
 
-        if(isset($exceltype) && $exceltype != ""){
+        if (isset($exceltype) && $exceltype != "") {
             switch ($exceltype) {
                 case "csv":
                     switch ($e_action) {
-                        case "BudgetExport":    return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.csv');       break;
-                        case "PersonnelExport": return Excel::download(new PersonnelExport, 'StaffsExportData_'.$date.'.csv');    break;
-                        case "PatientExport":   return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.csv');     break;
-                    } break;
+                        case "BudgetExport":
+                            return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.csv');
+                            break;
+                        case "PersonnelExport":
+                            return Excel::download(new PersonnelExport, 'StaffsExportData_' . $date . '.csv');
+                            break;
+                        case "PatientExport":
+                            return Excel::download(new PatientExport, 'PatientExportData_' . $date . '.csv');
+                            break;
+                    }
+                    break;
                 case "xlsx":
                     switch ($e_action) {
-                        case "BudgetExport":    return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.xlsx');       break;
-                        case "PersonnelExport": return Excel::download(new PersonnelExport, 'StaffsExportData_'.$date.'.xlsx');    break;
-                        case "PatientExport":   return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.xlsx');     break;
-                    } break;
+                        case "BudgetExport":
+                            return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.xlsx');
+                            break;
+                        case "PersonnelExport":
+                            return Excel::download(new PersonnelExport, 'StaffsExportData_' . $date . '.xlsx');
+                            break;
+                        case "PatientExport":
+                            return Excel::download(new PatientExport, 'PatientExportData_' . $date . '.xlsx');
+                            break;
+                    }
+                    break;
                 case "xls":
                     switch ($e_action) {
-                        case "BudgetExport":    return Excel::download(new BudgetExport, 'BudgetExportData_'.$date.'.xls');       break;
-                        case "PersonnelExport": return Excel::download(new PersonnelExport, 'StaffsExportData_'.$date.'.xls');    break;
-                        case "PatientExport":   return Excel::download(new PatientExport, 'PatientExportData_'.$date.'.xls');     break;
-                    } break;
+                        case "BudgetExport":
+                            return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.xls');
+                            break;
+                        case "PersonnelExport":
+                            return Excel::download(new PersonnelExport, 'StaffsExportData_' . $date . '.xls');
+                            break;
+                        case "PatientExport":
+                            return Excel::download(new PatientExport, 'PatientExportData_' . $date . '.xls');
+                            break;
+                    }
+                    break;
             }
         }
     }

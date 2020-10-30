@@ -33,91 +33,98 @@
     </div>
     <div class="card">
       <div class="card-body">
-        <el-table :data="pagedTableData">
-          <el-table-column
-            width="115"
-            label="Philhealth"
-            prop="philhealth_number"
-          >
-          </el-table-column>
-          <el-table-column
-            width="177"
-            label="Patient"
-            prop="first_name"
-            column-key="ase"
-          >
-          </el-table-column>
-          <el-table-column width="100" label="Admit" prop="admission_date">
-          </el-table-column>
-          <el-table-column width="110" label="Discharge" prop="discharge_date">
-          </el-table-column>
-          <el-table-column width="125" label="Diagnosis" prop="final_diagnosis">
-          </el-table-column>
-          <el-table-column width="115" label="Record type" prop="record_type">
-          </el-table-column>
-          <el-table-column width="115" label="Total fee" prop="total_fee">
-          </el-table-column>
-          <el-table-column width="130" align="right" fixed="right">
-            <template slot="header" slot-scope="scope">
-              <el-input
-                v-model="search"
-                size="mini"
-                placeholder="Type to search"
-              />
-            </template>
-            <template slot-scope="scope">
-              <el-tooltip
-                class="item"
-                effect="light"
-                content="Add Contribution"
-                placement="top"
-              >
-                <el-button
+        <div id="test">
+          <el-table :data="pagedTableData">
+            <el-table-column
+              width="115"
+              label="Philhealth"
+              prop="philhealth_number"
+            >
+            </el-table-column>
+            <el-table-column
+              width="177"
+              label="Patient"
+              prop="first_name"
+              column-key="ase"
+            >
+            </el-table-column>
+            <el-table-column width="100" label="Admit" prop="admission_date">
+            </el-table-column>
+            <el-table-column
+              width="110"
+              label="Discharge"
+              prop="discharge_date"
+            >
+            </el-table-column>
+            <el-table-column
+              width="125"
+              label="Diagnosis"
+              prop="final_diagnosis"
+            >
+            </el-table-column>
+            <el-table-column width="115" label="Record type" prop="record_type">
+            </el-table-column>
+            <el-table-column width="115" label="Total fee" prop="total_fee">
+            </el-table-column>
+            <el-table-column width="130" align="right" fixed="right">
+              <template slot="header" slot-scope="scope">
+                <el-input
+                  v-model="search"
                   size="mini"
-                  type="success"
-                  icon="el-icon-plus"
-                  circle
-                  @click="
-                    handleAddRecord(scope.$index, scope.row);
-                  "
+                  placeholder="Type to search"
+                />
+              </template>
+              <template slot-scope="scope">
+                <el-tooltip
+                  class="item"
+                  effect="light"
+                  content="Add Contribution"
+                  placement="top"
+                  v-if="scope.row.totalPersonnel == 0"
                 >
-                </el-button>
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="light"
-                content="view"
-                placement="top"
-              >
-                <el-button
-                  size="mini"
-                  type="info"
-                  icon="el-icon-info"
-                  circle
-                  @click="
-                    handleView(scope.$index, scope.row);
-                    hurts();
-                  "
+                  <el-button
+                    size="mini"
+                    type="success"
+                    icon="el-icon-plus"
+                    circle
+                    @click="handleAddRecord(scope.$index, scope.row)"
+                  >
+                  </el-button>
+                </el-tooltip>
+                <el-tooltip
+                  class="item"
+                  effect="light"
+                  content="view"
+                  placement="top"
+                  v-if="scope.row.totalPersonnel > 0"
                 >
-                </el-button>
-              </el-tooltip>
-              <el-tooltip
-                class="item"
-                effect="light"
-                content="delete"
-                placement="top"
-              >
-                <el-button
-                  size="mini"
-                  type="danger"
-                  icon="el-icon-delete"
-                  circle
-                  @click="handleDelete(scope.$index, scope.row)"
-                ></el-button>
-              </el-tooltip>
-            </template>
-          </el-table-column>
-        </el-table>
+                  <el-button
+                    size="mini"
+                    type="info"
+                    icon="el-icon-info"
+                    circle
+                    @click="handleView(scope.$index, scope.row)"
+                  >
+                  </el-button>
+                </el-tooltip>
+                <el-tooltip
+                  class="item"
+                  effect="light"
+                  content="delete"
+                  placement="top"
+                >
+                  <el-button
+                    size="mini"
+                    type="danger"
+                    icon="el-icon-delete"
+                    circle
+                    @click="handleDelete(scope.$index, scope.row)"
+                  ></el-button>
+                </el-tooltip>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
 
         <div style="text-align: center">
           <el-pagination
@@ -215,13 +222,21 @@
           </span>
         </el-dialog>
       </div>
-      <!-- Show Patient Details -->
+      <!-- Show personnel Details -->
       <el-dialog
         title="Personnel Details"
         :visible.sync="dialogTableVisible"
         :close-on-press-escape="false"
         :close-on-click-modal="false"
       >
+        <div class="row">
+          <div class="col-sm-12" align="right">
+            <el-button right type="primary" size="medium" @click="triggerAdd('update')"
+              >Add Staff</el-button
+            >
+          </div>
+        </div>
+
         <el-table :data="staff">
           <el-table-column
             property="first_name"
@@ -236,26 +251,57 @@
           <el-table-column
             property="last_name"
             label="Lastname"
-            width="formLabelWidth"
+            width="200"
           ></el-table-column>
           <el-table-column
             property="total_fee"
             label="Total"
-            width="formLabelWidth"
+            width="200"
           ></el-table-column>
+
+          <el-table-column
+            align="right"
+            fixed="right"
+            label="Action"
+            width="formLabelWidth"
+          >
+            <template slot-scope="scopePersonnel">
+              <el-tooltip
+                class="item"
+                effect="light"
+                content="delete"
+                placement="top"
+              >
+                <el-button
+                  size="mini"
+                  type="danger"
+                  icon="el-icon-delete"
+                  circle
+                  @click="
+                    handleDeleteContribution(
+                      scopePersonnel.$index,
+                      scopePersonnel.row
+                    )
+                  "
+                ></el-button>
+              </el-tooltip>
+            </template>
+          </el-table-column>
         </el-table>
       </el-dialog>
       <!-- Show Patient Details -->
     </div>
   </div>
 </template>
-
+<style>
+</style>
 
 <script>
 "use strict";
 export default {
   data() {
     return {
+      container: [],
       filtered: [],
       page: 1,
       total: 0,
@@ -345,18 +391,49 @@ export default {
 
       this.total = this.filtered.length;
       return this.filtered.slice(
-        
         this.pageSize * this.page - this.pageSize,
         this.pageSize * this.page
       );
     },
   },
   methods: {
-    masknumber: function (num) {
-      num = parseFloat(num)
-        .toFixed(2)
-        .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-      return num;
+    triggerAdd(mode) {
+      switch (mode) {
+        case "update":
+          var counter = 0;
+          var holder=0.00;
+          this.container.type=true;
+          this.container.contributions.forEach((element) => {
+            if (element.contribution == "Attending Physician") {
+              counter+=1;
+              this.container.totalAttending=counter;
+              // console.log(element.credit);
+             var temp=parseFloat(element.credit).toFixed(2);
+             holder=(Number(holder) + Number(temp)).toFixed(2);
+              this.container.totalContributions=Number(holder);
+           }
+          });
+          this.container.total_fee = parseFloat(
+            this.container.total_fee.replace(/,/g, "")
+          );
+          break;
+        default:
+          this.container.total_fee = parseFloat(
+            this.container.total_fee.replace(/,/g, "")
+          );
+      }
+      // console.log(this.container);
+      console.log(this.container);
+      this.$emit("add-trigger", this.container);
+    },
+    masknumber: function (theform) {
+      // num = parseFloat(num)
+      //   .toFixed(2)
+      //   .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      // return num;
+      var num = theform, rounded;
+    var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,4})?/)[0].replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+    return with2Decimals;
     },
     setPage(val) {
       this.page = val;
@@ -364,36 +441,72 @@ export default {
     handleDelete(index, row) {
       var data = this.data;
 
-      this.deleteRecord(row.id, (res_value) => {
+      this.deleteRecord("delete_record/", row.id, (res_value) => {
         if (res_value) {
           data.splice(data.indexOf(row), 1);
+          this.getRecord();
         }
       });
     },
+    handleDeleteContribution(index, row) {
+      var data = this.staff;
+      this.deleteRecord("contribution_delete/", row.cid, (res_value) => {
+        if (res_value) {
+          this.recomputePF(row.total_fee);
+          data.splice(data.indexOf(row), 1);
+          this.getRecord();
+        }
+      });
+    },
+    recomputePF(pf) {
+      let a = 0;
+      let tempAmount = 0;
+      var numOfAttending = this.staff.filter((element) => {
+        return element.contribution == "Attending Physician";
+      });
+      this.staff.forEach((element) => {
+        if (element.contribution == "Attending Physician") {
+          tempAmount = element.total_fee;
+        }
+      });
+      a = parseFloat(pf.replace(/,/g, "")) / numOfAttending.length;
+
+      // this.staff.forEach((element)=>{
+      //   if(element.contribution=="Attending Physician") {
+      //    element.total_fee=amount;
+      //   }
+      // })
+    },
     handleAddRecord(index, row) {
-      //  console.log(row);
-      window.location.replace("medicalrecord/"+row.id);
+      this.container = row;
+      // window.location.replace("medicalrecord/" + row.id);
+
+      this.container.total_fee = parseFloat(
+        this.container.total_fee.replace(/,/g, "")
+      );
+
+      // console.log(this.container);
+      // console.log(this.container)
+      this.$emit("add-trigger", this.container);
     },
     handleView(index, row) {
-     
+      // console.log(row);
+      this.container = row;
+      this.personnel_get(index, row);
+      this.dialogTableVisible = true;
+    },
+    personnel_get(index, row) {
       axios
         .post("personnel_get/" + row.id)
         .then((response) => {
-          // console.log(response.data.personnels);
-          var parent = parseFloat(row.total_fee.replace(/,/g, "")) / 2;
-          var child1 = parent;
-          var child2 = parent;
-          var gchild1 = child2 * 0.7;
-          var gchild2 = child2 * 0.3;
-          var cnt_of_type;
-          response.data.personnels.forEach((entry) => {
-              entry.total_fee = this.masknumber(gchild1);
+          response.data.forEach((entry) => {
+            var temp = entry.total_fee;
+            entry.total_fee = this.masknumber(temp);
           });
 
-          this.staff = response.data.personnels;
+          this.staff = response.data;
         })
         .catch(function (error) {});
-      this.dialogTableVisible = true;
     },
     open_notif: function (status, title, message) {
       if (status == "success") {
@@ -422,7 +535,7 @@ export default {
         });
       }
     },
-    deleteRecord: function (id) {
+    deleteRecord: function (route, id, cb) {
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
         confirmButtonText: "Delete",
@@ -431,12 +544,12 @@ export default {
       })
         .then(() => {
           var _this = this;
-          axios.post("delete_record/" + id).then(function (response) {
+          axios.post(route + id).then(function (response) {
             if (response.status > 199 && response.status < 203) {
               if (response.status > 199 && response.status < 203) {
                 _this.open_notif("success", "Success", "Succesfully! Deleted");
               }
-              _this.getRecord();
+              cb(id);
             }
           });
         })
@@ -451,7 +564,7 @@ export default {
       axios
         .get("record_get")
         .then((response) => {
-          console.log(response.data);
+          // console.log(response.data);
           response.data.forEach((entry) => {
             if (entry.name_suffix == null) {
               entry.first_name =
@@ -471,11 +584,14 @@ export default {
                 entry.name_suffix +
                 ", ";
             }
+
             // entry.patient.hospital_id =
             //   constants.hospital_code[Number(entry.patient.hospital_id) - 1];
             entry.total_fee = this.masknumber(entry.total_fee);
+            entry.totalPersonnel = entry.contributions.length;
           });
           this.data = response.data;
+          // console.log(this.data);
           //   console.log(response.data);
         })
         .catch(function (error) {});
