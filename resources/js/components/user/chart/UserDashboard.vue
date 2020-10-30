@@ -1,9 +1,19 @@
 <template>
-    <div class="small">
+    <div>
+        <!-- Header -->
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="font-weight-bold">
+                    <i class="fa fa-tachometer-alt"></i>&nbsp;&nbsp;Dashboard
+                </h2>
+            </div>
+        </div>
+        <hr />
+        <!-- End Header -->
         <div>
             <el-row :gutter="12">
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-funnel-dollar fa-2x"></i>
                             <span style="font-size:1rem;"
@@ -44,7 +54,7 @@
                     </el-card>
                 </el-col>
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-file-invoice-dollar fa-2x"></i>
                             <span style="font-size:1rem;"
@@ -90,10 +100,12 @@
         <div>
             <el-row :gutter="12">
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-file-medical-alt fa-2x"></i>
-                            <span style="font-size:1rem;">&nbsp;&nbsp;Recent Medical Records</span>
+                            <span style="font-size:1rem;"
+                                >&nbsp;&nbsp;Recent Medical Records</span
+                            >
                         </div>
                         <div>
                             <!-- Table -->
@@ -129,10 +141,12 @@
                     </el-card>
                 </el-col>
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-hand-holding-usd fa-2x"></i>
-                            <span style="font-size:1rem;">&nbsp;&nbsp;Recent Contributions</span>
+                            <span style="font-size:1rem;"
+                                >&nbsp;&nbsp;Recent Contributions</span
+                            >
                         </div>
                         <div>
                             <!-- Table -->
@@ -173,10 +187,12 @@
         <div>
             <el-row :gutter="12">
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-bacteria fa-2x"></i>
-                            <span style="font-size:1rem;">&nbsp;&nbsp;Most Common Illness</span>
+                            <span style="font-size:1rem;"
+                                >&nbsp;&nbsp;Most Common Illness</span
+                            >
                         </div>
                         <el-button
                             size="mini"
@@ -224,10 +240,13 @@
                     </el-card>
                 </el-col>
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-calendar-alt fa-2x"></i>
-                            <span style="font-size:1rem;">&nbsp;&nbsp;Received Professional Fee Comparison per Month</span>
+                            <span style="font-size:1rem;"
+                                >&nbsp;&nbsp;Received Professional Fee
+                                Comparison per Month</span
+                            >
                         </div>
                         <el-date-picker
                             v-model="filterReceivePF"
@@ -678,9 +697,8 @@ export default {
                                 year + "-" + month &&
                             typeof element.contributions !== "undefined"
                         ) {
-                            //Total pooled fee
                             totalPooledFee += Number(element.pooled_fee);
-                            //computed pf
+
                             element.contributions.forEach(el => {
                                 if (el.status == "paid") {
                                     totalComputedPF += Number(el.credit);
@@ -688,12 +706,11 @@ export default {
                             });
                         }
                     });
-                    //total pooled fee
+
                     _this.totalPooledFee = "";
                     _this.totalPooledFee =
                         "₱ " + _this.format_number(totalPooledFee.toFixed(2));
 
-                    //total computed pf
                     _this.totalComputedPF = "";
                     _this.totalComputedPF =
                         "₱ " + _this.format_number(totalComputedPF.toFixed(2));
@@ -739,13 +756,7 @@ export default {
                     ]
                 },
                 options: {
-                    scales: {
-                        /*yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]*/
-                    }
+                    scales: {}
                 }
             });
 
@@ -858,11 +869,6 @@ export default {
 </script>
 
 <style lang="css" scoped>
-.small {
-    /*max-width: 800px;
-    max-height: 500px;
-    margin:  50px auto;*/
-}
 .text {
     font-size: 14px;
 }
@@ -876,9 +882,6 @@ export default {
 }
 .clearfix:after {
     clear: both;
-}
-.box-card {
-    /* width: 480px;*/
 }
 .el-card.is-always-shadow,
 .el-card.is-hover-shadow:focus,
