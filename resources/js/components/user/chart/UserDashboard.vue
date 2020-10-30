@@ -90,7 +90,7 @@
         </div>
         <br />
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-6 med">
                 <div class="card">
                     <div class="card-body">
                         <i class="fa fa-file-medical-alt fa-lg"></i
@@ -130,7 +130,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-md-6 con">
                 <div class="card">
                     <div class="card-body">
                         <i class="fa fa-hand-holding-usd fa-lg"></i
@@ -881,5 +881,20 @@ export default {
 }
 .el-card {
     border: 1px solid rgba(0, 0, 0, 0);
+}
+
+@media only screen and (max-width: 990px) {
+    .el-col-12 {
+       width: 100% !important;
+       margin-bottom: 15px;
+    } 
+}
+@media (min-width: 769px){
+    .con{
+        padding-left:4px !important;
+    }
+    .med{
+        padding-right:4px !important;
+    }
 }
 </style>
