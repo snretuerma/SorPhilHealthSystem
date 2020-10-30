@@ -30,7 +30,7 @@
                             </el-date-picker>
                             <a href="user/record">
                                 <el-button
-                                    style="padding: 6px 5px 6px 5px;"
+                                    style="padding: 6px 5px 6px 5px;font-size:12px;"
                                     type="text"
                                     >View more</el-button
                                 >
@@ -70,7 +70,7 @@
                             </el-date-picker>
                             <a href="user/record">
                                 <el-button
-                                    style="padding: 6px 5px 6px 5px;"
+                                    style="padding: 6px 5px 6px 5px;font-size:12px;"
                                     type="text"
                                     >View more</el-button
                                 >
@@ -889,12 +889,23 @@ export default {
        margin-bottom: 15px;
     } 
 }
-@media (min-width: 769px){
+@media (min-width: 768px){
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
     .con{
         padding-left:4px !important;
     }
     .med{
         padding-right:4px !important;
+    }
+}
+@media (max-width: 768px){
+    .col-md-6 {
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 15px !important;
     }
 }
 </style>
