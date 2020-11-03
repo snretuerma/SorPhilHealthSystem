@@ -24,19 +24,36 @@ const marital_status = [
 ];
 
 const is_private = [
-    "Private",
-    "Non-Private"
+    "Non-Private",
+    "Private"
+];
+
+const is_parttime = [
+    "Part-time",
+    "Full-time"
 ];
 
 const designation = [
-    "Medical",
-    "Non-Medical"
+    "Non-Medical",
+    "Medical"
 ];
 
+const contributionType=[
+    "Attending Physician",
+    "Requesting Physician",
+    "Surgeon Physician",
+    "Health Care Physician",
+    "ER Physician",
+    "Anesthesiologist",
+    "Co-management",
+    "Admitting"
+];
 export default {
     hospital_code: hospital_code,
     sex: sex,
     marital_status: marital_status,
     is_private: is_private,
-    designation: designation
+    is_parttime: is_parttime,
+    designation: designation,
+    contributionType:contributionType
 }

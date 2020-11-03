@@ -1,12 +1,19 @@
 <template>
-    <div class="small">
+    <div>
+        <!-- Header -->
+        <div class="row">
+            <div class="col-sm-12">
+                <h2 class="font-weight-bold">
+                    <i class="fa fa-tachometer-alt"></i>&nbsp;&nbsp;Dashboard
+                </h2>
+            </div>
+        </div>
+        <hr />
+        <!-- End Header -->
         <div>
             <el-row :gutter="12">
                 <el-col :span="12">
-                    <el-card
-                        class="box-card"
-                        shadow="always"
-                    >
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-funnel-dollar fa-2x"></i>
                             <span style="font-size:1rem;"
@@ -47,7 +54,7 @@
                     </el-card>
                 </el-col>
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-file-invoice-dollar fa-2x"></i>
                             <span style="font-size:1rem;"
@@ -93,14 +100,21 @@
         <div>
             <el-row :gutter="12">
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-file-medical-alt fa-2x"></i>
-                            <span style="font-size:1rem;">&nbsp;&nbsp;Recent Medical Records</span>
+                            <span style="font-size:1rem;"
+                                >&nbsp;&nbsp;Recent Medical Records</span
+                            >
                         </div>
                         <div>
                             <!-- Table -->
                             <el-table v-loading="loading" :data="data">
+                                <el-table-column
+                                    width="200"
+                                    label="Patient Name"
+                                    prop="name">
+                                </el-table-column>
                                 <el-table-column
                                     width="120"
                                     label="Admission date"
@@ -132,17 +146,19 @@
                     </el-card>
                 </el-col>
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-hand-holding-usd fa-2x"></i>
-                            <span style="font-size:1rem;">&nbsp;&nbsp;Recent Contributions</span>
+                            <span style="font-size:1rem;"
+                                >&nbsp;&nbsp;Recent Contributions</span
+                            >
                         </div>
                         <div>
                             <!-- Table -->
                             <el-table v-loading="loading" :data="data1">
                                 <el-table-column
                                     width="200"
-                                    label="Name"
+                                    label="Staff Name"
                                     prop="name"
                                 ></el-table-column>
                                 <el-table-column
@@ -176,10 +192,12 @@
         <div>
             <el-row :gutter="12">
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-bacteria fa-2x"></i>
-                            <span style="font-size:1rem;">&nbsp;&nbsp;Most Common Illness</span>
+                            <span style="font-size:1rem;"
+                                >&nbsp;&nbsp;Most Common Illness</span
+                            >
                         </div>
                         <el-button
                             size="mini"
@@ -227,10 +245,13 @@
                     </el-card>
                 </el-col>
                 <el-col :span="12">
-                    <el-card class="box-card" shadow="always">
+                    <el-card shadow="always">
                         <div slot="header" class="clearfix">
                             <i class="fa fa-calendar-alt fa-2x"></i>
-                            <span style="font-size:1rem;">&nbsp;&nbsp;Received Professional Fee Comparison per Month</span>
+                            <span style="font-size:1rem;"
+                                >&nbsp;&nbsp;Received Professional Fee
+                                Comparison per Month</span
+                            >
                         </div>
                         <el-date-picker
                             v-model="filterReceivePF"
@@ -684,9 +705,8 @@ export default {
                                 year + "-" + month &&
                             typeof element.contributions !== "undefined"
                         ) {
-                            //Total pooled fee
                             totalPooledFee += Number(element.pooled_fee);
-                            //computed pf
+
                             element.contributions.forEach(el => {
                                 if (el.status == "paid") {
                                     totalComputedPF += Number(el.credit);
@@ -694,12 +714,11 @@ export default {
                             });
                         }
                     });
-                    //total pooled fee
+
                     _this.totalPooledFee = "";
                     _this.totalPooledFee =
                         "₱ " + _this.format_number(totalPooledFee.toFixed(4));
 
-                    //total computed pf
                     _this.totalComputedPF = "";
                     _this.totalComputedPF =
                         "₱ " + _this.format_number(totalComputedPF.toFixed(4));
@@ -745,13 +764,7 @@ export default {
                     ]
                 },
                 options: {
-                    scales: {
-                        /*yAxes: [{
-                        ticks: {
-                            beginAtZero: true
-                        }
-                    }]*/
-                    }
+                    scales: {}
                 }
             });
 
@@ -821,6 +834,18 @@ export default {
             axios
                 .get("user/recentMedicalRecord_get")
                 .then(response => {
+                    response.data.forEach(element => {
+                        if (element.name_suffix == undefined) {
+                            element.name_suffix = "";
+                        }
+                        element.name = this.buildName(
+                            element.first_name,
+                            element.middle_name,
+                            element.last_name,
+                            element.name_suffix
+                        );
+                    });
+
                     this.data = response.data;
                     this.loading = false;
                 })

@@ -36,7 +36,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
 
     //Staffs
     Route::get('/adminPersonnel', 'AdminController@personnel')->name('adminPersonnel');
-    Route::get('personnel_get', 'AdminController@getPersonnel');
+    Route::get('personnel_get', 'AdminController@getPersonnels');
     Route::post('add_personnel', 'AdminController@addPersonnel');
     Route::post('edit_personnel/{id}', 'AdminController@editPersonnel');
     Route::post('personnels_import', 'AdminController@importExcel');
@@ -45,14 +45,16 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     //Patient
     Route::get('/adminPatient', 'AdminController@patient')->name('adminPatient');
     Route::get('patients_get', 'AdminController@getPatient');
-    Route::post('add_patient', 'AdminController@addPatient');
-    Route::post('edit_patient/{id}', 'AdminController@editPatient');
+    Route::post('patient_add', 'AdminController@addPatient');
+    Route::post('patient_edit/{id}', 'AdminController@editPatient');
+    //Record
     Route::post('patients_import', 'AdminController@importExcel');
     Route::get('/patients_export', 'AdminController@exportExcel');
 
     Route::get('/adminrecord', 'AdminController@record')->name('adminrecord');
     Route::get('adminrecord_get', 'AdminController@getRecord');
     Route::get('adminrecord_get1', 'AdminController@getRecord1');
+    Route::get('adminpersonnel_get/{id}', 'AdminController@getPersonnel');
 
     //Users
     Route::get('/adminUsers', 'AdminController@users')->name('users');
@@ -79,7 +81,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('budget_delete/{id}', 'UserController@deleteBudget');
     //Staffs
     Route::get('/personnel', 'UserController@personnel')->name('personnel');
-    Route::get('personnel_get', 'UserController@getPersonnels');
+    Route::get('personnels_get', 'UserController@getPersonnels');
     Route::post('add_personnel', 'UserController@addPersonnel');
     Route::post('/edit_personnel/{id}', 'UserController@editPersonnel');
     Route::post('personnel_delete/{id}', 'UserController@deletePersonnel');
@@ -97,8 +99,11 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
     //Records
     Route::get('/record', 'UserController@record')->name('record');
+    Route::get('/medicalrecord/{id}', 'UserController@medicalrecord');
     Route::get('record_get', 'UserController@getRecord');
-    Route::post('personnel_get/{id}', 'UserController@getPersonnel');
+    Route::post('medicalrecord_add', 'UserController@addMedicalRecord');
+    Route::post('personnels_get/{id}', 'UserController@getPersonnel');
+    Route::get('personnel_get', 'UserController@getPersonnellist');
     Route::post('delete_record/{id}', 'UserController@deleteRecord');
 
     //Restore
@@ -111,6 +116,10 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     //Dashboard
     Route::get('recentMedicalRecord_get', 'UserController@getRecentMedicalRecord');
     Route::get('recentContribution_get', 'UserController@getRecentContribution');
+    //Contribution
+    Route::post('contrirecord_add', 'UserController@addContributionRecord');
+    Route::post('contribution_delete/{id}', 'UserController@deleteContribution');
+    Route::post('contribution_edit/{id}', 'UserController@editContribution');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');
