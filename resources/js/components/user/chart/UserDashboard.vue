@@ -111,6 +111,11 @@
                             <!-- Table -->
                             <el-table v-loading="loading" :data="data">
                                 <el-table-column
+                                    width="200"
+                                    label="Patient Name"
+                                    prop="name">
+                                </el-table-column>
+                                <el-table-column
                                     width="120"
                                     label="Admission date"
                                     prop="admission_date"
@@ -153,7 +158,7 @@
                             <el-table v-loading="loading" :data="data1">
                                 <el-table-column
                                     width="200"
-                                    label="Name"
+                                    label="Staff Name"
                                     prop="name"
                                 ></el-table-column>
                                 <el-table-column
@@ -826,6 +831,18 @@ export default {
             axios
                 .get("user/recentMedicalRecord_get")
                 .then(response => {
+                    response.data.forEach(element => {
+                        if (element.name_suffix == undefined) {
+                            element.name_suffix = "";
+                        }
+                        element.name = this.buildName(
+                            element.first_name,
+                            element.middle_name,
+                            element.last_name,
+                            element.name_suffix
+                        );
+                    });
+
                     this.data = response.data;
                     this.loading = false;
                 })

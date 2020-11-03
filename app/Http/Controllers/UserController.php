@@ -229,6 +229,7 @@ class UserController extends Controller
         $personnel->last_name = $request->last_name;
         $personnel->name_suffix = $request->name_suffix;
         $personnel->is_private = $request->is_private;
+        $personnel->is_parttime = $request->is_parttime;
         $personnel->designation = $request->designation;
         $personnel->sex = $request->sex;
         $personnel->birthdate = $date;
@@ -245,6 +246,7 @@ class UserController extends Controller
         $personnel->last_name = $request->last_name;
         $personnel->name_suffix = $request->name_suffix;
         $personnel->is_private = $request->is_private;
+        $personnel->is_parttime = $request->is_parttime;
         $personnel->designation = $request->designation;
         $personnel->sex = $request->sex;
         $personnel->birthdate = Carbon::parse($request->birthdate)->format('Y-m-d');

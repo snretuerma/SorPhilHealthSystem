@@ -209,6 +209,7 @@ class AdminController extends Controller
         $personnel->last_name = $request->last_name;
         $personnel->name_suffix = $request->name_suffix;
         $personnel->is_private = $request->is_private;
+        $personnel->is_parttime = $request->is_parttime;
         $personnel->designation = $request->designation;
         $personnel->sex = $request->sex;
         $personnel->hospital_id = $request->codeholder;
@@ -226,6 +227,7 @@ class AdminController extends Controller
         $personnel->last_name = $request->last_name;
         $personnel->name_suffix = $request->name_suffix;
         $personnel->is_private = $request->is_private;
+        $personnel->is_parttime = $request->is_parttime;
         $personnel->designation = $request->designation;
         $personnel->sex = $request->sex;
         $personnel->hospital_id = $request->codeholder;

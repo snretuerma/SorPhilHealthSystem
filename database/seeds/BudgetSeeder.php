@@ -17,7 +17,7 @@ class BudgetSeeder extends Seeder
         $budget = new Budget;
         $budget->total = 923213;
         $budget->start_date = Carbon::now()->format('Y-m-d H:i:s');
-        $budget->end_date = null;
+        $budget->end_date = Carbon::now()->format('Y-m-d H:i:s');
         $budget->hospital()->associate(Hospital::find(1)->id);
         $budget->save();
     }

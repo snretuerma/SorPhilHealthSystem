@@ -56,8 +56,13 @@
                     ></el-table-column>
                     <el-table-column
                         width="120"
-                        label="Type"
+                        label="Employed As"
                         prop="is_private"
+                    ></el-table-column>
+                     <el-table-column
+                        width="150"
+                        label="Employment Type"
+                        prop="is_parttime"
                     ></el-table-column>
                     <el-table-column
                         width="120"
@@ -225,13 +230,13 @@
                     >
                 </el-form-item>
                 <el-form-item
-                    label="Type"
+                    label="Employed As"
                     :label-width="formLabelWidth"
                     prop="is_private"
                 >
                     <el-radio-group v-model="form.is_private">
-                        <el-radio label="0">Private</el-radio>
-                        <el-radio label="1">Non-private</el-radio>
+                        <el-radio label="0">Non-private</el-radio>
+                        <el-radio label="1">Private</el-radio>
                     </el-radio-group>
                     <br />
                     <span
@@ -241,13 +246,29 @@
                     >
                 </el-form-item>
                 <el-form-item
+                    label="Employement Type"
+                    :label-width="formLabelWidth"
+                    prop="is_parttime"
+                >
+                    <el-radio-group v-model="form.is_parttime">
+                        <el-radio label="0">Part-time</el-radio>
+                        <el-radio label="1">Full-time</el-radio>
+                    </el-radio-group>
+                    <br />
+                    <span
+                        class="font-italic text-danger"
+                        v-if="errors.is_parttime"
+                        ><small>{{ errors.is_parttime[0] }}</small></span
+                    >
+                </el-form-item>
+                <el-form-item
                     label="Designation"
                     :label-width="formLabelWidth"
                     prop="designation"
                 >
                     <el-radio-group v-model="form.designation">
-                        <el-radio label="0">Medical</el-radio>
-                        <el-radio label="1">Non-medical</el-radio>
+                        <el-radio label="0">Non-Medical</el-radio>
+                        <el-radio label="1">Medical</el-radio>
                     </el-radio-group>
                     <br />
                     <span
@@ -498,8 +519,13 @@
                 ></el-table-column>
                 <el-table-column
                     property="is_private"
-                    label="Type"
-                    width="100"
+                    label="Employed As"
+                    width="120"
+                ></el-table-column>
+                <el-table-column
+                    property="is_parttime"
+                    label="Employment Type"
+                    width="150"
                 ></el-table-column>
                 <el-table-column
                     property="designation"
@@ -544,7 +570,7 @@ export default {
             enableUpload: false,
             dialogTableVisible: false,
             dialogFormVisible: false,
-            formLabelWidth: "120px",
+            formLabelWidth: "150px",
             progressbar_import: false,
             enableUpload: false,
             // Validation
@@ -574,6 +600,13 @@ export default {
                     {
                         required: true,
                         message: "Please select staff type.",
+                        trigger: "change"
+                    }
+                ],
+                is_parttime: [
+                    {
+                        required: true,
+                        message: "Please select employment type.",
                         trigger: "change"
                     }
                 ],
@@ -617,6 +650,7 @@ export default {
                 sex: "",
                 birthdate: "",
                 is_private: "",
+                is_parttime: "",
                 designation: "",
                 hospital_code: "",
                 codeholder: "",
@@ -633,6 +667,7 @@ export default {
                 sex: "",
                 birthdate: "",
                 is_private: "",
+                is_parttime: "",
                 designation: "",
                 codeholder: "",
                 name: ""
@@ -644,6 +679,7 @@ export default {
                     sex: "",
                     birthdate: "",
                     is_private: "",
+                    is_parttime: "",
                     designation: "",
                     hospital_code: ""
                 }
@@ -715,6 +751,7 @@ export default {
                 row.name_suffix
             );
             this.gridData[0].is_private = row.is_private;
+            this.gridData[0].is_parttime = row.is_parttime;
             this.gridData[0].designation = row.designation;
             this.gridData[0].sex = row.sex;
             this.gridData[0].birthdate = row.birthdate;
@@ -730,6 +767,7 @@ export default {
             this.form.middle_name = row.middle_name;
             this.form.name_suffix = row.name_suffix;
             this.form.is_private = row.is_private;
+            this.form.is_parttime = row.is_parttime;
             this.form.designation = row.designation;
             this.form.sex = row.sex;
             this.form.birthdate = row.birthdate;
@@ -744,6 +782,7 @@ export default {
             this.form_check.middle_name = row.middle_name;
             this.form_check.name_suffix = row.name_suffix;
             this.form_check.is_private = row.is_private;
+            this.form_check.is_parttime = row.is_parttime;
             this.form_check.designation = row.designation;
             this.form_check.sex = row.sex;
             this.form_check.birthdate = row.birthdate;
@@ -768,6 +807,7 @@ export default {
                         this.form.first_name == "" ||
                         this.form.middle_name == "" ||
                         this.form.is_private == "" ||
+                        this.form.is_parttime == "" ||
                         this.form.designation == "" ||
                         this.form.sex == "" ||
                         this.form.birthdate == "" ||
@@ -798,6 +838,10 @@ export default {
                                     response.data.is_private =
                                         constants.is_private[
                                             Number(this.form.is_private)
+                                        ];
+                                    response.data.is_parttime =
+                                        constants.is_parttime[
+                                            Number(this.form.is_parttime)
                                         ];
                                     response.data.designation =
                                         constants.designation[
@@ -836,6 +880,7 @@ export default {
                         this.form.middle_name == this.form_check.middle_name &&
                         this.form.name_suffix == this.form_check.name_suffix &&
                         this.form.is_private == this.form_check.is_private &&
+                        this.form.is_parttime == this.form_check.is_parttime &&
                         this.form.designation == this.form_check.designation &&
                         this.form.sex == this.form_check.sex &&
                         this.form.birthdate == this.form_check.birthdate &&
@@ -849,14 +894,19 @@ export default {
                             this.form.sex = 1;
                         }
                         if (this.form.is_private == "Private") {
-                            this.form.is_private = 0;
-                        } else if (this.form.is_private == "Non-private") {
                             this.form.is_private = 1;
+                        } else if (this.form.is_private == "Non-private") {
+                            this.form.is_private = 0;
+                        }
+                        if (this.form.is_parttime == "Full-time") {
+                            this.form.is_parttime = 1;
+                        } else if (this.form.is_parttime == "Part-time") {
+                            this.form.is_parttime = 0;
                         }
                         if (this.form.designation == "Medical") {
-                            this.form.designation = 0;
-                        } else if (this.form.designation == "Non-medical") {
                             this.form.designation = 1;
+                        } else if (this.form.designation == "Non-medical") {
+                            this.form.designation = 0;
                         }
                         if (this.form.hospital_code == "DFBDSMH") {
                             this.form.codeholder = 1;
@@ -923,6 +973,12 @@ export default {
                                         ];
                                     this.data[
                                         parseInt(this.form.edit_object_index)
+                                    ].is_parttime =
+                                        constants.is_parttime[
+                                            Number(this.form.is_parttime)
+                                        ];
+                                    this.data[
+                                        parseInt(this.form.edit_object_index)
                                     ].designation =
                                         constants.designation[
                                             Number(this.form.designation)
@@ -981,6 +1037,7 @@ export default {
             this.form.middle_name = "";
             this.form.name_suffix = "";
             this.form.is_private = "";
+            this.form.is_parttime = "";
             this.form.designation = "";
             this.form.sex = "";
             this.form.birthdate = "";
@@ -991,24 +1048,38 @@ export default {
             var type;
             switch (type_value) {
                 case 0:
-                    type = "Private";
+                    type = "Non-Private";
                     break;
                 case 1:
-                    type = "Non-private";
+                    type = "Private";
                     break;
                 default:
                     type = "Not Known";
             }
             return type;
         },
+        assignEmploymentType: function(employmentType_value) {
+            var employmentType;
+            switch (employmentType_value) {
+                case 0:
+                    employmentType = "Part-time";
+                    break;
+                case 1:
+                    employmentType = "Full-time";
+                    break;
+                default:
+                    employmentType = "Not Known";
+            }
+            return employmentType;
+        },
         assignDesignation: function(designation_value) {
             var designation;
             switch (designation_value) {
                 case 0:
-                    designation = "Medical";
+                    designation = "Non-medical";
                     break;
                 case 1:
-                    designation = "Non-medical";
+                    designation = "Medical";
                     break;
                 default:
                     designation = "Not Known";
@@ -1023,9 +1094,6 @@ export default {
                     break;
                 case 1:
                     sex = "Female";
-                    break;
-                case 9:
-                    sex = "Not Applicable";
                     break;
                 default:
                     sex = "Not Known";
@@ -1056,6 +1124,7 @@ export default {
             );
             element.sex = this.assignSex(element.sex);
             element.is_private = this.assignType(element.is_private);
+            element.is_parttime = this.assignEmploymentType(element.is_parttime);
             element.designation = this.assignDesignation(element.designation);
         },
         formDialog: function(id) {
