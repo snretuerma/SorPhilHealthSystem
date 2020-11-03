@@ -25,6 +25,6 @@
     },
     "dependencies": {
         "@fortawesome/fontawesome-free": "^5.14.0",
-        "vue-data-tables": "^3.4.5"
+        "chart.js": "^2.9.4"
     }
 }

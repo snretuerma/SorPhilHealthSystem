@@ -14,7 +14,7 @@ class PatientSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        for($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 50; $i++) {
             $patient = new Patient;
             $patient->first_name = $faker->firstName;
             $patient->middle_name = $faker->lastName;

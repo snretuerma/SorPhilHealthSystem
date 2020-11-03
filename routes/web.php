@@ -45,8 +45,8 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     //Patient
     Route::get('/adminPatient', 'AdminController@patient')->name('adminPatient');
     Route::get('patients_get', 'AdminController@getPatient');
-    Route::post('add_patient', 'AdminController@addPatient');
-    Route::post('edit_patient/{id}', 'AdminController@editPatient');
+    Route::post('patient_add', 'AdminController@addPatient');
+    Route::post('patient_edit/{id}', 'AdminController@editPatient');
     //Record
     Route::post('patients_import', 'AdminController@importExcel');
     Route::get('/patients_export', 'AdminController@exportExcel');
@@ -81,7 +81,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('budget_delete/{id}', 'UserController@deleteBudget');
     //Staffs
     Route::get('/personnel', 'UserController@personnel')->name('personnel');
-    Route::get('personnel_get', 'UserController@getPersonnels');
+    Route::get('personnels_get', 'UserController@getPersonnels');
     Route::post('add_personnel', 'UserController@addPersonnel');
     Route::post('/edit_personnel/{id}', 'UserController@editPersonnel');
     Route::post('personnel_delete/{id}', 'UserController@deletePersonnel');
@@ -102,15 +102,20 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/medicalrecord/{id}', 'UserController@medicalrecord');
     Route::get('record_get', 'UserController@getRecord');
     Route::post('medicalrecord_add', 'UserController@addMedicalRecord');
-    Route::post('personnel_get/{id}', 'UserController@getPersonnel');
+    Route::post('personnels_get/{id}', 'UserController@getPersonnel');
     Route::get('personnel_get', 'UserController@getPersonnellist');
     Route::post('delete_record/{id}', 'UserController@deleteRecord');
 
-    //Restore 
+    //Restore
     Route::get('/restore', 'UserController@restore')->name('restore');
     Route::get('restore_get', 'UserController@getRestore');//to get deleted medical records
     Route::post('edit_restore/{id}', 'UserController@editRestore');
 
+    Route::get('get_common_disease', 'UserController@getCommonDisease');
+
+    //Dashboard
+    Route::get('recentMedicalRecord_get', 'UserController@getRecentMedicalRecord');
+    Route::get('recentContribution_get', 'UserController@getRecentContribution');
     //Contribution
     Route::post('contrirecord_add', 'UserController@addContributionRecord');
     Route::post('contribution_delete/{id}', 'UserController@deleteContribution');
