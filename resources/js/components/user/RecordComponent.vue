@@ -12,7 +12,7 @@
         <div class="card">
             <div class="card-body">
                 <div id="test">
-                    <el-table :data="pagedTableData">
+                    <el-table :data="listData">
                         <el-table-column
                             width="115"
                             label="Philhealth"
@@ -134,9 +134,11 @@
 
                 <div style="text-align: center">
                     <el-pagination
+                        background
                         layout="prev, pager, next"
-                        :total="this.data.length"
-                        @current-change="setPage"
+                        @current-change="handleCurrentChange"
+                        :page-size="pageSize"
+                        :total="total"
                     >
                     </el-pagination>
                 </div>
@@ -381,19 +383,36 @@ export default {
         };
     },
     computed: {
-        pagedTableData() {
-            if (this.search == null) return this.data;
-
-            this.filtered = this.data.filter(
+        searching() {
+            if (!this.search) {
+                this.total = this.data.length;
+                return this.data;
+            }
+            this.page = 1;
+            return this.data.filter(
                 data =>
-                    !this.search ||
                     data.first_name
                         .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.last_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.philhealth_number
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.final_diagnosis
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.record_type
+                        .toLowerCase()
                         .includes(this.search.toLowerCase())
-            );
 
-            this.total = this.filtered.length;
-            return this.filtered.slice(
+            );
+        },
+        listData() {
+            this.total = this.searching.length;
+
+            return this.searching.slice(
                 this.pageSize * this.page - this.pageSize,
                 this.pageSize * this.page
             );
@@ -436,6 +455,9 @@ export default {
             return with2Decimals;
         },
         setPage(val) {
+            this.page = val;
+        },
+        handleCurrentChange(val) {
             this.page = val;
         },
         handleDelete(index, row) {

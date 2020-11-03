@@ -13,20 +13,7 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <el-table
-                    :data="
-                        pagedTableData.filter(
-                            data =>
-                                !search ||
-                                data.first_name
-                                    .toLowerCase()
-                                    .includes(search.toLowerCase()) ||
-                                data.philhealth_number
-                                    .toLowerCase()
-                                    .includes(search.toLowerCase())
-                        )
-                    "
-                >
+                <el-table :data="listData">
                     <el-table-column
                         width="115"
                         label="Philhealth"
@@ -114,9 +101,11 @@
                 </el-table>
                 <div style="text-align: center">
                     <el-pagination
+                        background
                         layout="prev, pager, next"
-                        :total="this.data.length"
-                        @current-change="setPage"
+                        @current-change="handleCurrentChange"
+                        :page-size="pageSize"
+                        :total="total"
                     >
                     </el-pagination>
                 </div>
@@ -371,8 +360,35 @@ export default {
         };
     },
     computed: {
-        pagedTableData() {
-            return this.data.slice(
+        searching() {
+            if (!this.search) {
+                this.total = this.data.length;
+                return this.data;
+            }
+            this.page = 1;
+            return this.data.filter(
+                data =>
+                    data.first_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.last_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.philhealth_number
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.final_diagnosis
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.record_type
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase())
+            );
+        },
+        listData() {
+            this.total = this.searching.length;
+
+            return this.searching.slice(
                 this.pageSize * this.page - this.pageSize,
                 this.pageSize * this.page
             );
@@ -386,6 +402,9 @@ export default {
             return num;
         },
         setPage(val) {
+            this.page = val;
+        },
+        handleCurrentChange(val) {
             this.page = val;
         },
         handleView(index, row) {
