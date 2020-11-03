@@ -259,6 +259,7 @@
 <script>
 import _ from "lodash";
 var array = require("lodash/array");
+
 export default {
     data() {
         return {
@@ -296,7 +297,9 @@ export default {
         };
     },
     created() {},
+
     beforeMount() {},
+    
     mounted() {
         var today = new Date();
         var month = today.getMonth() + 1;
