@@ -459,7 +459,8 @@ class UserController extends Controller
                 'ps.last_name as pslname',
                 'h.hospital_code as hcode',
                 'medical_records.admission_date',
-                'medical_records.discharge_date'
+                'medical_records.discharge_date',
+                'medical_records.final_diagnosis',
             )
             ->where('medical_records.deleted_at', '<>', '', 'and')
             ->where('h.id', Auth::user()->hospital_id)
