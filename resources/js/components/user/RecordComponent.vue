@@ -509,7 +509,7 @@ export default {
         },
         personnel_get(index, row) {
             axios
-                .post("personnel_get/" + row.id)
+                .post("personnels_get/" + row.id)
                 .then(response => {
                     response.data.forEach(entry => {
                         var temp = entry.total_fee;
