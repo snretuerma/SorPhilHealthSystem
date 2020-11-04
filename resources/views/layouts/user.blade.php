@@ -21,7 +21,24 @@
             <i class="fas fa-bars"></i>
         </a>
         <nav id="sidebar" class="sidebar-wrapper">
-            <div class="sidebar-content">
+            <div class="sidebar-content" style="overflow: hidden;">
+                <div class="row" style="background-color:green;height:190px; text-align:center;position:relative;">
+                 
+                    <img class="img-responsive rounded-circle img-sidebar" 
+                    src="{{asset('images/user.jpg')}}" 
+                    alt="User picture"
+                    width = "93"
+                    height = "93"
+                    >
+                    
+                   <label id="user" style="position:absolute;
+                   top: 76%;
+                   left: auto; width:100%; ">DFBDSMH_user</label>
+                   <label style="position:absolute;
+                   top: 84%;
+                   left: auto; width:100%; ">user</label>
+                    
+                </div>
                 <div class="sidebar-brand">
                     <a href="{{ url('user') }}">PF Management System</a>
                     <div id="close-sidebar">
