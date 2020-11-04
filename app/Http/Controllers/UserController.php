@@ -376,7 +376,30 @@ class UserController extends Controller
     }
     public function deleteContribution(Request $req)
     {
-        return Contribution::where('id', $req->id)->delete();
+        // $result=Contribution::find($req->id)->first();
+        // $computedPF=$result->credit;
+        // foreach( ) {
+
+        // }
+        // dd($req->data);
+
+        // foreach($req->data as $data){
+        //     if($req->id != $data['cid'] && $data['contribution'] == "Attending Physician"){
+        //         $result = Contribution::find($data['cid'])->first();
+        //         $result->credit = $data['total_fee'];
+        //         $result->save();
+        //     }
+        // }
+        for($i=0;$i<sizeOf($req->data);$i++) {
+            if($req->id != $req->data[$i]['cid'] && $req->data[$i]['contribution'] == "Attending Physician"){
+                $result = Contribution::find($req->data[$i]['cid']);
+                $result->credit=$req->data[$i]['total_fee'];
+                $result->save();
+            }
+        }
+        // return 
+        Contribution::where('id', $req->id)->delete();
+
     }
     public function importPatients(Request $request)
     {

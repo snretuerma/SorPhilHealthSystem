@@ -231,7 +231,11 @@
       >
         <div class="row">
           <div class="col-sm-12" align="right">
-            <el-button right type="primary" size="medium" @click="triggerAdd('update')"
+            <el-button
+              right
+              type="primary"
+              size="medium"
+              @click="triggerAdd('update')"
               >Add Staff</el-button
             >
           </div>
@@ -301,6 +305,12 @@
 export default {
   data() {
     return {
+      delete_contribution:{
+        id:'',
+        data:[],
+        deletedAmmount:'',
+        attendingCounter:''
+      },
       container: [],
       filtered: [],
       page: 1,
@@ -308,6 +318,9 @@ export default {
       pageSize: 10,
       search: "",
       data: [],
+      tabledata:[],
+      tempStaff:[],
+      cancel:false,
       staff: [],
       budgetInfo: [],
       rules: {
@@ -401,17 +414,17 @@ export default {
       switch (mode) {
         case "update":
           var counter = 0;
-          var holder=0.00;
-          this.container.type=true;
+          var holder = 0.0;
+          this.container.type = true;
           this.container.contributions.forEach((element) => {
             if (element.contribution == "Attending Physician") {
-              counter+=1;
-              this.container.totalAttending=counter;
+              counter += 1;
+              this.container.totalAttending = counter;
               // console.log(element.credit);
-             var temp=parseFloat(element.credit).toFixed(2);
-             holder=(Number(holder) + Number(temp)).toFixed(2);
-              this.container.totalContributions=Number(holder);
-           }
+              var temp = parseFloat(element.credit).toFixed(2);
+              holder = (Number(holder) + Number(temp)).toFixed(2);
+              this.container.totalContributions = Number(holder);
+            }
           });
           this.container.total_fee = parseFloat(
             this.container.total_fee.replace(/,/g, "")
@@ -426,22 +439,31 @@ export default {
       console.log(this.container);
       this.$emit("add-trigger", this.container);
     },
-    masknumber: function (theform) {
+    masknumber: function (theform, mode) {
       // num = parseFloat(num)
       //   .toFixed(2)
       //   .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
       // return num;
-      var num = theform, rounded;
-    var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,4})?/)[0].replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-    return with2Decimals;
+      var num = theform,
+        rounded;
+      if (mode == true) {
+        var with2Decimals = num
+          .toString()
+          .match(/^-?\d+(?:\.\d{0,4})?/)[0]
+          .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      } else {
+        var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,4})?/)[0];
+      }
+      return with2Decimals;
     },
     setPage(val) {
       this.page = val;
     },
     handleDelete(index, row) {
+      // console.log(row);
       var data = this.data;
 
-      this.deleteRecord("delete_record/", row.id, (res_value) => {
+      this.deleteRecord("delete_record/", row.id, null,null, (res_value) => {
         if (res_value) {
           data.splice(data.indexOf(row), 1);
           this.getRecord();
@@ -449,14 +471,68 @@ export default {
       });
     },
     handleDeleteContribution(index, row) {
-      var data = this.staff;
-      this.deleteRecord("contribution_delete/", row.cid, (res_value) => {
-        if (res_value) {
-          this.recomputePF(row.total_fee);
-          data.splice(data.indexOf(row), 1);
-          this.getRecord();
+      this.tempStaff=this.staff;
+      this.staff.forEach((element) => {
+        element.total_fee = Number(
+          this.masknumber((element.total_fee.replace(/,/g, "")), false)
+        );
+      });
+      console.log(this.staff);
+      this.tabledata = this.staff;
+    
+      // console.log(row);
+
+      //var contribution = data[index].contribution;
+      var attendingCounter = 0;
+      var deletedAmmount = 0; 
+      this.tabledata.forEach(el=>{
+        if(el.contribution == "Attending Physician" && el.cid != row.cid ){
+          
+          attendingCounter++;
+        }
+        if(el.cid == row.cid){
+          deletedAmmount = el.total_fee;
         }
       });
+        
+    if(this.cancel==true) {
+      this.tabledata.forEach(el=>{
+        if(el.contribution == "Attending Physician" && el.cid != row.cid ){
+          el.total_fee =this.masknumber((Number(el.total_fee)+ Number(deletedAmmount)),false);
+          
+        }
+      });
+    }
+      
+      // console.log(data);
+      //alert(attendingCounter);
+
+       this.delete_contribution.id=row.cid;
+        this.delete_contribution.data= this.tabledata;
+        this.delete_contribution.deletedAmmount=deletedAmmount;
+        this.attendingCounter=attendingCounter;
+      
+
+      // console.log(data);
+      var counter = 0;
+      this.deleteRecord(
+        "contribution_delete/",
+        row.cid,
+        this.delete_contribution,"update",
+        (res_value) => {
+          if (res_value) {
+            
+            //console.log(data.indexOf(row));
+            // this.recomputePF(row.total_fee);
+            this.tabledata.splice(this.tabledata.indexOf(row), 1);
+            
+
+            this.getRecord();
+            
+      
+          }
+        }
+      );
     },
     recomputePF(pf) {
       let a = 0;
@@ -469,7 +545,8 @@ export default {
           tempAmount = element.total_fee;
         }
       });
-      a = parseFloat(pf.replace(/,/g, "")) / numOfAttending.length;
+      console.log(this.staff);
+      // a = parseFloat(pf.replace(/,/g, "")) / numOfAttending.length;
 
       // this.staff.forEach((element)=>{
       //   if(element.contribution=="Attending Physician") {
@@ -501,7 +578,7 @@ export default {
         .then((response) => {
           response.data.forEach((entry) => {
             var temp = entry.total_fee;
-            entry.total_fee = this.masknumber(temp);
+            entry.total_fee = this.masknumber(temp, true);
           });
 
           this.staff = response.data;
@@ -535,7 +612,9 @@ export default {
         });
       }
     },
-    deleteRecord: function (route, id, cb) {
+    deleteRecord: function (route, id, data, mode,cb) {
+      
+          var _this = this;
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
         confirmButtonText: "Delete",
@@ -543,14 +622,19 @@ export default {
         type: "warning",
       })
         .then(() => {
-          var _this = this;
-          axios.post(route + id).then(function (response) {
-            if (response.status > 199 && response.status < 203) {
+          axios.post(route + id,data).then(function (response) {
               if (response.status > 199 && response.status < 203) {
                 _this.open_notif("success", "Success", "Succesfully! Deleted");
+               _this.staff.forEach((el)=>{
+              if(el.contribution=="Attending Physician" && el.cid != Number(_this.delete_contribution.id)){
+                el.total_fee=_this.masknumber(_this.delete_contribution.deletedAmmount,true);
+              }else {
+                
+                el.total_fee=_this.masknumber(el.total_fee,true);
+              }
+            }); 
               }
               cb(id);
-            }
           });
         })
         .catch((action) => {
@@ -558,6 +642,14 @@ export default {
             type: "success",
             message: action === "cancel" ? "Canceled" : "No changes",
           });
+          
+          if(mode=="update") {this.cancel=true;
+            _this.tabledata.forEach(el=>{
+              el.total_fee=_this.masknumber(el.total_fee,true);
+            });
+            
+          }
+          // console.log(_this.tempStaff);
         });
     },
     getRecord: function () {
@@ -587,7 +679,7 @@ export default {
 
             // entry.patient.hospital_id =
             //   constants.hospital_code[Number(entry.patient.hospital_id) - 1];
-            entry.total_fee = this.masknumber(entry.total_fee);
+            entry.total_fee = this.masknumber(entry.total_fee, true);
             entry.totalPersonnel = entry.contributions.length;
           });
           this.data = response.data;

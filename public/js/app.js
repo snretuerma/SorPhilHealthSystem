@@ -9838,11 +9838,21 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      delete_contribution: {
+        id: '',
+        data: [],
+        deletedAmmount: '',
+        attendingCounter: ''
+      },
       container: [],
       filtered: [],
       page: 1,
@@ -9850,6 +9860,9 @@ __webpack_require__.r(__webpack_exports__);
       pageSize: 10,
       search: "",
       data: [],
+      tabledata: [],
+      tempStaff: [],
+      cancel: false,
       staff: [],
       budgetInfo: [],
       rules: {
@@ -9931,7 +9944,7 @@ __webpack_require__.r(__webpack_exports__);
       switch (mode) {
         case "update":
           var counter = 0;
-          var holder = 0.00;
+          var holder = 0.0;
           this.container.type = true;
           this.container.contributions.forEach(function (element) {
             if (element.contribution == "Attending Physician") {
@@ -9954,14 +9967,20 @@ __webpack_require__.r(__webpack_exports__);
       console.log(this.container);
       this.$emit("add-trigger", this.container);
     },
-    masknumber: function masknumber(theform) {
+    masknumber: function masknumber(theform, mode) {
       // num = parseFloat(num)
       //   .toFixed(2)
       //   .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
       // return num;
       var num = theform,
           rounded;
-      var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,4})?/)[0].replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+
+      if (mode == true) {
+        var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,4})?/)[0].replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+      } else {
+        var with2Decimals = num.toString().match(/^-?\d+(?:\.\d{0,4})?/)[0];
+      }
+
       return with2Decimals;
     },
     setPage: function setPage(val) {
@@ -9970,8 +9989,9 @@ __webpack_require__.r(__webpack_exports__);
     handleDelete: function handleDelete(index, row) {
       var _this4 = this;
 
+      // console.log(row);
       var data = this.data;
-      this.deleteRecord("delete_record/", row.id, function (res_value) {
+      this.deleteRecord("delete_record/", row.id, null, null, function (res_value) {
         if (res_value) {
           data.splice(data.indexOf(row), 1);
 
@@ -9982,12 +10002,47 @@ __webpack_require__.r(__webpack_exports__);
     handleDeleteContribution: function handleDeleteContribution(index, row) {
       var _this5 = this;
 
-      var data = this.staff;
-      this.deleteRecord("contribution_delete/", row.cid, function (res_value) {
-        if (res_value) {
-          _this5.recomputePF(row.total_fee);
+      this.tempStaff = this.staff;
+      this.staff.forEach(function (element) {
+        element.total_fee = Number(_this5.masknumber(element.total_fee.replace(/,/g, ""), false));
+      });
+      console.log(this.staff);
+      this.tabledata = this.staff; // console.log(row);
+      //var contribution = data[index].contribution;
 
-          data.splice(data.indexOf(row), 1);
+      var attendingCounter = 0;
+      var deletedAmmount = 0;
+      this.tabledata.forEach(function (el) {
+        if (el.contribution == "Attending Physician" && el.cid != row.cid) {
+          attendingCounter++;
+        }
+
+        if (el.cid == row.cid) {
+          deletedAmmount = el.total_fee;
+        }
+      });
+
+      if (this.cancel == true) {
+        this.tabledata.forEach(function (el) {
+          if (el.contribution == "Attending Physician" && el.cid != row.cid) {
+            el.total_fee = _this5.masknumber(Number(el.total_fee) + Number(deletedAmmount), false);
+          }
+        });
+      } // console.log(data);
+      //alert(attendingCounter);
+
+
+      this.delete_contribution.id = row.cid;
+      this.delete_contribution.data = this.tabledata;
+      this.delete_contribution.deletedAmmount = deletedAmmount;
+      this.attendingCounter = attendingCounter; // console.log(data);
+
+      var counter = 0;
+      this.deleteRecord("contribution_delete/", row.cid, this.delete_contribution, "update", function (res_value) {
+        if (res_value) {
+          //console.log(data.indexOf(row));
+          // this.recomputePF(row.total_fee);
+          _this5.tabledata.splice(_this5.tabledata.indexOf(row), 1);
 
           _this5.getRecord();
         }
@@ -10004,7 +10059,8 @@ __webpack_require__.r(__webpack_exports__);
           tempAmount = element.total_fee;
         }
       });
-      a = parseFloat(pf.replace(/,/g, "")) / numOfAttending.length; // this.staff.forEach((element)=>{
+      console.log(this.staff); // a = parseFloat(pf.replace(/,/g, "")) / numOfAttending.length;
+      // this.staff.forEach((element)=>{
       //   if(element.contribution=="Attending Physician") {
       //    element.total_fee=amount;
       //   }
@@ -10030,7 +10086,7 @@ __webpack_require__.r(__webpack_exports__);
       axios.post("personnel_get/" + row.id).then(function (response) {
         response.data.forEach(function (entry) {
           var temp = entry.total_fee;
-          entry.total_fee = _this6.masknumber(temp);
+          entry.total_fee = _this6.masknumber(temp, true);
         });
         _this6.staff = response.data;
       })["catch"](function (error) {});
@@ -10062,8 +10118,10 @@ __webpack_require__.r(__webpack_exports__);
         });
       }
     },
-    deleteRecord: function deleteRecord(route, id, cb) {
+    deleteRecord: function deleteRecord(route, id, data, mode, cb) {
       var _this7 = this;
+
+      var _this = this;
 
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
@@ -10071,21 +10129,35 @@ __webpack_require__.r(__webpack_exports__);
         cancelButtonText: "Cancel",
         type: "warning"
       }).then(function () {
-        var _this = _this7;
-        axios.post(route + id).then(function (response) {
+        axios.post(route + id, data).then(function (response) {
           if (response.status > 199 && response.status < 203) {
-            if (response.status > 199 && response.status < 203) {
-              _this.open_notif("success", "Success", "Succesfully! Deleted");
-            }
+            _this.open_notif("success", "Success", "Succesfully! Deleted");
 
-            cb(id);
+            _this.staff.forEach(function (el) {
+              if (el.contribution == "Attending Physician" && el.cid != Number(_this.delete_contribution.id)) {
+                el.total_fee = _this.masknumber(_this.delete_contribution.deletedAmmount, true);
+              } else {
+                el.total_fee = _this.masknumber(el.total_fee, true);
+              }
+            });
           }
+
+          cb(id);
         });
       })["catch"](function (action) {
         _this7.$message({
           type: "success",
           message: action === "cancel" ? "Canceled" : "No changes"
         });
+
+        if (mode == "update") {
+          _this7.cancel = true;
+
+          _this.tabledata.forEach(function (el) {
+            el.total_fee = _this.masknumber(el.total_fee, true);
+          });
+        } // console.log(_this.tempStaff);
+
       });
     },
     getRecord: function getRecord() {
@@ -10102,7 +10174,7 @@ __webpack_require__.r(__webpack_exports__);
           //   constants.hospital_code[Number(entry.patient.hospital_id) - 1];
 
 
-          entry.total_fee = _this8.masknumber(entry.total_fee);
+          entry.total_fee = _this8.masknumber(entry.total_fee, true);
           entry.totalPersonnel = entry.contributions.length;
         });
         _this8.data = response.data; // console.log(this.data);
