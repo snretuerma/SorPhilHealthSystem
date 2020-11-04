@@ -48,7 +48,7 @@
     color: #e31b23;
 }
 .login-sec .copy-text a {
-    color: #3b4783;
+    color: #0071BA;
 }
 .login-sec h2 {
     margin-bottom: 30px;
@@ -60,7 +60,7 @@
     content: " ";
     width: 100px;
     height: 5px;
-    background: #3b4783;
+    background: #0071BA;
     display: block;
     margin-top: 20px;
     border-radius: 3px;
@@ -561,7 +561,7 @@ body {
 
 @keyframes anim-glow {
     0% {
-        box-shadow: 0 0 rgba(#be1b16, 1);
+        box-shadow: 0 0 rgba(#61EF61, 1);
     }
     100% {
         box-shadow: 0 0 10px 8px transparent;

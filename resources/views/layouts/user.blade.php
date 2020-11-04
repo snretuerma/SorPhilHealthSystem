@@ -22,30 +22,69 @@
         </a>
         <nav id="sidebar" class="sidebar-wrapper">
             <div class="sidebar-content" style="overflow: hidden;">
-                <div class="row" style="background-color:green;height:190px; text-align:center;position:relative;">
-                 
-                    <img class="img-responsive rounded-circle img-sidebar" 
-                    src="{{asset('images/user.jpg')}}" 
-                    alt="User picture"
-                    width = "93"
-                    height = "93"
-                    >
-                    
-                   <label id="user" style="position:absolute;
-                   top: 76%;
-                   left: auto; width:100%; ">DFBDSMH_user</label>
-                   <label style="position:absolute;
-                   top: 84%;
-                   left: auto; width:100%; ">user</label>
-                    
-                </div>
-                <div class="sidebar-brand">
+               <!-- <div class="sidebar-brand" style="height: 0%">
                     <a href="{{ url('user') }}">PF Management System</a>
                     <div id="close-sidebar">
                         <i class="fas fa-times"></i>
                     </div>
+                </div>-->
+                
+                
+                <div class="row" style="height:190px; text-align:center;position:relative;background-image:url({{asset('images/sidebar_background.jpg')}});
+                background-repeat: no-repeat;background-size: 100% 100%;">
+                 <div id="close-sidebar" style="float:right;position: absolute;
+                 top: 0;
+                 right: 15px;cursor: pointer;border:1px solid rgba(0,0,0,0.1);border-radius:2px;padding-left:6px;padding-right:6px;
+                 color:#fff;">
+                    <i class="fas fa-bars"></i>
                 </div>
-                <div class="sidebar-header">
+                <div class="dropdown"> 
+                    <span  style="position: absolute;float:left;top: 0;
+                    left:17px;cursor: pointer; border:1px solid rgba(0,0,0,0.1);padding-left:6px;padding-right:6px;border-radius:2px;
+                    color:#fff;"
+                            
+                            id="dropdownMenuButton" 
+                            data-toggle="dropdown" 
+                            aria-haspopup="true" 
+                            aria-expanded="false"> 
+                           <i class="fas fa-cog"></i>
+
+                </span> 
+                    
+                    <div class="dropdown-menu" 
+                         aria-labelledby="dropdownMenuButton"> 
+                        <a class="dropdown-item" href="#"> 
+                          Action 
+                      </a> 
+                        <a class="dropdown-item" href="#"> 
+                          Another action 
+                      </a> 
+                        <a class="dropdown-item" href="#"> 
+                          Something else here 
+                      </a> 
+                    </div> 
+                </div> 
+                    <img class="img-responsive rounded-circle img-sidebar" 
+                    src="{{asset('images/user.jpg')}}" 
+                    alt="User picture"
+                    width = "80"
+                    height = "80"
+                    >
+                    
+                   <label id="user" style="position:absolute;
+                   top: 74%;
+                   left: auto; width:100%; color:#fff;font-weight:bold;text-shadow: 0 1px 0 #444;text-transform: uppercase; ">DFBDSMH_user</label>
+                   <label style="position:absolute;
+                   top: 82%;
+                   left: auto; width:100%;color:#fff;font-size:12px; ">username</label>
+
+                    
+                       
+                 
+                    
+                </div>
+                
+                <!--<div class="sidebar-header">
                     <div class="user-pic">
                         <img class="img-responsive img-rounded" 
                           src="{{asset('images/user.jpg')}}" 
@@ -61,7 +100,7 @@
                             <span>Online</span>
                         </span>
                     </div>
-                </div>
+                </div>-->
 
                 <!-- sidebar-search  -->
                 <div class="sidebar-menu">
