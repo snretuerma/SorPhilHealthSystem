@@ -309,7 +309,8 @@ export default {
         id:'',
         data:[],
         deletedAmmount:'',
-        attendingCounter:''
+        attendingCounter:0,
+        toAdd:0
       },
       container: [],
       filtered: [],
@@ -320,7 +321,7 @@ export default {
       data: [],
       tabledata:[],
       tempStaff:[],
-      cancel:false,
+      cancel:true,
       staff: [],
       budgetInfo: [],
       rules: {
@@ -471,49 +472,46 @@ export default {
       });
     },
     handleDeleteContribution(index, row) {
+     
       this.tempStaff=this.staff;
       this.staff.forEach((element) => {
         element.total_fee = Number(
           this.masknumber((element.total_fee.replace(/,/g, "")), false)
         );
       });
-      console.log(this.staff);
       this.tabledata = this.staff;
-    
-      // console.log(row);
-
-      //var contribution = data[index].contribution;
       var attendingCounter = 0;
       var deletedAmmount = 0; 
       this.tabledata.forEach(el=>{
-        if(el.contribution == "Attending Physician" && el.cid != row.cid ){
+        if(el.contribution == "Attending Physician" && el.cid != row.cid){
           
-          attendingCounter++;
+          attendingCounter+=1;
         }
         if(el.cid == row.cid){
           deletedAmmount = el.total_fee;
         }
       });
-        
-    if(this.cancel==true) {
+      var toAdd= Number(deletedAmmount/attendingCounter);
       this.tabledata.forEach(el=>{
-        if(el.contribution == "Attending Physician" && el.cid != row.cid ){
-          el.total_fee =this.masknumber((Number(el.total_fee)+ Number(deletedAmmount)),false);
-          
+        if(el.contribution == "Attending Physician" && el.cid != Number(this.delete_contribution.id) ){
+          el.total_fee =Number(this.masknumber(el.total_fee,false))+toAdd;
         }
       });
-    }
-      
-      // console.log(data);
-      //alert(attendingCounter);
+      // this.tabledata.forEach((el)=>{
+      //   if(el.contribution == "Attending Physician" && el.cid != Number(row.cid) ){
+      //     var total=Number(
+      //     this.masknumber(el.total_fee, false)
+      //   )+toAdd;
+      //  }
+      //   el.total_fee=this.masknumber(total,true);
+      // });
+    
+      this.delete_contribution.id=row.cid;
+      this.delete_contribution.data= this.tabledata;
+      this.delete_contribution.deletedAmmount=deletedAmmount;
+      this.delete_contribution.attendingCounter=attendingCounter;
+      this.delete_contribution.toAdd=toAdd;
 
-       this.delete_contribution.id=row.cid;
-        this.delete_contribution.data= this.tabledata;
-        this.delete_contribution.deletedAmmount=deletedAmmount;
-        this.attendingCounter=attendingCounter;
-      
-
-      // console.log(data);
       var counter = 0;
       this.deleteRecord(
         "contribution_delete/",
@@ -521,15 +519,14 @@ export default {
         this.delete_contribution,"update",
         (res_value) => {
           if (res_value) {
-            
-            //console.log(data.indexOf(row));
-            // this.recomputePF(row.total_fee);
             this.tabledata.splice(this.tabledata.indexOf(row), 1);
-            
-
+             var toAdd=this.delete_contribution.deletedAmmount/this.delete_contribution.attendingCounter;
+               this.tabledata.forEach((el)=>{
+              el.total_fee=this.masknumber(el.total_fee,true);
+              
+            });
+             this.dialogTableVisible = false;
             this.getRecord();
-            
-      
           }
         }
       );
@@ -570,6 +567,7 @@ export default {
       // console.log(row);
       this.container = row;
       this.personnel_get(index, row);
+     
       this.dialogTableVisible = true;
     },
     personnel_get(index, row) {
@@ -580,8 +578,10 @@ export default {
             var temp = entry.total_fee;
             entry.total_fee = this.masknumber(temp, true);
           });
-
+          
           this.staff = response.data;
+         
+          this.$options.holderStaff=response.data;
         })
         .catch(function (error) {});
     },
@@ -625,14 +625,7 @@ export default {
           axios.post(route + id,data).then(function (response) {
               if (response.status > 199 && response.status < 203) {
                 _this.open_notif("success", "Success", "Succesfully! Deleted");
-               _this.staff.forEach((el)=>{
-              if(el.contribution=="Attending Physician" && el.cid != Number(_this.delete_contribution.id)){
-                el.total_fee=_this.masknumber(_this.delete_contribution.deletedAmmount,true);
-              }else {
-                
-                el.total_fee=_this.masknumber(el.total_fee,true);
-              }
-            }); 
+               
               }
               cb(id);
           });
@@ -643,11 +636,20 @@ export default {
             message: action === "cancel" ? "Canceled" : "No changes",
           });
           
-          if(mode=="update") {this.cancel=true;
+          if(mode=="update") {
+            var toReduc=Number(_this.delete_contribution.deletedAmmount)/Number(_this.delete_contribution.attendingCounter);
             _this.tabledata.forEach(el=>{
-              el.total_fee=_this.masknumber(el.total_fee,true);
-            });
-            
+        if(el.contribution == "Attending Physician" && el.cid != Number(_this.delete_contribution.id) ){
+          el.total_fee =Number(_this.masknumber(el.total_fee,false))-toReduc;
+        }
+      });
+       _this.tabledata.forEach(el=>{
+        
+        el.total_fee=_this.masknumber(el.total_fee,true);
+        
+      });
+      
+           
           }
           // console.log(_this.tempStaff);
         });
@@ -736,5 +738,8 @@ export default {
   mounted() {
     this.getRecord();
   },
+  created(){
+    
+  }
 };
 </script>
