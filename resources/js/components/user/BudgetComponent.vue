@@ -602,6 +602,7 @@ export default {
                                     response.data.total = this.masknumber(
                                         this.form.total
                                     );
+
                                     this.data.push(response.data);
                                     this.dialogFormVisible = false;
                                     this.open_notif(

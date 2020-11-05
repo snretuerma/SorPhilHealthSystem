@@ -1002,6 +1002,10 @@ export default {
                         } else if (this.form.hospital_code == "PDMH") {
                             this.form.codeholder = 9;
                         }
+                        this.form.name_suffix.trim();
+                        if (this.form.name_suffix == null) {
+                            this.form.name_suffix = "";
+                        }
                         this.form.name =
                             this.form.last_name +
                             ", " +
