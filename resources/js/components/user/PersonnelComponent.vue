@@ -744,8 +744,6 @@ export default {
             this.form.sex = row.sex;
             this.form.birthdate = row.birthdate;
 
-            console.log(this.form.is_private);
-
             this.form.edit_object_index = this.data.indexOf(row);
 
             this.form_check.last_name = row.last_name;
@@ -881,6 +879,7 @@ export default {
                         } else if (this.form.designation == "Non-medical") {
                             this.form.designation = 0;
                         }
+                        this.form.name_suffix.trim();
                         if (this.form.name_suffix == null) {
                             this.form.name_suffix = "";
                         }

@@ -33,9 +33,6 @@ export default {
             this.trigger = false;
         }
     },
-    mounted() {
-        console.log(this.records);
-    },
     components: {
         RecordContainer,
         MedicContainer
