@@ -297,7 +297,6 @@ export default {
                         }
                     });
                     this.data = response.data;
-                    console.log(this.data);
                     this.loading = false;
                 })
                 .catch(function(error) {});

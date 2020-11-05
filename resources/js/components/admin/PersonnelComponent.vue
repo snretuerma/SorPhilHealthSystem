@@ -781,9 +781,21 @@ export default {
             this.form_check.first_name = row.first_name;
             this.form_check.middle_name = row.middle_name;
             this.form_check.name_suffix = row.name_suffix;
-            this.form_check.is_private = row.is_private;
-            this.form_check.is_parttime = row.is_parttime;
-            this.form_check.designation = row.designation;
+            if (row.is_private == "Private") {
+                this.form.is_private = "1";
+            } else {
+                this.form.is_private = "0";
+            }
+            if (row.is_parttime == "Full-time") {
+                this.form.is_parttime = "1";
+            } else {
+                this.form.is_parttime = "0";
+            }
+            if (row.designation == "Medical") {
+                this.form.designation = "1";
+            } else {
+                this.form.designation = "0";
+            }
             this.form_check.sex = row.sex;
             this.form_check.birthdate = row.birthdate;
             this.form_check.codeholder = this.form.codeholder;
@@ -926,6 +938,10 @@ export default {
                             this.form.codeholder = 8;
                         } else if (this.form.hospital_code == "PDMH") {
                             this.form.codeholder = 9;
+                        }
+                        this.form.name_suffix.trim();
+                        if (this.form.name_suffix == null) {
+                            this.form.name_suffix = "";
                         }
                         this.form.name =
                             this.form.last_name +
