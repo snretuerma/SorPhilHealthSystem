@@ -105,6 +105,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('personnels_get/{id}', 'UserController@getPersonnel');
     Route::get('personnel_get', 'UserController@getPersonnellist');
     Route::post('delete_record/{id}', 'UserController@deleteRecord');
+    Route::post('contribution_delete/{id}', 'UserController@deleteContribution');
+    Route::post('contribution_edit/{id}', 'UserController@editContribution');
 
     //Restore
     Route::get('/restore', 'UserController@restore')->name('restore');
@@ -123,5 +125,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');
+    Route::get('resetObserver', 'ObserverController@resetObserver')->name('resetObserver');
+    Route::post('resetPassObserver', 'ObserverController@resetPass');
 });
 Route::get('/home', 'HomeController@index')->name('home');

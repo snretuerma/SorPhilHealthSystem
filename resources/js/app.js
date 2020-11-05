@@ -52,6 +52,10 @@ Vue.component('userdashboard-component', require('./components/user/chart/UserDa
 Vue.component('admindashboard-component', require('./components/admin/chart/AdminDashboard.vue').default);
 
 Vue.component('medical-component', require('./components/user/MedicalRecordComponent.vue').default);
+
+//Observer
+Vue.component('observer-component', require('./components/observer/ObserverComponent.vue').default);
+Vue.component('resetpassobserver-component', require('./components/observer/ResetPasswordComponent.vue').default);
 const app = new Vue({
     el: '#app'
 });

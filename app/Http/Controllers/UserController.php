@@ -419,8 +419,12 @@ class UserController extends Controller
 
     public function editContribution(Request $request)
     {
-        $i = (sizeof($request->item['contributions']) - 1);
-        for ($i; $i >= 0; $i--) {
+        // foreach ($request->item['contributions'] as $contribution) {
+
+        // }
+        // dd(sizeof($request->item['contributions'])-1);
+        $i = (sizeof($request->item['contributions'])-1) ;
+        for($i;$i >=0;$i--) {
             if ($request->item['contributions'][$i]['contribution'] == "Attending Physician") {
                 $result = Contribution::find($request->item['contributions'][$i]['id']);
                 $result->credit = $request->total;
@@ -431,7 +435,17 @@ class UserController extends Controller
 
     public function deleteContribution(Request $req)
     {
-        return Contribution::where('id', $req->id)->delete();
+        // dd($req);
+        for($i=0;$i<sizeof($req->data);$i++) {
+            if($req->id != $req->data[$i]['cid'] && $req->data[$i]['contribution'] == "Attending Physician"){
+                $result = Contribution::find($req->data[$i]['cid']);
+                $result->credit=$req->data[$i]['total_fee'];
+                $result->save();
+            }
+        }
+         // return
+         Contribution::where('id', $req->id)->delete();
+
     }
 
     //Restore
