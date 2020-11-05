@@ -311,6 +311,7 @@ export default {
     data() {
         return {
             container: [],
+            tabledata: [],
             filtered: [],
             page: 1,
             total: 0,
@@ -379,6 +380,13 @@ export default {
                 hospital_code: "",
                 codeholder: ""
             },
+            delete_contribution: {
+                id: "",
+                data: [],
+                deletedAmmount: "",
+                attendingCounter: "",
+                toAdd: 0
+            },
             formLabelWidth: "120px"
         };
     },
@@ -406,7 +414,6 @@ export default {
                     data.record_type
                         .toLowerCase()
                         .includes(this.search.toLowerCase())
-
             );
         },
         listData() {
@@ -445,13 +452,23 @@ export default {
             }
             this.$emit("add-trigger", this.container);
         },
-        masknumber: function(theform) {
+        masknumber: function(theform, mode) {
+            // num = parseFloat(num)
+            //   .toFixed(2)
+            //   .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+            // return num;
             var num = theform,
                 rounded;
-            var with2Decimals = num
-                .toString()
-                .match(/^-?\d+(?:\.\d{0,4})?/)[0]
-                .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+            if (mode == true) {
+                var with2Decimals = num
+                    .toString()
+                    .match(/^-?\d+(?:\.\d{0,4})?/)[0]
+                    .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
+            } else {
+                var with2Decimals = num
+                    .toString()
+                    .match(/^-?\d+(?:\.\d{0,4})?/)[0];
+            }
             return with2Decimals;
         },
         setPage(val) {
@@ -471,14 +488,76 @@ export default {
             });
         },
         handleDeleteContribution(index, row) {
-            var data = this.staff;
-            this.deleteRecord("contribution_delete/", row.cid, res_value => {
-                if (res_value) {
-                    this.recomputePF(row.total_fee);
-                    data.splice(data.indexOf(row), 1);
-                    this.getRecord();
+            this.tempStaff = this.staff;
+            this.staff.forEach(element => {
+                element.total_fee = Number(
+                    this.masknumber(element.total_fee.replace(/,/g, ""), false)
+                );
+            });
+            this.tabledata = this.staff;
+            console.log(this.tabledata);
+            var attendingCounter = 0;
+            var deletedAmmount = 0;
+            this.tabledata.forEach(el => {
+                if (
+                    el.contribution == "Attending Physician" &&
+                    el.cid != row.cid
+                ) {
+                    attendingCounter += 1;
+                }
+                if (el.cid == row.cid) {
+                    deletedAmmount = el.total_fee;
                 }
             });
+            var toAdd = Number(this.masknumber(deletedAmmount,false) / attendingCounter);
+            console.log(deletedAmmount);
+            console.log(attendingCounter);
+            this.tabledata.forEach(el => {
+                if (
+                    el.contribution == "Attending Physician" &&
+                    el.cid != row.cid
+                ) {
+                    el.total_fee =
+                        Number(this.masknumber(el.total_fee, false)) + toAdd;
+                } else {
+                    el.total_fee = this.masknumber(el.total_fee, false);
+                }
+            });
+
+            // this.tabledata.forEach((el)=>{
+            //   if(el.contribution == "Attending Physician" && el.cid != Number(row.cid) ){
+            //     var total=Number(
+            //     this.masknumber(el.total_fee, false)
+            //   )+toAdd;
+            //  }
+            //   el.total_fee=this.masknumber(total,true);
+            // });
+
+            this.delete_contribution.id = row.cid;
+            this.delete_contribution.data = this.tabledata;
+            this.delete_contribution.deletedAmmount = deletedAmmount;
+            this.delete_contribution.attendingCounter = attendingCounter;
+            this.delete_contribution.toAdd = toAdd;
+            console.log(this.tabledata);
+            var counter = 0;
+            this.deleteRecord(
+                "contribution_delete/",
+                row.cid,
+                this.delete_contribution,
+                "update",
+                res_value => {
+                    if (res_value) {
+                        this.tabledata.splice(this.tabledata.indexOf(row), 1);
+                        //  var toAdd=this.delete_contribution.deletedAmmount/this.delete_contribution.attendingCounter;
+                        //    this.tabledata.forEach((el)=>{
+                        //   el.total_fee=this.masknumber(el.total_fee,true);
+
+                        // });
+                        this.dialogTableVisible = false;
+                        this.getRecord();
+                    }
+                }
+            );
         },
         recomputePF(pf) {
             let a = 0;
@@ -509,11 +588,11 @@ export default {
         },
         personnel_get(index, row) {
             axios
-                .post("personnel_get/" + row.id)
+                .post("personnels_get/" + row.id)
                 .then(response => {
                     response.data.forEach(entry => {
                         var temp = entry.total_fee;
-                        entry.total_fee = this.masknumber(temp);
+                        entry.total_fee = this.masknumber(temp, true);
                     });
 
                     this.staff = response.data;
@@ -547,7 +626,8 @@ export default {
                 });
             }
         },
-        deleteRecord: function(route, id, cb) {
+        deleteRecord: function(route, id, data, mode, cb) {
+            var _this = this;
             this.$confirm(
                 "Are you sure you want to delete?",
                 "Confirm Delete",
@@ -559,21 +639,15 @@ export default {
                 }
             )
                 .then(() => {
-                    var _this = this;
-                    axios.post(route + id).then(function(response) {
+                    axios.post(route + id, data).then(function(response) {
                         if (response.status > 199 && response.status < 203) {
-                            if (
-                                response.status > 199 &&
-                                response.status < 203
-                            ) {
-                                _this.open_notif(
-                                    "success",
-                                    "Success",
-                                    "Succesfully! Deleted"
-                                );
-                            }
-                            cb(id);
+                            _this.open_notif(
+                                "success",
+                                "Success",
+                                "Succesfully! Deleted"
+                            );
                         }
+                        cb(id);
                     });
                 })
                 .catch(action => {
@@ -581,6 +655,27 @@ export default {
                         type: "success",
                         message: action === "cancel" ? "Canceled" : "No changes"
                     });
+
+                    if (mode == "update") {
+                        var toReduc =
+                            Number(_this.delete_contribution.deletedAmmount) /
+                            Number(_this.delete_contribution.attendingCounter);
+                        _this.tabledata.forEach(el => {
+                            if (
+                                el.contribution == "Attending Physician" &&
+                                el.cid != Number(_this.delete_contribution.id)
+                            ) {
+                                el.total_fee =
+                                    Number(
+                                        _this.masknumber(el.total_fee, false)
+                                    ) - toReduc;
+                            }
+                        });
+                        _this.tabledata.forEach(el => {
+                            el.total_fee = _this.masknumber(el.total_fee, true);
+                        });
+                    }
+                    // console.log(_this.tempStaff);
                 });
         },
         getRecord: function() {
@@ -607,7 +702,10 @@ export default {
                                 ", ";
                         }
 
-                        entry.total_fee = this.masknumber(entry.total_fee);
+                        entry.total_fee = this.masknumber(
+                            entry.total_fee,
+                            true
+                        );
                         entry.totalPersonnel = entry.contributions.length;
                     });
                     this.data = response.data;

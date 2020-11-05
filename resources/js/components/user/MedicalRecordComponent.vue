@@ -7,17 +7,17 @@
 
             <div class="col-sm-6" align="right">
                 <el-row>
-                    <el-button type="primary" size="medium" @click="onSubmit()"
+                    <el-button type="success" size="medium" @click="onSubmit()"
                         >Save</el-button
                     >
                     <el-button
                         type="primary"
                         size="medium"
                         @click="addAttending()"
-                        >Attending</el-button
+                        >Add Attending Physician</el-button
                     >
                     <el-button type="primary" size="medium" @click="addStaff"
-                        >Add Staff</el-button
+                        >Add Other Physician</el-button
                     >
                 </el-row>
             </div>
