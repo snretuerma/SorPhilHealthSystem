@@ -162,8 +162,8 @@ class AdminController extends Controller
     public function addBudget(adminAddBudgetRequest $request)
     {
         $budget = new Budget;
-        $startdate = Carbon::parse($request->start_date)->format('Y-m-d H:i:s');
-        $enddate = Carbon::parse($request->end_date)->format('Y-m-d H:i:s');
+        $startdate = Carbon::parse($request->start_date)->format('Y-m-d');
+        $enddate = Carbon::parse($request->end_date)->format('Y-m-d');
         $budget->start_date = $startdate;
         $budget->total = $request->total;
         $budget->end_date = $enddate;
