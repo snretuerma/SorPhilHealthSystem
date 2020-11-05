@@ -726,11 +726,25 @@ export default {
             this.form.first_name = row.first_name;
             this.form.middle_name = row.middle_name;
             this.form.name_suffix = row.name_suffix;
-            this.form.is_private = row.is_private;
-            this.form.is_parttime = row.is_parttime;
-            this.form.designation = row.designation;
+            if (row.is_private == "Private") {
+                this.form.is_private = "1";
+            } else {
+                this.form.is_private = "0";
+            }
+            if (row.is_parttime == "Full-time") {
+                this.form.is_parttime = "1";
+            } else {
+                this.form.is_parttime = "0";
+            }
+            if (row.designation == "Medical") {
+                this.form.designation = "1";
+            } else {
+                this.form.designation = "0";
+            }
             this.form.sex = row.sex;
             this.form.birthdate = row.birthdate;
+
+            console.log(this.form.is_private);
 
             this.form.edit_object_index = this.data.indexOf(row);
 
@@ -867,6 +881,9 @@ export default {
                         } else if (this.form.designation == "Non-medical") {
                             this.form.designation = 0;
                         }
+                        if (this.form.name_suffix == null) {
+                            this.form.name_suffix = "";
+                        }
                         this.form.name =
                             this.form.last_name +
                             ", " +
@@ -951,16 +968,21 @@ export default {
             )
                 .then(() => {
                     var _this = this;
-                    axios.post("personnel_delete/" + id).then(function(response) {
-                        if (response.status > 199 && response.status < 203) {
-                            _this.open_notif(
-                                "success",
-                                "Success",
-                                "Deleted Successfully"
-                            );
-                            res(id);
-                        }
-                    });
+                    axios
+                        .post("personnel_delete/" + id)
+                        .then(function(response) {
+                            if (
+                                response.status > 199 &&
+                                response.status < 203
+                            ) {
+                                _this.open_notif(
+                                    "success",
+                                    "Success",
+                                    "Deleted Successfully"
+                                );
+                                res(id);
+                            }
+                        });
                 })
                 .catch(action => {
                     this.open_notif("info", "Cancelled", "No Changes");

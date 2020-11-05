@@ -1065,6 +1065,9 @@ export default {
                         ) {
                             this.form.marital_status = 4;
                         }
+                        if (this.form.name_suffix == null) {
+                            this.form.name_suffix = "";
+                        }
                         this.form.name =
                             this.form.last_name +
                             ", " +
