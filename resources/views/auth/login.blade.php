@@ -10,8 +10,7 @@
                     @csrf
                     <div class="form-group">
                         <label for="username" class="text-uppercase">Username</label>
-                        <input id="username" type="text" class="form-control @error('username') is-invalid @enderror"
-                            name="username" value="{{ old('username') }}" autofocus>
+                        <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" autofocus>
 
                         @error('username')
                         <span class="invalid-feedback" role="alert">
@@ -21,9 +20,7 @@
                     </div>
                     <div class="form-group">
                         <label for="password" class="text-uppercase">Password</label>
-                        <input id="password" type="password"
-                            class="form-control @error('password') is-invalid @enderror" name="password" required
-                            autocomplete="current-password">
+                        <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password">
 
                         @error('password')
                         <span class="invalid-feedback" role="alert">
@@ -45,41 +42,17 @@
                 <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
                     <ol class="carousel-indicators">
                         <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-                        <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
                     </ol>
                     <div class="carousel-inner" role="listbox">
                         <div class="carousel-item active">
-                            <img class="d-block img-fluid" src="{{asset('images/image1.jpeg')}}" alt="First slide">
+                            <img class="img-fluid d-block" src="{{asset('images/provincial_logo.png')}}" alt="First slide">
                             <div class="carousel-caption d-none d-md-block">
-                                <div class="banner-text">
+                                <!-- <div class="banner-text">
                                     <h2>PF Management System</h2>
                                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
                                         incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
                                         nostrud exercitation</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block img-fluid" src="{{asset('images/image2.jpg')}}" alt="First slide">
-                            <div class="carousel-caption d-none d-md-block">
-                                <div class="banner-text">
-                                    <h2>PF Management System</h2>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                                        nostrud exercitation</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="carousel-item">
-                            <img class="d-block img-fluid" src="{{asset('images/image3.jpg')}}" alt="First slide">
-                            <div class="carousel-caption d-none d-md-block">
-                                <div class="banner-text">
-                                    <h2>PF Management System</h2>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-                                        nostrud exercitation</p>
-                                </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

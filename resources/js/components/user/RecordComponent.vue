@@ -2,39 +2,17 @@
   <div>
     <div class="row">
       <div class="col-sm-12">
-        <h2>Record List</h2>
+        <h2 class="font-weight-bold">
+          <i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Records
+        </h2>
       </div>
     </div>
     <hr />
-    <div class="row">
-      <!-- <div class="col-sm-10" align="left">
-        <div style="margin-bottom: 10px">
-          <el-row>
-            <el-col :span="10">
-              <el-input
-                v-model="filters[0].value"
-                placeholder="Search"
-              ></el-input>
-            </el-col>
-          </el-row>
-        </div>
-      </div> -->
-      <!-- <div class="col-sm-2" align="right">
-        <el-button
-          type="primary"
-          @click="
-            dialogFormVisible = true;
-            form.formmode = 'add';
-            clearfield();
-          "
-          >Add</el-button
-        >
-      </div> -->
-    </div>
+    <div class="row"></div>
     <div class="card">
       <div class="card-body">
         <div id="test">
-          <el-table :data="pagedTableData">
+          <el-table :data="listData">
             <el-table-column
               width="115"
               label="Philhealth"
@@ -128,9 +106,11 @@
 
         <div style="text-align: center">
           <el-pagination
+            background
             layout="prev, pager, next"
-            :total="this.data.length"
-            @current-change="setPage"
+            @current-change="handleCurrentChange"
+            :page-size="pageSize"
+            :total="total"
           >
           </el-pagination>
         </div>
@@ -174,19 +154,6 @@
               ></el-date-picker>
             </el-form-item>
             <el-form-item label="Hospital code" :label-width="formLabelWidth">
-              <!-- <el-select v-model="form.codeholder" @change="selected">
-                <el-option v-for="option in options" :value="option">
-                  {{ option }}
-                </el-option>
-              </el-select> -->
-              <!-- <el-select v-model="value" placeholder="Select">
-                <el-option
-                  v-for="item in options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select> -->
               <el-select
                 v-model="form.hospital_code"
                 @change="onChange(form.hospital_code)"
@@ -297,21 +264,13 @@
     </div>
   </div>
 </template>
-<style>
-</style>
+<style></style>
 
 <script>
 "use strict";
 export default {
   data() {
     return {
-      delete_contribution:{
-        id:'',
-        data:[],
-        deletedAmmount:'',
-        attendingCounter:0,
-        toAdd:0
-      },
       container: [],
       filtered: [],
       page: 1,
@@ -319,9 +278,6 @@ export default {
       pageSize: 10,
       search: "",
       data: [],
-      tabledata:[],
-      tempStaff:[],
-      cancel:true,
       staff: [],
       budgetInfo: [],
       rules: {
@@ -333,10 +289,18 @@ export default {
           },
         ],
         total: [
-          { required: true, message: "Amount is required.", trigger: "blur" },
+          {
+            required: true,
+            message: "Amount is required.",
+            trigger: "blur",
+          },
         ],
         end_date: [
-          { required: true, message: "End date is required.", trigger: "blur" },
+          {
+            required: true,
+            message: "End date is required.",
+            trigger: "blur",
+          },
         ],
         hospital_code: [
           {
@@ -350,25 +314,6 @@ export default {
         {
           prop: ["philhealth", "pfname", "admission_date", "discharge_date"],
           value: "",
-        },
-      ],
-      titles: [
-        {
-          prop: "philhealth",
-          label: "Philhealth No.",
-          width: "150px",
-        },
-        {
-          prop: "pfname",
-          label: "Patient",
-        },
-        {
-          prop: "admission_date",
-          label: "Admit",
-        },
-        {
-          prop: "discharge_date",
-          label: "Discharge",
         },
       ],
       gridData: [
@@ -394,17 +339,29 @@ export default {
     };
   },
   computed: {
-    pagedTableData() {
-      if (this.search == null) return this.data;
-
-      this.filtered = this.data.filter(
+    searching() {
+      if (!this.search) {
+        this.total = this.data.length;
+        return this.data;
+      }
+      this.page = 1;
+      return this.data.filter(
         (data) =>
-          !this.search ||
-          data.first_name.toLowerCase().includes(this.search.toLowerCase())
+          data.first_name.toLowerCase().includes(this.search.toLowerCase()) ||
+          data.last_name.toLowerCase().includes(this.search.toLowerCase()) ||
+          data.philhealth_number
+            .toLowerCase()
+            .includes(this.search.toLowerCase()) ||
+          data.final_diagnosis
+            .toLowerCase()
+            .includes(this.search.toLowerCase()) ||
+          data.record_type.toLowerCase().includes(this.search.toLowerCase())
       );
+    },
+    listData() {
+      this.total = this.searching.length;
 
-      this.total = this.filtered.length;
-      return this.filtered.slice(
+      return this.searching.slice(
         this.pageSize * this.page - this.pageSize,
         this.pageSize * this.page
       );
@@ -421,7 +378,6 @@ export default {
             if (element.contribution == "Attending Physician") {
               counter += 1;
               this.container.totalAttending = counter;
-              // console.log(element.credit);
               var temp = parseFloat(element.credit).toFixed(2);
               holder = (Number(holder) + Number(temp)).toFixed(2);
               this.container.totalContributions = Number(holder);
@@ -436,8 +392,6 @@ export default {
             this.container.total_fee.replace(/,/g, "")
           );
       }
-      // console.log(this.container);
-      console.log(this.container);
       this.$emit("add-trigger", this.container);
     },
     masknumber: function (theform, mode) {
@@ -460,11 +414,13 @@ export default {
     setPage(val) {
       this.page = val;
     },
+    handleCurrentChange(val) {
+      this.page = val;
+    },
     handleDelete(index, row) {
-      // console.log(row);
       var data = this.data;
 
-      this.deleteRecord("delete_record/", row.id, null,null, (res_value) => {
+      this.deleteRecord("delete_record/", row.id, (res_value) => {
         if (res_value) {
           data.splice(data.indexOf(row), 1);
           this.getRecord();
@@ -542,32 +498,20 @@ export default {
           tempAmount = element.total_fee;
         }
       });
-      console.log(this.staff);
-      // a = parseFloat(pf.replace(/,/g, "")) / numOfAttending.length;
-
-      // this.staff.forEach((element)=>{
-      //   if(element.contribution=="Attending Physician") {
-      //    element.total_fee=amount;
-      //   }
-      // })
+      a = parseFloat(pf.replace(/,/g, "")) / numOfAttending.length;
     },
     handleAddRecord(index, row) {
       this.container = row;
-      // window.location.replace("medicalrecord/" + row.id);
 
       this.container.total_fee = parseFloat(
         this.container.total_fee.replace(/,/g, "")
       );
 
-      // console.log(this.container);
-      // console.log(this.container)
       this.$emit("add-trigger", this.container);
     },
     handleView(index, row) {
-      // console.log(row);
       this.container = row;
       this.personnel_get(index, row);
-     
       this.dialogTableVisible = true;
     },
     personnel_get(index, row) {
@@ -612,9 +556,8 @@ export default {
         });
       }
     },
-    deleteRecord: function (route, id, data, mode,cb) {
-      
-          var _this = this;
+    deleteRecord: function (route, id, data, mode, cb) {
+      var _this = this;
       this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
         distinguishCancelAndClose: true,
         confirmButtonText: "Delete",
@@ -622,12 +565,11 @@ export default {
         type: "warning",
       })
         .then(() => {
-          axios.post(route + id,data).then(function (response) {
-              if (response.status > 199 && response.status < 203) {
-                _this.open_notif("success", "Success", "Succesfully! Deleted");
-               
-              }
-              cb(id);
+          axios.post(route + id, data).then(function (response) {
+            if (response.status > 199 && response.status < 203) {
+              _this.open_notif("success", "Success", "Succesfully! Deleted");
+            }
+            cb(id);
           });
         })
         .catch((action) => {
@@ -635,30 +577,30 @@ export default {
             type: "success",
             message: action === "cancel" ? "Canceled" : "No changes",
           });
-          
-          if(mode=="update") {
-            var toReduc=Number(_this.delete_contribution.deletedAmmount)/Number(_this.delete_contribution.attendingCounter);
-            _this.tabledata.forEach(el=>{
-        if(el.contribution == "Attending Physician" && el.cid != Number(_this.delete_contribution.id) ){
-          el.total_fee =Number(_this.masknumber(el.total_fee,false))-toReduc;
-        }
-      });
-       _this.tabledata.forEach(el=>{
-        
-        el.total_fee=_this.masknumber(el.total_fee,true);
-        
-      });
-      
-           
+
+          if (mode == "update") {
+            var toReduc =
+              Number(_this.delete_contribution.deletedAmmount) /
+              Number(_this.delete_contribution.attendingCounter);
+            _this.tabledata.forEach((el) => {
+              if (
+                el.contribution == "Attending Physician" &&
+                el.cid != Number(_this.delete_contribution.id)
+              ) {
+                el.total_fee =
+                  Number(_this.masknumber(el.total_fee, false)) - toReduc;
+              }
+            });
+            _this.tabledata.forEach((el) => {
+              el.total_fee = _this.masknumber(el.total_fee, true);
+            });
           }
-          // console.log(_this.tempStaff);
         });
     },
     getRecord: function () {
       axios
         .get("record_get")
         .then((response) => {
-          // console.log(response.data);
           response.data.forEach((entry) => {
             if (entry.name_suffix == null) {
               entry.first_name =
@@ -679,14 +621,10 @@ export default {
                 ", ";
             }
 
-            // entry.patient.hospital_id =
-            //   constants.hospital_code[Number(entry.patient.hospital_id) - 1];
-            entry.total_fee = this.masknumber(entry.total_fee, true);
+            entry.total_fee = this.masknumber(entry.total_fee);
             entry.totalPersonnel = entry.contributions.length;
           });
           this.data = response.data;
-          // console.log(this.data);
-          //   console.log(response.data);
         })
         .catch(function (error) {});
     },
@@ -698,35 +636,12 @@ export default {
     addBudget: function (mode) {
       switch (mode) {
         case "add":
-          // alert('add');
           axios
             .post("adminadd_budget", this.form)
             .then(this.getBudget(), (this.dialogFormVisible = false))
             .catch(function (error) {});
           break;
         case "edit":
-          // alert('edit');
-          // if (this.form.hospital_code == "DFBDSMH") {
-          //   this.form.codeholder = 1;
-          // } else if (this.form.hospital_code == "DDH") {
-          //   this.form.codeholder = 2;
-          // } else if (this.form.hospital_code == "IDH") {
-          //   this.form.codeholder = 3;
-          // } else if (this.form.hospital_code == "SREDH") {
-          //   this.form.codeholder = 4;
-          // } else if (this.form.hospital_code == "VLPMDH") {
-          //   this.form.codeholder = 5;
-          // } else if (this.form.hospital_code == "MagMCH") {
-          //   this.form.codeholder = 6;
-          // } else if (this.form.hospital_code == "MatMCH") {
-          //   this.form.codeholder = 7;
-          // } else if (this.form.hospital_code == "PGGMH") {
-          //   this.form.codeholder = 8;
-          // } else if (this.form.hospital_code == "PDMH") {
-          //   this.form.codeholder = 9;
-          // }
-          // this.form.codeholder=this.codeholder;
-          // this.form.hospital_code=this.options.indexOf(this.age)
           axios
             .post("adminedit_budget/" + this.form.id, this.form)
             .then(this.getBudget(), (this.dialogFormVisible = false))
@@ -738,8 +653,5 @@ export default {
   mounted() {
     this.getRecord();
   },
-  created(){
-    
-  }
 };
 </script>

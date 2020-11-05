@@ -23,48 +23,49 @@ class MedicalRecordSeeder extends Seeder
             'Hantavirus', 'Hepatitis A', 'Rabies', 'West Nile Virus', 'Zika',
             'Measles', 'CRE', 'Enterovirus D68', 'MRSA', 'Shigellosis'
         ];
+        $physicians = [
+            'Attending Physician', 'Requesting Physician', 'Surgeon Physician', 'Health Care Physician',
+            'ER Physician', 'Anesthesiologist', 'Co-management', 'Admitting'
+        ];
         $patients = Patient::get()->all();
-        foreach($patients as $patient)
-        {
+        foreach ($patients as $patient) {
             $record = new MedicalRecord;
             $record->patient()->associate($patient->id);
             $record->admission_date = $faker->dateTimeBetween('-4 months', Carbon::now());
             $record->discharge_date = $faker->dateTimeBetween('-1 months', Carbon::now());
-            $record->final_diagnosis = $diagnosis[rand(0,18)];
-            $record->record_type = rand(1,2) === 1 ? 'Credited' : 'IRM Deduction';
-            $record->total_fee = rand(5000,99999);
-            $record->non_medical_fee=($record->total_fee/2);
-            $record->pooled_fee=(($record->total_fee/2)*.3);
-            $record->total_public_doctors=rand(1,5);
-            $record->total_private_doctors=rand(1,5);
+            $record->final_diagnosis = $diagnosis[rand(0, 18)];
+            $record->record_type = rand(1, 2) === 1 ? 'Credited' : 'IRM Deduction';
+            $record->total_fee = rand(5000, 99999);
+            $record->non_medical_fee = ($record->total_fee / 2);
+            $record->pooled_fee = (($record->total_fee / 2) * .3);
+            $record->total_public_doctors = rand(1, 5);
+            $record->total_private_doctors = rand(1, 5);
             $record->save();
         }
 
-        for($i = 0; $i < rand(100, 1000); $i++)
-        {
+        for ($i = 0; $i < rand(100, 1000); $i++) {
             $record = new MedicalRecord;
             $record->patient()->associate(rand(1, $patient->count()));
             $record->admission_date = $faker->dateTimeBetween('-4 months', Carbon::now());
             $record->discharge_date = $faker->dateTimeBetween('-1 months', Carbon::now());
-            $record->final_diagnosis = $diagnosis[rand(0,18)];
-            $record->record_type = rand(1,2) === 1 ? 'Credited' : 'IRM Deduction';
-            $record->total_fee = rand(5000,99999);
-            $record->non_medical_fee=($record->total_fee/2);
-            $record->pooled_fee=(($record->total_fee/2)*.3);
-            $record->total_public_doctors=rand(1,5);
-            $record->total_private_doctors=rand(1,5);
+            $record->final_diagnosis = $diagnosis[rand(0, 18)];
+            $record->record_type = rand(1, 2) === 1 ? 'Credited' : 'IRM Deduction';
+            $record->total_fee = rand(5000, 99999);
+            $record->non_medical_fee = ($record->total_fee / 2);
+            $record->pooled_fee = (($record->total_fee / 2) * .3);
+            $record->total_public_doctors = rand(1, 5);
+            $record->total_private_doctors = rand(1, 5);
             $record->save();
         }
 
         $records = MedicalRecord::get()->all();
-        foreach($records as $record)
-        {
+        foreach ($records as $record) {
             $contribution = new Contribution;
-            $contribution->contribution = 'admitting';
-            $contribution->credit = rand(1000,9999);
+            $contribution->contribution = 'Attending Physician';
+            $contribution->credit = rand(5000, 99999);
             $contribution->status = 'paid';
             $contribution->save();
-            $record->personnels()->attach(Personnel::find(rand(0,10)), ['contribution_id' => $contribution->id]);
+            $record->personnels()->attach(Personnel::find(rand(0, 10)), ['contribution_id' => $contribution->id]);
         }
     }
 }

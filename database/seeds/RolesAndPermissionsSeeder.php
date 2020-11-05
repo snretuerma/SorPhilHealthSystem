@@ -58,32 +58,32 @@ class RolesAndPermissionsSeeder extends Seeder
 
         // Create role and assign permissions to role
         Role::create(['name' => 'admin'])
-        ->givePermissionTo(
-            [
-                'view hospital', 'add hospital', 'edit hospital', 'delete hospital',
-                'view user', 'add user', 'edit user', 'delete user'
-            ]
-        );
+            ->givePermissionTo(
+                [
+                    'view hospital', 'add hospital', 'edit hospital', 'delete hospital',
+                    'view user', 'add user', 'edit user', 'delete user'
+                ]
+            );
 
         Role::create(['name' => 'user'])
-        ->givePermissionTo(
-            [
-                'view budget', 'add budget', 'edit budget', 'delete budget',
-                'view contribution', 'add contribution', 'edit contribution', 'delete contribution',
-                'view hospital', 'add hospital', 'edit hospital', 'delete hospital',
-                'view medical_record', 'add medical_record', 'edit medical_record', 'delete medical_record',
-                'view patient', 'add patient', 'edit patient', 'delete patient',
-                'view personnel', 'add personnel', 'edit personnel', 'delete personnel'
-            ]
-        );
+            ->givePermissionTo(
+                [
+                    'view budget', 'add budget', 'edit budget', 'delete budget',
+                    'view contribution', 'add contribution', 'edit contribution', 'delete contribution',
+                    'view hospital', 'add hospital', 'edit hospital', 'delete hospital',
+                    'view medical_record', 'add medical_record', 'edit medical_record', 'delete medical_record',
+                    'view patient', 'add patient', 'edit patient', 'delete patient',
+                    'view personnel', 'add personnel', 'edit personnel', 'delete personnel'
+                ]
+            );
 
         // observer permissions
         Role::create(['name' => 'observer'])
-        ->givePermissionTo(
-            [
-                'view budget', 'view complaint', 'view contribution', 'view hospital',
-                'view medical_record', 'view patient', 'view personnel', 'view user'
-            ]
-        );
+            ->givePermissionTo(
+                [
+                    'view budget', 'view complaint', 'view contribution', 'view hospital',
+                    'view medical_record', 'view patient', 'view personnel', 'view user'
+                ]
+            );
     }
 }

@@ -28,6 +28,11 @@ const is_private = [
     "Private"
 ];
 
+const is_parttime = [
+    "Part-time",
+    "Full-time"
+];
+
 const designation = [
     "Non-Medical",
     "Medical"
@@ -48,6 +53,7 @@ export default {
     sex: sex,
     marital_status: marital_status,
     is_private: is_private,
+    is_parttime: is_parttime,
     designation: designation,
     contributionType:contributionType
 }
