@@ -21,7 +21,7 @@
             <i class="fas fa-bars"></i>
         </a>
         <nav id="sidebar" class="sidebar-wrapper">
-            <div class="sidebar-content" style="overflow: hidden;">
+            <div class="sidebar-content" style="overflow-x: hidden;overflow-y:auto;">
                <!-- <div class="sidebar-brand" style="height: 0%">
                     <a href="{{ url('user') }}">PF Management System</a>
                     <div id="close-sidebar">
@@ -29,39 +29,50 @@
                     </div>
                 </div>-->
                 
-                
-                <div class="row" style="height:190px; text-align:center;position:relative;background-image:url({{asset('images/sidebar_background.jpg')}});
-                background-repeat: no-repeat;background-size: 100% 100%;">
+                <!--background-image:url({{asset('images/sidebar_background.jpg')}});
+                background-repeat: no-repeat;background-size: 100% 100%;-->
+                <div class="row" style="height:190px; text-align:center;position:relative;">
                  <div id="close-sidebar" style="float:right;position: absolute;
                  top: 0;
-                 right: 15px;cursor: pointer;border:1px solid rgba(0,0,0,0.1);border-radius:2px;padding-left:6px;padding-right:6px;
-                 color:#fff;">
-                    <i class="fas fa-bars"></i>
+                 right: 15px;cursor: pointer;border:1px solid rgba(0,0,0,0.0);border-radius:2px;padding-left:6px;padding-top:3px;padding-right:6px;
+                 color:#fff;
+                 text-shadow: 0 1px 0 rgba(0,0,0,0.2);">
+                    <i class="fas fa-bars" style="font-size:18px;"></i>
                 </div>
                 <div class="dropdown"> 
                     <span  style="position: absolute;float:left;top: 0;
-                    left:17px;cursor: pointer; border:1px solid rgba(0,0,0,0.1);padding-left:6px;padding-right:6px;border-radius:2px;
-                    color:#fff;"
+                    left:17px;cursor: pointer; border:1px solid rgba(0,0,0,0.0);padding-left:6px;padding-right:6px;padding-top:4px;border-radius:2px;
+                    color:#fff;
+                    text-shadow: 0 1px 0 rgba(0,0,0,0.5);"
                             
                             id="dropdownMenuButton" 
                             data-toggle="dropdown" 
                             aria-haspopup="true" 
                             aria-expanded="false"> 
-                           <i class="fas fa-cog"></i>
+                           <i class="fas fa-cog" style="font-size:18px;"></i>
 
                 </span> 
                     
-                    <div class="dropdown-menu" 
-                         aria-labelledby="dropdownMenuButton"> 
-                        <a class="dropdown-item" href="#"> 
-                          Action 
-                      </a> 
-                        <a class="dropdown-item" href="#"> 
-                          Another action 
-                      </a> 
-                        <a class="dropdown-item" href="#"> 
-                          Something else here 
-                      </a> 
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"> 
+                        
+                        <!--<a class="dropdown-item" href="#">  Reset Password </a> 
+                        <a class="dropdown-item" href="#">  Logout </a>-->
+                        <span style="width:auto;padding-left:10px;">
+                        <i class="fa fa-key" style="color:#3490DC;font-size:12px;"></i>
+                        <a href="{{route('reset')}}">
+                            Reset Password
+                        </a></span><br>
+                        <span style="width:auto;padding-left:10px;">
+                        <i class="fa fa-power-off" style="color:#3490DC;font-size:12px;"></i>
+                        <a href="{{ route('logout') }}" onclick="event.preventDefault();
+                            document.getElementById('logout-form').submit();">
+                            Logout
+                        </a>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                        </span>
+
                     </div> 
                 </div> 
                     <img class="img-responsive rounded-circle img-sidebar" 
@@ -106,7 +117,8 @@
                 <div class="sidebar-menu">
                     <ul>
                         <li class="header-menu">
-                            <span>General</span>
+                            <!--<span>Menu</span>-->
+                            <label></label>
                         </li>
                         <li class="sidebar li">
                             <a href="{{ url('user') }}">
@@ -142,7 +154,7 @@
                 </div>
                 <!-- sidebar-menu  -->
             </div>
-            <!-- sidebar-content  -->
+            <!-- sidebar-content 
             <div class="sidebar-footer">
                 <a href="{{route('reset')}}">
                     <i class="fa fa-key"></i>&nbsp;&nbsp;Reset Password
@@ -154,7 +166,7 @@
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf
                 </form>
-            </div>
+            </div> -->
         </nav>
 
 
