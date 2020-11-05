@@ -453,10 +453,6 @@ export default {
             this.$emit("add-trigger", this.container);
         },
         masknumber: function(theform, mode) {
-            // num = parseFloat(num)
-            //   .toFixed(2)
-            //   .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
-            // return num;
             var num = theform,
                 rounded;
             if (mode == true) {
@@ -495,7 +491,6 @@ export default {
                 );
             });
             this.tabledata = this.staff;
-            console.log(this.tabledata);
             var attendingCounter = 0;
             var deletedAmmount = 0;
             this.tabledata.forEach(el => {
@@ -509,9 +504,9 @@ export default {
                     deletedAmmount = el.total_fee;
                 }
             });
-            var toAdd = Number(this.masknumber(deletedAmmount,false) / attendingCounter);
-            console.log(deletedAmmount);
-            console.log(attendingCounter);
+            var toAdd = Number(
+                this.masknumber(deletedAmmount, false) / attendingCounter
+            );
             this.tabledata.forEach(el => {
                 if (
                     el.contribution == "Attending Physician" &&
@@ -524,21 +519,11 @@ export default {
                 }
             });
 
-            // this.tabledata.forEach((el)=>{
-            //   if(el.contribution == "Attending Physician" && el.cid != Number(row.cid) ){
-            //     var total=Number(
-            //     this.masknumber(el.total_fee, false)
-            //   )+toAdd;
-            //  }
-            //   el.total_fee=this.masknumber(total,true);
-            // });
-
             this.delete_contribution.id = row.cid;
             this.delete_contribution.data = this.tabledata;
             this.delete_contribution.deletedAmmount = deletedAmmount;
             this.delete_contribution.attendingCounter = attendingCounter;
             this.delete_contribution.toAdd = toAdd;
-            console.log(this.tabledata);
             var counter = 0;
             this.deleteRecord(
                 "contribution_delete/",
@@ -548,11 +533,6 @@ export default {
                 res_value => {
                     if (res_value) {
                         this.tabledata.splice(this.tabledata.indexOf(row), 1);
-                        //  var toAdd=this.delete_contribution.deletedAmmount/this.delete_contribution.attendingCounter;
-                        //    this.tabledata.forEach((el)=>{
-                        //   el.total_fee=this.masknumber(el.total_fee,true);
-
-                        // });
                         this.dialogTableVisible = false;
                         this.getRecord();
                     }
@@ -675,7 +655,6 @@ export default {
                             el.total_fee = _this.masknumber(el.total_fee, true);
                         });
                     }
-                    // console.log(_this.tempStaff);
                 });
         },
         getRecord: function() {

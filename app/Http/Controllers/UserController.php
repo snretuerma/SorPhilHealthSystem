@@ -419,10 +419,6 @@ class UserController extends Controller
 
     public function editContribution(Request $request)
     {
-        // foreach ($request->item['contributions'] as $contribution) {
-
-        // }
-        // dd(sizeof($request->item['contributions'])-1);
         $i = (sizeof($request->item['contributions'])-1) ;
         for($i;$i >=0;$i--) {
             if ($request->item['contributions'][$i]['contribution'] == "Attending Physician") {
@@ -435,7 +431,6 @@ class UserController extends Controller
 
     public function deleteContribution(Request $req)
     {
-        // dd($req);
         for($i=0;$i<sizeof($req->data);$i++) {
             if($req->id != $req->data[$i]['cid'] && $req->data[$i]['contribution'] == "Attending Physician"){
                 $result = Contribution::find($req->data[$i]['cid']);
@@ -443,7 +438,6 @@ class UserController extends Controller
                 $result->save();
             }
         }
-         // return
          Contribution::where('id', $req->id)->delete();
 
     }
