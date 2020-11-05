@@ -951,21 +951,16 @@ export default {
             )
                 .then(() => {
                     var _this = this;
-                    axios
-                        .post("personnel_delete/" + id)
-                        .then(function(response) {
-                            if (
-                                response.status > 199 &&
-                                response.status < 203
-                            ) {
-                                _this.open_notif(
-                                    "success",
-                                    "Success",
-                                    "Deleted Successfully"
-                                );
-                                res(id);
-                            }
-                        });
+                    axios.post(`personnel_delete/${id}`).then(function(response) {
+                        if (response.status > 199 && response.status < 203) {
+                            _this.open_notif(
+                                "success",
+                                "Success",
+                                "Deleted Successfully"
+                            );
+                            res(id);
+                        }
+                    });
                 })
                 .catch(action => {
                     this.open_notif("info", "Cancelled", "No Changes");
