@@ -6,7 +6,7 @@
                 <h2 class="font-weight-bold">
                     <i class="fa fa-tachometer-alt"></i>&nbsp;&nbsp;Dashboard
                 </h2>
-            </div>-->
+            </div>-->  
                 <div class="header-title-parent" style="padding-top:2px !important;padding-bottom:2px !important;">
                     <span class="header-title">
                     <i class="fa fa-tachometer-alt"></i>&nbsp;&nbsp;Dashboard
