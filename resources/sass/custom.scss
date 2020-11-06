@@ -14,6 +14,13 @@
     width: 100%;
     padding: 30px 0;
 }
+/*.img-fluid{
+    width: 300px !important;
+    height: 300px !important;
+    max-width: 300px !important;
+    min-height: 300px !important;
+    //padding: 50px !important;
+}*/
 .banner-sec {
     background: "" no-repeat left bottom;
     background-size: cover;
@@ -165,9 +172,10 @@ body {
 #show-sidebar {
     position: fixed;
     left: 0;
-    top: 10px;
+    top: 8px;
     border-radius: 0 4px 4px 0px;
     width: 35px;
+    height: 30px;
     transition-delay: 0.3s;
 }
 .page-wrapper.toggled #show-sidebar {
@@ -433,7 +441,8 @@ body {
 }
 
 .page-wrapper .page-content > div {
-    padding: 10px 20px;
+    //padding: 40px 20px;
+    padding-top:45px;
 }
 
 .page-wrapper .page-content {
@@ -583,3 +592,106 @@ body {
     display:block !important;
     margin:auto !important;
 }
+//custom sidebar menu design
+.sidebar-colapse-btn{
+    float:right;
+    position: absolute;
+    top: 0;
+    right: 15px;cursor: pointer;
+    border:1px solid rgba(0,0,0,0.0);
+    border-radius:2px;
+    padding-left:6px;
+    padding-top:12px;
+    padding-right:16px;
+    color:#fff;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+.sidebar-setting{
+    position: absolute;float:left;top: 0;
+    left:17px;cursor: pointer; 
+    border:1px solid rgba(0,0,0,0.0);
+    padding-left:11px;
+    padding-right:11px;
+    padding-top:12px;
+    border-radius:2px;
+    color:#fff;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+}
+.sidebar-username{
+    position:absolute;
+    top: 73%;
+    left: auto; 
+    width:100%; 
+    color:#fff;
+    font-weight:bold;
+    text-shadow: 0 1px 0 #444;
+    text-transform: uppercase;
+}
+.sidebar-user-title{
+    position:absolute;
+    top: 81%;
+    left: auto; 
+    width:100%;
+    color:rgb(191, 190, 190);
+    font-size:12px;
+}
+.sidebar-setting-item{
+    width:auto;
+    padding-left:10px;
+}
+.sidebar-setting-item-icon{
+    color:#3490DC;
+    font-size:12px;
+}
+.image-box{
+    height:190px; 
+    text-align:center;
+    position:relative;
+    //if have image bg
+    //background-image:url({{asset('images/sidebar_background.jpg')}});
+    //background-repeat: no-repeat;background-size: 100% 100%;
+}
+//end custom sidebar
+//custom table margin
+.card-body {
+    padding: 2px !important;
+}
+.el-table td, .el-table th{
+    //padding: 12px 0;
+    padding: 6px 0 !important;
+}
+.el-table{
+    font-size: 13px !important;
+}
+//end custom table margin
+//header top
+.header-top{
+    background-color:#F3F3F3;
+    border-bottom:1px solid #D7D8DA;
+    top:0;
+    position:fixed;
+    width:100%;
+    z-index:99;
+    padding:auto;
+    padding-top:4px;
+    padding-bottom:5px;
+}
+.header-title{
+    height:100%;
+    display: inline-block;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-size:20px;
+    padding-left:5px;
+    padding-right:10px;
+}
+.header-title-parent{
+    float:left;
+    text-align:center;
+    padding-left:40px;
+}
+//end header top

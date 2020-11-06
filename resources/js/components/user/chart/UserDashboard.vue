@@ -1,14 +1,18 @@
 <template>
     <div>
         <!-- Header -->
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="row header-top">
+            <!--<div class="col-sm-12">
                 <h2 class="font-weight-bold">
                     <i class="fa fa-tachometer-alt"></i>&nbsp;&nbsp;Dashboard
                 </h2>
-            </div>
+            </div>-->
+                <div class="header-title-parent" style="padding-top:2px !important;padding-bottom:2px !important;">
+                    <span class="header-title">
+                    <i class="fa fa-tachometer-alt"></i>&nbsp;&nbsp;Dashboard
+                    </span>
+                </div>
         </div>
-        <hr />
         <!-- End Header -->
         <div>
             <el-row :gutter="12">

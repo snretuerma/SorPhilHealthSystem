@@ -17,7 +17,7 @@
 
 <body>
     <div class="page-wrapper chiller-theme toggled">
-        <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+        <a id="show-sidebar" class="btn btn-sm btn-dark" href="javascript:void(0)" style="z-index: 100;">
             <i class="fas fa-bars"></i>
         </a>
         <nav id="sidebar" class="sidebar-wrapper">
@@ -31,39 +31,31 @@
                 
                 <!--background-image:url({{asset('images/sidebar_background.jpg')}});
                 background-repeat: no-repeat;background-size: 100% 100%;-->
-                <div class="row" style="height:190px; text-align:center;position:relative;">
-                 <div id="close-sidebar" style="float:right;position: absolute;
-                 top: 0;
-                 right: 15px;cursor: pointer;border:1px solid rgba(0,0,0,0.0);border-radius:2px;padding-left:6px;padding-top:3px;padding-right:6px;
-                 color:#fff;
-                 text-shadow: 0 1px 0 rgba(0,0,0,0.2);">
+                <div class="row image-box">
+                 <div id="close-sidebar" class="sidebar-colapse-btn" >
                     <i class="fas fa-bars" style="font-size:18px;"></i>
                 </div>
                 <div class="dropdown"> 
-                    <span  style="position: absolute;float:left;top: 0;
-                    left:17px;cursor: pointer; border:1px solid rgba(0,0,0,0.0);padding-left:6px;padding-right:6px;padding-top:4px;border-radius:2px;
-                    color:#fff;
-                    text-shadow: 0 1px 0 rgba(0,0,0,0.5);"
-                            
+                    <span class="sidebar-setting" 
                             id="dropdownMenuButton" 
                             data-toggle="dropdown" 
                             aria-haspopup="true" 
                             aria-expanded="false"> 
                            <i class="fas fa-cog" style="font-size:18px;"></i>
 
-                </span> 
+                    </span> 
                     
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"> 
                         
                         <!--<a class="dropdown-item" href="#">  Reset Password </a> 
-                        <a class="dropdown-item" href="#">  Logout </a>-->
-                        <span style="width:auto;padding-left:10px;">
-                        <i class="fa fa-key" style="color:#3490DC;font-size:12px;"></i>
+                        <a class="dropdown-item" href="#">  Logout </a>--> 
+                        <span class="sidebar-setting-item">
+                        <i class="fa fa-key sidebar-setting-item-icon"></i>
                         <a href="{{route('reset')}}">
                             Reset Password
                         </a></span><br>
-                        <span style="width:auto;padding-left:10px;">
-                        <i class="fa fa-power-off" style="color:#3490DC;font-size:12px;"></i>
+                        <span class="sidebar-setting-item">
+                        <i class="fa fa-power-off sidebar-setting-item-icon"></i>
                         <a href="{{ route('logout') }}" onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();">
                             Logout
@@ -82,12 +74,8 @@
                     height = "80"
                     >
                     
-                   <label id="user" style="position:absolute;
-                   top: 74%;
-                   left: auto; width:100%; color:#fff;font-weight:bold;text-shadow: 0 1px 0 #444;text-transform: uppercase; ">DFBDSMH_user</label>
-                   <label style="position:absolute;
-                   top: 82%;
-                   left: auto; width:100%;color:#fff;font-size:12px; ">username</label>
+                   <label id="user" class="sidebar-username">{{ Auth::user()->username }}</label>
+                   <label class="sidebar-user-title">username</label>
 
                     
                        

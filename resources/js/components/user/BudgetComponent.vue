@@ -1,18 +1,62 @@
 <template>
     <div>
         <!-- Header -->
-        <div class="row">
-            <div class="col-sm-12">
+        <div class="row header-top">
+            <!--<div class="col-sm-12">
                 <h2 class="font-weight-bold">
                     <i class="fa fa-coins"></i>&nbsp;&nbsp;Budget
                 </h2>
-            </div>
+            </div>-->
+
+            
+                <div class="header-title-parent">
+                    <span class="header-title">
+                    <i class="fa fa-coins"></i>&nbsp;&nbsp;Budget
+                    </span>
+                </div>
+               <!-- <h2 class="font-weight-bold">
+                    <i class="fa fa-coins"></i>&nbsp;&nbsp;Budget
+                </h2>-->
+                
+                <el-dropdown @command="formDialog" style="float:right;margin-left:3px;" >
+                    <el-button  size="medium"
+                        >Excel<i class="el-icon-arrow-down el-icon--right"></i
+                    ></el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                            icon="el-icon-upload2"
+                            command="import_data"
+                            >Import Data</el-dropdown-item
+                        >
+                        <el-dropdown-item
+                            icon="el-icon-download"
+                            command="export_data"
+                            >Export Data</el-dropdown-item
+                        >
+                    </el-dropdown-menu>
+                </el-dropdown>
+                <el-button
+                    
+                    style="float:right;margin-left:3px;"
+                    size="medium"
+                    @click="
+                        dialogFormVisible = true;
+                        form.formmode = 'add';
+                        clearFields();
+                    "
+                    >Add</el-button
+                >
+                
+            
         </div>
-        <hr />
+        
+       
+       
+      
         <!-- End Header -->
 
         <div class="row">
-            <!-- Add Button -->
+            <!-- Add Button
             <div class="col-sm-12" align="right" style="margin-bottom: 10px">
                 <el-dropdown @command="formDialog">
                     <el-button type="primary"
@@ -40,7 +84,7 @@
                     "
                     >Add</el-button
                 >
-            </div>
+            </div> -->
             <!-- End Button -->
         </div>
 
