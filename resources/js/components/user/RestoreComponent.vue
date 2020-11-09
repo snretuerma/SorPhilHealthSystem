@@ -1,7 +1,7 @@
 <template>
     <div>
-
-        <!-- Header -->
+       
+       <!-- Header -->
         <div class="row header-top"> 
             <div class="header-title-parent" style="padding-top:2px !important;padding-bottom:2px !important;">
                 <span class="header-title">
@@ -11,152 +11,111 @@
         </div>
         <!-- End Header -->
 
-        <div class="row">
-            <div class="col-sm-10" align="left">
-                <div style="margin-bottom: 10px">
-                    <el-row>
-                        <el-col :span="10">
+
+        <div class="card">
+            <div class="card-body">
+                <el-table v-loading="loading" :data="listData">
+                    <el-table-column
+                        width="150"
+                        label="Philhealth No."
+                        prop="philhealth"
+                    ></el-table-column>
+                    <el-table-column
+                        width="150"
+                        label="Patient"
+                        prop="pfname"
+                    ></el-table-column>
+                    <el-table-column
+                        width="150"
+                        label="Admission Date"
+                        prop="admission_date"
+                    ></el-table-column>
+                    <el-table-column
+                        width="150"
+                        label="Discharge Date"
+                        prop="discharge_date"
+                    ></el-table-column>
+                    <el-table-column
+                        width="150"
+                        label="Diagnois"
+                        prop="final_diagnosis"
+                    ></el-table-column>
+
+                    <el-table-column width="280" align="right" fixed="right">
+                        <template slot="header" slot-scope="scope">
                             <el-input
-                                v-model="filters[0].value"
-                                placeholder="Search"
-                            ></el-input>
-                        </el-col>
-                    </el-row>
+                                v-model="search"
+                                size="mini"
+                                placeholder="Type to search"
+                            />
+                        </template>
+                        <template slot-scope="scope">
+                            <el-tooltip
+                                class="item"
+                                effect="light"
+                                content="View"
+                                placement="top"
+                            >
+                                <el-button
+                                    size="mini"
+                                    type="info"
+                                    icon="el-icon-info"
+                                    circle
+                                    @click="handleView(scope.$index, scope.row)"
+                                ></el-button>
+                            </el-tooltip>
+                            <el-tooltip
+                                class="item"
+                                effect="light"
+                                content="Restore"
+                                placement="top"
+                            >
+                                <el-button
+                                    size="mini"
+                                    type="success"
+                                    icon="el-icon-check"
+                                    circle
+                                    @click="
+                                        handleRestore(scope.$index, scope.row)
+                                    "
+                                ></el-button>
+                            </el-tooltip>
+                        </template>
+                    </el-table-column>
+                </el-table>
+                <div style="text-align: center">
+                    <el-pagination
+                        background
+                        layout="prev, pager, next"
+                        @current-change="handleCurrentChange"
+                        :page-size="pageSize"
+                        :total="total"
+                    >
+                    </el-pagination>
                 </div>
             </div>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <data-tables
-                    :data="data"
-                    :page-size="10"
-                    :filters="filters"
-                    :pagination-props="{ pageSizes: [10, 20, 50] }"
-                    :action-col="actionCol"
-                >
-                    <div slot="empty">Table Empty</div>
-                    <el-table-column
-                        v-for="title in titles"
-                        :prop="title.prop"
-                        :label="title.label"
-                        :width="title.width"
-                        :key="title.label"
-                        sortable="custom"
-                    >
-                    </el-table-column>
-                    <p slot="append"></p>
-                </data-tables>
-                <el-dialog
-                    title="Budget Details"
-                    :visible.sync="dialogFormVisible"
-                    top="0vh"
-                >
-                    <el-form :model="form" :rules="rules" ref="form">
-                        <el-form-item
-                            label="Start date"
-                            :label-width="formLabelWidth"
-                            prop="start_date"
-                        >
-                            <el-date-picker
-                                type="date"
-                                placeholder="Pick a date"
-                                v-model="form.start_date"
-                                style="width: 100%"
-                                value-format="yyyy-MM-dd"
-                            ></el-date-picker>
-                        </el-form-item>
-                        <el-form-item
-                            label="Amount"
-                            :label-width="formLabelWidth"
-                            prop="total"
-                        >
-                            <el-input
-                                v-model="form.total"
-                                autocomplete="off"
-                            ></el-input>
-                        </el-form-item>
-                        <el-form-item
-                            label="End date"
-                            :label-width="formLabelWidth"
-                            prop="end_date"
-                        >
-                            <el-date-picker
-                                type="date"
-                                placeholder="Pick a date"
-                                v-model="form.end_date"
-                                style="width: 100%"
-                                value-format="yyyy-MM-dd"
-                            ></el-date-picker>
-                        </el-form-item>
-                        <el-form-item
-                            label="Hospital code"
-                            :label-width="formLabelWidth"
-                        >
-                            <el-select
-                                v-model="form.hospital_code"
-                                @change="onChange(form.hospital_code)"
-                                placeholder="Please select"
-                            >
-                                <el-option
-                                    label="DFBDSMH"
-                                    value="1"
-                                ></el-option>
-                                <el-option label="DDH" value="2"></el-option>
-                                <el-option label="IDH" value="3"></el-option>
-                                <el-option label="SREDH" value="4"></el-option>
-                                <el-option label="VLPMDH" value="5"></el-option>
-                                <el-option label="MagMCH" value="6"></el-option>
-                                <el-option label="MatMCH" value="7"></el-option>
-                                <el-option label="PGGMH" value="8"></el-option>
-                                <el-option label="PDMH" value="9"></el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-form>
-                    <span slot="footer" class="dialog-footer">
-                        <el-button @click="dialogFormVisible = false"
-                            >Cancel</el-button
-                        >
-                        <el-button
-                            v-if="form.formmode == 'add'"
-                            type="primary"
-                            @click="addBudget('add')"
-                            >Save</el-button
-                        >
-
-                        <el-button
-                            v-if="form.formmode == 'edit'"
-                            type="primary"
-                            @click="addBudget('edit')"
-                            >Save changes</el-button
-                        >
-                    </span>
-                </el-dialog>
-            </div>
-            <!-- Show Patient Details -->
-            <el-dialog
-                title="Personnel Details"
-                :visible.sync="dialogTableVisible"
-            >
-                <el-table :data="gridData">
-                    <el-table-column
-                        property="psfname"
-                        label="Firstname"
-                        width="200"
-                    ></el-table-column>
-                    <el-table-column
-                        property="psmname"
-                        label="Middlename"
-                        width="200"
-                    ></el-table-column>
-                    <el-table-column
-                        property="pslname"
-                        label="Lastname"
-                        width="formLabelWidth"
-                    ></el-table-column>
-                </el-table>
-            </el-dialog>
-            <!-- Show Patient Details -->
-        </div>
+        <!-- Show Patient Details -->
+        <el-dialog title="Personnel Details" :visible.sync="dialogTableVisible">
+            <el-table :data="gridData">
+                <el-table-column
+                    property="psfname"
+                    label="Firstname"
+                    width="200"
+                ></el-table-column>
+                <el-table-column
+                    property="psmname"
+                    label="Middlename"
+                    width="200"
+                ></el-table-column>
+                <el-table-column
+                    property="pslname"
+                    label="Lastname"
+                    width="formLabelWidth"
+                ></el-table-column>
+            </el-table>
+        </el-dialog>
+        <!-- Show Patient Details -->
     </div>
 </template>
 
@@ -166,67 +125,11 @@ export default {
     data() {
         return {
             data: [],
-            budgetInfo: [],
-            rules: {
-                start_date: [
-                    {
-                        required: true,
-                        message: "Start date is required.",
-                        trigger: "blur"
-                    }
-                ],
-                total: [
-                    {
-                        required: true,
-                        message: "Amount is required.",
-                        trigger: "blur"
-                    }
-                ],
-                end_date: [
-                    {
-                        required: true,
-                        message: "End date is required.",
-                        trigger: "blur"
-                    }
-                ],
-                hospital_code: [
-                    {
-                        required: true,
-                        message: "Hospital code is required.",
-                        trigger: "blur"
-                    }
-                ]
-            },
-            filters: [
-                {
-                    prop: [
-                        "philhealth",
-                        "pfname",
-                        "admission_date",
-                        "discharge_date"
-                    ],
-                    value: ""
-                }
-            ],
-            titles: [
-                {
-                    prop: "philhealth",
-                    label: "Philhealth No.",
-                    width: "150px"
-                },
-                {
-                    prop: "pfname",
-                    label: "Patient"
-                },
-                {
-                    prop: "admission_date",
-                    label: "Admit"
-                },
-                {
-                    prop: "discharge_date",
-                    label: "Discharge"
-                }
-            ],
+            page: 1,
+            pageSize: 10,
+            loading: true,
+            search: "",
+            dialogTableVisible: false,
             gridData: [
                 {
                     psfname: "",
@@ -267,24 +170,54 @@ export default {
                     }
                 ]
             },
-            layout: "pagination, table",
-            dialogTableVisible: false,
-            dialogFormVisible: false,
-            form: {
-                id: "",
-                start_date: "",
-                total: "",
-                end_date: "",
-                formmode: "",
-                hospital_code: "",
-                codeholder: ""
-            },
-            formLabelWidth: "120px"
         };
     },
+    computed: {
+        searching() {
+            if (!this.search) {
+                this.total = this.data.length;
+                return this.data;
+            }
+            this.page = 1;
+            return this.data.filter(
+                data =>
+                    data.first_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.last_name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase())
+            );
+        },
+        listData() {
+            this.total = this.searching.length;
+
+            return this.searching.slice(
+                this.pageSize * this.page - this.pageSize,
+                this.pageSize * this.page
+            );
+        }
+    },
     methods: {
-        onChange: function(event) {
-            this.form.codeholder = event;
+        handleCurrentChange(val) {
+            this.page = val;
+        },
+        formLoading: function() {
+            const loading = this.$loading({
+                lock: true,
+                spinner: "el-icon-loading",
+                target: "div.el-dialog"
+            });
+            loading.close();
+        },
+        handleView(index, row) {
+            this.dialogTableVisible = true;
+            this.gridData[0].psfname = row.psfname;
+            this.gridData[0].psmname = row.psmname;
+            this.gridData[0].pslname = row.pslname;
+        },
+        handleRestore(index, row) {
+           this.editRestore(row.id);
         },
         open_notif: function(status, title, message) {
             if (status == "success") {
@@ -370,6 +303,7 @@ export default {
                         }
                     });
                     this.data = response.data;
+                    this.loading = false;
                 })
                 .catch(function(error) {});
         }

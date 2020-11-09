@@ -47,17 +47,17 @@
                 <!-- Table -->
                 <el-table v-loading="loading" :data="ListData">
                     <el-table-column
-                        width="250"
+                        width="300"
                         label="Start Date"
                         prop="start_date"
                     ></el-table-column>
                     <el-table-column
-                        width="200"
+                        width="300"
                         label="Amount"
                         prop="total"
                     ></el-table-column>
                     <el-table-column
-                        width="250"
+                        width="150"
                         label="End date"
                         prop="end_date"
                     ></el-table-column>
@@ -250,12 +250,12 @@
                 <el-table-column
                     property="start_date"
                     label="Start Date"
-                    width="200"
+                    width="250"
                 ></el-table-column>
                 <el-table-column
                     property="total"
                     label="Amount"
-                    width="200"
+                    width="250"
                 ></el-table-column>
                 <el-table-column
                     property="end_date"
@@ -300,14 +300,14 @@
                         action="/budget_import"
                     >
                         <input type="hidden" name="" id="" />
-                        <input
-                            type="hidden"
-                            name="i_action"
-                            id="i_action"
-                            value="BudgetImport"
-                        />
                         <div class="modal-body">
                             <div class="form-group">
+                                <input
+                                    type="hidden"
+                                    name="i_action"
+                                    id="i_action"
+                                    value="BudgetImport"
+                                />
                                 <label
                                     >Select excel file for upload (.csv)</label
                                 ><br />
@@ -483,6 +483,7 @@ export default {
                     }
                 ]
             },
+
             // Add form
             form: {
                 id: "",
@@ -633,10 +634,7 @@ export default {
                                     response.data.total = this.masknumber(
                                         this.form.total
                                     );
-                                    response.data.hospital_code =
-                                        constants.hospital_code[
-                                            Number(this.form.hospital_code - 1)
-                                        ];
+
                                     this.data.push(response.data);
                                     this.dialogFormVisible = false;
                                     this.open_notif(

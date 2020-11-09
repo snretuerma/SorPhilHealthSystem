@@ -23,6 +23,10 @@ class MedicalRecordSeeder extends Seeder
             'Hantavirus', 'Hepatitis A', 'Rabies', 'West Nile Virus', 'Zika',
             'Measles', 'CRE', 'Enterovirus D68', 'MRSA', 'Shigellosis'
         ];
+        $physicians = [
+            'Attending Physician', 'Requesting Physician', 'Surgeon Physician', 'Health Care Physician',
+            'ER Physician', 'Anesthesiologist', 'Co-management', 'Admitting'
+        ];
         $patients = Patient::get()->all();
         foreach ($patients as $patient) {
             $record = new MedicalRecord;
@@ -57,8 +61,8 @@ class MedicalRecordSeeder extends Seeder
         $records = MedicalRecord::get()->all();
         foreach ($records as $record) {
             $contribution = new Contribution;
-            $contribution->contribution = 'admitting';
-            $contribution->credit = rand(1000, 9999);
+            $contribution->contribution = 'Attending Physician';
+            $contribution->credit = rand(5000, 99999);
             $contribution->status = 'paid';
             $contribution->save();
             $record->personnels()->attach(Personnel::find(rand(0, 10)), ['contribution_id' => $contribution->id]);
