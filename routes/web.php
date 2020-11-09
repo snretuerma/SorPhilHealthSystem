@@ -87,6 +87,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('personnel_delete/{id}', 'UserController@deletePersonnel');
     Route::post('personnels_import', 'UserController@importExcel');
     Route::get('/personnels_export', 'UserController@exportExcel');
+    Route::post('personnelcontribution_get', 'UserController@getPersonnelContribution');
 
     //Patients
     Route::get('/patients', 'UserController@patients')->name('patients');

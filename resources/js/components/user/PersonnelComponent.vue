@@ -680,6 +680,9 @@ export default {
         }
     },
     methods: {
+         triggerAdd(row) {
+            this.$emit("add-trigger",row);
+        },
         handleCurrentChange(val) {
             this.page = val;
         },
@@ -716,6 +719,7 @@ export default {
             this.gridData[0].designation = row.designation;
             this.gridData[0].sex = row.sex;
             this.gridData[0].birthdate = row.birthdate;
+            this.triggerAdd(row);
         },
         handleEdit(index, row) {
             this.clearFields();
