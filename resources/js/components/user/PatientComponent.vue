@@ -1,48 +1,44 @@
 <template>
     <div>
         <!-- Header -->
-        <div class="row">
-            <div class="col-sm-12">
-                <h2 class="font-weight-bold">
+        <div class="row header-top">
+            <div class="header-title-parent">
+                <span class="header-title">
                     <i class="fa fa-hospital-user"></i>&nbsp;&nbsp;Patient List
-                </h2>
+                </span>
             </div>
+            <el-dropdown
+                @command="formDialog"
+                style="float:right;margin-left:3px;"
+            >
+                <el-button size="medium"
+                    >Excel<i class="el-icon-arrow-down el-icon--right"></i
+                ></el-button>
+                <el-dropdown-menu slot="dropdown">
+                    <el-dropdown-item
+                        icon="el-icon-upload2"
+                        command="import_data"
+                        >Import Data</el-dropdown-item
+                    >
+                    <el-dropdown-item
+                        icon="el-icon-download"
+                        command="export_data"
+                        >Export Data</el-dropdown-item
+                    >
+                </el-dropdown-menu>
+            </el-dropdown>
+            <el-button
+                style="float:right;margin-left:3px;"
+                size="medium"
+                @click="
+                    dialogFormVisible = true;
+                    form.formmode = 'add';
+                    clearFields();
+                "
+                >Add</el-button
+            >
         </div>
-        <hr />
         <!-- End Header -->
-
-        <div class="row">
-            <!-- Add Button -->
-            <div class="col-sm-12" align="right" style="margin-bottom: 10px">
-                <el-dropdown @command="formDialog">
-                    <el-button type="primary"
-                        >Excel<i class="el-icon-arrow-down el-icon--right"></i
-                    ></el-button>
-                    <el-dropdown-menu slot="dropdown">
-                        <el-dropdown-item
-                            icon="el-icon-upload2"
-                            command="import_data"
-                            >Import Data</el-dropdown-item
-                        >
-                        <el-dropdown-item
-                            icon="el-icon-download"
-                            command="export_data"
-                            >Export Data</el-dropdown-item
-                        >
-                    </el-dropdown-menu>
-                </el-dropdown>
-                <el-button
-                    type="primary"
-                    @click="
-                        dialogFormVisible = true;
-                        form.formmode = 'add';
-                        clearFields();
-                    "
-                    >Add</el-button
-                >
-            </div>
-            <!-- End Button -->
-        </div>
 
         <!-- Card Begins Here -->
         <div class="card">

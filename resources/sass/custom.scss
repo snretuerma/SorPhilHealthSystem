@@ -14,13 +14,6 @@
     width: 100%;
     padding: 30px 0;
 }
-/*.img-fluid{
-    width: 300px !important;
-    height: 300px !important;
-    max-width: 300px !important;
-    min-height: 300px !important;
-    //padding: 50px !important;
-}*/
 .banner-sec {
     background: "" no-repeat left bottom;
     background-size: cover;
@@ -488,15 +481,12 @@ body {
 /*-----------------------------chiller-theme-------------------------------------------------*/
 
 .chiller-theme .sidebar-wrapper {
-   // background: #3b4783; //side nav full color
    background-image: linear-gradient(180deg,#0675BB,#F72E2E);
-   //background: #00090e; //side nav full color 
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-header,
 .chiller-theme .sidebar-wrapper .sidebar-search,
 .chiller-theme .sidebar-wrapper .sidebar-menu {
-    //border-top: 1px solid #636ca0; // 2 lines above
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
@@ -548,7 +538,6 @@ body {
 .chiller-theme .sidebar-wrapper .sidebar-menu .sidebar-dropdown div,
 .chiller-theme .sidebar-wrapper .sidebar-search input.search-menu,
 .chiller-theme .sidebar-wrapper .sidebar-search .input-group-text {
-   // background: #636ca0; //icons background color
 }
 
 .chiller-theme .sidebar-wrapper .sidebar-menu .header-menu span {
@@ -569,7 +558,6 @@ body {
     border-right: none;
 }
 .li.li {
-    //border-bottom: 1px solid #636ca0; //list lines
     background-color: rgba(0, 0, 0, 0.07);
     border-bottom: 1px solid rgba(0, 0, 0, 0.1); //list lines
 }
@@ -579,7 +567,6 @@ body {
 
 @keyframes anim-glow {
     0% {
-        //box-shadow: 0 0 rgba(#0675BB, 1); with sidebar image
         box-shadow: 0 0 rgba(#E63237, 1);
     }
     100% {
@@ -647,9 +634,6 @@ body {
     height:190px; 
     text-align:center;
     position:relative;
-    //if have image bg
-    //background-image:url({{asset('images/sidebar_background.jpg')}});
-    //background-repeat: no-repeat;background-size: 100% 100%;
 }
 //end custom sidebar
 //custom table margin
@@ -695,3 +679,13 @@ body {
     padding-left:40px;
 }
 //end header top
+//modal
+@media screen and (max-width: 768px) {
+    .el-dialog{
+        width: 96% !important;
+    }
+    .el-col-12{
+        width: 100% !important;
+    }
+}
+//end custom modal

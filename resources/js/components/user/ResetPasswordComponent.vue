@@ -1,14 +1,14 @@
 <template>
     <div>
+        
         <!-- Header -->
-        <div class="row">
-            <div class="col-sm-12">
-                <h2 class="font-weight-bold">
-                    <i class="fa fa-key"></i>&nbsp;&nbsp;Reset Password
-                </h2>
+        <div class="row header-top"> 
+            <div class="header-title-parent" style="padding-top:2px !important;padding-bottom:2px !important;">
+                <span class="header-title">
+                   <i class="fa fa-key"></i>&nbsp;&nbsp;Reset Password
+                </span>
             </div>
         </div>
-        <hr />
         <!-- End Header -->
 
         <el-form
