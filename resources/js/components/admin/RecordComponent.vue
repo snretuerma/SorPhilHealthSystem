@@ -3,14 +3,14 @@
         
         <!-- Header -->
         <div class="row header-top"> 
-            <div class="header-title-parent" style="padding-top:2px !important;padding-bottom:2px !important;">
+            <div class="header-title-parent">
                 <span class="header-title">
                 <i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Records
                 </span>
             </div>
         </div>
         <!-- End Header -->
-        
+
         <div class="row">
             <div class="col-sm-10" align="left">
                 <div style="margin-bottom: 10px"></div>

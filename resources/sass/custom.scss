@@ -677,6 +677,7 @@ body {
     float:left;
     text-align:center;
     padding-left:40px;
+    padding-top:2px !important;padding-bottom:2px !important;
 }
 //end header top
 //modal
@@ -689,3 +690,9 @@ body {
     }
 }
 //end custom modal
+//btn action
+.btn-action{
+    float:right;
+    margin-left:3px !important;
+}
+//end btn action

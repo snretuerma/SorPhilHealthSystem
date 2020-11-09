@@ -10,7 +10,7 @@
             </div>
             <el-dropdown
                 @command="formDialog"
-                style="float:right;margin-left:3px;"
+                class="btn-action"
             >
                 <el-button size="medium"
                     >Excel<i class="el-icon-arrow-down el-icon--right"></i
@@ -29,7 +29,7 @@
                 </el-dropdown-menu>
             </el-dropdown>
             <el-button
-                style="float:right;margin-left:3px;"
+                class="btn-action"
                 size="medium"
                 @click="
                     dialogFormVisible = true;
