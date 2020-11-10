@@ -17,40 +17,57 @@
 
 <body>
     <div class="page-wrapper chiller-theme toggled">
-        <a id="show-sidebar" class="btn btn-sm btn-dark" href="#">
+        <a id="show-sidebar" class="btn btn-sm btn-dark" href="javascript:void(0)" style="z-index: 100;">
             <i class="fas fa-bars"></i>
         </a>
         <nav id="sidebar" class="sidebar-wrapper">
-            <div class="sidebar-content">
-                <div class="sidebar-brand">
-                    <a href="{{ url('observer') }}">PF Management System</a>
-                    <div id="close-sidebar">
-                        <i class="fas fa-times"></i>
+            <div class="sidebar-content" style="overflow-x: hidden;overflow-y:auto;">
+            <div class="row image-box">
+                    <div id="close-sidebar" class="sidebar-colapse-btn" >
+                        <i class="fas fa-bars" style="font-size:18px;"></i>
                     </div>
-                </div>
-                <div class="sidebar-header">
-                    <div class="user-pic">
-                        <img class="img-responsive img-rounded"
-                          src="{{asset('images/user.jpg')}}"
-                          alt="User picture">
-                    </div>
-                    <div class="user-info">
-                        <span class="user-name">
-                            <strong>{{ Auth::user()->username }}</strong>
+                    <div class="dropdown">
+                        <span class="sidebar-setting"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
+                            <i class="fas fa-cog" style="font-size:18px;"></i>
                         </span>
-                        <span class="user-role">Observer</span>
-                        <span class="user-status">
-                            <i class="fa fa-circle"></i>
-                            <span>Online</span>
-                        </span>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                            <span class="sidebar-setting-item">
+                                <i class="fa fa-key sidebar-setting-item-icon"></i>
+                                <a href="{{route('observerResetPasswordView')}}">
+                                    Reset Password
+                                </a>
+                            </span><br>
+                            <span class="sidebar-setting-item">
+                            <i class="fa fa-power-off sidebar-setting-item-icon"></i>
+                            <a href="{{ route('logout') }}" onclick="event.preventDefault();
+                                document.getElementById('logout-form').submit();">
+                                Logout
+                            </a>
+                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                                @csrf
+                            </form>
+                            </span>
+                        </div>
                     </div>
+                    <img class="img-responsive rounded-circle img-sidebar"
+                        src="{{asset('images/user.jpg')}}"
+                        alt="User picture"
+                        width = "80"
+                        height = "80"
+                    >
+                   <label id="user" class="sidebar-username">{{ Auth::user()->username }}</label>
+                   <label class="sidebar-user-title">username</label>
                 </div>
 
                 <!-- sidebar-search  -->
                 <div class="sidebar-menu">
                     <ul>
                         <li class="header-menu">
-                            <span>General</span>
+                            <label></label>
                         </li>
                         <li class="sidebar li">
                             <a href="{{ url('observer') }}">
@@ -86,21 +103,7 @@
                 </div>
                 <!-- sidebar-menu  -->
             </div>
-            <!-- sidebar-content  -->
-            <div class="sidebar-footer">
-                <a href="{{ route('observerResetPasswordView') }}">
-                    <i class="fa fa-key"></i>&nbsp;&nbsp;Reset Password
-                </a>
-                <a href="{{ route('logout') }}" onclick="event.preventDefault();
-              document.getElementById('logout-form').submit();">
-                    <i class="fa fa-power-off"></i>&nbsp;&nbsp;Logout
-                </a>
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-                    @csrf
-                </form>
-            </div>
         </nav>
-
 
         <!-- sidebar-wrapper  -->
         <main class="page-content">

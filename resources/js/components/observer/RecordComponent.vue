@@ -1,16 +1,16 @@
 <template>
     <div>
         <!-- Header -->
-        <div class="row">
-            <div class="col-sm-12">
-                <h2 class="font-weight-bold">
+        <div class="row header-top">
+            <div class="header-title-parent">
+                <span class="header-title">
                     <i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Records
-                </h2>
+                </span>
             </div>
         </div>
-        <hr />
         <!-- End Header -->
 
+        <!-- Search Box -->
         <div class="row" style="margin-bottom: 10px">
             <div class="col-sm-6">
                 <el-input
@@ -21,6 +21,7 @@
                 />
             </div>
         </div>
+        <!-- Search End -->
 
         <!-- Card Begins Here -->
         <div class="card">
@@ -28,26 +29,26 @@
                 <!-- Table -->
                 <el-table :data="listData">
                     <el-table-column
-                        width="115"
-                        label="Philhealth"
+                        width="140"
+                        label="Philhealth No."
                         prop="philhealth_number"
                     >
                     </el-table-column>
                     <el-table-column
-                        width="177"
-                        label="Patient"
+                        width="180"
+                        label="Patient Name"
                         prop="first_name"
                     >
                     </el-table-column>
                     <el-table-column
-                        width="100"
-                        label="Admit"
+                        width="140"
+                        label="Admission Date"
                         prop="admission_date"
                     >
                     </el-table-column>
                     <el-table-column
-                        width="110"
-                        label="Discharge"
+                        width="140"
+                        label="Discharge Date"
                         prop="discharge_date"
                     >
                     </el-table-column>
@@ -58,29 +59,27 @@
                     >
                     </el-table-column>
                     <el-table-column
-                        width="130"
+                        width="140"
                         label="Record type"
                         prop="record_type"
                     >
                     </el-table-column>
                     <el-table-column
-                        width="115"
+                        width="140"
                         label="Total fee"
                         prop="total_fee"
                     >
                     </el-table-column>
                     <el-table-column
-                        width="115"
+                        width="100"
                         label="Hospital"
                         prop="hospital_id"
                     >
                     </el-table-column>
-                    <el-table-column
-                        width="80"
-                        align="right"
-                        fixed="right"
-                        label="Action"
-                    >
+                    <el-table-column width="100" align="right">
+                        <template slot="header">
+                            Action
+                        </template>
                         <template slot-scope="scope">
                             <el-tooltip
                                 class="item"
@@ -140,22 +139,22 @@
                 <el-table-column
                     property="first_name"
                     label="Firstname"
-                    width="200"
+                    width="180"
                 ></el-table-column>
                 <el-table-column
                     property="middle_name"
                     label="Middlename"
-                    width="200"
+                    width="180"
                 ></el-table-column>
                 <el-table-column
                     property="last_name"
                     label="Lastname"
-                    width="200"
+                    width="180"
                 ></el-table-column>
                 <el-table-column
                     property="hospital_code"
                     label="Hospital"
-                    width="200"
+                    width="180"
                 ></el-table-column>
             </el-table>
         </el-dialog>

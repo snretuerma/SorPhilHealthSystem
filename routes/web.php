@@ -145,9 +145,10 @@ Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
 
     //Users
     Route::get('/users', 'ObserverController@usersView')->name('observerUsersView');
+    Route::get('observerHospitalList', 'ObserverController@hospitalsList');
 
     //Reset Password
     Route::get('/reset-password', 'ObserverController@resetPasswordView')->name('observerResetPasswordView');
-    // Route::post('resetPassObserver', 'ObserverController@resetPass');
+    Route::post('resetPassObserver', 'ObserverController@resetPass');
 });
 Route::get('/home', 'HomeController@index')->name('home');

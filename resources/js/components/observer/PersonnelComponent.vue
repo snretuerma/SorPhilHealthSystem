@@ -1,15 +1,27 @@
 <template>
     <div>
         <!-- Header -->
-        <div class="row">
-            <div class="col-sm-12">
-                <h2 class="font-weight-bold">
+        <div class="row header-top">
+            <div class="header-title-parent">
+                <span class="header-title">
                     <i class="fa fa-user-md"></i>&nbsp;&nbsp;Staff List
-                </h2>
+                </span>
             </div>
         </div>
-        <hr />
         <!-- End Header -->
+
+        <!-- Search Box -->
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-sm-6">
+                <el-input
+                    prefix-icon="el-icon-search"
+                    v-model="search"
+                    size="medium"
+                    placeholder="Type to search"
+                />
+            </div>
+        </div>
+        <!-- Search End -->
 
         <!-- Card Begins Here -->
         <div class="card">
@@ -22,42 +34,38 @@
                         prop="name"
                     ></el-table-column>
                     <el-table-column
-                        width="120"
+                        width="160"
                         label="Employed As"
                         prop="is_private"
                     ></el-table-column>
                      <el-table-column
-                        width="150"
+                        width="160"
                         label="Employment Type"
                         prop="is_parttime"
                     ></el-table-column>
                     <el-table-column
-                        width="120"
+                        width="160"
                         label="Designation"
                         prop="designation"
                     ></el-table-column>
                     <el-table-column
-                        width="80"
+                        width="150"
                         label="Sex"
                         prop="sex"
                     ></el-table-column>
                     <el-table-column
-                        width="120"
+                        width="150"
                         label="Birthdate"
                         prop="birthdate"
                     ></el-table-column>
                     <el-table-column
-                        width="120"
+                        width="150"
                         label="Hospital"
                         prop="hospital_code"
                     ></el-table-column>
-                    <el-table-column width="180" align="right" fixed="right">
-                        <template slot="header" slot-scope="scope">
-                            <el-input
-                                v-model="search"
-                                size="mini"
-                                placeholder="Type to search"
-                            />
+                    <el-table-column width="100" align="right">
+                        <template slot="header">
+                            Action
                         </template>
                         <template slot-scope="scope">
                             <el-tooltip

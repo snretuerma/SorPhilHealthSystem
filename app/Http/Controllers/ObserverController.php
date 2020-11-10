@@ -2,11 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
 use DB;
 
 use App\Models\MedicalRecord;
+use App\Models\User;
+use App\Models\Hospital;
+
+use App\Http\Requests\resetPassRequest;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class ObserverController extends Controller
 {
@@ -103,10 +109,24 @@ class ObserverController extends Controller
         return view('roles.observer.users');
     }
 
+    public function hospitalsList()
+    {
+        return response()->json(
+            Hospital::select('*')->with('users')->get()
+        );
+    }
+
     //Reset Password
     public function resetPasswordView()
     {
         return view('roles.observer.resetpassword');
+    }
+
+    public function resetPass(resetPassRequest $request)
+    {
+        $new_pass = User::find(Auth::user()->id);
+        $new_pass->password = Hash::make($request->password);
+        $new_pass->save();
     }
 
 
