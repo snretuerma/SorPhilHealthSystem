@@ -171,6 +171,8 @@
                     <el-input
                         v-model="form.total"
                         autocomplete="off"
+                        @keypress="onlyForCurrency"
+                        :clearable = true
                     ></el-input>
                     <span class="font-italic text-danger" v-if="errors.total"
                         ><small>{{ errors.total[0] }}</small></span
@@ -550,7 +552,7 @@ export default {
     methods: {
         masknumber: function(num) {
             num = parseFloat(num)
-                .toFixed(2)
+                .toFixed(4)
                 .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
             return num;
         },
@@ -842,7 +844,19 @@ export default {
                         "FAILURE!! Something went wrong!"
                     );
                 });
+        },
+        onlyForCurrency ($event){
+            let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+            if ((keyCode < 48 || keyCode > 57) && (keyCode !== 46 || this.form.total.indexOf('.') != -1)) {
+                $event.preventDefault();
+            }
+            if(this.form.total!="" && this.form.total.indexOf(".")>-1 && (this.form.total.split('.')[1].length > 3)){
+                $event.preventDefault();
+            }
         }
+    },
+    created(){
+        window.addEventListener('keypress', this.onlyForCurrency);
     },
     mounted() {
         this.getBudget();
