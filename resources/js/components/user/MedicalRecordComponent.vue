@@ -705,7 +705,10 @@ export default {
                     errorCounter++;
                 }
             });
+             var _this = this;
             if (errorCounter == 0) {
+                
+                    if(this.attending.length >1 || this.others.length > 1) {
                 axios
                     .post("/user/contrirecord_add", data)
                     .then(response => {
@@ -719,7 +722,12 @@ export default {
                         }
                     })
                     .catch(error => {});
+                    }else{
+
+                    }
                 if (this.contributionRecords.type == true) {
+                    if(this.attending.length >1 || this.others.length > 1) {
+                        
                     this.file.item = this.contributionRecords;
                     this.file.total =
                         Number(this.contributionRecords.totalAttending) *
@@ -734,7 +742,7 @@ export default {
                     this.file.total /=
                         this.attending.length +
                         this.contributionRecords.totalAttending;
-                    var _this = this;
+                   
                     axios
                         .post(
                             "contribution_edit/" +
@@ -754,6 +762,13 @@ export default {
                             }
                         })
                         .catch(error => {});
+                    }else{
+                         _this.open_notif(
+                                    "info",
+                                    "Invalid",
+                                    "Unable to record please add physician"
+                                );
+                    }
                 }
             } else {
                 this.open_notif(
