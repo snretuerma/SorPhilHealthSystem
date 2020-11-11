@@ -858,7 +858,7 @@ export default {
         }
     },
     created(){
-        window.addEventListener('keypress', this.onlyForCurrency);
+        window.addEventListener('keypress', this.onlyForCurrency); 
     },
     mounted() {
         this.getBudget();
