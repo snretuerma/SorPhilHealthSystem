@@ -1,8 +1,8 @@
 <template>
     <div>
-        
+
         <!-- Header -->
-        <div class="row header-top"> 
+        <div class="row header-top">
             <div class="header-title-parent">
                 <span class="header-title">
                 <i class="fa fa-users"></i>&nbsp;&nbsp;Hospital List
