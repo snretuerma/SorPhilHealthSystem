@@ -171,16 +171,13 @@ export default {
             this.page = 1;
             return this.data.filter(
                 data =>
-                    data.first_name
+                    data.hospital_name
                         .toLowerCase()
                         .includes(this.search.toLowerCase()) ||
-                    data.last_name
+                    data.address
                         .toLowerCase()
                         .includes(this.search.toLowerCase()) ||
-                    data.philhealth_number
-                        .toLowerCase()
-                        .includes(this.search.toLowerCase()) ||
-                    data.hospital_code
+                    data.email_address
                         .toLowerCase()
                         .includes(this.search.toLowerCase())
             );
