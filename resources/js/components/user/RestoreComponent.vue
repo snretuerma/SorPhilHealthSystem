@@ -36,7 +36,7 @@
                         prop="discharge_date"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        min-width="150"
                         label="Diagnois"
                         prop="final_diagnosis"
                     ></el-table-column>

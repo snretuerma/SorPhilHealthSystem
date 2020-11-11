@@ -77,7 +77,7 @@
                         prop="birthdate"
                     ></el-table-column>
                     <el-table-column
-                        width="120"
+                        min-width="120"
                         label="Hospital"
                         prop="hospital_code"
                     ></el-table-column>

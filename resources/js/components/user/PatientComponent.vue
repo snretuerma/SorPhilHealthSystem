@@ -66,7 +66,7 @@
                         prop="birthdate"
                     ></el-table-column>
                     <el-table-column
-                        width="180"
+                        min-width="180"
                         label="Marital Status"
                         prop="marital_status"
                     ></el-table-column>

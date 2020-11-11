@@ -71,7 +71,7 @@
                         prop="sex"
                     ></el-table-column>
                     <el-table-column
-                        width="180"
+                        min-width="180"
                         label="Birthdate"
                         prop="birthdate"
                     ></el-table-column>

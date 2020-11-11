@@ -56,7 +56,7 @@
                     >
                     </el-table-column>
                     <el-table-column
-                        width="115"
+                        min-width="115"
                         label="Total fee"
                         prop="total_fee"
                     >

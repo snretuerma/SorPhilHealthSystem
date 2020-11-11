@@ -56,7 +56,7 @@
                         prop="total"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        min-width="150"
                         label="End date"
                         prop="end_date"
                     ></el-table-column>

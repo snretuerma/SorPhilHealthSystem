@@ -62,7 +62,7 @@
                         prop="end_date"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        min-width="150"
                         label="Hospital"
                         prop="hospital_code"
                     ></el-table-column>
