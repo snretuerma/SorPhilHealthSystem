@@ -55,6 +55,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -69,6 +70,7 @@
                                 effect="light"
                                 content="Restore"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"

@@ -89,6 +89,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -103,6 +104,7 @@
                                 effect="light"
                                 content="Edit"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -117,6 +119,7 @@
                                 effect="light"
                                 content="Delete"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"

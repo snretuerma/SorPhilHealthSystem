@@ -78,6 +78,7 @@
                                     content="Add Contribution"
                                     placement="top"
                                     v-if="scope.row.totalPersonnel == 0"
+                                    :enterable = false
                                 >
                                     <el-button
                                         size="mini"
@@ -99,6 +100,7 @@
                                     content="view"
                                     placement="top"
                                     v-if="scope.row.totalPersonnel > 0"
+                                    :enterable = false
                                 >
                                     <el-button
                                         size="mini"
@@ -116,6 +118,7 @@
                                     effect="light"
                                     content="delete"
                                     placement="top"
+                                    :enterable = false
                                 >
                                     <el-button
                                         size="mini"

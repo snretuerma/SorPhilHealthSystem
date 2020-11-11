@@ -266,6 +266,7 @@
 </template>
 
 <script>
+import { Tooltip } from 'chart.js';
 "use strict";
 export default {
     data() {
