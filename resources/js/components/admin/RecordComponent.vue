@@ -1,11 +1,16 @@
 <template>
     <div>
-        <div class="row">
-            <div class="col-sm-12">
-                <h2>Record List</h2>
+        
+        <!-- Header -->
+        <div class="row header-top"> 
+            <div class="header-title-parent">
+                <span class="header-title">
+                <i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Records
+                </span>
             </div>
         </div>
-        <hr />
+        <!-- End Header -->
+
         <div class="row">
             <div class="col-sm-10" align="left">
                 <div style="margin-bottom: 10px"></div>
