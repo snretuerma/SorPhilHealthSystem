@@ -595,7 +595,7 @@ body {
 }
 .sidebar-setting{
     position: absolute;float:left;top: 0;
-    left:17px;cursor: pointer; 
+    left:17px;cursor: pointer;
     border:1px solid rgba(0,0,0,0.0);
     padding-left:11px;
     padding-right:11px;
@@ -607,8 +607,8 @@ body {
 .sidebar-username{
     position:absolute;
     top: 73%;
-    left: auto; 
-    width:100%; 
+    left: auto;
+    width:100%;
     color:#fff;
     font-weight:bold;
     text-shadow: 0 1px 0 #444;
@@ -617,7 +617,7 @@ body {
 .sidebar-user-title{
     position:absolute;
     top: 81%;
-    left: auto; 
+    left: auto;
     width:100%;
     color:rgb(191, 190, 190);
     font-size:12px;
@@ -631,7 +631,7 @@ body {
     font-size:12px;
 }
 .image-box{
-    height:190px; 
+    height:190px;
     text-align:center;
     position:relative;
 }
@@ -696,3 +696,9 @@ body {
     margin-left:3px !important;
 }
 //end btn action
+.footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+ }

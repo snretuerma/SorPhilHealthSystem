@@ -125,7 +125,30 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');
-    Route::get('resetObserver', 'ObserverController@resetObserver')->name('resetObserver');
+
+    //Budget
+    Route::get('/budget', 'ObserverController@budgetView')->name('observerBudgetView');
+    Route::get('observerBudgetList', 'ObserverController@budgetList');
+
+    //Staffs
+    Route::get('/personnels', 'ObserverController@personnelsView')->name('observerPersonnelsView');
+    Route::get('observerPersonnelList', 'ObserverController@personnelsList');
+
+    //Patients
+    Route::get('/patients', 'ObserverController@patientsView')->name('observerPatientsView');
+    Route::get('observerPatientList', 'ObserverController@patientsList');
+
+    //Records
+    Route::get('/records', 'ObserverController@recordsView')->name('observerRecordsView');
+    Route::get('observerRecordList', 'ObserverController@recordsList');
+    Route::get('observerPersonnelList/{id}', 'ObserverController@personnelsListOnRecords');
+
+    //Users
+    Route::get('/users', 'ObserverController@usersView')->name('observerUsersView');
+    Route::get('observerHospitalList', 'ObserverController@hospitalsList');
+
+    //Reset Password
+    Route::get('/reset-password', 'ObserverController@resetPasswordView')->name('observerResetPasswordView');
     Route::post('resetPassObserver', 'ObserverController@resetPass');
 });
 Route::get('/home', 'HomeController@index')->name('home');

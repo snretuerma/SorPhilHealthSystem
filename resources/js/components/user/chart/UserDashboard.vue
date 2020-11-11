@@ -2,7 +2,7 @@
     <div>
 
         <!-- Header -->
-        <div class="row header-top"> 
+        <div class="row header-top">
             <div class="header-title-parent">
                 <span class="header-title">
                 <i class="fa fa-tachometer-alt"></i>&nbsp;&nbsp;Dashboard
@@ -168,7 +168,7 @@
                                     prop="record_type"
                                 ></el-table-column>
                                 <el-table-column
-                                    width="120"
+                                    width="170"
                                     label="Contribution"
                                     prop="contribution"
                                 ></el-table-column>
@@ -321,7 +321,7 @@ export default {
     created() {},
 
     beforeMount() {},
-    
+
     mounted() {
         var today = new Date();
         var month = today.getMonth() + 1;
