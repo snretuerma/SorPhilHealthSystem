@@ -706,7 +706,8 @@ export default {
                 }
             });
             if (errorCounter == 0) {
-                axios
+                if(data.personnel.length >0) {
+                    axios
                     .post("/user/contrirecord_add", data)
                     .then(response => {
                         if (response.data.status == 200) {
@@ -719,7 +720,8 @@ export default {
                         }
                     })
                     .catch(error => {});
-                if (this.contributionRecords.type == true) {
+                }
+                if (this.contributionRecords.type == true && data.personnel.length >0) {
                     this.file.item = this.contributionRecords;
                     this.file.total =
                         Number(this.contributionRecords.totalAttending) *
@@ -749,11 +751,17 @@ export default {
                                 _this.open_notif(
                                     "success",
                                     "Success",
-                                    "Contribution added successfully"
+                                    "Contribution 2 added successfully"
                                 );
                             }
                         })
                         .catch(error => {});
+                }else{
+                    this.open_notif(
+                    "info",
+                    "Message",
+                    "Please add Physician"
+                );
                 }
             } else {
                 this.open_notif(
