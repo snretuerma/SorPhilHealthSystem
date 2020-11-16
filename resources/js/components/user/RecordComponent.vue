@@ -646,11 +646,7 @@ export default {
                     });
                 })
                 .catch(action => {
-                    this.$message({
-                        type: "success",
-                        message: action === "cancel" ? "Canceled" : "No changes"
-                    });
-
+                    this.open_notif("info", "Cancelled", "No Changes");
                     if (mode == "update") {
                         var toReduc =
                             Number(_this.delete_contribution.deletedAmmount) /

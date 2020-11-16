@@ -31,10 +31,7 @@
                     "
                     >Add</el-button
                 >
-                <el-dropdown
-                    @command="formDialog"
-                    class="btn-action"
-                >
+                <el-dropdown @command="formDialog" class="btn-action">
                     <el-button size="medium"
                         >Excel<i class="el-icon-arrow-down el-icon--right"></i
                     ></el-button>
@@ -85,7 +82,7 @@
                         label="Marital Status"
                         prop="marital_status"
                     ></el-table-column>
-                    <el-table-column width="175" align="right" fixed="right">
+                    <el-table-column width="175" align="center" fixed="right">
                         <template slot="header">
                             Action
                         </template>
@@ -95,7 +92,7 @@
                                 effect="light"
                                 content="Add Medical Record"
                                 placement="top"
-                                :enterable = false
+                                :enterable="false"
                             >
                                 <el-button
                                     size="mini"
@@ -115,7 +112,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
-                                :enterable = false
+                                :enterable="false"
                             >
                                 <el-button
                                     size="mini"
@@ -130,7 +127,7 @@
                                 effect="light"
                                 content="Edit"
                                 placement="top"
-                                :enterable = false
+                                :enterable="false"
                             >
                                 <el-button
                                     size="mini"
@@ -145,7 +142,7 @@
                                 effect="light"
                                 content="Delete"
                                 placement="top"
-                                :enterable = false
+                                :enterable="false"
                             >
                                 <el-button
                                     size="mini"
