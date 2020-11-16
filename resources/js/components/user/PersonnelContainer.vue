@@ -9,17 +9,6 @@
        @add-close="closeFormTrigger"
       :personnel-contribution="this.contribution"
     ></personnel-contribution>
-    <!-- <record-container
-            v-if="trigger == false"
-            @add-trigger="addFormTrigger"
-        ></record-container>
-        <medic-container
-            v-if="trigger == true"
-            @add-close="closeFormTrigger"
-            :contribution-records="records"
-            :medical-record-id="records.id"
-            :total-fee="records.total_fee"
-        ></medic-container> -->
   </div>
 </template>
 

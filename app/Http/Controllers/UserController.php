@@ -372,7 +372,6 @@ class UserController extends Controller
 
     public function getPersonnel(Request $request)
     {
-
         $result = MedicalRecord::select(
             'ps.last_name as last_name',
             'ps.first_name as first_name',
@@ -395,10 +394,9 @@ class UserController extends Controller
         return response()->json($result);
     }
 
-    public function getPersonnelContribution(Request $req)
+    public function getPersonnelContribution(Request $request)
     {
         $result = MedicalRecord::select(
-
             'p.last_name as last_name',
             'p.first_name as first_name',
             'p.middle_name as middle_name',
@@ -416,7 +414,7 @@ class UserController extends Controller
              ->join('records_personnels as rp', 'medical_records.id', '=', 'rp.medical_record_id')
             ->join('personnels as ps', 'rp.personnel_id', '=', 'ps.id')
             ->join('contributions as c', 'rp.contribution_id', '=', 'c.id')
-            ->where('ps.id',$req->id)
+            ->where('ps.id',$request->id)
             ->where('c.deleted_at', null)
             ->getQuery()
             ->get();
