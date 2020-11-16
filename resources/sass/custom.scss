@@ -593,6 +593,9 @@ body {
     color:#fff;
     text-shadow: 0 1px 0 rgba(0,0,0,0.2);
 }
+.sidebar-colapse-btn:hover{
+    color: #d6d6d6 !important;
+}
 .sidebar-setting{
     position: absolute;float:left;top: 0;
     left:17px;cursor: pointer;
@@ -603,6 +606,16 @@ body {
     border-radius:2px;
     color:#fff;
     text-shadow: 0 1px 0 rgba(0,0,0,0.5);
+    .fas.fa-cog{
+        transition: transform 0.5s ease 0s;
+     }
+}
+.sidebar-setting:hover{
+    .fas.fa-cog{
+        color: #d6d6d6 !important;
+        transition: transform 0.5s ease 0s;
+        transform: rotate(80deg);
+    }
 }
 .sidebar-username{
     position:absolute;
@@ -696,9 +709,11 @@ body {
     margin-left:3px !important;
 }
 //end btn action
+//sticky footer
 .footer {
     position: fixed;
     bottom: 0;
     width: 100%;
     text-align: center;
  }
+ //end sticky footer

@@ -8,38 +8,53 @@
                     <i class="fa fa-coins"></i>&nbsp;&nbsp;Budget
                 </span>
             </div>
-            <el-dropdown
-                @command="formDialog"
-                class="btn-action"
-            >
-                <el-button size="medium"
-                    >Excel<i class="el-icon-arrow-down el-icon--right"></i
-                ></el-button>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item
-                        icon="el-icon-upload2"
-                        command="import_data"
-                        >Import Data</el-dropdown-item
-                    >
-                    <el-dropdown-item
-                        icon="el-icon-download"
-                        command="export_data"
-                        >Export Data</el-dropdown-item
-                    >
-                </el-dropdown-menu>
-            </el-dropdown>
-            <el-button
-                class="btn-action"
-                size="medium"
-                @click="
-                    dialogFormVisible = true;
-                    form.formmode = 'add';
-                    clearFields();
-                "
-                >Add</el-button
-            >
         </div>
         <!-- End Header -->
+
+        <!-- Search Box -->
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-5">
+                <el-input
+                    prefix-icon="el-icon-search"
+                    v-model="search"
+                    size="medium"
+                    placeholder="Type to search"
+                />
+            </div>
+            <div class="col-7">
+                <el-button
+                    class="btn-action"
+                    size="medium"
+                    @click="
+                        dialogFormVisible = true;
+                        form.formmode = 'add';
+                        clearFields();
+                    "
+                    >Add</el-button
+                >
+                <el-dropdown
+                    @command="formDialog"
+                    class="btn-action"
+                >
+                    <el-button size="medium"
+                        >Excel<i class="el-icon-arrow-down el-icon--right"></i
+                    ></el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                            icon="el-icon-upload2"
+                            command="import_data"
+                            >Import Data</el-dropdown-item
+                        >
+                        <el-dropdown-item
+                            icon="el-icon-download"
+                            command="export_data"
+                            >Export Data</el-dropdown-item
+                        >
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </div>
+        </div>
+        <!-- Search End -->
 
         <!-- Card Begins Here -->
         <div class="card">
@@ -62,17 +77,13 @@
                         prop="end_date"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        min-width="150"
                         label="Hospital"
                         prop="hospital_code"
                     ></el-table-column>
-                    <el-table-column width="250" align="right" fixed="right">
-                        <template slot="header" slot-scope="scope">
-                            <el-input
-                                v-model="search"
-                                size="mini"
-                                placeholder="Type to search"
-                            />
+                    <el-table-column width="100" align="center" fixed="right">
+                        <template slot="header">
+                            Action
                         </template>
                         <template slot-scope="scope">
                             <el-tooltip
@@ -80,6 +91,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -94,6 +106,7 @@
                                 effect="light"
                                 content="Edit"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -171,6 +184,8 @@
                     <el-input
                         v-model="form.total"
                         autocomplete="off"
+                        @keypress="onlyForCurrency"
+                        :clearable = true
                     ></el-input>
                     <span class="font-italic text-danger" v-if="errors.total"
                         ><small>{{ errors.total[0] }}</small></span
@@ -550,7 +565,7 @@ export default {
     methods: {
         masknumber: function(num) {
             num = parseFloat(num)
-                .toFixed(2)
+                .toFixed(4)
                 .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
             return num;
         },
@@ -842,7 +857,19 @@ export default {
                         "FAILURE!! Something went wrong!"
                     );
                 });
+        },
+        onlyForCurrency ($event){
+            let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+            if ((keyCode < 48 || keyCode > 57) && (keyCode !== 46 || this.form.total.indexOf('.') != -1)) {
+                $event.preventDefault();
+            }
+            if(this.form.total!="" && this.form.total.indexOf(".")>-1 && (this.form.total.split('.')[1].length > 3)){
+                $event.preventDefault();
+            }
         }
+    },
+    created(){
+        window.addEventListener('keypress', this.onlyForCurrency); 
     },
     mounted() {
         this.getBudget();

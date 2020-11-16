@@ -11,6 +11,19 @@
         </div>
         <!-- End Header -->
 
+        <!-- Search Box -->
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-sm-6">
+                <el-input
+                    prefix-icon="el-icon-search"
+                    v-model="search"
+                    size="medium"
+                    placeholder="Type to search"
+                />
+            </div>
+        </div>
+        <!-- Search End -->
+
         <div class="row">
             <div class="col-sm-10" align="left">
                 <div style="margin-bottom: 10px"></div>
@@ -56,18 +69,14 @@
                     >
                     </el-table-column>
                     <el-table-column
-                        width="115"
+                        min-width="115"
                         label="Total fee"
                         prop="total_fee"
                     >
                     </el-table-column>
-                    <el-table-column width="130" align="right" fixed="right">
-                        <template slot="header" slot-scope="scope">
-                            <el-input
-                                v-model="search"
-                                size="mini"
-                                placeholder="Type to search"
-                            />
+                    <el-table-column width="100" align="center" fixed="right">
+                        <template slot="header">
+                            Action
                         </template>
                         <template slot-scope="scope">
                             <el-tooltip
@@ -75,6 +84,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -90,6 +100,7 @@
                                 effect="light"
                                 content="Delete"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"

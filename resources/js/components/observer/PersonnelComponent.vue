@@ -63,7 +63,7 @@
                         label="Hospital"
                         prop="hospital_code"
                     ></el-table-column>
-                    <el-table-column width="60" align="right" fixed="right">
+                    <el-table-column width="60" align="center" fixed="right">
                         <template slot="header">
                             Action
                         </template>

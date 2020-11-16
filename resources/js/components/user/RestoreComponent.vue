@@ -36,7 +36,7 @@
                         prop="discharge_date"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        min-width="150"
                         label="Diagnois"
                         prop="final_diagnosis"
                     ></el-table-column>
@@ -55,6 +55,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -69,6 +70,7 @@
                                 effect="light"
                                 content="Restore"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -271,10 +273,7 @@ export default {
                     });
                 })
                 .catch(action => {
-                    this.$message({
-                        type: "success",
-                        message: action === "cancel" ? "Canceled" : "No changes"
-                    });
+                    this.open_notif("info", "Cancelled", "No Changes");
                 });
         },
         getRestore: function() {

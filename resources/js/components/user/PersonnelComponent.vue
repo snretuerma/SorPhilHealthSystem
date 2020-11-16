@@ -7,38 +7,53 @@
                     <i class="fa fa-user-md"></i>&nbsp;&nbsp;Staff List
                 </span>
             </div>
-            <el-dropdown
-                @command="formDialog"
-                class="btn-action"
-            >
-                <el-button size="medium"
-                    >Excel<i class="el-icon-arrow-down el-icon--right"></i
-                ></el-button>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item
-                        icon="el-icon-upload2"
-                        command="import_data"
-                        >Import Data</el-dropdown-item
-                    >
-                    <el-dropdown-item
-                        icon="el-icon-download"
-                        command="export_data"
-                        >Export Data</el-dropdown-item
-                    >
-                </el-dropdown-menu>
-            </el-dropdown>
-            <el-button
-                class="btn-action"
-                size="medium"
-                @click="
-                    dialogFormVisible = true;
-                    form.formmode = 'add';
-                    clearFields();
-                "
-                >Add</el-button
-            >
         </div>
         <!-- End Header -->
+
+        <!-- Search Box -->
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-5">
+                <el-input
+                    prefix-icon="el-icon-search"
+                    v-model="search"
+                    size="medium"
+                    placeholder="Type to search"
+                />
+            </div>
+            <div class="col-7">
+                <el-button
+                    class="btn-action"
+                    size="medium"
+                    @click="
+                        dialogFormVisible = true;
+                        form.formmode = 'add';
+                        clearFields();
+                    "
+                    >Add</el-button
+                >
+                <el-dropdown
+                    @command="formDialog"
+                    class="btn-action"
+                >
+                    <el-button size="medium"
+                        >Excel<i class="el-icon-arrow-down el-icon--right"></i
+                    ></el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                            icon="el-icon-upload2"
+                            command="import_data"
+                            >Import Data</el-dropdown-item
+                        >
+                        <el-dropdown-item
+                            icon="el-icon-download"
+                            command="export_data"
+                            >Export Data</el-dropdown-item
+                        >
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </div>
+        </div>
+        <!-- Search End -->
 
         <!-- Card Begins Here -->
         <div class="card">
@@ -71,17 +86,13 @@
                         prop="sex"
                     ></el-table-column>
                     <el-table-column
-                        width="180"
+                        min-width="180"
                         label="Birthdate"
                         prop="birthdate"
                     ></el-table-column>
-                    <el-table-column width="280" align="right" fixed="right">
-                        <template slot="header" slot-scope="scope">
-                            <el-input
-                                v-model="search"
-                                size="mini"
-                                placeholder="Type to search"
-                            />
+                    <el-table-column width="135" align="center" fixed="right">
+                        <template slot="header">
+                            Action
                         </template>
                         <template slot-scope="scope">
                             <el-tooltip
@@ -89,6 +100,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -103,6 +115,7 @@
                                 effect="light"
                                 content="Edit"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -117,6 +130,7 @@
                                 effect="light"
                                 content="Delete"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -456,6 +470,7 @@
                         v-model="form.birthdate"
                         style="width: 100%"
                         value-format="yyyy-MM-dd"
+                        @input="validateBd"
                     ></el-date-picker>
                     <span
                         class="font-italic text-danger"
@@ -1200,6 +1215,21 @@ export default {
                         "FAILURE!! Something went wrong!" + res
                     );
                 });
+        },
+        validateBd($event)
+        {
+            var date = new Date();
+            var year = date.getFullYear();
+            var mon = date.getMonth() + 1;
+            var day = date.getDate();
+            if(mon < 10){ mon = "0" + mon; }
+            if(day < 10){ day = "0" + day; }
+            var selected = $event;
+            var compare = selected.split('-');
+            if(year + "" + mon + "" + day < compare[0] + compare[1] + compare[2]){
+                this.form.birthdate =  "";
+                this.open_notif("info", "Invalid", "The Date of Birth should not be greater than today");
+            }
         }
     },
     mounted() {

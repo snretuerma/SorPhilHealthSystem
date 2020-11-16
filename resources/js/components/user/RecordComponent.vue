@@ -10,6 +10,19 @@
             </div>
         </div>
         <!-- End Header -->
+
+        <!-- Search Box -->
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-sm-6">
+                <el-input
+                    prefix-icon="el-icon-search"
+                    v-model="search"
+                    size="medium"
+                    placeholder="Type to search"
+                />
+            </div>
+        </div>
+        <!-- Search End -->
         
         <div class="row"></div>
         <div class="card">
@@ -54,22 +67,18 @@
                         >
                         </el-table-column>
                         <el-table-column
-                            width="115"
+                            min-width="115"
                             label="Total fee"
                             prop="total_fee"
                         >
                         </el-table-column>
                         <el-table-column
-                            width="130"
-                            align="right"
+                            width="100"
+                            align="center"
                             fixed="right"
                         >
-                            <template slot="header" slot-scope="scope">
-                                <el-input
-                                    v-model="search"
-                                    size="mini"
-                                    placeholder="Type to search"
-                                />
+                            <template slot="header">
+                                Action
                             </template>
                             <template slot-scope="scope">
                                 <el-tooltip
@@ -78,6 +87,7 @@
                                     content="Add Contribution"
                                     placement="top"
                                     v-if="scope.row.totalPersonnel == 0"
+                                    :enterable = false
                                 >
                                     <el-button
                                         size="mini"
@@ -99,6 +109,7 @@
                                     content="view"
                                     placement="top"
                                     v-if="scope.row.totalPersonnel > 0"
+                                    :enterable = false
                                 >
                                     <el-button
                                         size="mini"
@@ -116,6 +127,7 @@
                                     effect="light"
                                     content="delete"
                                     placement="top"
+                                    :enterable = false
                                 >
                                     <el-button
                                         size="mini"
@@ -634,11 +646,7 @@ export default {
                     });
                 })
                 .catch(action => {
-                    this.$message({
-                        type: "success",
-                        message: action === "cancel" ? "Canceled" : "No changes"
-                    });
-
+                    this.open_notif("info", "Cancelled", "No Changes");
                     if (mode == "update") {
                         var toReduc =
                             Number(_this.delete_contribution.deletedAmmount) /
