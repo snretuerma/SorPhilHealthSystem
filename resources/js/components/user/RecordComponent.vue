@@ -10,6 +10,19 @@
             </div>
         </div>
         <!-- End Header -->
+
+        <!-- Search Box -->
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-sm-6">
+                <el-input
+                    prefix-icon="el-icon-search"
+                    v-model="search"
+                    size="medium"
+                    placeholder="Type to search"
+                />
+            </div>
+        </div>
+        <!-- Search End -->
         
         <div class="row"></div>
         <div class="card">
@@ -60,16 +73,12 @@
                         >
                         </el-table-column>
                         <el-table-column
-                            width="130"
-                            align="right"
+                            width="100"
+                            align="center"
                             fixed="right"
                         >
-                            <template slot="header" slot-scope="scope">
-                                <el-input
-                                    v-model="search"
-                                    size="mini"
-                                    placeholder="Type to search"
-                                />
+                            <template slot="header">
+                                Action
                             </template>
                             <template slot-scope="scope">
                                 <el-tooltip

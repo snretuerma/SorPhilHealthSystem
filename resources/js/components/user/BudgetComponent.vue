@@ -7,38 +7,53 @@
                     <i class="fa fa-coins"></i>&nbsp;&nbsp;Budget
                 </span>
             </div>
-            <el-dropdown
-                @command="formDialog"
-                class="btn-action"
-            >
-                <el-button size="medium"
-                    >Excel<i class="el-icon-arrow-down el-icon--right"></i
-                ></el-button>
-                <el-dropdown-menu slot="dropdown">
-                    <el-dropdown-item
-                        icon="el-icon-upload2"
-                        command="import_data"
-                        >Import Data</el-dropdown-item
-                    >
-                    <el-dropdown-item
-                        icon="el-icon-download"
-                        command="export_data"
-                        >Export Data</el-dropdown-item
-                    >
-                </el-dropdown-menu>
-            </el-dropdown>
-            <el-button
-                class="btn-action"
-                size="medium"
-                @click="
-                    dialogFormVisible = true;
-                    form.formmode = 'add';
-                    clearFields();
-                "
-                >Add</el-button
-            >
         </div>
         <!-- End Header -->
+
+        <!-- Search Box -->
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-5">
+                <el-input
+                    prefix-icon="el-icon-search"
+                    v-model="search"
+                    size="medium"
+                    placeholder="Type to search"
+                />
+            </div>
+            <div class="col-7">
+                <el-button
+                    class="btn-action"
+                    size="medium"
+                    @click="
+                        dialogFormVisible = true;
+                        form.formmode = 'add';
+                        clearFields();
+                    "
+                    >Add</el-button
+                >
+                <el-dropdown
+                    @command="formDialog"
+                    class="btn-action"
+                >
+                    <el-button size="medium"
+                        >Excel<i class="el-icon-arrow-down el-icon--right"></i
+                    ></el-button>
+                    <el-dropdown-menu slot="dropdown">
+                        <el-dropdown-item
+                            icon="el-icon-upload2"
+                            command="import_data"
+                            >Import Data</el-dropdown-item
+                        >
+                        <el-dropdown-item
+                            icon="el-icon-download"
+                            command="export_data"
+                            >Export Data</el-dropdown-item
+                        >
+                    </el-dropdown-menu>
+                </el-dropdown>
+            </div>
+        </div>
+        <!-- Search End -->
 
         <!-- Card Begins Here -->
         <div class="card">
@@ -60,13 +75,9 @@
                         label="End date"
                         prop="end_date"
                     ></el-table-column>
-                    <el-table-column width="250" align="right" fixed="right">
-                        <template slot="header" slot-scope="scope">
-                            <el-input
-                                v-model="search"
-                                size="mini"
-                                placeholder="Type to search"
-                            />
+                    <el-table-column width="135" align="center" fixed="right">
+                        <template slot="header">
+                            Action
                         </template>
                         <template slot-scope="scope">
                             <el-tooltip
