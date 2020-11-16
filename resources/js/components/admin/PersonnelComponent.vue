@@ -298,6 +298,7 @@
                         v-model="form.birthdate"
                         style="width: 100%"
                         value-format="yyyy-MM-dd"
+                        @input="validateBd"
                     ></el-date-picker>
                     <span
                         class="font-italic text-danger"
@@ -1245,6 +1246,21 @@ export default {
                         "FAILURE!! Something went wrong!" + res
                     );
                 });
+        },
+        validateBd($event)
+        {
+            var date = new Date();
+            var year = date.getFullYear();
+            var mon = date.getMonth() + 1;
+            var day = date.getDate();
+            if(mon < 10){ mon = "0" + mon; }
+            if(day < 10){ day = "0" + day; }
+            var selected = $event;
+            var compare = selected.split('-');
+            if(year + "" + mon + "" + day < compare[0] + compare[1] + compare[2]){
+                this.form.birthdate =  "";
+                this.open_notif("info", "Invalid", "The Date of Birth should not be greater than today");
+            }
         }
     },
     mounted() {
