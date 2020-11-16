@@ -390,20 +390,30 @@
                     :label-width="formLabelWidth"
                     prop="final_diagnosis"
                 >
-                    <el-input
+                    <el-autocomplete
+                        class="inline-input"
                         v-model="formMedical.final_diagnosis"
-                        autocomplete="off"
-                    ></el-input>
+                        :fetch-suggestions="
+                            querySearchAttending
+                        "
+                        placeholder="Please Input"
+                        :trigger-on-focus="false"
+                        @select="handleSelectAttending"
+                    ></el-autocomplete>
                 </el-form-item>
                 <el-form-item
                     label="Record Type"
                     :label-width="formLabelWidth"
                     prop="record_type"
                 >
-                    <el-input
+                    <!--<el-input
                         v-model="formMedical.record_type"
                         autocomplete="off"
-                    ></el-input>
+                    ></el-input>-->
+                    <el-select v-model="formMedical.record_type" placeholder="Please select">
+                        <el-option label="Credited" value="Credited"></el-option>
+                        <el-option label="IRM Deduction" value="IRM Deduction"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item
                     label="Total Fee"
@@ -910,6 +920,7 @@ export default {
                 .then(response => {
                     response.data.forEach(element => {
                         this.buildPatientData(element);
+                        element.value = element.last_name;
                     });
                     this.data = response.data;
                     this.loading = false;
@@ -1299,7 +1310,25 @@ export default {
                 this.form.birthdate =  "";
                 this.open_notif("info", "Invalid", "The Date of Birth should not be greater than today");
             }
-        }
+        },
+        querySearchAttending(queryString, cb) {
+            var links = this.data;
+            var results = queryString
+                ? links.filter(this.createFilter(queryString))
+                : links;
+            cb(results);
+        },
+        createFilter(queryString) {
+            return link => {
+                return (
+                    link.value
+                        .toLowerCase()
+                        .indexOf(queryString.toLowerCase()) === 0
+                );
+            };
+        },
+        handleSelectAttending(item)
+        {console.log("dd:"+item);}
     },
     mounted() {
         this.getPatients();
