@@ -372,7 +372,6 @@ class UserController extends Controller
 
     public function getPersonnel(Request $request)
     {
-
         $result = MedicalRecord::select(
             'ps.last_name as last_name',
             'ps.first_name as first_name',
@@ -389,6 +388,33 @@ class UserController extends Controller
             ->join('personnels as ps', 'rp.personnel_id', '=', 'ps.id')
             ->join('contributions as c', 'rp.contribution_id', '=', 'c.id')
             ->where('medical_records.id', $request->id)
+            ->where('c.deleted_at', null)
+            ->getQuery()
+            ->get();
+        return response()->json($result);
+    }
+
+    public function getPersonnelContribution(Request $request)
+    {
+        $result = MedicalRecord::select(
+            'p.last_name as last_name',
+            'p.first_name as first_name',
+            'p.middle_name as middle_name',
+            'p.name_suffix',
+            'c.credit  as total_fee',
+            'c.id as cid',
+            'ps.id as pid',
+            'medical_records.id as mid',
+            'c.contribution',
+            'c.deleted_at',
+            'medical_records.admission_date as admission_date',
+            'medical_records.discharge_date as discharge_date',
+        )
+            ->join('patients as p','medical_records.patient_id','=','p.id')
+             ->join('records_personnels as rp', 'medical_records.id', '=', 'rp.medical_record_id')
+            ->join('personnels as ps', 'rp.personnel_id', '=', 'ps.id')
+            ->join('contributions as c', 'rp.contribution_id', '=', 'c.id')
+            ->where('ps.id',$request->id)
             ->where('c.deleted_at', null)
             ->getQuery()
             ->get();
