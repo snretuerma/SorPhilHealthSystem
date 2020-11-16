@@ -39,11 +39,11 @@
                         prop="address"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        min-width="150"
                         label="Email Address"
                         prop="email_address"
                     ></el-table-column>
-                    <el-table-column width="230" align="right">
+                    <el-table-column width="60" align="right" fixed="right">
                         <template slot="header">
                             Action
                         </template>
@@ -53,6 +53,7 @@
                                 effect="light"
                                 content="View Users"
                                 placement="top"
+                                :enterable=false
                             >
                                 <el-button
                                     size="mini"

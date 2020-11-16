@@ -54,11 +54,11 @@
                         prop="marital_status"
                     ></el-table-column>
                     <el-table-column
-                        width="160"
+                        min-width="160"
                         label="Hospital"
                         prop="hospital_code"
                     ></el-table-column>
-                    <el-table-column width="100" align="right">
+                    <el-table-column width="60" align="right" fixed="right">
                         <template slot="header">
                             Action
                         </template>
@@ -68,6 +68,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable=false
                             >
                                 <el-button
                                     size="mini"

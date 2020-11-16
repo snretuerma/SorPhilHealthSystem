@@ -73,6 +73,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable=false
                             >
                                 <el-button
                                     size="mini"
