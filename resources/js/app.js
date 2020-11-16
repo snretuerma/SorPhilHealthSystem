@@ -47,7 +47,7 @@ Vue.component('patient-component', require('./components/user/PatientComponent.v
 Vue.component('budget-component', require('./components/user/BudgetComponent.vue').default);
 Vue.component('record-component', require('./components/user/RecordContainer.vue').default);
 Vue.component('restore-component', require('./components/user/RestoreComponent.vue').default);
-Vue.component('personnel-component', require('./components/user/PersonnelComponent.vue').default);
+Vue.component('personnel-component', require('./components/user/PersonnelContainer.vue').default);
 Vue.component('resetpass-component', require('./components/user/ResetPasswordComponent.vue').default);
 
 //Observer
