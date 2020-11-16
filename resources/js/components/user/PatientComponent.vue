@@ -355,7 +355,7 @@
         <el-dialog
             title="Add Medical Record"
             :visible.sync="dialogFormMedicalVisible"
-            top="0vh"
+            top="5vh"
         >
             <el-form :model="formMedical" :rules="rules" ref="form">
                 <el-form-item
