@@ -39,11 +39,11 @@
                         prop="address"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        min-width="150"
                         label="Email Address"
                         prop="email_address"
                     ></el-table-column>
-                    <el-table-column width="230" align="right">
+                    <el-table-column width="60" align="center" fixed="right">
                         <template slot="header">
                             Action
                         </template>
@@ -53,6 +53,7 @@
                                 effect="light"
                                 content="View Users"
                                 placement="top"
+                                :enterable=false
                             >
                                 <el-button
                                     size="mini"
@@ -171,16 +172,13 @@ export default {
             this.page = 1;
             return this.data.filter(
                 data =>
-                    data.first_name
+                    data.hospital_name
                         .toLowerCase()
                         .includes(this.search.toLowerCase()) ||
-                    data.last_name
+                    data.address
                         .toLowerCase()
                         .includes(this.search.toLowerCase()) ||
-                    data.philhealth_number
-                        .toLowerCase()
-                        .includes(this.search.toLowerCase()) ||
-                    data.hospital_code
+                    data.email_address
                         .toLowerCase()
                         .includes(this.search.toLowerCase())
             );

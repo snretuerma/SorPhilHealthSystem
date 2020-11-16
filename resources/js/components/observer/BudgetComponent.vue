@@ -44,11 +44,11 @@
                         prop="end_date"
                     ></el-table-column>
                     <el-table-column
-                        width="250"
+                        min-width="400"
                         label="Hospital"
                         prop="hospital_code"
                     ></el-table-column>
-                    <el-table-column width="250" align="right">
+                    <el-table-column width="60" align="center" fixed="right">
                         <template slot="header">
                             Action
                         </template>
@@ -58,6 +58,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable=false
                             >
                                 <el-button
                                     size="mini"
