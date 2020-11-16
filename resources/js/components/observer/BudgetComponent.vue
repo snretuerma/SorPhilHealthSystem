@@ -44,11 +44,11 @@
                         prop="end_date"
                     ></el-table-column>
                     <el-table-column
-                        width="250"
+                        min-width="250"
                         label="Hospital"
                         prop="hospital_code"
                     ></el-table-column>
-                    <el-table-column width="250" align="right">
+                    <el-table-column width="60" align="right" fixed="right">
                         <template slot="header">
                             Action
                         </template>
@@ -58,6 +58,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable=false
                             >
                                 <el-button
                                     size="mini"
@@ -105,22 +106,22 @@
                 <el-table-column
                     property="start_date"
                     label="Start Date"
-                    width="100"
+                    width="180"
                 ></el-table-column>
                 <el-table-column
                     property="total"
                     label="Amount"
-                    width="200"
+                    width="180"
                 ></el-table-column>
                 <el-table-column
                     property="end_date"
                     label="End Date"
-                    width="150"
+                    width="180"
                 ></el-table-column>
                 <el-table-column
                     property="hospital_code"
                     label="Hospital"
-                    width="150"
+                    width="180"
                 ></el-table-column>
             </el-table>
         </el-dialog>

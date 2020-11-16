@@ -71,12 +71,12 @@
                     >
                     </el-table-column>
                     <el-table-column
-                        width="100"
+                        min-width="100"
                         label="Hospital"
                         prop="hospital_id"
                     >
                     </el-table-column>
-                    <el-table-column width="100" align="right">
+                    <el-table-column width="60" align="right" fixed="right">
                         <template slot="header">
                             Action
                         </template>
@@ -86,6 +86,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable=false
                             >
                                 <el-button
                                     size="mini"
