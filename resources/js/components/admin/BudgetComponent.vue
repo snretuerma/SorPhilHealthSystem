@@ -1,21 +1,42 @@
 <template>
     <div>
+
         <!-- Header -->
-        <div class="row">
-            <div class="col-sm-12">
-                <h2 class="font-weight-bold">
+        <div class="row header-top">
+            <div class="header-title-parent">
+                <span class="header-title">
                     <i class="fa fa-coins"></i>&nbsp;&nbsp;Budget
-                </h2>
+                </span>
             </div>
         </div>
-        <hr />
         <!-- End Header -->
 
-        <div class="row">
-            <!-- Add Button -->
-            <div class="col-sm-12" align="right" style="margin-bottom: 10px">
-                <el-dropdown @command="formDialog">
-                    <el-button type="primary"
+        <!-- Search Box -->
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-5">
+                <el-input
+                    prefix-icon="el-icon-search"
+                    v-model="search"
+                    size="medium"
+                    placeholder="Type to search"
+                />
+            </div>
+            <div class="col-7">
+                <el-button
+                    class="btn-action"
+                    size="medium"
+                    @click="
+                        dialogFormVisible = true;
+                        form.formmode = 'add';
+                        clearFields();
+                    "
+                    >Add</el-button
+                >
+                <el-dropdown
+                    @command="formDialog"
+                    class="btn-action"
+                >
+                    <el-button size="medium"
                         >Excel<i class="el-icon-arrow-down el-icon--right"></i
                     ></el-button>
                     <el-dropdown-menu slot="dropdown">
@@ -31,18 +52,9 @@
                         >
                     </el-dropdown-menu>
                 </el-dropdown>
-                <el-button
-                    type="primary"
-                    @click="
-                        dialogFormVisible = true;
-                        form.formmode = 'add';
-                        clearFields();
-                    "
-                    >Add</el-button
-                >
             </div>
-            <!-- End Button -->
         </div>
+        <!-- Search End -->
 
         <!-- Card Begins Here -->
         <div class="card">
@@ -65,17 +77,13 @@
                         prop="end_date"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        min-width="150"
                         label="Hospital"
                         prop="hospital_code"
                     ></el-table-column>
-                    <el-table-column width="250" align="right" fixed="right">
-                        <template slot="header" slot-scope="scope">
-                            <el-input
-                                v-model="search"
-                                size="mini"
-                                placeholder="Type to search"
-                            />
+                    <el-table-column width="100" align="center" fixed="right">
+                        <template slot="header">
+                            Action
                         </template>
                         <template slot-scope="scope">
                             <el-tooltip
@@ -83,6 +91,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -97,6 +106,7 @@
                                 effect="light"
                                 content="Edit"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -174,6 +184,8 @@
                     <el-input
                         v-model="form.total"
                         autocomplete="off"
+                        @keypress="onlyForCurrency"
+                        :clearable = true
                     ></el-input>
                     <span class="font-italic text-danger" v-if="errors.total"
                         ><small>{{ errors.total[0] }}</small></span
@@ -553,7 +565,7 @@ export default {
     methods: {
         masknumber: function(num) {
             num = parseFloat(num)
-                .toFixed(2)
+                .toFixed(4)
                 .replace(/(\d)(?=(\d{3})+\.)/g, "$1,");
             return num;
         },
@@ -845,7 +857,19 @@ export default {
                         "FAILURE!! Something went wrong!"
                     );
                 });
+        },
+        onlyForCurrency ($event){
+            let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+            if ((keyCode < 48 || keyCode > 57) && (keyCode !== 46 || this.form.total.indexOf('.') != -1)) {
+                $event.preventDefault();
+            }
+            if(this.form.total!="" && this.form.total.indexOf(".")>-1 && (this.form.total.split('.')[1].length > 3)){
+                $event.preventDefault();
+            }
         }
+    },
+    created(){
+        window.addEventListener('keypress', this.onlyForCurrency); 
     },
     mounted() {
         this.getBudget();

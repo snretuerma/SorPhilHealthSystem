@@ -1,13 +1,29 @@
 <template>
     <div>
-        <div class="row">
-            <div class="col-sm-12">
-                <h2 class="font-weight-bold">
-                    <i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Records
-                </h2>
+
+        <!-- Header -->
+        <div class="row header-top"> 
+            <div class="header-title-parent">
+                <span class="header-title">
+                <i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Records
+                </span>
             </div>
         </div>
-        <hr />
+        <!-- End Header -->
+
+        <!-- Search Box -->
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-sm-6">
+                <el-input
+                    prefix-icon="el-icon-search"
+                    v-model="search"
+                    size="medium"
+                    placeholder="Type to search"
+                />
+            </div>
+        </div>
+        <!-- Search End -->
+        
         <div class="row"></div>
         <div class="card">
             <div class="card-body">
@@ -51,22 +67,18 @@
                         >
                         </el-table-column>
                         <el-table-column
-                            width="115"
+                            min-width="115"
                             label="Total fee"
                             prop="total_fee"
                         >
                         </el-table-column>
                         <el-table-column
-                            width="130"
-                            align="right"
+                            width="100"
+                            align="center"
                             fixed="right"
                         >
-                            <template slot="header" slot-scope="scope">
-                                <el-input
-                                    v-model="search"
-                                    size="mini"
-                                    placeholder="Type to search"
-                                />
+                            <template slot="header">
+                                Action
                             </template>
                             <template slot-scope="scope">
                                 <el-tooltip
@@ -75,6 +87,7 @@
                                     content="Add Contribution"
                                     placement="top"
                                     v-if="scope.row.totalPersonnel == 0"
+                                    :enterable = false
                                 >
                                     <el-button
                                         size="mini"
@@ -96,6 +109,7 @@
                                     content="view"
                                     placement="top"
                                     v-if="scope.row.totalPersonnel > 0"
+                                    :enterable = false
                                 >
                                     <el-button
                                         size="mini"
@@ -113,6 +127,7 @@
                                     effect="light"
                                     content="delete"
                                     placement="top"
+                                    :enterable = false
                                 >
                                     <el-button
                                         size="mini"
@@ -631,11 +646,7 @@ export default {
                     });
                 })
                 .catch(action => {
-                    this.$message({
-                        type: "success",
-                        message: action === "cancel" ? "Canceled" : "No changes"
-                    });
-
+                    this.open_notif("info", "Cancelled", "No Changes");
                     if (mode == "update") {
                         var toReduc =
                             Number(_this.delete_contribution.deletedAmmount) /
