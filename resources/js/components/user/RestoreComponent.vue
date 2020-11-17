@@ -1,8 +1,8 @@
 <template>
     <div>
-       
+
        <!-- Header -->
-        <div class="row header-top"> 
+        <div class="row header-top">
             <div class="header-title-parent" style="padding-top:2px !important;padding-bottom:2px !important;">
                 <span class="header-title">
                 <i class="fa fa-history"></i>&nbsp;&nbsp;Restore List
@@ -10,6 +10,19 @@
             </div>
         </div>
         <!-- End Header -->
+
+        <!-- Search Box -->
+        <div class="row" style="margin-bottom: 10px">
+            <div class="col-5">
+                <el-input
+                    prefix-icon="el-icon-search"
+                    v-model="search"
+                    size="medium"
+                    placeholder="Type to search"
+                />
+            </div>
+        </div>
+        <!-- Card ends here -->
 
 
         <div class="card">
@@ -36,18 +49,13 @@
                         prop="discharge_date"
                     ></el-table-column>
                     <el-table-column
-                        min-width="150"
+                        min-width="180"
                         label="Diagnois"
                         prop="final_diagnosis"
                     ></el-table-column>
-
-                    <el-table-column width="280" align="right" fixed="right">
-                        <template slot="header" slot-scope="scope">
-                            <el-input
-                                v-model="search"
-                                size="mini"
-                                placeholder="Type to search"
-                            />
+                    <el-table-column width="135" align="center" fixed="right">
+                        <template slot="header">
+                            Action
                         </template>
                         <template slot-scope="scope">
                             <el-tooltip
@@ -183,10 +191,13 @@ export default {
             this.page = 1;
             return this.data.filter(
                 data =>
-                    data.first_name
+                    data.pfname
                         .toLowerCase()
                         .includes(this.search.toLowerCase()) ||
-                    data.last_name
+                    data.final_diagnosis
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase()) ||
+                    data.philhealth
                         .toLowerCase()
                         .includes(this.search.toLowerCase())
             );

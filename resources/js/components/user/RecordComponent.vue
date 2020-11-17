@@ -2,7 +2,7 @@
     <div>
 
         <!-- Header -->
-        <div class="row header-top"> 
+        <div class="row header-top">
             <div class="header-title-parent">
                 <span class="header-title">
                 <i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Records
@@ -23,7 +23,7 @@
             </div>
         </div>
         <!-- Search End -->
-        
+
         <div class="row"></div>
         <div class="card">
             <div class="card-body">
@@ -55,7 +55,7 @@
                         >
                         </el-table-column>
                         <el-table-column
-                            width="125"
+                            width="140"
                             label="Diagnosis"
                             prop="final_diagnosis"
                         >

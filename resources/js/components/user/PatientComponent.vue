@@ -191,7 +191,6 @@
         <el-dialog
             title="Patient Details"
             :visible.sync="dialogFormVisible"
-            center
             top="5vh"
             :close-on-press-escape="false"
             :close-on-click-modal="false"
@@ -356,6 +355,8 @@
             title="Add Medical Record"
             :visible.sync="dialogFormMedicalVisible"
             top="5vh"
+            :close-on-press-escape="false"
+            :close-on-click-modal="false"
         >
             <el-form :model="formMedical" :rules="rules" ref="form">
                 <el-form-item
@@ -427,7 +428,7 @@
                 </el-form-item>
             </el-form>
             <span slot="footer" class="dialog-footer">
-                <el-button @click="dialogMedicalFormVisible = false"
+                <el-button @click="dialogFormMedicalVisible = false"
                     >Cancel</el-button
                 >
                 <el-button
@@ -1344,7 +1345,7 @@ export default {
                     });
                     this.diagnostic = datas;
                 })
-                .catch(function(error) {});   
+                .catch(function(error) {});
         },
         onlyForCurrency ($event){
             if($event.target.placeholder == "Total"){
@@ -1366,6 +1367,6 @@ export default {
         this.getStaff();
         this.getFinalDiagnostic();
     }
-    
+
 };
 </script>

@@ -43,7 +43,7 @@
                         label="Email Address"
                         prop="email_address"
                     ></el-table-column>
-                    <el-table-column width="60" align="right" fixed="right">
+                    <el-table-column width="60" align="center" fixed="right">
                         <template slot="header">
                             Action
                         </template>
