@@ -5,7 +5,7 @@
         <div class="row header-top"> 
             <div class="header-title-parent" style="padding-top:2px !important;padding-bottom:2px !important;">
                 <span class="header-title">
-                <i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Restore List
+                <i class="fa fa-history"></i>&nbsp;&nbsp;Restore List
                 </span>
             </div>
         </div>
