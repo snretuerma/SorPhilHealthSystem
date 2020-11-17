@@ -472,7 +472,7 @@ export default {
               this.open_notif(
                   "info",
                   "Notice",
-                  "Unable to add others"
+                  "Unable to add other physician"
                 );
               this.removeStaff();
           }
