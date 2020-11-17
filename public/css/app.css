@@ -668,6 +668,10 @@ body {
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
 }
 
+.sidebar-colapse-btn:hover {
+  color: #d6d6d6 !important;
+}
+
 .sidebar-setting {
   position: absolute;
   float: left;
@@ -681,6 +685,16 @@ body {
   border-radius: 2px;
   color: #fff;
   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.sidebar-setting .fas.fa-cog {
+  transition: transform 0.5s ease 0s;
+}
+
+.sidebar-setting:hover .fas.fa-cog {
+  color: #d6d6d6 !important;
+  transition: transform 0.5s ease 0s;
+  transform: rotate(80deg);
 }
 
 .sidebar-username {
