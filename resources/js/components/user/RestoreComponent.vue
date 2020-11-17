@@ -1,11 +1,17 @@
 <template>
     <div>
-        <div class="row">
-            <div class="col-sm-12">
-                <h2>Restore Record</h2>
+       
+       <!-- Header -->
+        <div class="row header-top"> 
+            <div class="header-title-parent" style="padding-top:2px !important;padding-bottom:2px !important;">
+                <span class="header-title">
+                <i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Restore List
+                </span>
             </div>
         </div>
-        <hr />
+        <!-- End Header -->
+
+
         <div class="card">
             <div class="card-body">
                 <el-table v-loading="loading" :data="listData">
@@ -30,7 +36,7 @@
                         prop="discharge_date"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        min-width="150"
                         label="Diagnois"
                         prop="final_diagnosis"
                     ></el-table-column>
@@ -49,6 +55,7 @@
                                 effect="light"
                                 content="View"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -63,6 +70,7 @@
                                 effect="light"
                                 content="Restore"
                                 placement="top"
+                                :enterable = false
                             >
                                 <el-button
                                     size="mini"
@@ -265,10 +273,7 @@ export default {
                     });
                 })
                 .catch(action => {
-                    this.$message({
-                        type: "success",
-                        message: action === "cancel" ? "Canceled" : "No changes"
-                    });
+                    this.open_notif("info", "Cancelled", "No Changes");
                 });
         },
         getRestore: function() {

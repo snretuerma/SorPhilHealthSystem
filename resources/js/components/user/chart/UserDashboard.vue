@@ -1,15 +1,16 @@
 <template>
     <div>
+
         <!-- Header -->
-        <div class="row">
-            <div class="col-sm-12">
-                <h2 class="font-weight-bold">
-                    <i class="fa fa-tachometer-alt"></i>&nbsp;&nbsp;Dashboard
-                </h2>
+        <div class="row header-top">
+            <div class="header-title-parent">
+                <span class="header-title">
+                <i class="fa fa-tachometer-alt"></i>&nbsp;&nbsp;Dashboard
+                </span>
             </div>
         </div>
-        <hr />
         <!-- End Header -->
+
         <div>
             <el-row :gutter="12">
                 <el-col :span="12">
@@ -167,7 +168,7 @@
                                     prop="record_type"
                                 ></el-table-column>
                                 <el-table-column
-                                    width="120"
+                                    width="170"
                                     label="Contribution"
                                     prop="contribution"
                                 ></el-table-column>
@@ -320,7 +321,7 @@ export default {
     created() {},
 
     beforeMount() {},
-    
+
     mounted() {
         var today = new Date();
         var month = today.getMonth() + 1;
