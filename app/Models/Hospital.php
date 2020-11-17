@@ -17,6 +17,10 @@ class Hospital extends Model
         'name', 'address', 'hospital_code', 'email_address'
     ];
 
+    protected $casts = [
+        'setting' => 'array',
+    ];
+
     public function users()
     {
         return $this->hasMany('App\Models\User');

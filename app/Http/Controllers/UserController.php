@@ -508,4 +508,9 @@ class UserController extends Controller
         $restore = MedicalRecord::withTrashed()->find($request->id)->restore();
         return $restore;
     }
+
+    public function setting()
+    {
+        return view('roles.user.setting');
+    }
 }
