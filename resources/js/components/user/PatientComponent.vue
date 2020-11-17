@@ -390,20 +390,27 @@
                     :label-width="formLabelWidth"
                     prop="final_diagnosis"
                 >
-                    <el-input
+                    <el-autocomplete
+                        class="inline-input"
                         v-model="formMedical.final_diagnosis"
-                        autocomplete="off"
-                    ></el-input>
+                        :fetch-suggestions="
+                            querySearchDiagnostic
+                        "
+                        placeholder="Please Input"
+                        :trigger-on-focus="false"
+                        :clearable="true"
+                        style="width: 100%"
+                    ></el-autocomplete>
                 </el-form-item>
                 <el-form-item
                     label="Record Type"
                     :label-width="formLabelWidth"
                     prop="record_type"
                 >
-                    <el-input
-                        v-model="formMedical.record_type"
-                        autocomplete="off"
-                    ></el-input>
+                    <el-select v-model="formMedical.record_type" placeholder="Please select" style="width: 100%">
+                        <el-option label="Credited" value="Credited"></el-option>
+                        <el-option label="IRM Deduction" value="IRM Deduction"></el-option>
+                    </el-select>
                 </el-form-item>
                 <el-form-item
                     label="Total Fee"
@@ -413,6 +420,9 @@
                     <el-input
                         v-model="formMedical.total_fee"
                         autocomplete="off"
+                        @keypress="onlyForCurrency"
+                        :clearable = true
+                        placeholder="Total"
                     ></el-input>
                 </el-form-item>
             </el-form>
@@ -652,6 +662,7 @@ export default {
             dialogFormVisible: false,
             dialogFormMedicalVisible: false,
             formLabelWidth: "130px",
+            diagnostic: [],
             // Validation
             rules: {
                 last_name: [
@@ -910,6 +921,7 @@ export default {
                 .then(response => {
                     response.data.forEach(element => {
                         this.buildPatientData(element);
+                        element.value = element.last_name;
                     });
                     this.data = response.data;
                     this.loading = false;
@@ -1299,11 +1311,61 @@ export default {
                 this.form.birthdate =  "";
                 this.open_notif("info", "Invalid", "The Date of Birth should not be greater than today");
             }
-        }
+        },
+        querySearchDiagnostic(queryString, cb) {
+            var links = this.diagnostic;
+            var results = queryString
+                ? links.filter(this.createFilter(queryString))
+                : links;
+            cb(results);
+        },
+        createFilter(queryString) {
+            return link => {
+                return (
+                    link.value
+                        .toLowerCase()
+                        .indexOf(queryString.toLowerCase()) === 0
+                );
+            };
+        },
+        getFinalDiagnostic: function() {
+            axios
+                .get("record_get")
+                .then(response => {
+                    var datas = [];
+                    const diagnostic = new Set();
+                    const newPlaces = response.data.filter(entry => {
+                        if (diagnostic.has(entry.final_diagnosis)) {
+                            return false;
+                        }
+                        diagnostic.add(entry.final_diagnosis);
+                        datas.push({value: entry.final_diagnosis});
+                        return true;
+                    });
+                    this.diagnostic = datas;
+                })
+                .catch(function(error) {});   
+        },
+        onlyForCurrency ($event){
+            if($event.target.placeholder == "Total"){
+                let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+                if ((keyCode < 48 || keyCode > 57) && (keyCode !== 46 || this.formMedical.total_fee.indexOf('.') != -1)) {
+                    $event.preventDefault();
+                }
+                if(this.formMedical.total_fee!="" && this.formMedical.total_fee.indexOf(".")>-1 && (this.formMedical.total_fee.split('.')[1].length > 3)){
+                    $event.preventDefault();
+                }
+            }
+        },
+    },
+    created(){
+        window.addEventListener('keypress', this.onlyForCurrency);
     },
     mounted() {
         this.getPatients();
         this.getStaff();
+        this.getFinalDiagnostic();
     }
+    
 };
 </script>
