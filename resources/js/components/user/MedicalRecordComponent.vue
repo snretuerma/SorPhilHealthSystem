@@ -721,7 +721,7 @@ export default {
                     })
                     .catch(error => {});
                 }
-                if (this.contributionRecords.type == true && data.personnel.length >0) {
+                if (this.contributionRecords.type == undefined && data.personnel.length >0 || this.contributionRecords.type == true && data.personnel.length >0) {
                     this.file.item = this.contributionRecords;
                     this.file.total =
                         Number(this.contributionRecords.totalAttending) *
@@ -751,7 +751,7 @@ export default {
                                 _this.open_notif(
                                     "success",
                                     "Success",
-                                    "Contribution 2 added successfully"
+                                    "Contribution updated successfully"
                                 );
                             }
                         })
