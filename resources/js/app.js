@@ -59,9 +59,8 @@ Vue.component('observerrecord-component', require('./components/observer/RecordC
 Vue.component('observeruser-component', require('./components/observer/UserComponent.vue').default);
 Vue.component('observerresetpassword-component', require('./components/observer/ResetPasswordComponent.vue').default);
 
-
-
-
+//Setting
+Vue.component('setting-component', require('./components/user/SettingContainer.vue').default);
 
 Vue.component('medical-component', require('./components/user/MedicalRecordComponent.vue').default);
 const app = new Vue({

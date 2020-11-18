@@ -1,31 +1,79 @@
 <template>
   <div>
+      <!-- Header -->
+        <div class="row header-top">
+            <div class="header-title-parent">
+                <span class="header-title">
+                    <i class="fa fa-cogs"></i>&nbsp;&nbsp;Setting
+                </span>
+            </div>
+        </div>
+      <!-- End Header -->
     <el-steps :active="active" finish-status="success">
-      <el-step title="Step 1">
-        <h1>asdasdasdsad</h1>
-      </el-step>
-      <el-step title="Step 2"></el-step>
-      <el-step title="Step 3"></el-step>
+      <el-step title="Medical and Non-Medical Distribution"></el-step>
+      <el-step title="Pooled and Shared Percentage"></el-step>
+      <el-step title="Other Physician"></el-step>
     </el-steps>
-  <el-form v-if="active===0">
-    <div class="row">
-      <div class="col-sm-6">
-        <el-input placeholder="Please input" v-model="input"></el-input>
-      </div>
-    </div>
-  </el-form>
-  <el-form v-if="active===1">
-    <el-input placeholder="Please input atm" v-model="input"></el-input>
-  </el-form>
+    <el-form style="margin-top:20px;">
+      <el-card shadow="never" v-if="active===0">
+        <div class="row">
+          <div class="col-sm-6">
+            Medical Percentage
+            <el-input placeholder="Medical" v-model="input"></el-input>
+          </div>
+          <div class="col-sm-6">
+            Non-Medical Percentage
+            <el-input placeholder="Non-Medical" v-model="input"></el-input>
+          </div>
+        </div>
+      </el-card>
+      <el-card shadow="never" v-if="active===1">
+        <div class="row">
+          <div class="col-sm-6">
+            Pooled Percentage
+            <el-input placeholder="Pooled" v-model="input"></el-input>
+          </div>
+          <div class="col-sm-6">
+            Shared Percentage
+            <el-input placeholder="Shared" v-model="input"></el-input>
+          </div>
+        </div>
+      </el-card>
+      <el-card shadow="never" v-if="active===2">
+        <div class="row">
+          <div class="col-sm-6">
+            Requesting
+            <el-input placeholder="Requesting" v-model="input"></el-input>
+            Health Care
+            <el-input placeholder="HealthCare" v-model="input"></el-input>
+            Anesthesiologist
+            <el-input placeholder="Anesthesiologist" v-model="input"></el-input>
+            Admitting
+            <el-input placeholder="Admitting" v-model="input"></el-input>
+          </div>
+          <div class="col-sm-6">
+            Surgeon
+            <el-input placeholder="Surgeon" v-model="input"></el-input>
+            ER
+            <el-input placeholder="ER" v-model="input"></el-input>
+            Co-Management
+            <el-input placeholder="Co-Management" v-model="input"></el-input>
+            <div class="float-right">
+            <el-button type="info" style="margin-top: 12px" >Cancel</el-button>
+            <el-button type="primary" style="margin-top: 12px" >Save Changes</el-button>
+            </div>
+          </div>
+        </div>
+      </el-card>
+    </el-form>
     <div class="float-right">
-      <el-button style="margin-top: 12px"  @click="next">Next step</el-button>
+      <el-button style="margin-top: 20px;margin-left:4px;" v-if="this.active < 2" @click="next">Next Step</el-button>
     </div>
-    <div class="float-left">
-       <el-button v-if="this.active > 0" style="margin-right: 12px" @click="back"
-      >Back step</el-button
+    <div class="float-right">
+       <el-button v-if="this.active > 0" style="margin-top: 20px" @click="back">Previous</el-button>
     </div>
    
-    >
+
   </div>
 </template>
 
