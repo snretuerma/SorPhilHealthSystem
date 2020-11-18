@@ -96,7 +96,7 @@
                         </li>
                         <li class="sidebar li">
                             <a href="{{route('restore')}}">
-                                <i class="fa fa-file-medical-alt"></i><span>Restore</span>
+                                <i class="fa fa-history"></i><span>Restore</span>
                             </a>
                         </li>
                         <li class="sidebar li">
