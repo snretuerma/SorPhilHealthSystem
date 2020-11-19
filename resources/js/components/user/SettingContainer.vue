@@ -270,7 +270,7 @@ export default {
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                                 this.form.requesting = "";
                             }else if(requesting == availableValue){
-                                this.open_notif("success", "Valid", "Total sum 100%");
+                                this.open_notif("success", "Valid", "Total percentage 100%");
                             }else{
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                             }
@@ -291,7 +291,7 @@ export default {
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                                 this.form.healthcare = "";
                             }else if(healthcare == availableValue){
-                                this.open_notif("success", "Valid", "Total sum 100%");
+                                this.open_notif("success", "Valid", "Total percentage 100%");
                             }else{
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                             }
@@ -312,7 +312,7 @@ export default {
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                                 this.form.anesthesiologist = "";
                             }else if(anesthesiologist == availableValue){
-                                this.open_notif("success", "Valid", "Total sum 100%");
+                                this.open_notif("success", "Valid", "Total percentage 100%");
                             }else{
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                             }
@@ -333,7 +333,7 @@ export default {
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                                 this.form.admitting = "";
                             }else if(admitting == availableValue){
-                                this.open_notif("success", "Valid", "Total sum 100%");
+                                this.open_notif("success", "Valid", "Total percentage 100%");
                             }else{
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                             }
@@ -354,7 +354,7 @@ export default {
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                                 this.form.surgeon = "";
                             }else if(surgeon == availableValue){
-                                this.open_notif("success", "Valid", "Total sum 100%");
+                                this.open_notif("success", "Valid", "Total percentage 100%");
                             }else{
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                             }
@@ -375,7 +375,7 @@ export default {
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                                 this.form.er = "";
                             }else if(er == availableValue){
-                                this.open_notif("success", "Valid", "Total sum 100%");
+                                this.open_notif("success", "Valid", "Total percentage 100%");
                             }else{
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                             }
@@ -396,7 +396,7 @@ export default {
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                                 this.form.comanagement = "";
                             }else if(comanagement == availableValue){
-                                this.open_notif("success", "Valid", "Total sum 100%");
+                                this.open_notif("success", "Valid", "Total percentage 100%");
                             }else{
                                 this.open_notif("warning", "Invalid", "Available value to sum 100% is  '" + availableValue + "%'");
                             }
