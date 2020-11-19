@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateContributionsTable extends Migration
+class CreateRecordDoctorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreateContributionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('contributions', function (Blueprint $table) {
+        Schema::create('record_doctors', function (Blueprint $table) {
             $table->id();
-            $table->string('contribution')->nullable();
-            $table->decimal('credit', 19, 4);
-            $table->string('status');
+            $table->foreignId('record_id')->constrained('medical_records');
+            $table->foreignId('doctor_id')->constrained('doctors');
+            $table->strimg('doctor_role');
+            $table->decimal('fee', 19, 4);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -30,6 +30,6 @@ class CreateContributionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contributions');
+        Schema::dropIfExists('record_doctors');
     }
 }
