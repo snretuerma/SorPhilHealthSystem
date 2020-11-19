@@ -557,74 +557,80 @@ export default {
       });
 
       var data = {
-        medical_record_id: this.medicalRecordId,
-        personnel: this.others,
+          medical_record_id: this.medicalRecordId,
+          personnel: this.others
       };
       var errorCounter = 0;
-      this.others.forEach((element) => {
-        if (
-          element.state == "" ||
-          element.computePF == "" ||
-          element.contribution == null ||
-          element.contribution == ""
-        ) {
-          errorCounter++;
-        }
+      this.others.forEach(element => {
+          if (
+              element.state == "" ||
+              element.computePF == "" ||
+              element.contribution == null ||
+              element.contribution == ""
+          ) {
+              errorCounter++;
+          }
       });
       if (errorCounter == 0) {
-        if (data.personnel.length > 0) {
-          axios
-            .post("/user/contrirecord_add", data)
-            .then((response) => {
-              if (response.data.status == 200) {
-                this.open_notif(
-                  "success",
-                  "Success",
-                  "Contribution added successfully"
-                );
-                this.triggerClose();
-              }
-            })
-            .catch((error) => {});
-        }
-        if (
-          this.contributionRecords.type == undefined &&
-          data.personnel.length > 0 || 
-          this.contributionRecords.type == true &&
-          data.personnel.length > 0 
-        ) {
-          this.file.item = this.contributionRecords;
-          this.file.total =
-            Number(this.contributionRecords.totalAttending) *
-            Number(this.contributionRecords.contributions[0].credit);
-          this.personnels.forEach((element) => {
-            this.file.total = Number(
-              Number(this.file.total) - Number(element.computePF)
-            );
-          });
-          this.file.total /=
-            this.attending.length + this.contributionRecords.totalAttending;
-          var _this = this;
-          axios
-            .post(
-              "contribution_edit/" +
-                this.contributionRecords.contributions[0].id,
-              _this.file
-            )
-            .then((response) => {
-              if (response.status > 199 && response.status < 203) {
-                _this.open_notif(
-                  "success",
-                  "Success",
-                  "Contribution update successfully"
-                );
-              }
-            })
-            .catch((error) => {});
-        } else {
-          this.open_notif("info", "Message", "Please add Physician");
-        }
+          if(data.personnel.length >0) {
+              axios
+              .post("/user/contrirecord_add", data)
+              .then(response => {
+                  if (response.data.status == 200) {
+                      this.open_notif(
+                          "success",
+                          "Success",
+                          "Contribution added successfully"
+                      );
+                      this.triggerClose();
+                  }
+              })
+              .catch(error => {});
+          }
+          if (this.contributionRecords.type == undefined && data.personnel.length >0 || this.contributionRecords.type == true && data.personnel.length >0) {
+              this.file.item = this.contributionRecords;
+              this.file.total =
+                  Number(this.contributionRecords.totalAttending) *
+                  Number(
+                      this.contributionRecords.contributions[0].credit
+                  );
+              this.personnels.forEach(element => {
+                  this.file.total = Number(
+                      Number(this.file.total) - Number(element.computePF)
+                  );
+              });
+              this.file.total /=
+                  this.attending.length +
+                  this.contributionRecords.totalAttending;
+              var _this = this;
+              axios
+                  .post(
+                      "contribution_edit/" +
+                          this.contributionRecords.contributions[0].id,
+                      _this.file
+                  )
+                  .then(response => {
+                      if (
+                          response.status > 199 &&
+                          response.status < 203
+                      ) {
+                          _this.open_notif(
+                              "success",
+                              "Success",
+                              "Contribution updated successfully"
+                          );
+                      }
+                  })
+                  .catch(error => {});
+          }else{
+              this.open_notif(
+              "info",
+              "Message",
+              "Please add Physician"
+          );
+          }
       } else {
+              
         this.open_notif(
           "info",
           "Message",

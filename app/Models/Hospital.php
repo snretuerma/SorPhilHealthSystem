@@ -14,7 +14,7 @@ class Hospital extends Model
     use Notifiable;
 
     protected $guarded = [
-        'name', 'address', 'hospital_code', 'email_address','setting'
+        'name', 'address', 'hospital_code', 'email_address', 'setting'
     ];
 
     public function users()

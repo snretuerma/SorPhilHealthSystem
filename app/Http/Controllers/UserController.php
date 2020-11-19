@@ -515,9 +515,36 @@ class UserController extends Controller
         return view('roles.user.setting');
     }
 
-    public function getSetting()
+    public function updateSetting(Request $request)
     {
-        $hospital=Hospital::find(Auth::user()->hospital_id);
-        dd($hospital->setting);
+        $medical = intval($request->medical) / 100;
+        $nonmedical = intval($request->nonmedical) / 100;
+        $pooled = intval($request->pooled) / 100;
+        $shared = intval($request->shared) / 100;
+        $requesting = intval($request->requesting) / 100;
+        $surgeon = intval($request->surgeon) / 100;
+        $healthcare = intval($request->healthcare) / 100;
+        $er = intval($request->er) / 100;
+        $anesthesiologist = intval($request->anesthesiologist) / 100;
+        $comanagement = intval($request->comanagement) / 100;
+        $admitting = intval($request->admitting) / 100;
+        $data = '{
+            "medical":'.$medical.',
+            "nonmedical":'.$nonmedical.',
+            "pooled":'.$pooled.',
+            "shared":'.$shared.',
+            "physicians":[
+                            '.$requesting.',
+                            '.$surgeon.',
+                            '.$healthcare.',
+                            '.$er.',
+                            '.$anesthesiologist.',
+                            '.$comanagement.',
+                            '.$admitting.'
+                        }]
+        }';
+        $hospital = Hospital::where('id', Auth::user()->hospital_id)->first();
+        $hospital->setting = $data;
+        return $hospital->save();
     }
 }

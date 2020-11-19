@@ -197,6 +197,7 @@
                         autocomplete="off"
                         @keypress="onlyForCurrency"
                         :clearable = true
+                        placeholder="Amount"
                     ></el-input>
                     <span class="font-italic text-danger" v-if="errors.total"
                         ><small>{{ errors.total[0] }}</small></span
@@ -824,12 +825,14 @@ export default {
                 });
         },
         onlyForCurrency ($event){
-            let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
-            if ((keyCode < 48 || keyCode > 57) && (keyCode !== 46 || this.form.total.indexOf('.') != -1)) {
-                $event.preventDefault();
-            }
-            if(this.form.total!="" && this.form.total.indexOf(".")>-1 && (this.form.total.split('.')[1].length > 3)){
-                $event.preventDefault();
+            if($event.target.placeholder == "Amount"){
+                let keyCode = ($event.keyCode ? $event.keyCode : $event.which);
+                if ((keyCode < 48 || keyCode > 57) && (keyCode !== 46 || this.form.total.indexOf('.') != -1)) {
+                    $event.preventDefault();
+                }
+                if(this.form.total!="" && this.form.total.indexOf(".")>-1 && (this.form.total.split('.')[1].length > 3)){
+                    $event.preventDefault();
+                }
             }
         }
     },
