@@ -126,6 +126,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
     //Setting
     Route::get('/setting', 'UserController@setting')->name('setting');
+
+    Route::post('update_setting', 'UserController@updateSetting');
     
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
