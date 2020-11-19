@@ -19,11 +19,7 @@ class HospitalSeeder extends Seeder
                 'address' => 'Macabog, Sorsogon City, Sorsogon, Sorsogon Diversion Rd, Sorsogon City, Sorsogon',
                 'hospital_code' => 'DFBDSMH',
                 'email_address' => 'dfbdsmh@gmail.com',
-                'setting' =>'{
-                    "Pooled":0.3,"Shared":0.7,
-                    "physicians":[{"Requesting":0.1, "Surgeon":0.1
-                    "Healthcare":0.1,"ER":0.1,"Anesthesiologist":0.3,
-                    "Comanagement":0.2,"Admitting":0.1}]}',
+                'setting' =>'{"Pooled":0.3,"Shared":0.7,"physicians":[{"Requesting":0.1, "Surgeon":0.1"Healthcare":0.1,"ER":0.1,"Anesthesiologist":0.3,"Comanagement":0.2,"Admitting":0.1}]}',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],

@@ -244,7 +244,7 @@ const generateNewPersonnel = () => ({
   staff: "",
 });
 export default {
-  props: ["medicalRecordId", "totalFee", "contributionRecords"],
+  props: ["medicalRecordId", "totalFee", "contributionRecords","loginUser","settingData"],
   data() {
     return {
       contributionType: [
@@ -388,56 +388,16 @@ export default {
       });
       var holder = 0;
       var total = 0;
-
       this.attending.forEach((element) => {
         holder = this.medical_record_shared;
         total = Number(holder);
         this.personnels.forEach((element) => {
-          if (element.contribution == "1") {
-            total = total - this.medical_record_shared * 0.1;
+            total = total - this.medical_record_shared * this.settingData.physicians[Number(element.contribution)-1];
             element.computePF = this.masknumber(
-              this.medical_record_shared * 0.1,
+              this.medical_record_shared * this.settingData.physicians[Number(element.contribution)-1],
               false
             );
-          } else if (element.contribution == "2") {
-            total = total - this.medical_record_shared * 0.1;
-            element.computePF = this.masknumber(
-              this.medical_record_shared * 0.1,
-              false
-            );
-          } else if (element.contribution == "3") {
-            total = total - this.medical_record_shared * 0.1;
-            element.computePF = this.masknumber(
-              this.medical_record_shared * 0.1,
-              false
-            );
-          } else if (element.contribution == "4") {
-            total = total - this.medical_record_shared * 0.1;
-            element.computePF = this.masknumber(
-              this.medical_record_shared * 0.1,
-              false
-            );
-          } else if (element.contribution == "5") {
-            total = total - this.medical_record_shared * 0.3;
-            element.computePF = this.masknumber(
-              this.medical_record_shared * 0.3,
-              false
-            );
-          } else if (element.contribution == "6") {
-            total = total - this.medical_record_shared * 0.2;
-            element.computePF = this.masknumber(
-              this.medical_record_shared * 0.2,
-              false
-            );
-          } else if (element.contribution == "7") {
-            total = total - this.medical_record_shared * 0.1;
-            element.computePF = this.masknumber(
-              this.medical_record_shared * 0.1,
-              false
-            );
-          }
         });
-
         if (this.contributionRecords.type == undefined) {
           this.attending.forEach((element1) => {
             if (element.contribution == "0") {
@@ -449,13 +409,13 @@ export default {
           });
         } else {
           let temp =
-            this.data.requesting * (this.medical_record_shared * 0.1) +
-            this.data.surgeon * (this.medical_record_shared * 0.1) +
-            this.data.health * (this.medical_record_shared * 0.1) +
-            this.data.er * (this.medical_record_shared * 0.1) +
-            this.data.anesthe * (this.medical_record_shared * 0.3) +
-            this.data.comanage * (this.medical_record_shared * 0.2) +
-            this.data.admitting * (this.medical_record_shared * 0.1);
+            this.data.requesting * (this.medical_record_shared * this.settingData.physicians[0]) +
+            this.data.surgeon * (this.medical_record_shared * this.settingData.physicians[1]) +
+            this.data.health * (this.medical_record_shared * this.settingData.physicians[2]) +
+            this.data.er * (this.medical_record_shared * this.settingData.physicians[3]) +
+            this.data.anesthe * (this.medical_record_shared * this.settingData.physicians[4]) +
+            this.data.comanage * (this.medical_record_shared * this.settingData.physicians[5]) +
+            this.data.admitting * (this.medical_record_shared * this.settingData.physicians[6]);
           total =
             Number(this.contributionRecords.totalContributions - temp) /
             (Number(this.contributionRecords.totalAttending) +
@@ -470,25 +430,32 @@ export default {
       });
       this.personnels.forEach((element) => {
         if (element.contribution == "1") {
-          total = (Number(this.totalFee) / 2) * 0.7 * 0.1;
+          total = (Number(this.totalFee) * this.settingData.medical) * this.settingData.shared *
+          this.settingData.physicians[Number(element.contribution)-1];
           element.computePF = this.masknumber(total, false);
         } else if (element.contribution == "2") {
-          total = (Number(this.totalFee) / 2) * 0.7 * 0.1;
+          total = (Number(this.totalFee) * this.settingData.medical) * this.settingData.shared *
+          this.settingData.physicians[Number(element.contribution)-1];
           element.computePF = this.masknumber(total, false);
         } else if (element.contribution == "3") {
-          total = (Number(this.totalFee) / 2) * 0.7 * 0.1;
+          total = (Number(this.totalFee) * this.settingData.medical) *this.settingData.shared *
+          this.settingData.physicians[Number(element.contribution)-1];
           element.computePF = this.masknumber(total, false);
         } else if (element.contribution == "4") {
-          total = (Number(this.totalFee) / 2) * 0.7 * 0.1;
+          total = (Number(this.totalFee) * this.settingData.medical) * this.settingData.shared *
+          this.settingData.physicians[Number(element.contribution)-1];
           element.computePF = this.masknumber(total, false);
         } else if (element.contribution == "5") {
-          total = (Number(this.totalFee) / 2) * 0.7 * 0.3;
+          total = (Number(this.totalFee) * this.settingData.medical) * this.settingData.shared *
+          this.settingData.physicians[Number(element.contribution)-1];
           element.computePF = this.masknumber(total, false);
         } else if (element.contribution == "6") {
-          total = (Number(this.totalFee) / 2) * 0.7 * 0.2;
+          total = (Number(this.totalFee) * this.settingData.medical) * this.settingData.shared *
+          this.settingData.physicians[Number(element.contribution)-1];
           element.computePF = this.masknumber(total, false);
         } else if (element.contribution == "7") {
-          total = (Number(this.totalFee) / 2) * 0.7 * 0.1;
+          total = (Number(this.totalFee) * this.settingData.medical) * this.settingData.shared * 
+          this.settingData.physicians[Number(element.contribution)-1];
           element.computePF = this.masknumber(total, false);
         }
       });
@@ -741,20 +708,23 @@ export default {
   },
   computed: {},
   mounted() {
-    if (this.contributionRecords.type == undefined) {
+       if (this.contributionRecords.type == undefined) {
+      this.medical_record_shared = (this.totalFee * this.settingData.medical) * this.settingData.shared;
+      this.medical_record_pooled = (this.totalFee * this.settingData.medical) * this.settingData.pooled;
+   
       this.getStaff();
       this.attending.push(new generateNewPersonnel());
-      this.medical_record_shared = (this.totalFee / 2) * 0.7;
-      this.medical_record_pooled = (this.totalFee / 2) * 0.3;
       this.attending[0].contribution = "0";
+      
       this.getStaffCode();
       this.disableSelect.push(true);
     } else {
+      this.medical_record_shared = (this.totalFee * this.settingData.medical) * this.settingData.shared;
+      this.medical_record_pooled = (this.totalFee * this.settingData.medical) * this.settingData.pooled;
+   
       this.getStaff();
       this.getStaffCode();
-      this.medical_record_shared = Number((this.totalFee / 2) * 0.7);
-      this.medical_record_pooled = (this.totalFee / 2) * 0.3;
-    }
+      }
   },
 };
 </script>

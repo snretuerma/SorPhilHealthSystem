@@ -308,7 +308,8 @@ class UserController extends Controller
     //Records
     public function record()
     {
-        return view('roles.user.record');
+        $hospital=Hospital::find(Auth::user()->hospital_id);
+        return view('roles.user.record')->with('setting',$hospital->setting);
     }
 
     public function getRecord()
@@ -512,5 +513,11 @@ class UserController extends Controller
     public function setting()
     {
         return view('roles.user.setting');
+    }
+
+    public function getSetting()
+    {
+        $hospital=Hospital::find(Auth::user()->hospital_id);
+        dd($hospital->setting);
     }
 }

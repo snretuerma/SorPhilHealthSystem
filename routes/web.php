@@ -124,8 +124,9 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('contribution_delete/{id}', 'UserController@deleteContribution');
     Route::post('contribution_edit/{id}', 'UserController@editContribution');
 
-    //Setting
+    //Setting 
     Route::get('/setting', 'UserController@setting')->name('setting');
+    Route::get('/setting_get', 'UserController@getSetting');
     
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
