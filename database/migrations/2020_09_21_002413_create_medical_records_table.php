@@ -17,10 +17,8 @@ class CreateMedicalRecordsTable extends Migration
         // TODO: Wait for other ACPN columns
         Schema::create('medical_records', function (Blueprint $table) {
             $table->id();
-            $table->string('patient_first_name');
-            $table->string('patient_middle_name');
-            $table->string('patient_last_name');
-            $table->string('patient_suffix');
+            $table->string('name');
+            $table->string('batch_name');
             $table->date('admission_date');
             $table->date('discharge_date')->nullable();
             $table->string('final_diagnosis');
