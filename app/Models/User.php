@@ -26,4 +26,9 @@ class User extends Authenticatable
         return $this->belongsTo('App\Models\Hospital', 'hospital_id');
     }
 
+    public function logs()
+    {
+        return $this->hasMany('App\Models\Hospital');
+    }
+
 }

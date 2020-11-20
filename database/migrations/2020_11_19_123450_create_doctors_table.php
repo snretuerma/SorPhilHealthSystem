@@ -16,12 +16,9 @@ class CreateDoctorsTable extends Migration
         Schema::create('doctors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('hospital_id')->nullable()->constrained('hospitals');
-            $table->string('first_name');
-            $table->string('middle_name')->nullable();
-            $table->string('last_name');
-            $table->string('suffix')->nullable();
+            $table->string('name');
             $table->boolean('is_active')->default(true);
-            $table->boolean('is_private')->default(false);
+            $table->boolean('is_parttime')->default(false);
             $table->timestamps();
         });
     }

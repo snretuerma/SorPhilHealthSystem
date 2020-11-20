@@ -17,8 +17,9 @@ class CreateRecordDoctorsTable extends Migration
             $table->id();
             $table->foreignId('record_id')->constrained('medical_records');
             $table->foreignId('doctor_id')->constrained('doctors');
-            $table->strimg('doctor_role');
-            $table->decimal('fee', 19, 4);
+            $table->string('doctor_role')->nullable();
+            $table->decimal('professional_fee', 19, 4)->nullable();
+            $table->decimal('pooled_fee', 19, 4)->nullable();
             $table->timestamps();
         });
     }
@@ -30,6 +31,10 @@ class CreateRecordDoctorsTable extends Migration
      */
     public function down()
     {
+        $table->dropForeign(['record_id']);
+        $table->dropColumn('record_id');
+        $table->dropForeign(['doctor_id']);
+        $table->dropColumn('doctor_id');
         Schema::dropIfExists('record_doctors');
     }
 }
