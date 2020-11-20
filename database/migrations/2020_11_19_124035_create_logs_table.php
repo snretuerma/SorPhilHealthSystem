@@ -32,6 +32,8 @@ class CreateLogsTable extends Migration
      */
     public function down()
     {
+        $table->dropForeign(['user_id']);
+        $table->dropColumn('user_id');
         Schema::dropIfExists('logs');
     }
 }

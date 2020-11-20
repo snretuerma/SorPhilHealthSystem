@@ -22,23 +22,13 @@ class Hospital extends Model
         return $this->hasMany('App\Models\User');
     }
 
-    public function budgets()
+    public function doctors()
     {
-        return $this->hasMany('App\Models\Budget');
+        return $this->hasMany('App\Models\Doctor');
     }
 
-    public function personnels()
+    public function credit_records()
     {
-        return $this->hasMany('App\Models\Personnel');
-    }
-
-    public function patients()
-    {
-        return $this->hasMany('App\Models\Patient');
-    }
-
-    public function medical_records()
-    {
-        return $this->hasMany('App\Models\MedicalRecord');
+        return $this->hasMany('App\Models\CreditRecord');
     }
 }
