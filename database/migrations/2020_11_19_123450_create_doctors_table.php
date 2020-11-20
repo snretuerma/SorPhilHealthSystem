@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePersonnelsTable extends Migration
+class CreateDoctorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,16 @@ class CreatePersonnelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('personnels', function (Blueprint $table) {
+        Schema::create('doctors', function (Blueprint $table) {
             $table->id();
             $table->foreignId('hospital_id')->nullable()->constrained('hospitals');
             $table->string('first_name');
-            $table->string('middle_name');
+            $table->string('middle_name')->nullable();
             $table->string('last_name');
-            $table->string('name_suffix')->nullable();
-            $table->unsignedTinyInteger('sex');
-            $table->date('birthdate');
-            $table->boolean('is_private');
-            $table->boolean('is_parttime');
-            $table->boolean('designation');
+            $table->string('suffix')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->boolean('is_private')->default(false);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -39,6 +35,6 @@ class CreatePersonnelsTable extends Migration
     {
         $table->dropForeign(['hospital_id']);
         $table->dropColumn('hospital_id');
-        Schema::dropIfExists('personnels');
+        Schema::dropIfExists('doctors');
     }
 }
