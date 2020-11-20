@@ -323,8 +323,10 @@
 <script>
 "use strict";
 export default {
+    props:["settingData"],
     data() {
         return {
+            hospitalId:"",
             container: [],
             tabledata: [],
             filtered: [],
@@ -732,6 +734,7 @@ export default {
     },
     mounted() {
         this.getRecord();
-    }
+    },
+
 };
 </script>

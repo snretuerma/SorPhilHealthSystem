@@ -19,6 +19,7 @@ class HospitalSeeder extends Seeder
                 'address' => 'Macabog, Sorsogon City, Sorsogon, Sorsogon Diversion Rd, Sorsogon City, Sorsogon',
                 'hospital_code' => 'DFBDSMH',
                 'email_address' => 'dfbdsmh@gmail.com',
+                'setting' =>'{"medical":0.5,"nonmedical":0.5,"pooled":0.3,"shared":0.7, "physicians":[0.1,0.1,0.1,0.1,0.3,0.2,0.1]}',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
@@ -27,6 +28,7 @@ class HospitalSeeder extends Seeder
                 'address' => 'Donsol Sorsogon',
                 'hospital_code' => 'DDH',
                 'email_address' => 'ddh@gmail.com',
+                'setting' =>'{"medical":0.5,"nonmedical":0.5,"pooled":0.3,"shared":0.7, "physicians":[0.1,0.1,0.1,0.1,0.3,0.2,0.1]}',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
@@ -35,6 +37,7 @@ class HospitalSeeder extends Seeder
                 'address' => 'Irosin, Sorsogon',
                 'hospital_code' => 'IDH',
                 'email_address' => 'idh@gmail.com',
+                'setting' =>'{"medical":0.5,"nonmedical":0.5,"pooled":0.3,"shared":0.7, "physicians":[0.1,0.1,0.1,0.1,0.3,0.2,0.1]}',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
@@ -43,6 +46,7 @@ class HospitalSeeder extends Seeder
                 'address' => 'Bonifacio St, Gubat, Sorsogon',
                 'hospital_code' => 'SREDH',
                 'email_address' => 'sredh@gmail.com',
+                'setting' =>'{"medical":0.5,"nonmedical":0.5,"pooled":0.3,"shared":0.7, "physicians":[0.1,0.1,0.1,0.1,0.3,0.2,0.1]}',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
@@ -51,6 +55,7 @@ class HospitalSeeder extends Seeder
                 'address' => 'Castilla, 4713 Sorsogon',
                 'hospital_code' => 'VLPMDH',
                 'email_address' => 'vlpmdh@gmail.com',
+                'setting' =>'{"medical":0.5,"nonmedical":0.5,"pooled":0.3,"shared":0.7, "physicians":[0.1,0.1,0.1,0.1,0.3,0.2,0.1]}',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
@@ -59,6 +64,7 @@ class HospitalSeeder extends Seeder
                 'address' => 'Aguada Norte, Magallanes, Sorsogon',
                 'hospital_code' => 'MagMCH',
                 'email_address' => 'magmch@gmail.com',
+                'setting' =>'{"medical":0.5,"nonmedical":0.5,"pooled":0.3,"shared":0.7, "physicians":[0.1,0.1,0.1,0.1,0.3,0.2,0.1]}',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
@@ -67,6 +73,7 @@ class HospitalSeeder extends Seeder
                 'address' => 'Matnog, Sorsogon',
                 'hospital_code' => 'MatMCH',
                 'email_address' => 'matmch@gmail.com',
+                'setting' =>'{"medical":0.5,"nonmedical":0.5,"pooled":0.3,"shared":0.7, "physicians":[0.1,0.1,0.1,0.1,0.3,0.2,0.1]}',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
@@ -75,6 +82,7 @@ class HospitalSeeder extends Seeder
                 'address' => 'Bulan, Sorsogon',
                 'hospital_code' => 'PGGMH',
                 'email_address' => 'pggmh@gmail.com',
+                'setting' =>'{"medical":0.5,"nonmedical":0.5,"pooled":0.3,"shared":0.7, "physicians":[0.1,0.1,0.1,0.1,0.3,0.2,0.1]}',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],
@@ -83,6 +91,7 @@ class HospitalSeeder extends Seeder
                 'address' => 'Rizal, Prieto Diaz Sorsogon',
                 'hospital_code' => 'PDMH',
                 'email_address' => 'pdmh@gmail.com',
+                'setting' =>'{"medical":0.5,"nonmedical":0.5,"pooled":0.3,"shared":0.7, "physicians":[0.1,0.1,0.1,0.1,0.3,0.2,0.1]}',
                 'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ],

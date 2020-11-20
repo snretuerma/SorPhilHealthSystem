@@ -1,5 +1,5 @@
 @extends('layouts.user')
 
 @section('content')
-<record-component :login-user="{{auth::user()}}"></budget-component>
+<record-component :setting-data="{{$setting}}"></budget-component>
 @endsection

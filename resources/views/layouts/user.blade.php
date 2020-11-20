@@ -99,6 +99,11 @@
                                 <i class="fa fa-history"></i><span>Restore</span>
                             </a>
                         </li>
+                        <li class="sidebar li">
+                            <a href="{{route('setting')}}">
+                                <i class="fa fa-cogs"></i><span>Setting</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
                 <!-- sidebar-menu  -->

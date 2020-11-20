@@ -123,6 +123,11 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('contrirecord_add', 'UserController@addContributionRecord');
     Route::post('contribution_delete/{id}', 'UserController@deleteContribution');
     Route::post('contribution_edit/{id}', 'UserController@editContribution');
+
+    //Setting 
+    Route::get('/setting', 'UserController@setting')->name('setting');
+    Route::post('update_setting', 'UserController@updateSetting');
+    
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');
