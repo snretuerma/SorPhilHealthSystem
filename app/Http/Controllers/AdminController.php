@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    // defaul construct
     public function __construct()
     {
         $this->middleware('auth');
