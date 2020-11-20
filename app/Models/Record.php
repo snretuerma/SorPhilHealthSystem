@@ -5,12 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Budget extends Model
+class Record extends Model
 {
     use SoftDeletes;
-    
+    protected $fillable = [
+        'patient_first_name', 'patient_middle_name', 'patient_last_name', 
+        'is_credited', 'patient_in', 'patient_out', 'total_pf',
+    ];
+
     protected $guarded = [
-        'hospital_id', 'total', 'budget_start_date'
+        'hospital_id',
     ];
 
     public function hospital()

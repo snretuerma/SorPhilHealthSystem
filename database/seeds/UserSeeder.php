@@ -16,7 +16,7 @@ class UserSeeder extends Seeder
      * @return void
      */
     public function run()
-    {
+    {   
         $admin = new User;
         $admin->username = 'admin';
         $admin->password = Hash::make('secret');
@@ -34,10 +34,10 @@ class UserSeeder extends Seeder
         $observer->updated_at = Carbon::now()->format('Y-m-d H:i:s');
         $observer->assignRole('observer');
         $observer->save();
-
+        
 
         $usernames = [
-            'DFBDSMH_user', 'DDH_user', 'IDH_user', 'SREDH_user', 'VLPMDH_user',
+            'DFBDSMH_user', 'DDH_user', 'IDH_user', 'SREDH_user', 'VLPMDH_user', 
             'MagMCH_user', 'MatMCH_user', 'PGGMH_user', 'PDMH_user'
         ];
 
