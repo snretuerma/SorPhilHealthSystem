@@ -4,8 +4,8 @@ namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class User extends Authenticatable
 {
@@ -14,7 +14,7 @@ class User extends Authenticatable
     use HasRoles;
 
     protected $guarded  = [
-        'username', 'password', 'hospital_id'
+        'username', 'password', 'hospital_id', 'email_address'
     ];
 
     protected $hidden = [
@@ -25,4 +25,5 @@ class User extends Authenticatable
     {
         return $this->belongsTo('App\Models\Hospital', 'hospital_id');
     }
+
 }
