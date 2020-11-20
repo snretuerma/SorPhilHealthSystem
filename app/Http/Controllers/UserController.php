@@ -308,7 +308,8 @@ class UserController extends Controller
     //Records
     public function record()
     {
-        return view('roles.user.record');
+        $hospital=Hospital::find(Auth::user()->hospital_id);
+        return view('roles.user.record')->with('setting',$hospital->setting);
     }
 
     public function getRecord()
@@ -507,5 +508,43 @@ class UserController extends Controller
     {
         $restore = MedicalRecord::withTrashed()->find($request->id)->restore();
         return $restore;
+    }
+
+    public function setting()
+    {
+        return view('roles.user.setting');
+    }
+
+    public function updateSetting(Request $request)
+    {
+        $medical = intval($request->medical) / 100;
+        $nonmedical = intval($request->nonmedical) / 100;
+        $pooled = intval($request->pooled) / 100;
+        $shared = intval($request->shared) / 100;
+        $requesting = intval($request->requesting) / 100;
+        $surgeon = intval($request->surgeon) / 100;
+        $healthcare = intval($request->healthcare) / 100;
+        $er = intval($request->er) / 100;
+        $anesthesiologist = intval($request->anesthesiologist) / 100;
+        $comanagement = intval($request->comanagement) / 100;
+        $admitting = intval($request->admitting) / 100;
+        $data = '{
+            "medical":'.$medical.',
+            "nonmedical":'.$nonmedical.',
+            "pooled":'.$pooled.',
+            "shared":'.$shared.',
+            "physicians":[
+                            '.$requesting.',
+                            '.$surgeon.',
+                            '.$healthcare.',
+                            '.$er.',
+                            '.$anesthesiologist.',
+                            '.$comanagement.',
+                            '.$admitting.'
+                        }]
+        }';
+        $hospital = Hospital::where('id', Auth::user()->hospital_id)->first();
+        $hospital->setting = $data;
+        return $hospital->save();
     }
 }
