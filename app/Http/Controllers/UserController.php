@@ -46,7 +46,9 @@ class UserController extends Controller
 
     public function importExcel(Request $request)
     {
-        $i_action = $request->i_action;
+        $postData = request()->file('budgets');
+        dd($postData);
+        /*$i_action = $request->i_action;
         try {
             switch ($i_action) {
                 case "BudgetImport":
@@ -70,7 +72,7 @@ class UserController extends Controller
             }
         } catch (\Error $ex) {
             return "Error, something went wrong!";
-        }
+        }*/
     }
     public function exportExcel(Request $request)
     {

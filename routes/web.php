@@ -81,6 +81,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
     //Records
     Route::get('/records', 'UserController@records')->name('records');
+    //Records read excel
+    Route::post('import_doctor_record', 'UserController@importExcel');
 
     //Restore
     Route::get('/restore', 'UserController@restore')->name('restore');
