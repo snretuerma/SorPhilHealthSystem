@@ -19,6 +19,10 @@ class CreditRecordSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
+        $physicians=[
+            'attending','requesting','surgeon','healthcare','er',
+            'anesthesiologist','comanagement','admitting'
+        ];
         for($index = 0; $index < 300; $index++) {
             $record = new CreditRecord;
             $record->hospital()->associate(Hospital::find(1)->id);
@@ -31,10 +35,10 @@ class CreditRecordSeeder extends Seeder
             $record->non_medical_fee = $record->total/2;
             $record->medical_fee = $record->non_medical_fee;
             $record->save();
-            $doctors = Doctor::inRandomOrder(5)->get();
+            $doctors = Doctor::inRandomOrder(3)->get();
             foreach($doctors as $doctor) {
                 $doctor->credit_records()->attach($record->id, [
-                    'doctor_role' => 'attending',
+                    'doctor_role' => $physicians[rand(0, 7)],
                     'professional_fee' => rand(1000, 9000),
                     'pooled_fee' => rand(100, 999)
                 ]);
@@ -53,10 +57,10 @@ class CreditRecordSeeder extends Seeder
             $record->non_medical_fee = $record->total/2;
             $record->medical_fee = $record->non_medical_fee;
             $record->save();
-            $doctors = Doctor::inRandomOrder(5)->get();
+            $doctors = Doctor::inRandomOrder(3)->get();
             foreach($doctors as $doctor) {
                 $doctor->credit_records()->attach($record->id, [
-                    'doctor_role' => 'attending',
+                    'doctor_role' => $physicians[rand(0, 7)],
                     'professional_fee' => rand(1000, 9000),
                     'pooled_fee' => rand(100, 999)
                 ]);
