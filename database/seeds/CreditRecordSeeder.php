@@ -45,7 +45,7 @@ class CreditRecordSeeder extends Seeder
             }
         }
 
-        for($index = 0; $index < 100; $index++) {
+        for($index = 0; $index < 50; $index++) {
             $record = new CreditRecord;
             $record->hospital()->associate(Hospital::find(1)->id);
             $record->patient_name = $faker->name;
