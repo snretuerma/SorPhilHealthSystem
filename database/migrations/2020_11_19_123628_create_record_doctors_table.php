@@ -15,7 +15,7 @@ class CreateRecordDoctorsTable extends Migration
     {
         Schema::create('record_doctors', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('record_id')->constrained('medical_records');
+            $table->foreignId('record_id')->constrained('credit_records');
             $table->foreignId('doctor_id')->constrained('doctors');
             $table->string('doctor_role')->nullable();
             $table->decimal('professional_fee', 19, 4)->nullable();
