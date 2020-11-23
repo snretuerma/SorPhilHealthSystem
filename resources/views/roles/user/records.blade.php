@@ -1,5 +1,5 @@
 @extends('layouts.user')
 
 @section('content')
-<record-component></budget-component>
+<record-component></record-component>
 @endsection
