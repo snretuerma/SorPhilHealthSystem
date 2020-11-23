@@ -9,7 +9,7 @@ use App\Models\Patient;
 use App\Models\Hospital;
 use App\Models\User;
 use App\Models\Budget;
-use App\Models\Personnel;
+use App\Models\Doctor;
 use App\Models\MedicalRecord;
 use App\Models\Contribution;
 
@@ -210,14 +210,14 @@ class UserController extends Controller
     }
 
     //Personnel
-    public function personnel()
+    public function doctors()
     {
-        return view('roles.user.personnel');
+        return view('roles.user.doctor');
     }
 
-    public function getPersonnels()
+    public function getDoctors()
     {
-        return Personnel::where('hospital_id', Auth::user()->hospital_id)->get();
+        return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
     }
 
     public function addPersonnel(userAddPersonnelRequest $request)

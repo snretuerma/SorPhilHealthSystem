@@ -10,7 +10,6 @@
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
 
-
     <title>PF Management System</title>
 
 </head>
@@ -27,14 +26,14 @@
                         <i class="fas fa-bars" style="font-size:18px;"></i>
                     </div>
                     <div class="dropdown">
-                        <span class="sidebar-setting" 
-                                id="dropdownMenuButton" 
-                                data-toggle="dropdown" 
-                                aria-haspopup="true" 
-                                aria-expanded="false"> 
+                        <span class="sidebar-setting"
+                                id="dropdownMenuButton"
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false">
                             <i class="fas fa-cog" style="font-size:18px;"></i>
-                        </span> 
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton"> 
+                        </span>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <span class="sidebar-setting-item">
                                 <i class="fa fa-key sidebar-setting-item-icon"></i>
                                 <a href="{{route('reset')}}">
@@ -51,10 +50,10 @@
                                 @csrf
                             </form>
                             </span>
-                        </div> 
-                    </div> 
-                    <img class="img-responsive rounded-circle img-sidebar" 
-                        src="{{asset('images/user.jpg')}}" 
+                        </div>
+                    </div>
+                    <img class="img-responsive rounded-circle img-sidebar"
+                        src="{{asset('images/user.jpg')}}"
                         alt="User picture"
                         width = "80"
                         height = "80"
@@ -75,13 +74,8 @@
                             </a>
                         </li>
                         <li class="sidebar li">
-                            <a href="{{route('budget')}}">
-                                <i class="fa fa-coins"></i><span>Budget</span>
-                            </a>
-                        </li>
-                        <li class="sidebar li">
-                            <a href="{{route('personnel')}}">
-                                <i class="fa fa-user-md"></i><span>Staffs</span>
+                            <a href="{{route('doctors')}}">
+                                <i class="fa fa-user-md"></i><span>Doctors</span>
                             </a>
                         </li>
                         <li class="sidebar li">
@@ -109,7 +103,6 @@
                 <!-- sidebar-menu  -->
             </div>
         </nav>
-
         <!-- sidebar-wrapper  -->
         <main class="page-content">
             <div class="container-fluid">
@@ -118,7 +111,6 @@
                 </div>
             </div>
         </main>
-
         <!-- page-content" -->
     </div>
     <script src="{{asset('js/app.js')}}"></script>

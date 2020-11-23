@@ -33,13 +33,13 @@ Vue.use(VueDataTables);
 // Vue.component('example-component', require('./components/ExampleComponent.vue'));
 
 //Admin
-Vue.component('admindashboard-component', require('./components/admin/chart/AdminDashboard.vue').default);
-Vue.component('users-component', require('./components/admin/UserComponent.vue').default);
-Vue.component('adminbudget-component', require('./components/admin/BudgetComponent.vue').default);
-Vue.component('adminpersonnel-component', require('./components/admin/PersonnelComponent.vue').default);
-Vue.component('adminpatient-component', require('./components/admin/PatientComponent.vue').default);
-Vue.component('adminrecord-component', require('./components/admin/RecordComponent.vue').default);
-Vue.component('resetpassadmin-component', require('./components/admin/ResetPasswordComponent.vue').default);
+// Vue.component('admindashboard-component', require('./components/admin/chart/AdminDashboard.vue').default);
+// Vue.component('users-component', require('./components/admin/UserComponent.vue').default);
+// Vue.component('adminbudget-component', require('./components/admin/BudgetComponent.vue').default);
+// Vue.component('adminpersonnel-component', require('./components/admin/PersonnelComponent.vue').default);
+// Vue.component('adminpatient-component', require('./components/admin/PatientComponent.vue').default);
+// Vue.component('adminrecord-component', require('./components/admin/RecordComponent.vue').default);
+// Vue.component('resetpassadmin-component', require('./components/admin/ResetPasswordComponent.vue').default);
 
 //Users
 Vue.component('userdashboard-component', require('./components/user/chart/UserDashboard.vue').default);
@@ -47,7 +47,7 @@ Vue.component('patient-component', require('./components/user/PatientComponent.v
 Vue.component('budget-component', require('./components/user/BudgetComponent.vue').default);
 Vue.component('record-component', require('./components/user/RecordContainer.vue').default);
 Vue.component('restore-component', require('./components/user/RestoreComponent.vue').default);
-Vue.component('personnel-component', require('./components/user/PersonnelContainer.vue').default);
+Vue.component('doctor-component', require('./components/user/DoctorComponent.vue').default);
 Vue.component('resetpass-component', require('./components/user/ResetPasswordComponent.vue').default);
 
 //Observer
