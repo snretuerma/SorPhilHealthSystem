@@ -20,7 +20,6 @@ class CreateRecordDoctorsTable extends Migration
             $table->string('doctor_role')->nullable();
             $table->decimal('professional_fee', 19, 4)->nullable();
             $table->decimal('pooled_fee', 19, 4)->nullable();
-            $table->timestamps();
         });
     }
 

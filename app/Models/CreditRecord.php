@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -18,6 +18,11 @@ class CreditRecord extends Model
 
     public function doctors()
     {
-        return $this->belongsToMany('App\Models\Doctor');
+        return $this->belongsToMany(
+            'App\Models\Doctor',
+            'record_doctors',
+            'record_id',
+            'doctor_id'
+        )->withPivot('doctor_role', 'professional_fee', 'pooled_fee');
     }
 }
