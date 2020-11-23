@@ -37,20 +37,42 @@ class UserSeeder extends Seeder
 
 
         $usernames = [
-            'DFBDSMH_user', 'DDH_user', 'IDH_user', 'SREDH_user', 'VLPMDH_user',
-            'MagMCH_user', 'MatMCH_user', 'PGGMH_user', 'PDMH_user'
+            'DFBDSMH_usr1', 'DFBDSMH_usr2', 'DFBDSMH_usr3',
         ];
 
         $hospitals = Hospital::get();
-        for($index = 0; $index < $hospitals->count(); $index++) {
+        for($index = 0; $index < count($usernames); $index++) {
             $hospital_admin = new User;
             $hospital_admin->username = $usernames[$index];
             $hospital_admin->password = Hash::make('secret');
             $hospital_admin->created_at = Carbon::now()->format('Y-m-d H:i:s');
             $hospital_admin->updated_at = Carbon::now()->format('Y-m-d H:i:s');
-            $hospital_admin->hospital()->associate(Hospital::find($index+1)->id);
+            $hospital_admin->hospital()->associate(Hospital::find(1)->id);
             $hospital_admin->assignRole('user');
             $hospital_admin->save();
         }
+
+        $hospital_admin = new User;
+        $hospital_admin->username = 'test_user';
+        $hospital_admin->password = Hash::make('secret');
+        $hospital_admin->created_at = Carbon::now()->format('Y-m-d H:i:s');
+        $hospital_admin->updated_at = Carbon::now()->format('Y-m-d H:i:s');
+        $hospital_admin->hospital()->associate(Hospital::find(2)->id);
+        $hospital_admin->assignRole('user');
+        $hospital_admin->save();
+
+        // Use for differenet hospitals
+        // $hospitals = Hospital::get();
+        // for($index = 0; $index < $hospitals->count(); $index++) {
+        //     $hospital_admin = new User;
+        //     $hospital_admin->username = $usernames[$index];
+        //     $hospital_admin->password = Hash::make('secret');
+        //     $hospital_admin->created_at = Carbon::now()->format('Y-m-d H:i:s');
+        //     $hospital_admin->updated_at = Carbon::now()->format('Y-m-d H:i:s');
+        //     $hospital_admin->hospital()->associate(Hospital::find($index+1)->id);
+        //     $hospital_admin->assignRole('user');
+        //     $hospital_admin->save();
+        // }
+
     }
 }
