@@ -31,7 +31,7 @@
             </el-dropdown-menu>
         </el-dropdown>
 
-        <el-upload
+       <!-- <el-upload
         class="upload-demo"
         action="https://jsonplaceholder.typicode.com/posts/"
         :on-preview="handlePreview"
@@ -48,14 +48,14 @@
         <el-upload
   class="upload-demo"
   ref="upload"
-  action="https://jsonplaceholder.typicode.com/posts/"
+  action="import_doctor_record"
   :auto-upload="false"
   :on-change="fileData"
   >
   <el-button slot="trigger" size="small" type="primary">select file</el-button>
   <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">upload to server</el-button>
   <div class="el-upload__tip" slot="tip">jpg/png files with a size less than 500kb</div>
-</el-upload>
+</el-upload>-->
 
         <!-- Import budget via excel file-->
         <div
@@ -151,6 +151,31 @@
         </div>
         <!-- Import excel end-->
 
+        <!-- Import excel -->
+        <el-dialog title="Import Excel" :visible.sync="dialogExcelFile">
+            <el-form>
+                <el-form-item>
+                    <el-upload
+                    class="upload-demo"
+                    ref="upload"
+                    action="import_doctor_record"
+                    :auto-upload="false"
+                    :on-change="fileData"
+                    :limit="1"
+                    :on-exceed="handleExceedFile"
+                    :on-remove="handleRemoveFile"
+                    accept=".xlsx"
+                    >
+                        <el-button slot="trigger" size="small" type="primary" plain>select supported excel file</el-button>
+                        <el-button size="small" type="success" @click="uploadToDatabase">upload to database</el-button>
+                        
+                    </el-upload>
+                    <el-progress v-if="progressbar_import" :percentage="percentage" color="#409eff"></el-progress>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <!-- Import excel end-->
+
     </div>
 </template>
 <script>
@@ -159,94 +184,109 @@ export default {
         return {
             progressbar_import: false,
             enableUpload: false,
-            fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
+            doctorRecord:[],
+            dialogExcelFile: false,
+            percentage: 0,
         };
     },
     methods: {
-        submitUpload() {
-        this.$refs.upload.submit();
-        console.log(this.$refs.upload.data);
-      },
-      fileData(file, fileList){
-          console.log("---");
-          console.log(file);
-          console.log(fileList);
-          console.log("---");
-         // console.log(file.raw);
+        
+        uploadToDatabase() {
+            var _this = this;
+            //this.$refs.upload.submit();
+            //var formData = new FormData();
+            //console.log(formData.get('doctorRecord[]'));
+            
+            //console.log(this.doctorRecord[0]);
 
-          var formData = new FormData();
-          formData.append("doctorRecord[]", file.raw);
+            var formData = new FormData();
+            formData.append("doctorRecord[]", this.doctorRecord[0]);
+            _this.progressbar_import = true;
+                axios
+                    .post("import_doctor_record", formData, {
+                        headers: {
+                            "Content-Type": "multipart/form-data"
+                        },
+                        onUploadProgress: function(progressEvent) {
+                            this.uploadPercentage = parseInt(
+                                Math.round(
+                                    (progressEvent.loaded * 100) /
+                                        progressEvent.total
+                                )
+                            );
+                            this.percentage = this.uploadPercentage;
+                        }.bind(this)
+                    })
+                    .then(function(res) {
+                        setTimeout(function() {
+                            _this.progressbar_import = false;
+                            _this.percentage = 0;
+                            //_this.dialogExcelFile = false;
+                            _this.$refs.upload.clearFiles();
+                        }, 2000);
+                        var total_imported = res.data;
 
-          //console.log(formData);
+                        if (total_imported == 0) {
+                            _this.$notify({
+                                type: 'warning',
+                                title: 'Import',
+                                message: "No row to be import",
+                            });
+                        } else if (total_imported > 0) {
+                            _this.$notify({
+                                type: 'success',
+                                title: 'Import',
+                                message: "Successfully imported: " + res.data + " row",
+                            });
+                            //_this.getBudget();
+                        }
+                    })
+                    .catch(function(res) {
+                        _this.progressbar_import = false;
+                        _this.percentage = 0;
+                        _this.dialogExcelFile = false;
+                        _this.$notify({
+                            type: 'error',
+                            title: 'Message',
+                            message: 'FAILURE!! Something went wrong!',
+                        });
+                    });
 
-          axios
-                .post("import_doctor_record", formData, {
-                    headers: {
-                        "Content-Type": "multipart/form-data"
-                    }
-                })
-                .then(function(res) {
-                        _this.open_notif(
-                            "success",
-                            "Import",
-                            "Successfully imported: " + res.data + " row"
-                        );
-                })
-                .catch(function(res) { });
-
-          //var files= $(".el-upload__input").get(0).files[0];
-          //console.log(files);
-      },
-        handleRemove(file, fileList) {
-            console.log(file, fileList);
+        
         },
-        handlePreview(file) {
+        handleExceedFile(files, fileList) {
+                this.$message.warning(`The limit is 1, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`);
+            
+        },
+        handleRemoveFile(file, fileList) {
+            this.$notify({
+                type: 'info',
+                title: 'Cancel',
+                message: 'Successfully cancel upload ' + file.name,
+            });
+        },
+       
+        fileData(file, fileList){
+            console.log("---");
             console.log(file);
+            console.log(fileList);
+            console.log("---");
+
+            var formData = new FormData();
+            formData.append("doctorRecord[]", file.raw);
+            
+            //this.doctorRecord = [];
+            this.doctorRecord.push(file.raw);
+
+            console.log(file.raw);    
         },
-        handleExceed(files, fileList) {
-            this.$message.warning(`The limit is 3, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`);
-        },
-        beforeRemove(file, fileList) {
-            return this.$confirm(`Cancel the transfert of ${ file.name } ?`);
-        },
-        open_notif: function(status, title, message) {
-            if (status == "success") {
-                this.$notify.success({
-                    title: title,
-                    message: message,
-                    offset: 0
-                });
-            } else if (status == "error") {
-                this.$notify.error({
-                    title: title,
-                    message: message,
-                    offset: 0
-                });
-            } else if (status == "info") {
-                this.$notify.info({
-                    title: title,
-                    message: message,
-                    offset: 0
-                });
-            } else if (status == "warning") {
-                this.$notify.warning({
-                    title: title,
-                    message: message,
-                    offset: 0
-                });
-            }
-        },
-        formDialog: function(id) {
-            if (id == "import_data") {
-                $("#importModal").modal({
-                    backdrop: "static",
-                    keyboard: false
-                });
-            } else if (id == "export_data") {
-                $("#exportModal").modal({
-                    backdrop: "static",
-                    keyboard: false
-                });
+        formDialog: function(key) {
+            switch (key) {
+                case "import_data":
+                      this.dialogExcelFile = true
+                    break;
+                default:
+                    break;
             }
         },
         selectFile(event) {

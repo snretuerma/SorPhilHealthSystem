@@ -12,6 +12,11 @@ use App\Models\Personnel;
 use App\Models\MedicalRecord;
 use App\Models\Contribution;
 
+//doctor imp
+use App\Models\Doctor;
+use App\Imports\User\DoctorImport;
+//end
+
 use App\Imports\User\PersonnelImport;
 use App\Imports\User\PatientImport;
 use App\Exports\User\PatientExport;
@@ -46,9 +51,17 @@ class UserController extends Controller
 
     public function importExcel(Request $request)
     {
-        $postData = request()->file('budgets');
-        $postData_sample = request()->file('doctorRecord');
-        dd($postData_sample);
+        //$postData = request()->file('budgets');
+        //$postData = request()->file('doctorRecord');
+        //dd($postData_sample);
+
+        $import = new DoctorImport;
+        $postData = request()->file('doctorRecord');
+        Excel::import($import, $postData[0]);
+        return $import->getRowCount();
+
+        //$data = Excel::load('file.csv', false, 'ISO-8859-1');
+
         /*$i_action = $request->i_action;
         try {
             switch ($i_action) {
