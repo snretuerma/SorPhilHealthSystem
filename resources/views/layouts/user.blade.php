@@ -79,12 +79,7 @@
                             </a>
                         </li>
                         <li class="sidebar li">
-                            <a href="{{route('patients')}}">
-                                <i class="fa fa-hospital-user"></i><span>Patients</span>
-                            </a>
-                        </li>
-                        <li class="sidebar li">
-                            <a href="{{route('record')}}">
+                            <a href="{{route('records')}}">
                                 <i class="fa fa-file-medical-alt"></i><span>Records</span>
                             </a>
                         </li>
