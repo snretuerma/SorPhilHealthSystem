@@ -49,7 +49,9 @@
   class="upload-demo"
   ref="upload"
   action="https://jsonplaceholder.typicode.com/posts/"
-  :auto-upload="false">
+  :auto-upload="false"
+  :on-change="fileData"
+  >
   <el-button slot="trigger" size="small" type="primary">select file</el-button>
   <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">upload to server</el-button>
   <div class="el-upload__tip" slot="tip">jpg/png files with a size less than 500kb</div>
@@ -163,7 +165,37 @@ export default {
     methods: {
         submitUpload() {
         this.$refs.upload.submit();
-        console.log(this.$refs.upload.submit());
+        console.log(this.$refs.upload.data);
+      },
+      fileData(file, fileList){
+          console.log("---");
+          console.log(file);
+          console.log(fileList);
+          console.log("---");
+         // console.log(file.raw);
+
+          var formData = new FormData();
+          formData.append("doctorRecord[]", file.raw);
+
+          //console.log(formData);
+
+          axios
+                .post("import_doctor_record", formData, {
+                    headers: {
+                        "Content-Type": "multipart/form-data"
+                    }
+                })
+                .then(function(res) {
+                        _this.open_notif(
+                            "success",
+                            "Import",
+                            "Successfully imported: " + res.data + " row"
+                        );
+                })
+                .catch(function(res) { });
+
+          //var files= $(".el-upload__input").get(0).files[0];
+          //console.log(files);
       },
         handleRemove(file, fileList) {
             console.log(file, fileList);
@@ -227,9 +259,14 @@ export default {
         onSubmit() {
             var _this = this;
             var formData = new FormData();
-            formData.append("i_action", $("#i_action").val());
-            formData.append("budgets[]", $("#excelcontent").get(0).files[0]);
-            axios
+            //formData.append("i_action", $("#i_action").val());
+            //formData.append("budgets[]", $("#excelcontent").get(0).files[0]);
+
+            console.log($("#excelcontent").get(0).files[0]);
+            
+        console.log($(".el-upload__input").get(0).files[0]);
+
+            /*axios
                 .post("import_doctor_record", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
@@ -288,7 +325,7 @@ export default {
                         "Message",
                         "FAILURE!! Something went wrong!"
                     );
-                });
+                });*/
         }
     },
     mounted() {

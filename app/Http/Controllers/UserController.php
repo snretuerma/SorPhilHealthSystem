@@ -47,7 +47,8 @@ class UserController extends Controller
     public function importExcel(Request $request)
     {
         $postData = request()->file('budgets');
-        dd($postData);
+        $postData_sample = request()->file('doctorRecord');
+        dd($postData_sample);
         /*$i_action = $request->i_action;
         try {
             switch ($i_action) {
