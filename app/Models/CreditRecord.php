@@ -8,7 +8,7 @@ class CreditRecord extends Model
 {
     protected $guarded  = [
         'patient_name', 'batch', 'admission_date', 'discharge_date',
-        'type', 'total', 'non_medical_fee', 'medical_fee',
+        'record_type', 'total', 'non_medical_fee', 'medical_fee',
     ];
 
     public function hospital()
@@ -20,9 +20,9 @@ class CreditRecord extends Model
     {
         return $this->belongsToMany(
             'App\Models\Doctor',
-            'record_doctors',
+            'doctor_records',
             'record_id',
-            'id'
-        )->withPivot('doctor_role', 'professional_fee', 'pooled_fee');
+            'doctor_id'
+        )->withPivot('doctor_role', 'professional_fee');
     }
 }

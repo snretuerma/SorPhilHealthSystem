@@ -207,9 +207,7 @@
 /**
  * TODO:
  *  1. Filter name to match format
- *  2. Clear form fields (note proper placement)
- *  3. Modify the edit function to a better one
- *  4. Delete function
+ *  2. Modify the edit function to a better one
 **/
 'use strict'
 export default {

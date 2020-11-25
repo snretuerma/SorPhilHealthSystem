@@ -21,10 +21,10 @@ class CreateCreditRecordsTable extends Migration
             $table->date('admission_date');
             $table->date('discharge_date');
             // private, new, old
-            $table->string('type');
-            $table->decimal('total', 19, 2);
-            $table->decimal('non_medical_fee', 19, 2)->nullable();
-            $table->decimal('medical_fee', 19, 2)->nullable();
+            $table->string('record_type');
+            $table->decimal('total', 19, 4);
+            $table->decimal('non_medical_fee', 19, 4)->nullable();
+            $table->decimal('medical_fee', 19, 4)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
