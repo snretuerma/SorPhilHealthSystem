@@ -9,7 +9,7 @@
             </div>
         </div>
         <!-- End Header -->
-        <div id="search_box" class="row">
+        <div id="search-box" class="row">
             <div class="col-xl-9 col-lg-8 col-md-6 col-sm-12">
                 <el-input
                     prefix-icon="el-icon-search"
@@ -129,7 +129,7 @@
             :close-on-press-escape="false"
             :close-on-click-modal="false"
         >
-            <el-form :model="form" :rules="rules">
+            <el-form :model="form" :rules="rules" ref="doctors_form">
                 <el-row>
                     <el-col>
                         <el-form-item label="Name" prop="name">
@@ -143,34 +143,44 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-                <el-row>
-                    <el-col :span="12">
-                        <el-form-item
-                            label="Employment Type"
-                            label-width="150px"
-                            prop="is_parttime"
-                        >
-                            <el-radio-group v-model="form.is_parttime">
-                                <el-radio label="0" border >Full-time</el-radio>
-                                <el-radio label="1" border >Part-time</el-radio>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-form-item prop="is_parttime" label="Employment Type">
+                            <br>
+                            <el-radio-group v-model="form.is_parttime" >
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                        <el-radio label="0">Full-time</el-radio>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                        <el-radio label="1">Part-time</el-radio>
+                                    </div>
+                                </div>
                             </el-radio-group>
                             <span class="font-italic text-danger" v-if="errors.is_parttime">
-                                    <small>{{ errors.is_parttime[0] }}</small>
+                                <small>{{ errors.is_parttime[0] }}</small>
                             </span>
                         </el-form-item>
-                    </el-col>
-                    <el-col :span="12">
-                            <el-form-item label="Employed As" prop="is_active">
-                                <el-radio-group v-model="form.is_active">
-                                    <el-radio label="1" border >Active</el-radio>
-                                    <el-radio label="0" border >Inactive</el-radio>
-                                </el-radio-group>
-                                <span class="font-italic text-danger" v-if="errors.is_active">
-                                    <small>{{ errors.is_active[0] }}</small>
-                                </span>
-                            </el-form-item>
-                        </el-col>
-                </el-row>
+                    </div>
+                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-form-item prop="is_active" label="Employment Status">
+                            <br>
+                            <el-radio-group v-model="form.is_active">
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                        <el-radio label="1">Active</el-radio>
+                                    </div>
+                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                        <el-radio label="0">Inactive</el-radio>
+                                    </div>
+                                </div>
+                            </el-radio-group>
+                            <span class="font-italic text-danger" v-if="errors.is_active">
+                                <small>{{ errors.is_active[0] }}</small>
+                            </span>
+                        </el-form-item>
+                    </div>
+                </div>
             </el-form>
             <span slot="footer" class="dialog-footer">
                 <el-button @click="show_dialog = false">Cancel</el-button>
@@ -338,10 +348,12 @@ export default {
                         axios.put('edit_doctor', this.form)
                         .then(response => {
                             if (response.status >= 200 && response.status <=299) {
-                                var find = this.doctors[this.doctors.findIndex(object => object.id == response.data.id)]
-                                find.name = response.data.name
-                                find.is_parttime = response.data.is_parttime
-                                find.is_active = response.data.is_active
+                                var index = this.doctors.findIndex(object => object.id == response.data.id);
+                                if (index !== undefined) {
+                                    this.doctors[index].name = response.data.name;
+                                    this.doctors[index].is_parttime = response.data.is_parttime;
+                                    this.doctors[index].is_active = response.data.is_active;
+                                }
                                 this.show_dialog = false;
                                 this.formResetFields();
                                 this.edit_object = '';
@@ -426,8 +438,8 @@ export default {
             this.page = value;
         },
         formResetFields() {
-            if (this.$refs[this.form] !== undefined) {
-                this.$refs[this.form].resetFields();
+            if(this.$refs.doctors_form !== undefined) {
+                this.$refs.doctors_form.resetFields();
             }
         }
     },
@@ -438,10 +450,13 @@ export default {
 </script>
 
 <style lang="css">
-    #search_box {
+    #search-box {
         margin-bottom: 10px;
     }
     .block-button, .block-button button {
+        width: 100%;
+    }
+    .doctors-form-radio-button {
         width: 100%;
     }
 </style>
