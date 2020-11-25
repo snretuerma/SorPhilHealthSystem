@@ -80,7 +80,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     //Patients
 
     //Records
-    Route::get('/records', 'UserController@records')->name('records');
+    // Route::get('/records', 'UserController@records')->name('records');
 
     //Restore
     Route::get('/restore', 'UserController@restore')->name('restore');
@@ -101,6 +101,9 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/setting', 'UserController@setting')->name('setting');
     Route::post('update_setting', 'UserController@updateSetting');
 
+    //user record
+    Route::get('/records', 'UserController@records')->name('records');
+    Route::get('/get_records', 'UserController@getRecords');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');

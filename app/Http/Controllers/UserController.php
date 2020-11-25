@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use DB;
+use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Patient;
 use App\Models\Hospital;
@@ -11,6 +12,7 @@ use App\Models\User;
 use App\Models\Personnel;
 use App\Models\MedicalRecord;
 use App\Models\Contribution;
+use App\Models\CreditRecord;
 
 use App\Imports\User\PersonnelImport;
 use App\Imports\User\PatientImport;
@@ -217,22 +219,28 @@ class UserController extends Controller
         $comanagement = intval($request->comanagement) / 100;
         $admitting = intval($request->admitting) / 100;
         $data = '{
-            "medical":'.$medical.',
-            "nonmedical":'.$nonmedical.',
-            "pooled":'.$pooled.',
-            "shared":'.$shared.',
+            "medical":' . $medical . ',
+            "nonmedical":' . $nonmedical . ',
+            "pooled":' . $pooled . ',
+            "shared":' . $shared . ',
             "physicians":[
-                            '.$requesting.',
-                            '.$surgeon.',
-                            '.$healthcare.',
-                            '.$er.',
-                            '.$anesthesiologist.',
-                            '.$comanagement.',
-                            '.$admitting.'
+                            ' . $requesting . ',
+                            ' . $surgeon . ',
+                            ' . $healthcare . ',
+                            ' . $er . ',
+                            ' . $anesthesiologist . ',
+                            ' . $comanagement . ',
+                            ' . $admitting . '
                         }]
         }';
         $hospital = Hospital::where('id', Auth::user()->hospital_id)->first();
         $hospital->setting = $data;
         return $hospital->save();
+    }
+    public function getRecords()
+    {
+        $records=CreditRecord::with('hospital','doctors')
+        ->get();
+        return response()->json($records);
     }
 }

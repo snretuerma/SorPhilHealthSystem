@@ -23,7 +23,7 @@ class CreditRecordSeeder extends Seeder
             'attending','requesting','surgeon','healthcare','er',
             'anesthesiologist','comanagement','admitting'
         ];
-        for($index = 0; $index < 300; $index++) {
+        for($index = 0; $index < 5; $index++) {
             $record = new CreditRecord;
             $record->hospital()->associate(Hospital::find(1)->id);
             $record->patient_name = $faker->name;
@@ -35,7 +35,7 @@ class CreditRecordSeeder extends Seeder
             $record->non_medical_fee = $record->total/2;
             $record->medical_fee = $record->non_medical_fee;
             $record->save();
-            $doctors = Doctor::inRandomOrder(3)->get();
+            $doctors = Doctor::where('hospital_id', $record->hospital_id)->get()->random(3);
             foreach($doctors as $doctor) {
                 $doctor->credit_records()->attach($record->id, [
                     'doctor_role' => $physicians[rand(0, 7)],
@@ -45,7 +45,7 @@ class CreditRecordSeeder extends Seeder
             }
         }
 
-        for($index = 0; $index < 50; $index++) {
+        for($index = 0; $index < 10; $index++) {
             $record = new CreditRecord;
             $record->hospital()->associate(Hospital::find(1)->id);
             $record->patient_name = $faker->name;
@@ -57,7 +57,7 @@ class CreditRecordSeeder extends Seeder
             $record->non_medical_fee = $record->total/2;
             $record->medical_fee = $record->non_medical_fee;
             $record->save();
-            $doctors = Doctor::inRandomOrder(3)->get();
+            $doctors = Doctor::where('hospital_id', $record->hospital_id)->get()->random(3);
             foreach($doctors as $doctor) {
                 $doctor->credit_records()->attach($record->id, [
                     'doctor_role' => $physicians[rand(0, 7)],
@@ -67,7 +67,7 @@ class CreditRecordSeeder extends Seeder
             }
         }
 
-        for($index = 0; $index < 100; $index++) {
+        for($index = 0; $index < 20; $index++) {
             $record = new CreditRecord;
             $record->hospital()->associate(Hospital::find(1)->id);
             $record->patient_name = $faker->name;
