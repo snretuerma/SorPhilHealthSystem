@@ -73,6 +73,10 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
     //Doctors
     Route::get('/doctors', 'UserController@doctors')->name('doctors');
+
+    //Summary
+    Route::get('/summary', 'UserController@summary')->name('summary');
+    Route::get('get_summary', 'UserController@getSummary');
     //Budget
 
     //Staffs

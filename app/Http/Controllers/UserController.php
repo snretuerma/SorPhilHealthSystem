@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Models\Personnel;
 use App\Models\MedicalRecord;
 use App\Models\Contribution;
+use App\Models\Doctor;
 
 use App\Imports\User\PersonnelImport;
 use App\Imports\User\PatientImport;
@@ -144,7 +145,18 @@ class UserController extends Controller
     {
         return view('roles.user.doctors');
     }
+    //Summary
+    public function summary()
+    {
+        return view('roles.user.summary');
+    }
 
+    public function getSummary()
+    {
+        $summary = Doctor::with('credit_records')
+        ->get();
+        return response()->json($summary);
+    }
     //Budget
 
     //Personnel
@@ -217,18 +229,18 @@ class UserController extends Controller
         $comanagement = intval($request->comanagement) / 100;
         $admitting = intval($request->admitting) / 100;
         $data = '{
-            "medical":'.$medical.',
-            "nonmedical":'.$nonmedical.',
-            "pooled":'.$pooled.',
-            "shared":'.$shared.',
+            "medical":' . $medical . ',
+            "nonmedical":' . $nonmedical . ',
+            "pooled":' . $pooled . ',
+            "shared":' . $shared . ',
             "physicians":[
-                            '.$requesting.',
-                            '.$surgeon.',
-                            '.$healthcare.',
-                            '.$er.',
-                            '.$anesthesiologist.',
-                            '.$comanagement.',
-                            '.$admitting.'
+                            ' . $requesting . ',
+                            ' . $surgeon . ',
+                            ' . $healthcare . ',
+                            ' . $er . ',
+                            ' . $anesthesiologist . ',
+                            ' . $comanagement . ',
+                            ' . $admitting . '
                         }]
         }';
         $hospital = Hospital::where('id', Auth::user()->hospital_id)->first();

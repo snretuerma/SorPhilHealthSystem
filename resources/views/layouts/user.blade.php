@@ -75,6 +75,11 @@
                             </a>
                         </li>
                         <li class="sidebar li">
+                            <a href="{{route('summary')}}">
+                                <i class="fa fa-list-alt"></i><span>Summary</span>
+                            </a>
+                        </li>
+                        <li class="sidebar li">
                             <a href="{{route('doctors')}}">
                                 <i class="fa fa-user-md"></i><span>Doctors</span>
                             </a>
