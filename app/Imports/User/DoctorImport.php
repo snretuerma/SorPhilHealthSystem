@@ -8,18 +8,18 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Carbon\Carbon;
 use Auth;
 use Illuminate\Support\Str;
+use Maatwebsite\Excel\Concerns\WithCustomCsvSettings;
 
-class DoctorImport implements ToModel,WithHeadingRow
+class DoctorImport implements ToModel,WithHeadingRow,WithCustomCsvSettings
 {
     private $rows = 0;
 
     public function model(array $row)
     {
         ++$this->rows;
-         /*foreach($row as $v){
-        dd(strval($row['name']));
-        }*/
-       $name = Str::of($row['name'])->ltrim()->rtrim();
+
+        dd($row);
+        /*$name = Str::of($row['name'])->ltrim()->rtrim();
         $is_active = Str::of($row['is_active'])->ltrim()->rtrim();
         $is_parttime = Str::of($row['is_parttime'])->ltrim()->rtrim();
 
@@ -29,10 +29,16 @@ class DoctorImport implements ToModel,WithHeadingRow
         $doctor->name = $name;
         $doctor->is_active = $is_active;
         $doctor->is_parttime = $is_parttime;
-        $doctor->save();
+        $doctor->save();*/
     }
     public function getRowCount(): int
     {
         return $this->rows;
+    }
+    public function getCsvSettings(): array
+    {
+        return [
+            'input_encoding' => 'ISO-8859-1'
+        ];
     }
 }

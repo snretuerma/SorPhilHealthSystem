@@ -15,6 +15,7 @@ use App\Models\Contribution;
 //doctor imp
 use App\Models\Doctor;
 use App\Imports\User\DoctorImport;
+use App\Imports\User\CreditRecordImport;
 //end
 
 use App\Imports\User\PersonnelImport;
@@ -55,10 +56,21 @@ class UserController extends Controller
         //$postData = request()->file('doctorRecord');
         //dd($postData_sample);
 
-        $import = new DoctorImport;
+        //for doctor import
+        /*$import = new DoctorImport;
         $postData = request()->file('doctorRecord');
         Excel::import($import, $postData[0]);
-        return $import->getRowCount();
+        return $import->getRowCount();*/
+
+        
+        //for credit record
+        $import = new CreditRecordImport();
+        $postData = request()->file('doctorRecord');
+        Excel::import($import, $postData[0]);/**/
+
+
+        //Excel::import($import, $postData[0]->getClientOriginalName());
+        //dd($postData[0]->getClientOriginalName());
 
         //$data = Excel::load('file.csv', false, 'ISO-8859-1');
 
