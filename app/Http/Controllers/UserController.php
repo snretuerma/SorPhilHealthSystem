@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use Auth;
 use DB;
 
-use App\Models\Patient;
 use App\Models\Hospital;
 use App\Models\User;
 use App\Models\Personnel;
@@ -28,6 +27,7 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -133,6 +133,7 @@ class UserController extends Controller
     //User Role Reset Password function
     public function resetPass(resetPassRequest $request)
     {
+        // TODO: Add validation and confirmation
         $new_pass = User::find(Auth::user()->id);
         $new_pass->password = Hash::make($request->password);
         $new_pass->save();
@@ -158,10 +159,66 @@ class UserController extends Controller
         return response()->json($summary);
     }
     //Budget
+    public function getDoctors()
+    {
+        return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
+    }
 
-    //Personnel
+    public function addDoctor(Request $request):Doctor
+    {
+        $request->validate([
+            'name' => 'required|max:255',
+            'is_active' => 'required',
+            'is_parttime' => 'required'
+        ]);
 
-    //Patients
+        $doctor = new Doctor;
+        $doctor->name = $request->name;
+        $doctor->is_active = $request->is_active;
+        $doctor->is_parttime = $request->is_parttime;
+        $doctor->save();
+
+        return $doctor;
+    }
+
+    public function editDoctor(Request $request):Doctor
+    {
+        $request->validate([
+            'name' => 'required|max:255',
+            'is_active' => 'required',
+            'is_parttime' => 'required'
+        ]);
+
+        $doctor = Doctor::find($request->id);
+        $doctor->name = $request->name;
+        $doctor->is_active = (boolean)$request->is_active;
+        $doctor->is_parttime = (boolean)$request->is_parttime;
+        $doctor->save();
+
+        return $doctor;
+    }
+
+    public function deleteDoctor(String $id):JsonResponse
+    {
+        $doctor = Doctor::find($id);
+        if($doctor->credit_records->count() == 0) {
+            $message = "Doctor ".$doctor->name." successfully deleted";
+            $doctor->delete();
+            return response()->json([
+                'title' => 'Deleting Doctor Success',
+                'message' => $message,
+                'status' => 'success',
+            ]);
+        }
+        $message = "Failed to delete doctor ".
+            $doctor->name.
+            " because doctor has records in the database. Please contact the Administrator if you want to really delete this doctor data";
+        return response()->json([
+            'title' => 'Deleting Doctor Failed',
+            'message' => $message,
+            'status' => 'error',
+        ]);
+    }
 
     //Records
     public function records()
@@ -217,6 +274,7 @@ class UserController extends Controller
 
     public function updateSetting(Request $request)
     {
+        // TODO: Validation
         $medical = intval($request->medical) / 100;
         $nonmedical = intval($request->nonmedical) / 100;
         $pooled = intval($request->pooled) / 100;
