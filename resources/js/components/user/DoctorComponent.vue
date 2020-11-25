@@ -100,7 +100,7 @@
                                             type="danger"
                                             icon="el-icon-delete"
                                             circle
-                                            @click="handleDelete(scope.$index, scope.row)"
+                                            @click="handleDelete(scope.row)"
                                         ></el-button>
                                     </el-tooltip>
                                 </template>
@@ -392,6 +392,45 @@ export default {
                     break;
             }
         },
+        deleteDoctor(data) {
+            this.$confirm(
+                "Are you sure you want to delete?",
+                "Confirm Delete",
+                {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: "Delete",
+                    cancelButtonText: "Cancel",
+                    type: "warning"
+                }
+            ).then(() => {
+                axios.delete(`delete_doctor/${data.id}`)
+                .then(response => {
+                    console.log(response.data);
+                    if (response.status > 199 && response.status < 203) {
+                        if(response.data.status == 'success') {
+                            var index = this.doctors.findIndex(object => object.id == data.id);
+                            if (index !== undefined) {
+                                this.doctors.splice(index, 1);
+                            }
+                        }
+                        this.$notify({
+                            type: response.data.status,
+                            title: response.data.title,
+                            message: response.data.message,
+                            offset: 0,
+                        });
+                    }
+                });
+            })
+            .catch(action => {
+                this.$notify({
+                    type: 'info',
+                    title: 'Deleting Doctor Cancelled',
+                    message: `Delete method cancelled. No changes were made`,
+                    offset: 0,
+                });
+            });
+        },
         formDialog(id) {
             /**
              * TODO: Don't use if else statement here, you can use the parameter as the #id because it is also string
@@ -419,8 +458,8 @@ export default {
             this.form.form_type = "edit";
             this.formResetFields();
         },
-        handleDelete() {
-
+        handleDelete(row_data) {
+            this.deleteDoctor(row_data);
         },
         employmentType(data) {
             if(data.is_parttime) {

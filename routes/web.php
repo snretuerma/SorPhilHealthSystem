@@ -76,6 +76,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('get_doctors', 'UserController@getDoctors');
     Route::post('add_doctor', 'UserController@addDoctor');
     Route::put('edit_doctor', 'UserController@editDoctor');
+    Route::delete('delete_doctor/{id}', 'UserController@deleteDoctor');
     //Records
     Route::get('/records', 'UserController@records')->name('records');
 

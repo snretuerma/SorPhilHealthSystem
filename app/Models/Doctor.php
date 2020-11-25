@@ -21,7 +21,7 @@ class Doctor extends Model
             'App\Models\CreditRecord',
             'record_doctors',
             'doctor_id',
-            'record_id'
+            'id'
         )->withPivot('doctor_role', 'professional_fee', 'pooled_fee');
     }
 }

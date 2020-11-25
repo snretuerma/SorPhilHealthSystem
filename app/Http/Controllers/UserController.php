@@ -24,6 +24,7 @@ use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
 class UserController extends Controller
@@ -180,6 +181,28 @@ class UserController extends Controller
         $doctor->save();
 
         return $doctor;
+    }
+
+    public function deleteDoctor(String $id):JsonResponse
+    {
+        $doctor = Doctor::find($id);
+        if($doctor->credit_records->count() == 0) {
+            $message = "Doctor ".$doctor->name." successfully deleted";
+            $doctor->delete();
+            return response()->json([
+                'title' => 'Deleting Doctor Success',
+                'message' => $message,
+                'status' => 'success',
+            ]);
+        }
+        $message = "Failed to delete doctor ".
+            $doctor->name.
+            " because doctor has records in the database. Please contact the Administrator if you want to really delete this doctor data";
+        return response()->json([
+            'title' => 'Deleting Doctor Failed',
+            'message' => $message,
+            'status' => 'error',
+        ]);
     }
 
     //Records
