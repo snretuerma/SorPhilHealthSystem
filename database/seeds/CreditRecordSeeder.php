@@ -54,9 +54,6 @@ class CreditRecordSeeder extends Seeder
                     'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
                 ]);
             }
-
-
-
         }
 
         for($index = 0; $index < 10; $index++) {
