@@ -73,12 +73,10 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
     //Doctors
     Route::get('/doctors', 'UserController@doctors')->name('doctors');
-    //Budget
-
-    //Staffs
-
-    //Patients
-
+    Route::get('get_doctors', 'UserController@getDoctors');
+    Route::post('add_doctor', 'UserController@addDoctor');
+    Route::put('edit_doctor', 'UserController@editDoctor');
+    Route::delete('delete_doctor/{id}', 'UserController@deleteDoctor');
     //Records
     // Route::get('/records', 'UserController@records')->name('records');
 
