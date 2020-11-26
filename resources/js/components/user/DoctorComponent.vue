@@ -136,6 +136,7 @@
                             <el-input
                                 v-model="form.name"
                                 autocomplete="off"
+                                placeholder="Dela Cruz, Juan Jr. Rizal"
                             />
                             <span class="font-italic text-danger" v-if="errors.name">
                                 <small>{{ errors.name[0] }}</small>
@@ -299,30 +300,43 @@ export default {
                         loading.close();
                     }else {
                         this.form.name = this.form.name.trim();
-                        axios.post('add_doctor', this.form)
-                        .then(response => {
-                            this.doctors.push(response.data)
-                            this.show_dialog = false;
-                            this.formResetFields();
-                            loading.close();
-                            this.$notify({
-                                type: 'success',
-                                title: 'Adding Doctor Successful',
-                                message: `Successfully added ${response.data.name}`,
-                                offset: 0,
+                        if(this.testName(this.form.name)) {
+                            axios.post('add_doctor', this.form)
+                            .then(response => {
+                                this.doctors.push(response.data)
+                                this.show_dialog = false;
+                                this.formResetFields();
+                                loading.close();
+                                this.$notify({
+                                    type: 'success',
+                                    title: 'Adding Doctor Successful',
+                                    message: `Successfully added ${response.data.name}`,
+                                    offset: 0,
+                                });
+                            })
+                            .catch(error => {
+                                this.show_dialog = false;
+                                this.formResetFields();
+                                loading.close();
+                                this.$notify({
+                                    type: 'error',
+                                    title: 'Adding Doctor Failed',
+                                    message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                    offset: 0,
+                                });
                             });
-                        })
-                        .catch(error => {
+                        } else {
                             this.show_dialog = false;
-                            this.formResetFields();
                             loading.close();
                             this.$notify({
                                 type: 'error',
                                 title: 'Adding Doctor Failed',
-                                message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                message: `${this.form.name} does not follow the correct naming convention\n (Ex: Dela Cruz, Jose Juan Jr.)`,
                                 offset: 0,
-                            });
-                        });
+                            })
+                            this.formResetFields();
+                        }
+
                     }
                     break;
                 case 'edit':
@@ -478,6 +492,14 @@ export default {
             if(this.$refs.doctors_form !== undefined) {
                 this.$refs.doctors_form.resetFields();
             }
+        },
+        testName(name) {
+            // ^([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*,\s([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*$
+            var regex = new RegExp(/^([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*,\s([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*$/);
+            if(regex.test(name)) {
+              return true;
+            }
+            return false;
         }
     },
     mounted() {
