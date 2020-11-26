@@ -207,8 +207,7 @@
 <script>
 /**
  * TODO:
- *  1. Filter name to match format
- *  2. Modify the edit function to a better one
+ *  1. Modify the edit function to a better one
 **/
 'use strict'
 export default {
