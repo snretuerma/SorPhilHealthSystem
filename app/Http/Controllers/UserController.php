@@ -10,7 +10,6 @@ use App\Models\User;
 use App\Models\Doctor;
 
 //doctor imp
-use App\Models\Doctor;
 use App\Imports\User\DoctorImport;
 use App\Imports\User\CreditRecordImport;
 //end
