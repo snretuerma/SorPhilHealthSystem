@@ -132,11 +132,11 @@
             <el-form :model="form" :rules="rules" ref="doctors_form">
                 <el-row>
                     <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                        <el-form-item label="Last Name" prop="last_name">
+                        <el-form-item label="Last Name" prop="last_name" ref="form_last_name">
                             <el-input
                                 v-model="form.last_name"
                                 autocomplete="off"
-                                @change="buildFullName"
+                                @input="buildFullName"
                             />
                             <span class="font-italic text-danger" v-if="errors.last_name">
                                 <small>{{ errors.last_name[0] }}</small>
@@ -144,11 +144,11 @@
                         </el-form-item>
                     </el-col>
                     <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                        <el-form-item label="First Name" prop="first_name">
+                        <el-form-item label="First Name" prop="first_name" ref="form_first_name">
                             <el-input
                                 v-model="form.first_name"
                                 autocomplete="off"
-                                @change="buildFullName"
+                                @input="buildFullName"
                             />
                             <span class="font-italic text-danger" v-if="errors.first_name">
                                 <small>{{ errors.first_name[0] }}</small>
@@ -158,11 +158,11 @@
                 </el-row>
                 <el-row>
                     <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                        <el-form-item label="Middle Name" prop="middle_name">
+                        <el-form-item label="Middle Name" prop="middle_name" ref="form_middle_name">
                             <el-input
                                 v-model="form.middle_name"
                                 autocomplete="off"
-                                @change="buildFullName"
+                                @input="buildFullName"
                             />
                             <span class="font-italic text-danger" v-if="errors.middle_name">
                                 <small>{{ errors.middle_name[0] }}</small>
@@ -170,18 +170,18 @@
                         </el-form-item>
                     </el-col>
                     <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                        <el-form-item label="Suffix" prop="suffix">
+                        <el-form-item label="Suffix" prop="suffix" ref="form_suffix">
                             <el-input
                                 v-model="form.suffix"
                                 autocomplete="off"
-                                @change="buildFullName"
+                                @input="buildFullName"
                             />
                         </el-form-item>
                     </el-col>
                 </el-row>
                 <el-row>
                     <el-col>
-                        <el-form-item label="Name will appear like this on the database" prop="name">
+                        <el-form-item label="Full Name" prop="name">
                             <el-input
                                 v-model="form.name"
                                 autocomplete="off"
@@ -194,7 +194,7 @@
                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                         <el-form-item prop="is_parttime" label="Employment Type">
                             <br>
-                            <el-radio-group v-model="form.is_parttime" >
+                            <el-radio-group v-model="form.is_parttime" ref="form_is_parttime">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                                         <el-radio label="0">Full-time</el-radio>
@@ -212,7 +212,7 @@
                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                         <el-form-item prop="is_active" label="Employment Status">
                             <br>
-                            <el-radio-group v-model="form.is_active">
+                            <el-radio-group v-model="form.is_active" ref="form_is_active">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                                         <el-radio label="1">Active</el-radio>
@@ -469,7 +469,7 @@ export default {
         },
         deleteDoctor(data) {
             this.$confirm(
-                "Are you sure you want to delete?",
+                `Are you sure you want to delete record for doctor ${data.name}?`,
                 "Confirm Delete",
                 {
                     distinguishCancelAndClose: true,
@@ -532,6 +532,7 @@ export default {
             this.show_dialog = true;
             this.form.form_type = "edit";
             this.formResetFields();
+            this.form.name = row_data.name;
         },
         handleDelete(row_data) {
             this.deleteDoctor(row_data);
@@ -557,7 +558,6 @@ export default {
             }
         },
         testName(name) {
-            // ^([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*,\s([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*$
             var regex = new RegExp(/^([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*,\s([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*$/);
             if(regex.test(name)) {
               return true;
