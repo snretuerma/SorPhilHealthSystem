@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class editHospitalRequest extends FormRequest
+class EditHospitalRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -35,7 +35,7 @@ class editHospitalRequest extends FormRequest
         'name.required' => 'Name is required',
         'address.required' => 'Address is required',
         'hospital_code.required' => 'Abbreviation required',
-        
+
     ];
 }
 }
