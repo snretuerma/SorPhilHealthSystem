@@ -16,6 +16,7 @@ use App\Exports\User\PatientExport;
 use App\Exports\User\PersonnelExport;
 use App\Http\Requests\ResetPassRequest;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -191,9 +192,9 @@ class UserController extends Controller
      * Gets the list of doctors for the current user's hospital
      *
      * @var void
-     * @return Doctor
+     * @return Collection
      */
-    public function getDoctors(): Doctor
+    public function getDoctors(): Collection
     {
         return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
     }

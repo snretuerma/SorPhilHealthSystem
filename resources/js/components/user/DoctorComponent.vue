@@ -197,10 +197,10 @@
                             <el-radio-group v-model="form.is_parttime" ref="form_is_parttime">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio label="0">Full-time</el-radio>
+                                        <el-radio :label="false">Full-time</el-radio>
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio label="1">Part-time</el-radio>
+                                        <el-radio :label="true">Part-time</el-radio>
                                     </div>
                                 </div>
                             </el-radio-group>
@@ -215,10 +215,10 @@
                             <el-radio-group v-model="form.is_active" ref="form_is_active">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio label="1">Active</el-radio>
+                                        <el-radio :label="true">Active</el-radio>
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio label="0">Inactive</el-radio>
+                                        <el-radio :label="false">Inactive</el-radio>
                                     </div>
                                 </div>
                             </el-radio-group>
@@ -269,7 +269,7 @@ export default {
                 middle_name: '',
                 last_name: '',
                 suffix: '',
-                is_parttime: '',
+                is_parttime: false,
                 is_active: true,
                 form_type: '',
             },
@@ -351,7 +351,7 @@ export default {
             });
             switch(this.form.form_type) {
                 case 'add':
-                    if(this.form.name == '' || this.form.is_parttime == '' || this.is_active == '') {
+                    if(this.form.name == '' || this.form.is_parttime === '' || this.is_active ==='') {
                         this.$notify({
                             type: 'info',
                             title: 'Adding Doctor Failed',
@@ -405,8 +405,8 @@ export default {
                 case 'edit':
                     if(
                         this.edit_object.name == this.form.name &&
-                        this.edit_object.is_active == this.form.is_active &&
-                        this.edit_object.is_parttime == this.form.is_parttime
+                        this.edit_object.is_active === this.form.is_active &&
+                        this.edit_object.is_parttime === this.form.is_parttime
                     ) {
                         this.$notify({
                             type: 'info',
@@ -480,7 +480,6 @@ export default {
             ).then(() => {
                 axios.delete(`delete_doctor/${data.id}`)
                 .then(response => {
-                    console.log(response.data);
                     if (response.status > 199 && response.status < 203) {
                         if(response.data.status == 'success') {
                             var index = this.doctors.findIndex(object => object.id == data.id);
@@ -528,11 +527,13 @@ export default {
             this.formResetFields();
         },
         handleEdit(row_data) {
+            this.formResetFields();
             this.edit_object = row_data;
             this.show_dialog = true;
             this.form.form_type = "edit";
-            this.formResetFields();
             this.form.name = row_data.name;
+            this.form.is_parttime = Boolean(row_data.is_parttime);
+            this.form.is_active = Boolean(row_data.is_active);
         },
         handleDelete(row_data) {
             this.deleteDoctor(row_data);
