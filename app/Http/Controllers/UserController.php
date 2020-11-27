@@ -242,8 +242,8 @@ class UserController extends Controller
 
         $doctor = Doctor::find($request->id);
         $doctor->name = $request->name;
-        $doctor->is_active = (boolean)$request->is_active;
-        $doctor->is_parttime = (boolean)$request->is_parttime;
+        $doctor->is_active = $request->is_active;
+        $doctor->is_parttime = $request->is_parttime;
         $doctor->save();
 
         return $doctor;
