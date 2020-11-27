@@ -2,16 +2,8 @@
 /**
  * @file HomeController
  * Controller for handling the default behavior of Laravel landing pages
- */
-
-namespace App\Http\Controllers;
-
-use Auth;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Spatie\Permission\Models\Role;
-
-/**
+ * php version 7.2.5
+ *
  * @category App\Http\Controllers
  * @package
  * @author Shannon Francis Retuerma <snretuerma@up.edu.ph>
@@ -22,6 +14,14 @@ use Spatie\Permission\Models\Role;
  * @license N/A
  * @version Development v.2
  */
+
+namespace App\Http\Controllers;
+
+use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Spatie\Permission\Models\Role;
+
 class HomeController extends Controller
 {
     /**
