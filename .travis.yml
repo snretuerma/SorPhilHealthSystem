@@ -12,6 +12,7 @@ before_script:
   - cp .env.travis .env
   - composer require --dev squizlabs/php_codesniffer
   - phpenv rehash
+  - composer dump-autoload
   - nvm install --lts
   - npm install npm@latest -g
   - npm install -g jshint
