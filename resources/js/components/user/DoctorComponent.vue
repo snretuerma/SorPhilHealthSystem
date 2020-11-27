@@ -131,16 +131,62 @@
         >
             <el-form :model="form" :rules="rules" ref="doctors_form">
                 <el-row>
+                    <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-form-item label="Last Name" prop="last_name">
+                            <el-input
+                                v-model="form.last_name"
+                                autocomplete="off"
+                                @change="buildFullName"
+                            />
+                            <span class="font-italic text-danger" v-if="errors.last_name">
+                                <small>{{ errors.last_name[0] }}</small>
+                            </span>
+                        </el-form-item>
+                    </el-col>
+                    <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-form-item label="First Name" prop="first_name">
+                            <el-input
+                                v-model="form.first_name"
+                                autocomplete="off"
+                                @change="buildFullName"
+                            />
+                            <span class="font-italic text-danger" v-if="errors.first_name">
+                                <small>{{ errors.first_name[0] }}</small>
+                            </span>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-form-item label="Middle Name" prop="middle_name">
+                            <el-input
+                                v-model="form.middle_name"
+                                autocomplete="off"
+                                @change="buildFullName"
+                            />
+                            <span class="font-italic text-danger" v-if="errors.middle_name">
+                                <small>{{ errors.middle_name[0] }}</small>
+                            </span>
+                        </el-form-item>
+                    </el-col>
+                    <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-form-item label="Suffix" prop="suffix">
+                            <el-input
+                                v-model="form.suffix"
+                                autocomplete="off"
+                                @change="buildFullName"
+                            />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
                     <el-col>
-                        <el-form-item label="Name" prop="name">
+                        <el-form-item label="Name will appear like this on the database" prop="name">
                             <el-input
                                 v-model="form.name"
                                 autocomplete="off"
-                                placeholder="Dela Cruz, Juan Jr. Rizal"
+                                :readonly="true"
                             />
-                            <span class="font-italic text-danger" v-if="errors.name">
-                                <small>{{ errors.name[0] }}</small>
-                            </span>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -219,6 +265,10 @@ export default {
             form: {
                 id: '',
                 name: '',
+                first_name: '',
+                middle_name: '',
+                last_name: '',
+                suffix: '',
                 is_parttime: '',
                 is_active: true,
                 form_type: '',
@@ -227,10 +277,24 @@ export default {
             page: 1,
             page_size: 10,
             rules: {
-                name: [
+                first_name: [
                     {
                         required: true,
-                        message: "Name is required",
+                        message: "First name is required",
+                        trigger: "blur"
+                    }
+                ],
+                middle_name: [
+                    {
+                        required: true,
+                        message: "Middle name is required",
+                        trigger: "blur"
+                    }
+                ],
+                last_name: [
+                    {
+                        required: true,
+                        message: "Last name is required",
                         trigger: "blur"
                     }
                 ],
@@ -499,6 +563,13 @@ export default {
               return true;
             }
             return false;
+        },
+        buildFullName() {
+            if (this.form.suffix.trim()) {
+                this.form.name = `${this.form.last_name.trim()}, ${this.form.first_name.trim()} ${this.form.suffix.trim()} ${this.form.middle_name.trim()}`;
+            } else {
+                this.form.name = `${this.form.last_name.trim()}, ${this.form.first_name.trim()} ${this.form.middle_name.trim()}`;
+            }
         }
     },
     mounted() {
