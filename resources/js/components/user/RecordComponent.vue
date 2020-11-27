@@ -9,7 +9,7 @@
             </div>
         </div>
         <!-- End Header -->
-    
+
         <el-dropdown
             @command="formDialog"
             style="float:right;margin-left:3px;"
@@ -184,14 +184,14 @@
                     >
                         <el-button slot="trigger" type="primary" plain>select supported excel file</el-button>
                         <el-button type="success" @click="uploadToDatabase">upload to database</el-button>
-                        
+
                     </el-upload>
                     <el-progress v-if="progressbar_import" :percentage="percentage" color="#409eff"></el-progress>
                 </el-form-item>
             </el-form>
             <el-row>
                 <el-col>
-                    <el-tabs type="border-card" tab-position="bottom">
+                    <el-tabs type="border-card" tab-position="bottom" @tab-click="handleClickTab">
                         <!--<el-tab-pane>
                             <span slot="label"><i class="el-icon-date"></i> Route</span>
                             Route
@@ -203,51 +203,101 @@
                             v-for="(item,index) in preview_excel_sheet_data"
                             :key="item.name"
                             :label="item.title"
-                            :name="item.title+item.name"
+                            :name="item.nameoftab"
                         >
                         {{ item.title }}
                             <el-table
-                                :data="item.content"
+                                :data="data"
                                 style="width: 100%"
-                                height="250">
-                                <!--<el-table-column v-for="(ite,index) in item.content" 
+                                height="350"
+                                >
+                                <!--<el-table-column v-for="(ite,index) in item.content"
                                                 :key="item.name"
                                                 :prop="item.name"
                                                 :label="item.name"> {{ ite[index] }}
-                                                
+
                                 </el-table-column>-->
                                 <el-table-column
                                 fixed
-                                prop="erewr"
-                                label="Date"
-                                width="150">
+                                prop="Patient_Name"
+                                label="Patient Name"
+                               >
                                 </el-table-column>
                                 <el-table-column
-                                prop="1"
-                                label="Name"
-                                width="120">
+                                prop="Admission_Date"
+                                label="Admission Date"
+                                :formatter="covertDate"
+                               >
                                 </el-table-column>
                                 <el-table-column
-                                prop="2"
-                                label="State"
-                                width="120">
+                                prop="Discharge_Date"
+                                label="Discharge Date"
+                                >
                                 </el-table-column>
                                 <el-table-column
-                                prop="3"
-                                label="City"
-                                width="120">
+                                prop="Total_PF"
+                                label="Total PF"
+                               >
                                 </el-table-column>
                                 <el-table-column
-                                prop="4"
-                                label="Address"
-                                width="300">
+                                prop="Attending_Physician"
+                                label="Attending Physician"
+                                >
                                 </el-table-column>
                                 <el-table-column
-                                prop="5"
-                                label="Zip"
-                                width="120">
+                                prop="Admitting_Physician"
+                                label="Admitting Physician"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                prop="Requesting_Physician"
+                                label="Requesting Physician"
+                               >
+                                </el-table-column>
+                                <el-table-column
+                                prop="Reffered_Physician"
+                                label="Reffered Physician"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                prop="Co_Management"
+                                label="Co Management"
+                               >
+                                </el-table-column>
+                                <el-table-column
+                                prop="Anesthesiology_Physician"
+                                label="Anesthesiology Physician"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                prop="Surgeon_Physician"
+                                label="Surgeon Physician"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                prop="HealthCare_Physician"
+                                label="HealthCare Physician"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                prop="ER_Physician"
+                                label="ER Physician"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                prop="Is_Private"
+                                label="Is Private"
+                                min-width="120">
                                 </el-table-column>
                             </el-table>
+                            <el-pagination
+                                class="align-middle"
+                                background
+                                layout="prev, pager, next"
+                                @current-change="handleCurrentChange"
+                                :page-size="page_size"
+                                :total="total"
+                            /><!---->
                         </el-tab-pane>
                     </el-tabs>
                 </el-col>
@@ -302,16 +352,60 @@ export default {
                 }]
                 },
             value2: '',
+            page: 1,
+            page_size: 10,
+            total: 0,
+            current_tab_content:[],
+            current_tab_table:[],
+            data:[],
+            current_tab: '',
+
         };
     },
     methods: {
-        
+        covertDate(row, column, cellValue, index){
+            /*const unixTimestamp = cellValue
+
+            const milliseconds = cellValue * 1000 // 1575909015000
+
+            const dateObject = new Date(milliseconds)
+
+            const humanDateFormat = dateObject.toLocaleString() //2019-12-9 10:30:15
+
+            dateObject.toLocaleString("en-US", {weekday: "long"}) // Monday
+            dateObject.toLocaleString("en-US", {month: "long"}) // December
+            dateObject.toLocaleString("en-US", {day: "numeric"}) // 9
+            dateObject.toLocaleString("en-US", {year: "numeric"}) // 2019
+            dateObject.toLocaleString("en-US", {hour: "numeric"}) // 10 AM
+            dateObject.toLocaleString("en-US", {minute: "numeric"}) // 30
+            dateObject.toLocaleString("en-US", {second: "numeric"}) // 15
+            dateObject.toLocaleString("en-US", {timeZoneName: "short"}) // 12/9/2019, 10:30:15 AM CST
+            //return humanDateFormat;
+
+            var ts= cellValue; // say this is the format for decimal timestamp.
+            var dt = new Date(1318781876.721 * 1000);
+            var f = dt.toLocaleString();*/
+
+            return cellValue.getFullYear() + "-" + (cellValue.getMonth() + 1) + "-" + cellValue.getDate() ;
+
+            //console.log(dateObject);
+        },
+        handleCurrentChange(value) {
+            this.page = value;
+
+            this.total = this.current_tab_content[this.current_tab].length;
+            this.data = this.current_tab_content[this.current_tab];
+
+            this.data = this.data.slice(this.page_size * this.page - this.page_size, this.page_size * this.page);
+
+        },
+
         uploadToDatabase() {
             var _this = this;
             //this.$refs.upload.submit();
             //var formData = new FormData();
             //console.log(formData.get('doctorRecord[]'));
-            
+
             //console.log(this.doctorRecord[0]);
 
             /*var formData = new FormData();
@@ -367,11 +461,11 @@ export default {
                         });
                     });*/
 
-        
+
         },
         handleExceedFile(files, fileList) {
                 this.$message.warning(`The limit is 1, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`);
-            
+
         },
         handleRemoveFile(file, fileList) {
             this.$notify({
@@ -388,12 +482,12 @@ export default {
 
             var formData = new FormData();
             formData.append("doctorRecord[]", file.raw);
-            
+
             //this.doctorRecord = [];
             this.doctorRecord.push(file.raw);
 
             //console.log(file.raw);
-            
+
             var _this = this;
 
                 //console.log(e.target.files[0]);
@@ -402,8 +496,8 @@ export default {
                 reader.onloadend = function(e) {
                     //console.log(e);
                         var data = new Uint8Array(reader.result);
-                        var wb = XLSX.read(data,{type:'array'});
-                       //console.log("console me");
+                        var wb = XLSX.read(data,{type:'array', cellDates:true, dateNF:'dd.mm.yyyy h:mm:ss AM/PM'});
+                       console.log("console me");
                         //console.log(wb.SheetNames.length);
                         //var htmlstr = XLSX.write(wb,{sheet:"sheet no1", type:'binary',bookType:'html'});
                         //$('#wrapper')[0].innerHTML += htmlstr;
@@ -414,9 +508,9 @@ export default {
                              //const element = array[i];
                                 let sheetName = wb.SheetNames[i];
                                 let worksheet = wb.Sheets[sheetName];
-                               // console.log(sheetName);
+                                console.log(sheetName);
 
-                               
+
                                 /*this.preview_excel.push({
                                     title: sheetName,
                                     name: i,
@@ -427,19 +521,27 @@ export default {
                                 _this.preview_excel_sheet_data.push({
                                     title: sheetName,
                                     name: i,
-                                    content: XLSX.utils.sheet_to_json(worksheet)
+                                    content: XLSX.utils.sheet_to_json(worksheet),
+                                    nameoftab: sheetName.replace(/\s/g, '')
                                 });
+                                console.log(XLSX.utils.sheet_to_json(worksheet));
 
-                                var rowObj =XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
-                                console.log(JSON.stringify(rowObj));
+                                _this.current_tab_content.push(XLSX.utils.sheet_to_json(worksheet));
+
+
+                               //_this.activeName = (_this.preview_excel_sheet_data[0].title + "0").replace(/\s/g, '');
+
+
+                                //var rowObj =XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
+                                //console.log(JSON.stringify(rowObj));
 
                                 //console.log(XLSX.utils.sheet_to_json(worksheet).length);
-                                
+
                                 /*for (let index = 0; index < XLSX.utils.sheet_to_json(worksheet).length; index++) {
                                     //const element = array[index];
                                     var a = XLSX.utils.sheet_to_json(worksheet);
                                     //console.log(a.indexOf(a[index]));
-                                    
+
                                     console.log(a[a.indexOf(a[index])]);
                                     /*var obj = JSON.parse(a[a.indexOf(a[index])]);
                                     var n = Object.keys(obj).map(function (key,i) {
@@ -452,14 +554,14 @@ export default {
 
                          //console.log("--");
                          //console.log(JSON.stringify(_this.preview_excel_sheetname));
-                         
+
                         /*console.log("gg");
                 var gg = JSON.stringify(_this.preview_excel);
                 console.log(gg);*/
-                        
+
                 } /**/
-                
-                 
+
+
                 /*console.log(e.target.files[0]);
                 var reader = new FileReader();
                 reader.readAsArrayBuffer(e.target.files[0]);
@@ -472,6 +574,32 @@ export default {
                         $('#wrapper')[0].innerHTML += htmlstr;
                 }*/
 
+
+
+        },
+        handleClickTab(tab, event){
+           // console.log(tab.index, event);
+
+           this.current_tab = tab.index;
+
+            //var contentdata = this.preview_excel_sheet_data[tab.index].content;
+            //console.log(contentdata);
+            //this.current_tab_table = contentdata;
+            //this.current_tab_table = this.current_tab_content[tab.index];
+            //this.page = this.current_tab_content[tab.index];
+            this.total = this.current_tab_content[tab.index].length;
+            this.data = this.current_tab_content[tab.index];
+
+            //console.log(this.tableData);
+            //this.page = parseInt(tab.index) + 1;
+            this.page = parseInt(1);
+
+           // var a = this.data.slice(this.pageSize * this.page - this.pageSize, this.pageSize * this.page);
+            console.log("console me");
+            console.log(this.data.slice(this.page_size * this.page - this.page_size, this.page_size * this.page));
+            console.log(this.total);
+            //console.log(this.data.slice(this.page_size * this.page - this.page_size, this.page_size * this.page));
+            this.data = this.data.slice(this.page_size * this.page - this.page_size, this.page_size * this.page);
         },
         formDialog: function(key) {
             switch (key) {
@@ -496,7 +624,7 @@ export default {
             //formData.append("budgets[]", $("#excelcontent").get(0).files[0]);
 
             console.log($("#excelcontent").get(0).files[0]);
-            
+
         console.log($(".el-upload__input").get(0).files[0]);
 
             /*axios
@@ -559,9 +687,28 @@ export default {
                         "FAILURE!! Something went wrong!"
                     );
                 });*/
-        }
+        },
     },
     mounted() {
+        //console.log(this.tableData);
+
+    },
+    computed: {
+        /*searching() {
+            if (!this.search) {
+                this.total = this.doctors.length;
+                return this.doctors;
+            }
+            this.page = 1;
+            return this.doctors.filter(data => data.name.toLowerCase().includes(this.search.toLowerCase()));
+        },
+        tableData() {
+            this.total = this.searching.length;
+            return this.searching.slice(
+                this.page_size * this.page - this.page_size,
+                this.page_size * this.page
+            );
+        }*/
     },
 
 }
