@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Exports;
+
 use Auth;
 use App\Models\Patient;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -20,7 +21,7 @@ class PatientExport implements FromQuery, WithHeadings, WithColumnWidths, WithSt
     {
         $highestRow = $sheet->getHighestRow(); // e.g. 10
         $highestColumn = $sheet->getHighestColumn(); // e.g 'F'
-        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
+        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);// e.g. 5
         for ($row = 1; $row <= $highestRow; ++$row) {
             for ($col = 1; $col <= $highestColumnIndex; ++$col) {
                 $styleArray =[
@@ -40,7 +41,7 @@ class PatientExport implements FromQuery, WithHeadings, WithColumnWidths, WithSt
                 $sheet->getStyle('G'.$row, 'G'.$row)->applyFromArray($styleArray);
                 $sheet->getStyle('H'.$row, 'H'.$row)->applyFromArray($styleArray);
             }
-        } 
+        }
         return [
             1 => [
                 'font' => ['bold' => true],
@@ -61,20 +62,20 @@ class PatientExport implements FromQuery, WithHeadings, WithColumnWidths, WithSt
     {
         return [
             'A' => 15,
-            'B' => 15, 
-            'C' => 20, 
-            'D' => 20, 
-            'E' => 20, 
-            'F' => 20, 
-            'G' => 20, 
-            'H' => 20,           
+            'B' => 15,
+            'C' => 20,
+            'D' => 20,
+            'E' => 20,
+            'F' => 20,
+            'G' => 20,
+            'H' => 20,
         ];
     }
     public function headings(): array
     {
         return [
-            'first_name', 
-            'middle_name', 
+            'first_name',
+            'middle_name',
             'last_name',
             'name_suffix',
             'sex',
@@ -86,22 +87,28 @@ class PatientExport implements FromQuery, WithHeadings, WithColumnWidths, WithSt
     public function query()
     {
         $patient = Patient::query();
-        $patient->select('first_name', 
-                         'middle_name', 
-                         'last_name',
-                         'name_suffix',
-                          Patient::raw('CASE WHEN `sex` = "0" THEN "Male"
-                                             WHEN `sex` = "1" THEN "Female" 
-                                        END'),
-                         'birthdate',
-                          Patient::raw('CASE WHEN `marital_status` = "0" THEN "Single"
-                                             WHEN `marital_status` = "1" THEN "Married"
-                                             WHEN `marital_status` = "2" THEN "Divorced"
-                                             WHEN `marital_status` = "3" THEN "Widowed"
-                                             WHEN `marital_status` > "3" THEN "Others/Prepare Not to Say" 
-                                        END'),
-                         'philhealth_number')
-                ->where('hospital_id', Auth::user()->hospital_id);
+        $patient->select(
+            'first_name',
+            'middle_name',
+            'last_name',
+            'name_suffix',
+            Patient::raw(
+                'CASE WHEN `sex` = "0" THEN "Male"
+                WHEN `sex` = "1" THEN "Female"
+                END'
+            ),
+            'birthdate',
+            Patient::raw(
+                'CASE WHEN `marital_status` = "0" THEN "Single"
+                WHEN `marital_status` = "1" THEN "Married"
+                WHEN `marital_status` = "2" THEN "Divorced"
+                WHEN `marital_status` = "3" THEN "Widowed"
+                WHEN `marital_status` > "3" THEN "Others/Prepare Not to Say"
+                END'
+            ),
+            'philhealth_number'
+            )
+            ->where('hospital_id', Auth::user()->hospital_id);
         return $patient;
     }
 }

@@ -396,4 +396,3 @@ class AdminController extends Controller
     //     return $user->save();
     // }
 }
-

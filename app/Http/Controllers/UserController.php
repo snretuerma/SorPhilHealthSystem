@@ -16,6 +16,7 @@
  */
 
 namespace App\Http\Controllers;
+
 use Auth;
 use DB;
 use App\Models\Hospital;

@@ -30,14 +30,11 @@ class AddHospitalRequest extends FormRequest
         ];
     }
     public function messages()
-{
-    return [
-        'name.required' => 'Name is required',
-        'address.required' => 'Address is required',
-        'hospital_code.required' => 'Abbreviation required',
-
-    ];
+    {
+        return [
+            'name.required' => 'Name is required',
+            'address.required' => 'Address is required',
+            'hospital_code.required' => 'Abbreviation required',
+        ];
+    }
 }
-}
-
-

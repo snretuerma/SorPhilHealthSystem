@@ -151,4 +151,3 @@ class ObserverController extends Controller
     //     $new_pass->save();
     // }
 }
-
