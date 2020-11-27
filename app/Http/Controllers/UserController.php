@@ -63,7 +63,7 @@ class UserController extends Controller
     /**
      * Importing budget through file (deprecated)
      *
-     * @var Request
+     * @var Request $request
      * @return BudgetImport
      */
     public function importExcel(Request $request)
@@ -98,7 +98,7 @@ class UserController extends Controller
     /**
      * Exporting budget data as CSV
      *
-     * @var Request
+     * @var Request $request
      * @return Excel
      */
     public function exportExcel(Request $request)
@@ -202,7 +202,7 @@ class UserController extends Controller
     /**
      * Add a doctor record to the database
      *
-     * @var Request
+     * @var Request $request
      * @return Doctor
      */
     public function addDoctor(Request $request): Doctor
@@ -227,7 +227,7 @@ class UserController extends Controller
     /**
      * Edit a doctor record
      *
-     * @var Request
+     * @var Request $request
      * @return Doctor
      */
     public function editDoctor(Request $request): Doctor
@@ -258,7 +258,7 @@ class UserController extends Controller
     public function deleteDoctor(String $id): JsonResponse
     {
         $doctor = Doctor::find($id);
-        if($doctor->credit_records->count() == 0) {
+        if ($doctor->credit_records->count() == 0) {
             $message = "Doctor ".$doctor->name." successfully deleted";
             $doctor->delete();
             return response()->json(
@@ -271,7 +271,8 @@ class UserController extends Controller
         }
         $message = "Failed to delete doctor ".
             $doctor->name.
-            " because doctor has records in the database. Please contact the Administrator if you want to really delete this doctor data";
+            " because doctor has records in the database.
+            Please contact the Administrator if you want to really delete this doctor data";
         return response()->json(
             [
                 'title' => 'Deleting Doctor Failed',
@@ -317,7 +318,7 @@ class UserController extends Controller
     /**
      * Update the hospital settings
      *
-     * @var Request
+     * @var Request $request
      * @return void
      */
     public function updateSetting(Request $request): void
