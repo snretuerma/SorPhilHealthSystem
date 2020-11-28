@@ -18,7 +18,7 @@ import lang from 'element-ui/lib/locale/lang/en';
 import locale from 'element-ui/lib/locale';
 Vue.use(ElementUI);
 
-locale.use(lang)
+locale.use(lang);
 import { DataTables, DataTablesServer } from 'vue-data-tables';
 Vue.use(DataTables);
 Vue.use(DataTablesServer);
