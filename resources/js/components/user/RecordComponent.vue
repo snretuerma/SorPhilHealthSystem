@@ -359,6 +359,7 @@ export default {
             current_tab_table:[],
             data:[],
             current_tab: '',
+            excel_validation_error:[],
 
         };
     },
@@ -461,6 +462,28 @@ export default {
                         });
                     });*/
 
+                    console.log(this.preview_excel_sheet_data);
+
+                    var formData = new FormData();
+                    formData.append("doctorRecord[]", this.preview_excel_sheet_data);
+
+
+                    axios
+                    .post("import_doctor_record", formData)
+                    .then(function(res) {
+                        
+
+                        
+                            _this.$notify({
+                                type: 'success',
+                                title: 'Import',
+                                message: "Successfully imported",
+                            });
+                           
+                        
+                    })
+                    .catch(function(res) { });
+
 
         },
         handleExceedFile(files, fileList) {
@@ -473,6 +496,9 @@ export default {
                 title: 'Cancel',
                 message: 'Successfully cancel upload ' + file.name,
             });
+        },
+        trimToCompare(text){
+            return (text).trim().toLowerCase().replace(/\s/g, '');
         },
         fileData(file, fileList){
             console.log("---");
@@ -503,12 +529,50 @@ export default {
                         //$('#wrapper')[0].innerHTML += htmlstr;
                         //console.log(data);
 
+                        var header_error_obj = [];
+
                          _this.sheet_length = wb.SheetNames.length;
                          for (let i = 0; i < wb.SheetNames.length; i++) {
                              //const element = array[i];
                                 let sheetName = wb.SheetNames[i];
                                 let worksheet = wb.Sheets[sheetName];
                                 console.log(sheetName);
+
+                               // console.log(wb.Sheets[sheetName]);
+                               /* loop through every cell manually */
+                                var range = XLSX.utils.decode_range(worksheet['!ref']); // get the range
+                                //console.log(range);
+                                
+                                //var header_error_obj = {};
+                                
+
+                                for(var R = range.s.r; R <= range.e.r; ++R) {
+                                for(var C = range.s.c; C <= range.e.c; ++C) {
+                                    // find the cell object 
+                                    //console.log('Row : ' + R);
+                                    //console.log('Column : ' + C);
+                                    var cellref = XLSX.utils.encode_cell({c:C, r:R}); // construct A1 reference for cell
+                                   /* console.log(worksheet[cellref]);*/
+                                   if(!worksheet[cellref]) continue; // if cell doesn't exist, move on
+                                    /*var cell = worksheet[cellref];
+                                    console.log(cell.v);*/
+                                    var cell = worksheet[cellref];
+                                    if(R == 0){
+                                       //console.log(R + "--" + C + "--" + cell.v);
+                                       if(C == 0 && _this.trimToCompare(cell.v) == _this.trimToCompare("Patient_Name")){
+                                           
+                                           header_error_obj.push({ 
+                                               "row": R,
+                                               "column": C,
+                                               "error": "1 some text" });
+                                       }else if(C == 1 && _this.trimToCompare(cell.v) == _this.trimToCompare("Admission_Date")){
+                                           header_error_obj.push({ 
+                                               "row": R,
+                                               "column": C,
+                                               "error": "2 some text" });
+                                       }
+                                    }
+                                }}
 
 
                                 /*this.preview_excel.push({
@@ -527,6 +591,8 @@ export default {
                                 console.log(XLSX.utils.sheet_to_json(worksheet));
 
                                 _this.current_tab_content.push(XLSX.utils.sheet_to_json(worksheet));
+
+
 
 
                                //_this.activeName = (_this.preview_excel_sheet_data[0].title + "0").replace(/\s/g, '');
@@ -550,8 +616,13 @@ export default {
                                             console.log(n);*/
 
                                 /*}*/
-                         }
 
+                                  console.log("======END OF WORKSHEET====================================================================================================");
+
+
+                         }
+                         _this.excel_validation_error.push(header_error_obj);
+                       
                          //console.log("--");
                          //console.log(JSON.stringify(_this.preview_excel_sheetname));
 
