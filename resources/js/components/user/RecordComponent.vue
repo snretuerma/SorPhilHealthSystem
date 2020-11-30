@@ -515,6 +515,22 @@ export default {
             //console.log(file.raw);
 
             var _this = this;
+            
+            var header_required = ["patient_name",
+                                   "admission_date",
+                                   "discharge_date",
+                                   "total_pf",
+                                   "attending_physician",
+                                   "admitting_physician",
+                                   "requesting_physician",
+                                   "reffered_physician",
+                                   "co_management",
+                                   "anesthesiology_physician",
+                                   "surgeon_physician",
+                                   "healthcare_physician",
+                                   "er_physician",
+                                   "is_private"];
+
 
                 //console.log(e.target.files[0]);
                 var reader = new FileReader();
@@ -544,35 +560,130 @@ export default {
                                 //console.log(range);
                                 
                                 //var header_error_obj = {};
-                                
 
+
+                                //var column_count_validation = 0;
                                 for(var R = range.s.r; R <= range.e.r; ++R) {
-                                for(var C = range.s.c; C <= range.e.c; ++C) {
-                                    // find the cell object 
-                                    //console.log('Row : ' + R);
-                                    //console.log('Column : ' + C);
-                                    var cellref = XLSX.utils.encode_cell({c:C, r:R}); // construct A1 reference for cell
-                                   /* console.log(worksheet[cellref]);*/
-                                   if(!worksheet[cellref]) continue; // if cell doesn't exist, move on
-                                    /*var cell = worksheet[cellref];
-                                    console.log(cell.v);*/
-                                    var cell = worksheet[cellref];
-                                    if(R == 0){
-                                       //console.log(R + "--" + C + "--" + cell.v);
-                                       if(C == 0 && _this.trimToCompare(cell.v) == _this.trimToCompare("Patient_Name")){
-                                           
-                                           header_error_obj.push({ 
-                                               "row": R,
-                                               "column": C,
-                                               "error": "1 some text" });
-                                       }else if(C == 1 && _this.trimToCompare(cell.v) == _this.trimToCompare("Admission_Date")){
-                                           header_error_obj.push({ 
-                                               "row": R,
-                                               "column": C,
-                                               "error": "2 some text" });
-                                       }
+                                    for(var C = range.s.c; C <= range.e.c; ++C) {
+                                        // find the cell object 
+                                        //console.log('Row : ' + R);
+                                        //console.log('Column : ' + C);
+                                        var cellref = XLSX.utils.encode_cell({c:C, r:R}); // construct A1 reference for cell
+                                    /* console.log(worksheet[cellref]);*/
+
+                                    var cell_position = ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
+                                    
+                                    
+
+                                    if(!worksheet[cellref]){
+                                        if(R == 0 && C < 14 ){
+                                            //var location = ((C + 1) + 9).toString(36).toUpperCase();
+                                            _this.excel_validation_error.push({
+                                                sheetname: sheetName,
+                                                row: R,
+                                                column: C,
+                                                location: cell_position,
+                                                error: "column header required no text found, must be 14 column",
+                                                value: ''
+                                            });
+                                        }
+                                        if(R > 0 && C < 14){
+                                            switch (C) {
+                                                case 3:
+                                                    console.log(C + "-" + R + "-" + "no value");
+                                                    
+                                                    break;
+                                            
+                                                default:
+                                                    break;
+                                            }
+                                        }
+                                        continue;
+                                    } // if cell doesn't exist, move on
+                                        /*var cell = worksheet[cellref];
+                                        console.log(cell.v);*/
+                                        var cell = worksheet[cellref];
+                                        if(R == 0 && C < 14){
+                                        //console.log(R + "--" + C + "--" + cell.v);
+                                        /*if(C == 0 && _this.trimToCompare(cell.v) == _this.trimToCompare("Patient_Name")){
+                                            
+                                            header_error_obj.push({ 
+                                                "row": R,
+                                                "column": C,
+                                                "error": "1 some text" });
+                                        }else if(C == 1 && _this.trimToCompare(cell.v) == _this.trimToCompare("Admission_Date")){
+                                            header_error_obj.push({ 
+                                                "row": R,
+                                                "column": C,
+                                                "error": "2 some text" });
+                                        }
+                                        column_count_validation = C;*/
+                                        var column_cell = _this.trimToCompare(cell.v);
+                                        if(header_required.indexOf(column_cell) == "-1"){
+                                            //var location = ((C + 1) + 9).toString(36).toUpperCase();
+                                            _this.excel_validation_error.push({
+                                                sheetname: sheetName,
+                                                row: R,
+                                                column: C,
+                                                location: cell_position,
+                                                error: "column header required not match",
+                                                value: cell.v
+                                            });
+                                        }
+                                        //console.log(cell.v);
+                                        
+                                        }
+                                        if(R > 0 && C < 14){
+                                            if (C == 3) {
+                                                    if(isNaN(cell.v % 1)){
+                                                        //console.log("deprecated must be a  number");
+                                                        //var location = ((C + 1) + 9).toString(36).toUpperCase();
+                                                        _this.excel_validation_error.push({
+                                                            sheetname: sheetName,
+                                                            row: R,
+                                                            column: C,
+                                                            location: cell_position,
+                                                            error: "deprecated must be a  number",
+                                                            value: cell.v
+                                                        });
+                                                    }else{
+                                                       // console.log(C + "-" + R + "-" + cell.v);
+                                                    }
+                                            }else if(C > 3 && C < 13){
+                                                    //name_format_check = cell.v.match(/[^,]+,[^,]+/g);
+                                                    if(cell.v == "NULL"){
+                                                    }else{
+                                                        if(cell.v.match(/[^,]+,[^,]+/g) == null){
+                                                            //var location = ((C + 1) + 9).toString(36).toUpperCase();
+                                                            _this.excel_validation_error.push({
+                                                                sheetname: sheetName,
+                                                                row: R,
+                                                                column: C,
+                                                                location: cell_position,
+                                                                error: "name must be a correct format",
+                                                                value: cell.v
+                                                            });
+                                                        }
+                                                    }
+                                                    
+                                                   // console.log(cell.v.match(/[^,]+,[^,]+/g));
+                                            }else if(C == 13){
+                                                    if(cell.v == 0 || cell.v == 1){
+                                                    }else{
+                                                            _this.excel_validation_error.push({
+                                                                sheetname: sheetName,
+                                                                row: R,
+                                                                column: C,
+                                                                location: cell_position,
+                                                                error: "is private must be 0 or 1 only",
+                                                                value: cell.v
+                                                            });
+                                                    }
+                                            }
+                                        }
                                     }
-                                }}
+                                }
+                                //console.log("Column:" + column_count_validation);
 
 
                                 /*this.preview_excel.push({
@@ -621,7 +732,7 @@ export default {
 
 
                          }
-                         _this.excel_validation_error.push(header_error_obj);
+                         //_this.excel_validation_error.push(header_error_obj);
                        
                          //console.log("--");
                          //console.log(JSON.stringify(_this.preview_excel_sheetname));
