@@ -307,7 +307,7 @@ export default {
                     this.data = response.data;
                 })
                 .catch(function(error) {});
-        }
+        },
     },
     mounted(){
         this.getRecords();
