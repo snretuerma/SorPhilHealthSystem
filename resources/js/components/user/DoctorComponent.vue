@@ -131,15 +131,62 @@
         >
             <el-form :model="form" :rules="rules" ref="doctors_form">
                 <el-row>
+                    <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-form-item label="Last Name" prop="last_name" ref="form_last_name">
+                            <el-input
+                                v-model="form.last_name"
+                                autocomplete="off"
+                                @input="buildFullName"
+                            />
+                            <span class="font-italic text-danger" v-if="errors.last_name">
+                                <small>{{ errors.last_name[0] }}</small>
+                            </span>
+                        </el-form-item>
+                    </el-col>
+                    <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-form-item label="First Name" prop="first_name" ref="form_first_name">
+                            <el-input
+                                v-model="form.first_name"
+                                autocomplete="off"
+                                @input="buildFullName"
+                            />
+                            <span class="font-italic text-danger" v-if="errors.first_name">
+                                <small>{{ errors.first_name[0] }}</small>
+                            </span>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
+                    <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-form-item label="Middle Name" prop="middle_name" ref="form_middle_name">
+                            <el-input
+                                v-model="form.middle_name"
+                                autocomplete="off"
+                                @input="buildFullName"
+                            />
+                            <span class="font-italic text-danger" v-if="errors.middle_name">
+                                <small>{{ errors.middle_name[0] }}</small>
+                            </span>
+                        </el-form-item>
+                    </el-col>
+                    <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-form-item label="Suffix" prop="suffix" ref="form_suffix">
+                            <el-input
+                                v-model="form.suffix"
+                                autocomplete="off"
+                                @input="buildFullName"
+                            />
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <el-row>
                     <el-col>
-                        <el-form-item label="Name" prop="name">
+                        <el-form-item label="Full Name" prop="name">
                             <el-input
                                 v-model="form.name"
                                 autocomplete="off"
+                                :readonly="true"
                             />
-                            <span class="font-italic text-danger" v-if="errors.name">
-                                <small>{{ errors.name[0] }}</small>
-                            </span>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -147,13 +194,13 @@
                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                         <el-form-item prop="is_parttime" label="Employment Type">
                             <br>
-                            <el-radio-group v-model="form.is_parttime" >
+                            <el-radio-group v-model="form.is_parttime" ref="form_is_parttime">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio label="0">Full-time</el-radio>
+                                        <el-radio :label="false">Full-time</el-radio>
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio label="1">Part-time</el-radio>
+                                        <el-radio :label="true">Part-time</el-radio>
                                     </div>
                                 </div>
                             </el-radio-group>
@@ -165,13 +212,13 @@
                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                         <el-form-item prop="is_active" label="Employment Status">
                             <br>
-                            <el-radio-group v-model="form.is_active">
+                            <el-radio-group v-model="form.is_active" ref="form_is_active">
                                 <div class="row">
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio label="1">Active</el-radio>
+                                        <el-radio :label="true">Active</el-radio>
                                     </div>
                                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio label="0">Inactive</el-radio>
+                                        <el-radio :label="false">Inactive</el-radio>
                                     </div>
                                 </div>
                             </el-radio-group>
@@ -206,8 +253,7 @@
 <script>
 /**
  * TODO:
- *  1. Filter name to match format
- *  2. Modify the edit function to a better one
+ *  1. Modify the edit function to a better one
 **/
 'use strict'
 export default {
@@ -219,7 +265,11 @@ export default {
             form: {
                 id: '',
                 name: '',
-                is_parttime: '',
+                first_name: '',
+                middle_name: '',
+                last_name: '',
+                suffix: '',
+                is_parttime: false,
                 is_active: true,
                 form_type: '',
             },
@@ -227,10 +277,24 @@ export default {
             page: 1,
             page_size: 10,
             rules: {
-                name: [
+                first_name: [
                     {
                         required: true,
-                        message: "Name is required",
+                        message: "First name is required",
+                        trigger: "blur"
+                    }
+                ],
+                middle_name: [
+                    {
+                        required: true,
+                        message: "Middle name is required",
+                        trigger: "blur"
+                    }
+                ],
+                last_name: [
+                    {
+                        required: true,
+                        message: "Last name is required",
                         trigger: "blur"
                     }
                 ],
@@ -287,7 +351,7 @@ export default {
             });
             switch(this.form.form_type) {
                 case 'add':
-                    if(this.form.name == '' || this.form.is_parttime == '' || this.is_active == '') {
+                    if(this.form.name == '' || this.form.is_parttime === '' || this.is_active ==='') {
                         this.$notify({
                             type: 'info',
                             title: 'Adding Doctor Failed',
@@ -299,37 +363,50 @@ export default {
                         loading.close();
                     }else {
                         this.form.name = this.form.name.trim();
-                        axios.post('add_doctor', this.form)
-                        .then(response => {
-                            this.doctors.push(response.data)
-                            this.show_dialog = false;
-                            this.formResetFields();
-                            loading.close();
-                            this.$notify({
-                                type: 'success',
-                                title: 'Adding Doctor Successful',
-                                message: `Successfully added ${response.data.name}`,
-                                offset: 0,
+                        if(this.testName(this.form.name)) {
+                            axios.post('add_doctor', this.form)
+                            .then(response => {
+                                this.doctors.push(response.data)
+                                this.show_dialog = false;
+                                this.formResetFields();
+                                loading.close();
+                                this.$notify({
+                                    type: 'success',
+                                    title: 'Adding Doctor Successful',
+                                    message: `Successfully added ${response.data.name}`,
+                                    offset: 0,
+                                });
+                            })
+                            .catch(error => {
+                                this.show_dialog = false;
+                                this.formResetFields();
+                                loading.close();
+                                this.$notify({
+                                    type: 'error',
+                                    title: 'Adding Doctor Failed',
+                                    message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                    offset: 0,
+                                });
                             });
-                        })
-                        .catch(error => {
+                        } else {
                             this.show_dialog = false;
-                            this.formResetFields();
                             loading.close();
                             this.$notify({
                                 type: 'error',
                                 title: 'Adding Doctor Failed',
-                                message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                message: `${this.form.name} does not follow the correct naming convention\n (Ex: Dela Cruz, Jose Juan Jr.)`,
                                 offset: 0,
-                            });
-                        });
+                            })
+                            this.formResetFields();
+                        }
+
                     }
                     break;
                 case 'edit':
                     if(
                         this.edit_object.name == this.form.name &&
-                        this.edit_object.is_active == this.form.is_active &&
-                        this.edit_object.is_parttime == this.form.is_parttime
+                        this.edit_object.is_active === this.form.is_active &&
+                        this.edit_object.is_parttime === this.form.is_parttime
                     ) {
                         this.$notify({
                             type: 'info',
@@ -392,7 +469,7 @@ export default {
         },
         deleteDoctor(data) {
             this.$confirm(
-                "Are you sure you want to delete?",
+                `Are you sure you want to delete record for doctor ${data.name}?`,
                 "Confirm Delete",
                 {
                     distinguishCancelAndClose: true,
@@ -403,7 +480,6 @@ export default {
             ).then(() => {
                 axios.delete(`delete_doctor/${data.id}`)
                 .then(response => {
-                    console.log(response.data);
                     if (response.status > 199 && response.status < 203) {
                         if(response.data.status == 'success') {
                             var index = this.doctors.findIndex(object => object.id == data.id);
@@ -451,10 +527,13 @@ export default {
             this.formResetFields();
         },
         handleEdit(row_data) {
+            this.formResetFields();
             this.edit_object = row_data;
             this.show_dialog = true;
             this.form.form_type = "edit";
-            this.formResetFields();
+            this.form.name = row_data.name;
+            this.form.is_parttime = Boolean(row_data.is_parttime);
+            this.form.is_active = Boolean(row_data.is_active);
         },
         handleDelete(row_data) {
             this.deleteDoctor(row_data);
@@ -477,6 +556,20 @@ export default {
         formResetFields() {
             if(this.$refs.doctors_form !== undefined) {
                 this.$refs.doctors_form.resetFields();
+            }
+        },
+        testName(name) {
+            var regex = new RegExp(/^([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*,\s([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*$/);
+            if(regex.test(name)) {
+              return true;
+            }
+            return false;
+        },
+        buildFullName() {
+            if (this.form.suffix.trim()) {
+                this.form.name = `${this.form.last_name.trim()}, ${this.form.first_name.trim()} ${this.form.suffix.trim()} ${this.form.middle_name.trim()}`;
+            } else {
+                this.form.name = `${this.form.last_name.trim()}, ${this.form.first_name.trim()} ${this.form.middle_name.trim()}`;
             }
         }
     },

@@ -11,7 +11,6 @@ use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-
 class BudgetExport implements FromQuery, WithHeadings, WithColumnWidths, WithStyles
 {
     /**
@@ -22,7 +21,7 @@ class BudgetExport implements FromQuery, WithHeadings, WithColumnWidths, WithSty
     {
         $highestRow = $sheet->getHighestRow(); // e.g. 10
         $highestColumn = $sheet->getHighestColumn(); // e.g 'F'
-        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn); // e.g. 5
+        $highestColumnIndex = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::columnIndexFromString($highestColumn);//e.g. 5
         for ($row = 1; $row <= $highestRow; ++$row) {
             for ($col = 1; $col <= $highestColumnIndex; ++$col) {
                 $styleArray =[
@@ -37,7 +36,7 @@ class BudgetExport implements FromQuery, WithHeadings, WithColumnWidths, WithSty
                 $sheet->getStyle('B'.$row, 'B'.$row)->applyFromArray($styleArray);
                 $sheet->getStyle('C'.$row, 'C'.$row)->applyFromArray($styleArray);
             }
-        } 
+        }
         return [
             1 => [
                 'font' => ['bold' => true],
@@ -58,26 +57,27 @@ class BudgetExport implements FromQuery, WithHeadings, WithColumnWidths, WithSty
     {
         return [
             'A' => 15,
-            'B' => 15, 
-            'C' => 20,           
+            'B' => 15,
+            'C' => 20,
         ];
     }
     public function headings(): array
     {
         return [
-            'start_date', 
+            'start_date',
             'end_date',
-            'total', 
+            'total',
         ];
     }
-    
+
     public function query()
     {
         $budget = Budget::query();
-        $budget->select('start_date',
-                         'end_date',
-                         'total')
-                ->where('hospital_id', Auth::user()->hospital_id);
+        $budget->select(
+            'start_date',
+            'end_date',
+            'total'
+        )->where('hospital_id', Auth::user()->hospital_id);
         return $budget;
     }
 }

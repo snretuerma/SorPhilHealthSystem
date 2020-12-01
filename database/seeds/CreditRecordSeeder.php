@@ -26,7 +26,7 @@ class CreditRecordSeeder extends Seeder
         for($index = 0; $index < 5; $index++) {
             $record = new CreditRecord;
             $record->hospital()->associate(Hospital::find(1)->id);
-            $record->patient_name = $faker->name;
+            $record->patient_name = $faker->lastName.', '.$faker->firstName.' '.$faker->lastName;
             $record->batch = '22112020-28112020';
             $record->admission_date = Carbon::createFromTimeStamp($faker->dateTimeBetween('-360 days', 'now')->getTimestamp());
             $record->discharge_date = Carbon::createFromTimeStamp($faker->dateTimeBetween('now', '+360 days')->getTimestamp());
@@ -63,7 +63,7 @@ class CreditRecordSeeder extends Seeder
         for($index = 0; $index < 10; $index++) {
             $record = new CreditRecord;
             $record->hospital()->associate(Hospital::find(1)->id);
-            $record->patient_name = $faker->name;
+            $record->patient_name = $faker->lastName.', '.$faker->firstName.' '.$faker->lastName;
             $record->batch = '22112020-28112020';
             $record->admission_date = Carbon::createFromTimeStamp($faker->dateTimeBetween('-360 days', 'now')->getTimestamp());
             $record->discharge_date = Carbon::createFromTimeStamp($faker->dateTimeBetween('now', '+360 days')->getTimestamp());
@@ -84,7 +84,7 @@ class CreditRecordSeeder extends Seeder
         for($index = 0; $index < 10; $index++) {
             $record = new CreditRecord;
             $record->hospital()->associate(Hospital::find(1)->id);
-            $record->patient_name = $faker->name;
+            $record->patient_name = $faker->lastName.', '.$faker->firstName.' '.$faker->lastName;
             $record->batch = '22112020-28112020';
             $record->admission_date = Carbon::createFromTimeStamp($faker->dateTimeBetween('-360 days', 'now')->getTimestamp());
             $record->discharge_date = Carbon::createFromTimeStamp($faker->dateTimeBetween('now', '+360 days')->getTimestamp());

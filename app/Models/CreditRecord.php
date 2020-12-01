@@ -25,4 +25,9 @@ class CreditRecord extends Model
             'doctor_id'
         )->withPivot('doctor_role', 'professional_fee');
     }
+
+    public function pooled_record()
+    {
+        return $this->hasOne('App\Models\PooledRecord', 'record_id');
+    }
 }
