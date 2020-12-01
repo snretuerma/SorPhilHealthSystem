@@ -360,6 +360,7 @@ export default {
             data:[],
             current_tab: '',
             excel_validation_error:[],
+            import_batch:[],
 
         };
     },
@@ -466,21 +467,22 @@ export default {
 
                     var formData = new FormData();
                     formData.append("doctorRecord[]", this.preview_excel_sheet_data);
+                    formData.append("import_batch[]", this.import_batch);
 
 
                     axios
                     .post("import_doctor_record", formData)
                     .then(function(res) {
-                        
 
-                        
+
+
                             _this.$notify({
                                 type: 'success',
                                 title: 'Import',
                                 message: "Successfully imported",
                             });
-                           
-                        
+
+
                     })
                     .catch(function(res) { });
 
@@ -500,6 +502,38 @@ export default {
         trimToCompare(text){
             return (text).trim().toLowerCase().replace(/\s/g, '');
         },
+        checkSheetName(sheetname, position_in_object){
+            var split_scope = sheetname.split('-');
+            var value_from, value_to = "";
+            if(new Date(split_scope[0]) != "Invalid Date"){
+                value_from = "valid";
+            }
+            if(new Date(split_scope[1]) != "Invalid Date"){
+                value_to = "valid";
+            }
+/**/
+            if(value_from == "valid" && value_to == "valid"){
+                var date_from = new Date(split_scope[0]);
+                var date_to = new Date(split_scope[1]);
+                value_from = (date_from.getDate() < 10 ? '0' + date_from.getDate(): date_from.getDate()) + '' +
+                             ((date_from.getMonth() + 1) < 10 ? '0' + (date_from.getMonth() + 1) : (date_from.getMonth() + 1)) + '' +
+                             (date_from.getFullYear());
+                value_to = (date_to.getDate() < 10 ? '0' + date_to.getDate(): date_to.getDate()) + '' +
+                             ((date_to.getMonth() + 1) < 10 ? '0' + (date_to.getMonth() + 1) : (date_to.getMonth() + 1)) + '' +
+                             (date_to.getFullYear());
+                            //console.log(value_from + "-" + value_to);
+                if((value_from + "-" + value_to).length == 17){
+                   this.import_batch.push( value_from + "-" + value_to);
+                   return "valid";
+                }else{
+                   this.import_batch.push( "000-000" );
+                   return "invalid";
+                }
+            }else{
+                this.import_batch.push( "000-000" );
+                return "invalid";
+            }
+        },
         fileData(file, fileList){
             console.log("---");
             console.log(file);
@@ -515,7 +549,7 @@ export default {
             //console.log(file.raw);
 
             var _this = this;
-            
+
             var header_required = ["patient_name",
                                    "admission_date",
                                    "discharge_date",
@@ -554,26 +588,37 @@ export default {
                                 let worksheet = wb.Sheets[sheetName];
                                 console.log(sheetName);
 
+                                if(_this.checkSheetName(sheetName ,i) == "invalid"){
+                                    _this.excel_validation_error.push({
+                                        sheetname: sheetName,
+                                        error: "invalid sheet name format please check",
+                                        is_sheetname: 1
+                                    });
+                                    console.log("invalid inside valid");
+                                }else{
+                                    console.log("valid");
+                                }
+
                                // console.log(wb.Sheets[sheetName]);
                                /* loop through every cell manually */
                                 var range = XLSX.utils.decode_range(worksheet['!ref']); // get the range
                                 //console.log(range);
-                                
+
                                 //var header_error_obj = {};
 
 
                                 //var column_count_validation = 0;
                                 for(var R = range.s.r; R <= range.e.r; ++R) {
                                     for(var C = range.s.c; C <= range.e.c; ++C) {
-                                        // find the cell object 
+                                        // find the cell object
                                         //console.log('Row : ' + R);
                                         //console.log('Column : ' + C);
                                         var cellref = XLSX.utils.encode_cell({c:C, r:R}); // construct A1 reference for cell
                                     /* console.log(worksheet[cellref]);*/
 
                                     var cell_position = ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
-                                    
-                                    
+
+
 
                                     if(!worksheet[cellref]){
                                         if(R == 0 && C < 14 ){
@@ -584,16 +629,17 @@ export default {
                                                 column: C,
                                                 location: cell_position,
                                                 error: "column header required no text found, must be 14 column",
-                                                value: ''
+                                                value: '',
+                                                is_header: 1
                                             });
                                         }
                                         if(R > 0 && C < 14){
                                             switch (C) {
                                                 case 3:
                                                     console.log(C + "-" + R + "-" + "no value");
-                                                    
+
                                                     break;
-                                            
+
                                                 default:
                                                     break;
                                             }
@@ -606,13 +652,13 @@ export default {
                                         if(R == 0 && C < 14){
                                         //console.log(R + "--" + C + "--" + cell.v);
                                         /*if(C == 0 && _this.trimToCompare(cell.v) == _this.trimToCompare("Patient_Name")){
-                                            
-                                            header_error_obj.push({ 
+
+                                            header_error_obj.push({
                                                 "row": R,
                                                 "column": C,
                                                 "error": "1 some text" });
                                         }else if(C == 1 && _this.trimToCompare(cell.v) == _this.trimToCompare("Admission_Date")){
-                                            header_error_obj.push({ 
+                                            header_error_obj.push({
                                                 "row": R,
                                                 "column": C,
                                                 "error": "2 some text" });
@@ -627,14 +673,18 @@ export default {
                                                 column: C,
                                                 location: cell_position,
                                                 error: "column header required not match",
-                                                value: cell.v
+                                                value: cell.v,
+                                                is_header: 1
                                             });
                                         }
                                         //console.log(cell.v);
-                                        
+
                                         }
                                         if(R > 0 && C < 14){
-                                            if (C == 3) {
+                                            if(C == 1){
+                                                //console.log(cell.v);
+                                               // console.log(cell.v.match("^(([0]?[1-9]|1[0-2])/([0-2]?[0-9]|3[0-1])/[1-2]\d{3}) (20|21|22|23|[0-1]?\d{1}):([0-5]?\d{1})$"));
+                                            }else if (C == 3) {
                                                     if(isNaN(cell.v % 1)){
                                                         //console.log("deprecated must be a  number");
                                                         //var location = ((C + 1) + 9).toString(36).toUpperCase();
@@ -644,7 +694,8 @@ export default {
                                                             column: C,
                                                             location: cell_position,
                                                             error: "deprecated must be a  number",
-                                                            value: cell.v
+                                                            value: cell.v,
+                                                            is_header: 0
                                                         });
                                                     }else{
                                                        // console.log(C + "-" + R + "-" + cell.v);
@@ -653,6 +704,27 @@ export default {
                                                     //name_format_check = cell.v.match(/[^,]+,[^,]+/g);
                                                     if(cell.v == "NULL"){
                                                     }else{
+                                                        /*if(cell.v.match(/[^,]+,[^,]+/g) == null){
+                                                            //var location = ((C + 1) + 9).toString(36).toUpperCase();
+                                                            _this.excel_validation_error.push({
+                                                                sheetname: sheetName,
+                                                                row: R,
+                                                                column: C,
+                                                                location: cell_position,
+                                                                error: "name must be a correct format",
+                                                                value: cell.v,
+                                                                is_header: 0
+                                                            });
+                                                        }*/
+                                                        //console.log(cell.v.match(/[^,]+,[^,]+/g));
+                                                        //console.log(cell.v.match(/[^,]+,[^,]+/g).length);
+
+
+                                                            /*if(!cell.v.match(/[^,]+,[^,]+/g)){
+                                                                console.log("match");
+                                                            }else{
+                                                                console.log("NOT not match");
+                                                            }*/
                                                         if(cell.v.match(/[^,]+,[^,]+/g) == null){
                                                             //var location = ((C + 1) + 9).toString(36).toUpperCase();
                                                             _this.excel_validation_error.push({
@@ -661,11 +733,40 @@ export default {
                                                                 column: C,
                                                                 location: cell_position,
                                                                 error: "name must be a correct format",
-                                                                value: cell.v
+                                                                value: cell.v,
+                                                                is_header: 0
                                                             });
-                                                        }
+                                                        }else if(cell.v.match(/[^,]+,[^,]+/g).length > 1){
+                                                            var compress_to_compare = "";
+                                                            for (let index = 0; index < cell.v.match(/[^,]+,[^,]+/g).length; index++) {
+                                                               // const element = array[index];
+                                                               //if(cell.v.match(/[^,]+,[^,]+/g) == null){
+                                                                 //console.log(index + "--" + cell.v.match(/[^,]+,[^,]+/g));
+                                                                 //console.log(index + "--" + cell.v.match(/[^,]+,[^,]+/g)[index]);
+                                                                 compress_to_compare += cell.v.match(/[^,]+,[^,]+/g)[index] + ",";
+                                                                 //compress_to_compare.concat(el);
+                                                                 //console.log(index + "--" + cell.v);
+                                                              // }
+
+                                                              //console.log("--" + cell.v.match(/[^,]+,[^,]+/g)[index] + ",");
+
+                                                            }//console.log("[]" + compress_to_compare);
+                                                            if(_this.trimToCompare(compress_to_compare) != _this.trimToCompare((cell.v + ","))){
+                                                                //console.log("not match row:" + R + " column:" +  C);
+                                                                _this.excel_validation_error.push({
+                                                                    sheetname: sheetName,
+                                                                    row: R,
+                                                                    column: C,
+                                                                    location: cell_position,
+                                                                    error: "there was a proble with the name format value not match",
+                                                                    value: cell.v,
+                                                                    is_header: 0
+                                                                });
+                                                            }
+
+                                                        } console.log("--------------------------------------------------");
                                                     }
-                                                    
+
                                                    // console.log(cell.v.match(/[^,]+,[^,]+/g));
                                             }else if(C == 13){
                                                     if(cell.v == 0 || cell.v == 1){
@@ -676,7 +777,8 @@ export default {
                                                                 column: C,
                                                                 location: cell_position,
                                                                 error: "is private must be 0 or 1 only",
-                                                                value: cell.v
+                                                                value: cell.v,
+                                                                is_header: 0
                                                             });
                                                     }
                                             }
@@ -697,7 +799,8 @@ export default {
                                     title: sheetName,
                                     name: i,
                                     content: XLSX.utils.sheet_to_json(worksheet),
-                                    nameoftab: sheetName.replace(/\s/g, '')
+                                    nameoftab: sheetName.replace(/\s/g, ''),
+                                    batch: ''
                                 });
                                 console.log(XLSX.utils.sheet_to_json(worksheet));
 
@@ -733,7 +836,7 @@ export default {
 
                          }
                          //_this.excel_validation_error.push(header_error_obj);
-                       
+
                          //console.log("--");
                          //console.log(JSON.stringify(_this.preview_excel_sheetname));
 

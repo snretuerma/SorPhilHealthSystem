@@ -85,18 +85,20 @@ class UserController extends Controller
         Excel::import($import, $postData[0]);
         return $import->getRowCount();*/
 
-        
+
         //for credit record working
         /*$import = new CreditRecordImport();
         $postData = request()->file('doctorRecord');
         Excel::import($import, $postData[0]);*/
 
         $datas = $request->doctorRecord;
-       
-        /*for ($i=0; $i < 5; $i++) { 
+        $datas1 = $request->import_batch;
+        dd($datas, $datas1);
+
+        /*for ($i=0; $i < 5; $i++) {
             dd($datas[0][0]->title);
         }*/
-        
+
         //dd($datas[0]);
         /*foreach($datas as $data){
             dd($data->content);
