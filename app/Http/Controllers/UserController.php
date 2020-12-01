@@ -149,10 +149,10 @@ class UserController extends Controller
         return view('roles.user.doctors');
     }
 
-    public function getDoctors()
-    {
-        return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
-    }
+    // public function getDoctors()
+    // {
+    //     return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
+    // }
 
     public function addDoctor(Request $request):Doctor
     {
@@ -300,5 +300,33 @@ class UserController extends Controller
         $records=CreditRecord::with('hospital','doctors')
         ->get();
         return response()->json($records);
+    }
+
+    public function addCreditRecord(Request $request)
+    {
+            $record = new CreditRecord;
+            $record->hospital()->associate(Hospital::find(1)->id);
+            $record->patient_name = $request->name;
+            $record->batch = $request->batch[0];
+            $record->admission_date = Carbon::createFromTimeStamp($request->admission);
+            $record->discharge_date = Carbon::createFromTimeStamp($request->discharge);
+            if($request->admission > 'march 1') {
+                //new
+            }else {
+                //old
+            }
+            $record->record_type="new";
+            $record->total = number_format($request->pf);
+            $record->non_medical_fee = number_format($request->pf)/2;
+            $record->medical_fee =number_format($request->pf)/2;
+            $record->save();
+            dd($request);
+    }
+    
+    public function getDoctors()
+    {
+        return Doctor::where('hospital_id', Auth::user()->hospital_id)
+        ->where('is_active',true)
+        ->get();
     }
 }
