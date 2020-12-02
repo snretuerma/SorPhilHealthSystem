@@ -492,6 +492,31 @@ export default {
 
                     console.log(this.preview_excel_sheet_data);
 
+                     /*var header_required = ["patient_name",
+                                   "admission_date",
+                                   "discharge_date",
+                                   "total_pf",
+                                   "attending_physician",
+                                   "admitting_physician",
+                                   "requesting_physician",
+                                   "reffered_physician",
+                                   "co_management",
+                                   "anesthesiology_physician",
+                                   "surgeon_physician",
+                                   "healthcare_physician",
+                                   "er_physician",
+                                   "is_private"];
+                    var arr_data = [];
+                    this.preview_excel_sheet_data.forEach(el=>{
+                        var each_arr = [];
+                        el.content.forEach(record=>{
+                            each_arr.push(record);
+                        });
+                        arr_data.push(each_arr);
+                    });
+                    console.log("-----------------------------------");
+                    console.log(arr_data);*/
+
                     var formData = new FormData();
                     formData.append("doctorRecord[]", this.preview_excel_sheet_data);
                     formData.append("import_batch[]", this.import_batch);
