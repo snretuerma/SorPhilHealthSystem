@@ -361,6 +361,8 @@ export default {
             current_tab: '',
             excel_validation_error:[],
             import_batch:[],
+            doctor_list_compress:[],
+            doctor_list_complete:[],
 
         };
     },
@@ -400,6 +402,31 @@ export default {
 
             this.data = this.data.slice(this.page_size * this.page - this.page_size, this.page_size * this.page);
 
+        },
+        getDoctors(){
+            //get_doctors
+            var _this = this;
+            axios
+                .get("get_doctors")
+                .then(function(res) {
+                    console.log(res.data);
+                    res.data.forEach(el => {
+                        _this.doctor_list_compress.push(_this.trimToCompare(el.name));
+                        _this.doctor_list_complete.push(el);
+                    });
+                    
+                    //this.doctor_list_compress.push();
+
+                    //console.log(_this.doctor_list_compress);
+                    
+
+                    /*if(_this.doctor_list_compress.includes(_this.trimToCompare(" Lynch, Missouri Kertzmann"))){
+                        console.log("exist");
+                    }else{
+                        console.log("not exist");
+                    }*/
+                })
+                .catch(function(res) { });
         },
 
         uploadToDatabase() {
@@ -468,6 +495,7 @@ export default {
                     var formData = new FormData();
                     formData.append("doctorRecord[]", this.preview_excel_sheet_data);
                     formData.append("import_batch[]", this.import_batch);
+                    formData.append("doctor_list[]", this.doctor_list_complete);
 
 
                     axios
@@ -747,10 +775,23 @@ export default {
                                                                  //compress_to_compare.concat(el);
                                                                  //console.log(index + "--" + cell.v);
                                                               // }
-
                                                               //console.log("--" + cell.v.match(/[^,]+,[^,]+/g)[index] + ",");
+                                                                
+                                                                /*//CHECK IF EXIST IN DATABASE
+                                                                if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[index]))){
+                                                                    _this.excel_validation_error.push({
+                                                                        sheetname: sheetName,
+                                                                        row: R,
+                                                                        column: C,
+                                                                        location: cell_position,
+                                                                        error: "name not exist into database please add to proceed...",
+                                                                        value: (cell.v.match(/[^,]+,[^,]+/g)[index]),
+                                                                        is_header: 0
+                                                                    });
+                                                                }
+                                                                //END HERE*/
 
-                                                            }//console.log("[]" + compress_to_compare);
+                                                            }//console.log("[more than  > 1]:" + cell.v);
                                                             if(_this.trimToCompare(compress_to_compare) != _this.trimToCompare((cell.v + ","))){
                                                                 //console.log("not match row:" + R + " column:" +  C);
                                                                 _this.excel_validation_error.push({
@@ -764,7 +805,31 @@ export default {
                                                                 });
                                                             }
 
-                                                        } console.log("--------------------------------------------------");
+                                                        }/* CHECK IF EXIST INTO DATABASE / else if(cell.v.match(/[^,]+,[^,]+/g).length == 1){
+                                                            if(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]) != _this.trimToCompare((cell.v))){
+                                                                _this.excel_validation_error.push({
+                                                                    sheetname: sheetName,
+                                                                    row: R,
+                                                                    column: C,
+                                                                    location: cell_position,
+                                                                    error: "there was a proble with the name format value not match",
+                                                                    value: cell.v,
+                                                                    is_header: 0
+                                                                });
+                                                            }else{
+                                                                if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]))){
+                                                                    _this.excel_validation_error.push({
+                                                                        sheetname: sheetName,
+                                                                        row: R,
+                                                                        column: C,
+                                                                        location: cell_position,
+                                                                        error: "name not exist into database please add to proceed...",
+                                                                        value: (cell.v.match(/[^,]+,[^,]+/g)[0]),
+                                                                        is_header: 0
+                                                                    });
+                                                                }
+                                                            }
+                                                        }*/ console.log("--------------------------------------------------");
                                                     }
 
                                                    // console.log(cell.v.match(/[^,]+,[^,]+/g));
@@ -976,6 +1041,7 @@ export default {
     },
     mounted() {
         //console.log(this.tableData);
+        this.getDoctors();
 
     },
     computed: {

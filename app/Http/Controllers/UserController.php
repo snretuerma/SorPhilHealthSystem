@@ -91,9 +91,21 @@ class UserController extends Controller
         $postData = request()->file('doctorRecord');
         Excel::import($import, $postData[0]);*/
 
-        $datas = $request->doctorRecord;
-        $datas1 = $request->import_batch;
-        dd($datas, $datas1);
+        $excel_data = $request->doctorRecord;
+        $batch_list = $request->import_batch;
+        $doctor_list = $request->doctor_list;
+        dd($excel_data, $batch_list, $doctor_list);
+
+        //dd(count(explode(",", $batch_list[0])));
+        $excel_data_get = explode(",", $excel_data[0]);
+        $batch = explode(",", $batch_list[0]);
+        for ($i=0; $i < count($batch); $i++) { 
+            dd(serialize($excel_data_get[$i]));
+            $j = json_decode($excel_data_get[$i], true);
+            dd($batch[$i], $j->title);
+            //dd($batch[$i]);
+        }
+        
 
         /*for ($i=0; $i < 5; $i++) {
             dd($datas[0][0]->title);
