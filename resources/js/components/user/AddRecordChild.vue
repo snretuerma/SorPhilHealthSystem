@@ -36,7 +36,7 @@
             <div slot="header" class="clearfix">
                 <span>Patient</span>
             </div>
-            <el-form :model="form"  ref="form">
+            <el-form class="form" id="form" :model="form" :rules="rules" ref="form">
                     <el-row>
                         <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                             <el-form-item label="Last Name" prop="lname">
@@ -45,9 +45,9 @@
                                     autocomplete="off"
                                     @input="buildFullName"
                                 />
-                                <!-- <span class="font-italic text-danger" v-if="errors.last_name">
-                                    <small>{{ errors.last_name[0] }}</small>
-                                </span> -->
+                                <span class="font-italic text-danger" v-if="errors.lname">
+                                    <small>{{ errors.lname[0] }}</small>
+                                </span>
                             </el-form-item>
                         </el-col>
                         <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
@@ -57,9 +57,9 @@
                                     autocomplete="off"
                                     @input="buildFullName"
                                 />
-                                <!-- <span class="font-italic text-danger" v-if="errors.first_name">
-                                    <small>{{ errors.first_name[0] }}</small>
-                                </span> -->
+                                <span class="font-italic text-danger" v-if="errors.fname">
+                                    <small>{{ errors.fname[0] }}</small>
+                                </span>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -91,8 +91,11 @@
                             <el-form-item label="Admission" prop="admission">
                                 <div class="block">
                                     <el-date-picker
+                                    style="width:100%"
+                                    size="large"
                                     v-model="form.admission"
-                                    type="date"
+                                    type="datetime"
+                                    format="yyyy-MM-dd hh:mm:ss a"
                                     placeholder="Pick a day"
                                     :picker-options="pickerOptions">
                                     </el-date-picker>
@@ -103,8 +106,11 @@
                             <el-form-item label="Discharge" prop="discharge">
                                  <div class="block">
                                     <el-date-picker
+                                    style="width:100%"
+                                    size="large"
                                     v-model="form.discharge"
-                                    type="date"
+                                    type="datetime"
+                                    format="yyyy-MM-dd hh:mm:ss a"
                                     placeholder="Pick a day"
                                     :picker-options="pickerOptions">
                                     </el-date-picker>
@@ -113,7 +119,7 @@
                         </el-col>
                     </el-row>
                     <el-row>
-                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Name will appear like this on the database" prop="name">
                                 <el-input
                                     v-model="form.name"
@@ -122,22 +128,36 @@
                                 />
                             </el-form-item>
                         </el-col>
-                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                            <el-form-item label="Professional Fee" prop="pf">
-                                <el-input
-                                    v-model="form.pf"
-                                    autocomplete="off"
-                                />
-                            </el-form-item>
-                        </el-col>
                     </el-row>
                     <el-row>
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Attending" prop="attending">
-                                <el-select 
+                                <el-radio v-model="form.is_private" :label="false" @change="clearField()" >Public</el-radio>
+                                <el-radio v-model="form.is_private" :label="true" @change="clearField()">Private</el-radio>
+                                <el-select v-if="form.is_private"
                                     style="width:100%"
                                     size="large"
                                     v-model="form.attending"
+                                    multiple
+                                    :multiple-limit="1"
+                                    value-key="id"
+                                    filterable
+                                    allow-create
+                                    default-first-option
+                                    placeholder="Choose physician">
+                                    <el-option
+                                    v-for="item in doctors"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value="{id:item.id,name:item.name,role:'attending'}"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <el-select v-else
+                                    style="width:100%"
+                                    size="large"
+                                    v-model="form.attending"
+                                    value-key="id"
                                     multiple
                                     filterable
                                     allow-create
@@ -147,19 +167,21 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="item.name">
+                                    :value="{id:item.id,name:item.name,role:'attending'}"
+                                    >
                                     </el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row>
+                    <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Requesting" prop="requesting">
                                 <el-select 
                                     style="width:100%"
                                     size="large"
                                     v-model="form.requesting"
+                                    value-key="id" 
                                     multiple
                                     filterable
                                     allow-create
@@ -169,19 +191,22 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="item.name">
+                                    :value-key="item.id"
+                                    :value="{id:item.id,name:item.name,role:'requesting'}"
+                                    >
                                     </el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row>
+                    <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Surgeon" prop="surgeon">
                                 <el-select 
                                     style="width:100%"
                                     size="large"
                                     v-model="form.surgeon"
+                                    value-key="id" 
                                     multiple
                                     filterable
                                     allow-create
@@ -191,19 +216,22 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="item.name">
+                                    :value-key="item.id"
+                                    :value="{id:item.id,name:item.name,role:'surgeon'}"
+                                    >
                                     </el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row>
+                    <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="ER" prop="er">
                                 <el-select 
                                     style="width:100%"
                                     size="large"
                                     v-model="form.er"
+                                    value-key="id" 
                                     multiple
                                     filterable
                                     allow-create
@@ -213,19 +241,22 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="item.name">
+                                    :value-key="item.id"
+                                    :value="{id:item.id,name:item.name,role:'er'}"
+                                    >
                                     </el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row>
+                    <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Anesthesiologist" prop="anesthesiologist">
                                 <el-select 
                                     style="width:100%"
                                     size="large"
                                     v-model="form.anesthesiologist"
+                                    value-key="id" 
                                     multiple
                                     filterable
                                     allow-create
@@ -235,19 +266,22 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="item.name">
+                                    :value-key="item.id"
+                                    :value="{id:item.id,name:item.name,role:'anesthesiologist'}"
+                                    >
                                     </el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row>
+                    <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Co-management" prop="comanagement">
                                 <el-select 
                                     style="width:100%"
                                     size="large"
                                     v-model="form.comanagement"
+                                    value-key="id" 
                                     multiple
                                     filterable
                                     allow-create
@@ -257,19 +291,23 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="item.name">
+                                    :value-key="item.id"
+                                    :value="{id:item.id,name:item.name,role:'comanagement'}"
+                                    >
                                     </el-option>
                                 </el-select>
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row>
+                    <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Admitting" prop="admitting">
                                 <el-select 
                                     style="width:100%"
                                     size="large"
                                     v-model="form.admitting"
+                                    value-key="id" 
+                                    @input="asd()"
                                     multiple
                                     filterable
                                     allow-create
@@ -279,7 +317,9 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="item.name">
+                                    :value-key="item.id"
+                                    :value="{id:item.id,name:item.name,role:'admitting'}"
+                                    >
                                     </el-option>
                                 </el-select>
                             </el-form-item>
@@ -292,18 +332,33 @@
                                     class="block-button"
                                     size="large"
                                     v-model="form.batch"
-                                    multiple
+                                    value-key="id"
+                                    @input="asd()"
                                     filterable
                                     allow-create
                                     default-first-option
-                                    placeholder="Choose tags for your article">
+                                    placeholder="Choose batch">
                                     <el-option
-                                    v-for="item in batches"
-                                    :key="item.value"
+                                    v-for="item in batch"
+                                    :key="item.batch"
                                     :label="item.label"
-                                    :value="item.value">
+                                    :value="item.batch">
                                     </el-option>
                                 </el-select>
+                                <span class="font-italic text-danger" v-if="errors.batch">
+                                    <small>{{ errors.batch[0] }}</small>
+                                </span>
+                            </el-form-item>
+                        </el-col>
+                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                            <el-form-item label="Professional Fee" prop="pf">
+                                <el-input
+                                    v-model="form.pf"
+                                    autocomplete="off"
+                                />
+                                <span class="font-italic text-danger" v-if="errors.pf">
+                                    <small>{{ errors.pf[0] }}</small>
+                                </span>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -317,6 +372,7 @@
                             <el-form-item>
                                     <el-button
                                     class="btn-action block-button"
+                                    :loading="btnLoading"
                                     @click="addCreditRecord"
                                 >
                                     Save
@@ -340,11 +396,12 @@ export default {
     props:['data'],
     data() {
         return {
+            is_private:false,
+            btnLoading:false,
+            errors:[],
             doctors:[],
+            batch:[],
              pickerOptions: {
-                disabledDate(time) {
-                    return time.getTime() > Date.now();
-                },
                 shortcuts: [{
                     text: 'Today',
                     onClick(picker) {
@@ -366,29 +423,6 @@ export default {
                     }
                 }]
             },
-            batches:[{
-                value:'22112020-28112020',
-                label:'22112020-28112020'
-            }],
-             options: [{
-                value: 'HTML',
-                label: 'HTML'
-                }, {
-                value: '1',
-                label: 'asd'
-                }, {
-                value: '2',
-                label: 'ads'
-                }, {
-                value: '3',
-                label: 'qwe'
-                }, {
-                value: 'CSS',
-                label: 'fgasdas'
-                }, {
-                value: 'JavaScript',
-                label: 'JavaScript'
-            }],
             form: {
                 fname: '',
                 mname: '',
@@ -397,8 +431,11 @@ export default {
                 admission:'',
                 discharge:'',
                 batch:'',
+                is_private:false,
+                doctortype:[],
                 name:'',
                 pf:'',
+                doctors_id:[],
                 attending: [],
                 requesting: [],
                 surgeon: [],
@@ -406,6 +443,26 @@ export default {
                 anesthesiologist: [],
                 comanagement: [],
                 admitting: [],
+            },
+            rules: {
+                lname: [
+                    { required: true, message: 'Please input Lastname', trigger: 'blur' },
+                ],
+                fname: [
+                    { required: true, message: 'Please input Firstname', trigger: 'blur' },
+                ],
+                admission: [
+                    { required: true, message: 'Please input Admission', trigger: 'blur' },
+                ],
+                discharge: [
+                    { required: true, message: 'Please input Discharge', trigger: 'blur' },
+                ],
+                batch: [
+                    { required: true, message: 'Please input Batch', trigger: 'blur' },
+                ],
+                pf: [
+                    { required: true, message: 'Please input Professional fee', trigger: 'blur' },
+                ],
             }
         };
     },
@@ -415,6 +472,11 @@ export default {
             //add-close was invoke in recordparent.vue so the emit will 
             //same just call 'add-close'
             this.$emit("add-close");
+        },
+        clearField() {
+            if(this.$refs.form !== undefined) {
+                this.$refs.form.resetFields();
+            }
         },
         onSubmit() {
         console.log('submit!');
@@ -435,12 +497,68 @@ export default {
             }
         },
         addCreditRecord(){
-             axios
+            var _this=this;
+            var temp=[];
+            var attending = this.form.attending.map(function (value, index, array) {
+                _this.form.doctortype.push(value);
+                temp.push(value.id); 
+            });
+            var requesting = this.form.requesting.map(function (value, index, array) {
+                _this.form.doctortype.push(value);
+                temp.push(value.id); 
+            });
+            var surgeon = this.form.surgeon.map(function (value, index, array) {
+                _this.form.doctortype.push(value);
+                temp.push(value.id); 
+            });
+            var er = this.form.er.map(function (value, index, array) {
+                _this.form.doctortype.push(value);
+                temp.push(value.id); 
+            });
+            var anesthesiologist = this.form.anesthesiologist.map(function (value, index, array) {
+                _this.form.doctortype.push(value);
+                temp.push(value.id); 
+            });
+            var comanagement = this.form.comanagement.map(function (value, index, array) {
+                _this.form.doctortype.push(value);
+                temp.push(value.id); 
+            });
+            var admitting = this.form.admitting.map(function (value, index, array) {
+                _this.form.doctortype.push(value);
+                temp.push(value.id); 
+            });
+            console.log(this.form.doctortype);
+            this.form.doctors_id=temp;
+            // const loading = this.$loading({
+            //     lock: true,
+            //     spinner: "el-icon-loading",
+            //     target: "#form",
+            //     fullscreen:false
+            // });
+            // if(this.form.lname =="" ||this.form.fname==""||this.form.admitting==""||
+            // this.form.discharge==""||this.form.batch==""||this.form.pf=="")
+            // {
+            //     this.$notify({
+            //                 type: 'info',
+            //                 title: 'Adding Record Failed',
+            //                 message: 'All fields are required',
+            //                 offset: 0,
+            //             });
+            //     loading.close();
+            //     this.btnLoading=false;
+            // }
+            // else
+            // {
+                this.form.pf=Number(this.form.pf);
+                axios
                 .post("add_records",this.form)
                 .then(response => {
-                    this.data = response.data;
+                    console.log(response.data);
                 })
-                .catch(function(error) {});
+                .catch(error=> {
+                    this.errors=error.response.data.errors;
+                });
+            // }
         },
         getDoctors(){
              axios
@@ -450,9 +568,24 @@ export default {
                 })
                 .catch(function(error) {});
         },
+        getBatch(){
+             axios
+                .get("get_batch")
+                .then(response => {
+                    this.batch = response.data;
+                    console.log(this.batch);
+                })
+                .catch(function(error) {});
+        },
+        asd(){
+            // this.form.batch.forEach(el=>{
+                console.log(this.form.admitting);
+            // })
+        }
     },
     mounted(){
         this.getDoctors();
+        this.getBatch();
     }
 }
 </script>
