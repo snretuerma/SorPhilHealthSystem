@@ -366,61 +366,60 @@ class UserController extends Controller
 
     public function addCreditRecord(AddCreditRecordRequest $request)
     {
-            $record = new CreditRecord;
-            $record->hospital()->associate(Hospital::find(1)->id);
-            $record->patient_name = $request->name;
-            $record->batch = $request->batch;
-            $record->admission_date = Carbon::parse($request->admission)
-            ->setTimezone('Asia/Manila');
-            $record->discharge_date = Carbon::parse($request->discharge)
-            ->setTimezone('Asia/Manila');
-            // if public
-            // else
-            if ($request->admission >= '2020-03-1') {
-                $record->record_type="new";
-                $record->total = $request->pf;
-                $record->non_medical_fee = $request->pf/2;
-                $record->medical_fee = $request->pf/2;
-                $record->save();
-                $doctors = Doctor::where('hospital_id', $record->hospital_id)
-                ->whereIn('id', $request->doctors_id)
-                ->get();
-                $full_time_doctors = Doctor::select('id')
-                    ->where('is_active', true)
-                    ->where('is_parttime', false)
-                    ->pluck('id')
-                    ->toArray();
-                $part_time_doctors = Doctor::select('id')->where('is_active', true)
-                ->where('is_parttime', true)->pluck('id')->toArray();
-                $pooled_record = new PooledRecord;
-                $pooled_record->full_time_doctors = json_encode($full_time_doctors);
-                $pooled_record->part_time_doctors = json_encode($part_time_doctors);
-                $total_pooled_fee = $record->non_medical_fee*0.3;
-                $initial_individual_fee = ($record->non_medical_fee*0.3)/
-                (count($full_time_doctors)+
-                (count($part_time_doctors)/2));
-                $pooled_record->full_time_individual_fee = $initial_individual_fee;
-                $pooled_record->part_time_individual_fee = $initial_individual_fee/2;
-                $pooled_record->record_id = $record->id;
-                $pooled_record->save();
-                foreach ($doctors as $doctor) {
-                    foreach ($request->doctortype as $types_of_doctors) {
-                        if ($doctor->id == $types_of_doctors['id']) {
-                            $doctor->credit_records()->attach($record->id, [
-                                'doctor_role' => $types_of_doctors['role'],
-                                'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
-                            ]);
-                        }
+        $record = new CreditRecord;
+        $record->hospital()->associate(Hospital::find(1)->id);
+        $record->patient_name = $request->name;
+        $record->batch = $request->batch;
+        $record->admission_date = Carbon::parse($request->admission)
+        ->setTimezone('Asia/Manila');
+        $record->discharge_date = Carbon::parse($request->discharge)
+        ->setTimezone('Asia/Manila');
+        // if public
+        // else
+        if ($request->admission >= '2020-03-1') {
+            $record->record_type="new";
+            $record->total = $request->pf;
+            $record->non_medical_fee = $request->pf/2;
+            $record->medical_fee = $request->pf/2;
+            $record->save();
+            $doctors = Doctor::where('hospital_id', $record->hospital_id)
+            ->whereIn('id', $request->doctors_id)
+            ->get();
+            $full_time_doctors = Doctor::select('id')
+                ->where('is_active', true)
+                ->where('is_parttime', false)
+                ->pluck('id')
+                ->toArray();
+            $part_time_doctors = Doctor::select('id')->where('is_active', true)
+            ->where('is_parttime', true)->pluck('id')->toArray();
+            $pooled_record = new PooledRecord;
+            $pooled_record->full_time_doctors = json_encode($full_time_doctors);
+            $pooled_record->part_time_doctors = json_encode($part_time_doctors);
+            $total_pooled_fee = $record->non_medical_fee*0.3;
+            $initial_individual_fee = ($record->non_medical_fee*0.3)/
+            (count($full_time_doctors)+
+            (count($part_time_doctors)/2));
+            $pooled_record->full_time_individual_fee = $initial_individual_fee;
+            $pooled_record->part_time_individual_fee = $initial_individual_fee/2;
+            $pooled_record->record_id = $record->id;
+            $pooled_record->save();
+            foreach ($doctors as $doctor) {
+                foreach ($request->doctortype as $types_of_doctors) {
+                    if ($doctor->id == $types_of_doctors['id']) {
+                        $doctor->credit_records()->attach($record->id, [
+                            'doctor_role' => $types_of_doctors['role'],
+                            'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
+                        ]);
                     }
                 }
-            }else {
-                $record->record_type="old";
-                $record->total = $request->pf;
-                $record->non_medical_fee = $request->pf/2;
-                $record->medical_fee = $record->non_medical_fee;
-                $record->save();
             }
-           
+        }else {
+            $record->record_type="old";
+            $record->total = $request->pf;
+            $record->non_medical_fee = $request->pf/2;
+            $record->medical_fee = $record->non_medical_fee;
+            $record->save();
+        }   
     }
     
     public function getDoctors()
