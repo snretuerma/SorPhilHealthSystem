@@ -414,11 +414,11 @@ export default {
                         _this.doctor_list_compress.push(_this.trimToCompare(el.name));
                         _this.doctor_list_complete.push(el);
                     });
-                    
+
                     //this.doctor_list_compress.push();
 
                     //console.log(_this.doctor_list_compress);
-                    
+
 
                     /*if(_this.doctor_list_compress.includes(_this.trimToCompare(" Lynch, Missouri Kertzmann"))){
                         console.log("exist");
@@ -517,14 +517,20 @@ export default {
                     console.log("-----------------------------------");
                     console.log(arr_data);*/
 
-                    var formData = new FormData();
+                   /* var formData = new FormData();
                     formData.append("doctorRecord[]", this.preview_excel_sheet_data);
                     formData.append("import_batch[]", this.import_batch);
-                    formData.append("doctor_list[]", this.doctor_list_complete);
+                    formData.append("doctor_list[]", this.doctor_list_complete);*/
+
+                    var arr = [{
+                         doctor_record: this.preview_excel_sheet_data,
+                         import_batch: this.import_batch,
+                         doctor_list: this.doctor_list_complete
+                    }];
 
 
                     axios
-                    .post("import_doctor_record", formData)
+                    .post("import_doctor_record", arr)
                     .then(function(res) {
 
 
@@ -801,7 +807,7 @@ export default {
                                                                  //console.log(index + "--" + cell.v);
                                                               // }
                                                               //console.log("--" + cell.v.match(/[^,]+,[^,]+/g)[index] + ",");
-                                                                
+
                                                                 /*//CHECK IF EXIST IN DATABASE
                                                                 if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[index]))){
                                                                     _this.excel_validation_error.push({

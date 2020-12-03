@@ -53,7 +53,6 @@ class UserController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('role:user');
-        date_default_timezone_set('Asia/Manila');
     }
 
     /**
@@ -68,6 +67,26 @@ class UserController extends Controller
     }
 
     /**
+     * Split data with two comma
+     *
+     * @var String $data
+     * @return Array
+     */
+    public function splitTwoComma(String $data)
+    {
+        if(str_replace(' ','',strtoupper(trim($data))) == "NULL" || $data = ""){
+            return 'null';
+        }else{
+            $data_split_arr = [];
+            $content = explode(',', $data);
+            for ($i=0; $i < count($content); $i+=2) {
+                array_push($data_split_arr, trim($content[$i].','.$content[$i + 1]));
+            }
+            return $data_split_arr;
+        }
+    }
+
+    /**
      * Importing budget through file (deprecated)
      *
      * @var Request $request
@@ -75,6 +94,7 @@ class UserController extends Controller
      */
     public function importExcel(Request $request)
     {
+        //dd(Auth::user()->hospital_id);
         //$postData = request()->file('budgets');
         //$postData = request()->file('doctorRecord');
         //dd($postData_sample);
@@ -91,6 +111,98 @@ class UserController extends Controller
         $postData = request()->file('doctorRecord');
         Excel::import($import, $postData[0]);*/
 
+        /*$j = $request[0]['doctor_record'][0]['content'];
+        $k = 0;
+        foreach($j as $h){
+
+        $k++;}
+        dd($k);*/
+        for ($i=0; $i < count($request[0]['import_batch']); $i++) {
+            //dd($request[0]['import_batch'][$i]);
+            //dd(Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Y-m-d h:i:s') ,$type);
+            $batch = $request[0]['import_batch'][$i];
+            $acpn = $request[0]['doctor_record'][$i]['content'];
+            foreach($acpn as $each){
+
+                /*$data_split_arr = [];
+                $content = explode(',', $each['Attending_Physician']);
+                for ($i=0; $i < count($content); $i+=2) {
+                    array_push($data_split_arr, trim($content[$i].','.$content[$i + 1]));
+                }*/
+
+                $hh = $this->splitTwoComma($each['Attending_Physician']);
+                $ii = $this->splitTwoComma($each['Admitting_Physician']);
+                $kk = $this->splitTwoComma($each['Requesting_Physician']);
+
+
+
+                dd($hh, $ii, $kk);
+                $record = new CreditRecord;
+                $record->hospital()->associate(Auth::user()->hospital_id);
+                $record->patient_name = $each['Patient_Name'];
+                $record->batch = $batch;
+                $record->admission_date = Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Y-m-d h:i:s');
+                $record->discharge_date = Carbon::parse($each['Discharge_Date'])->setTimeZone('Asia/Manila')->format('Y-m-d h:i:s');
+
+                if($each['Is_Private'] == "1"){
+                        $record->record_type = 'private';
+                        $record->total = $each['Total_PF'];
+                        $record->non_medical_fee = 0;
+                        $record->medical_fee = 0;
+                        $record->save();
+                        $doctors = Doctor::where('hospital_id', $record->hospital_id)->get()->random(3);
+                        foreach($doctors as $doctor) {
+                            $doctor->credit_records()->attach($record->id, [
+                                'doctor_role' => 'attending',
+                                'professional_fee' => $record->total,
+                            ]);
+                        }
+                }else{
+                    if((Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Ymd')) < "20200301"){
+                            $record->record_type = 'old';
+                            $record->total = rand(1000, 9999);
+                            $record->non_medical_fee = $record->total/2;
+                            $record->medical_fee = $record->non_medical_fee;
+                            $record->save();
+                    }else{
+                            $record->record_type = 'new';
+                            $record->total = rand(1000, 9999);
+                            $record->non_medical_fee = $record->total/2;
+                            $record->medical_fee = $record->non_medical_fee;
+                            $record->save();
+                            $doctors = Doctor::where('hospital_id', $record->hospital_id)->get()->random(3);
+                            $full_time_doctors = Doctor::select('id')
+                                ->where('is_active', true)
+                                ->where('is_parttime', false)
+                                ->pluck('id')
+                                ->toArray();
+                            $part_time_doctors = Doctor::select('id')
+                                ->where('is_active', true)
+                                ->where('is_parttime', true)
+                                ->pluck('id')
+                                ->toArray();
+                            $pooled_record = new PooledRecord;
+                            $pooled_record->full_time_doctors = json_encode($full_time_doctors);
+                            $pooled_record->part_time_doctors = json_encode($part_time_doctors);
+                            $total_pooled_fee = $record->non_medical_fee*0.3;
+                            $initial_individual_fee = ($record->non_medical_fee*0.3)/(count($full_time_doctors)+(count($part_time_doctors)/2));
+
+                            $pooled_record->full_time_individual_fee = $initial_individual_fee;
+                            $pooled_record->part_time_individual_fee = $initial_individual_fee/2;
+                            $pooled_record->record_id = $record->id;
+                            $pooled_record->save();
+                            foreach($doctors as $doctor) {
+                                $doctor->credit_records()->attach($record->id, [
+                                    'doctor_role' => 'attending',
+                                    'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
+                                ]);
+                            }
+                    }
+                }
+            }
+        }
+        //dd(count($request[0]['import_batch']));
+
         $excel_data = $request->doctorRecord;
         $batch_list = $request->import_batch;
         $doctor_list = $request->doctor_list;
@@ -99,13 +211,13 @@ class UserController extends Controller
         //dd(count(explode(",", $batch_list[0])));
         $excel_data_get = explode(",", $excel_data[0]);
         $batch = explode(",", $batch_list[0]);
-        for ($i=0; $i < count($batch); $i++) { 
+        /*for ($i=0; $i < count($batch); $i++) {
             dd(serialize($excel_data_get[$i]));
             $j = json_decode($excel_data_get[$i], true);
             dd($batch[$i], $j->title);
             //dd($batch[$i]);
-        }
-        
+        }*/
+
 
         /*for ($i=0; $i < 5; $i++) {
             dd($datas[0][0]->title);
