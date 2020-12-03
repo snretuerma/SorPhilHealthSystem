@@ -11,7 +11,7 @@
     <file>routes</file>
     <file>tests</file>
 
-    <exclude-pattern>app/Http/Models/*</exclude-pattern>
+    <exclude-pattern>app/Models/*</exclude-pattern>
     <exclude-pattern>bootstrap/cache/*</exclude-pattern>
     <exclude-pattern>bootstrap/autoload.php</exclude-pattern>
     <exclude-pattern>*/migrations/*</exclude-pattern>
