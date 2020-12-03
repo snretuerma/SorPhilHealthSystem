@@ -413,19 +413,19 @@ class UserController extends Controller
                     }
                 }
             }
-        }else {
+        } else {
             $record->record_type="old";
             $record->total = $request->pf;
             $record->non_medical_fee = $request->pf/2;
             $record->medical_fee = $record->non_medical_fee;
             $record->save();
-        }   
+        }
     }
     
     public function getDoctors()
     {
         return Doctor::where('hospital_id', Auth::user()->hospital_id)
-        ->where('is_active',true)
+        ->where('is_active', true)
         ->get();
     }
 
@@ -436,5 +436,4 @@ class UserController extends Controller
         ->orderBy('batch', 'DESC')
         ->get(['batch']);
     }
-
 }
