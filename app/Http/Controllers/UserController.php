@@ -26,6 +26,7 @@ use App\Models\Doctor;
 //doctor imp
 use App\Imports\User\DoctorImport;
 use App\Imports\User\CreditRecordImport;
+use App\Models\CreditRecord;
 //end
 
 use App\Imports\User\PersonnelImport;
@@ -74,7 +75,7 @@ class UserController extends Controller
      */
     public function splitTwoComma(String $data)
     {
-        if(str_replace(' ','',strtoupper(trim($data))) == "NULL" || $data = ""){
+        /*if(str_replace(' ','',strtoupper(trim($data))) == "NULL" || $data == ""){
             return 'null';
         }else{
             $data_split_arr = [];
@@ -83,6 +84,18 @@ class UserController extends Controller
                 array_push($data_split_arr, trim($content[$i].','.$content[$i + 1]));
             }
             return $data_split_arr;
+        }*/
+       // dd($data);
+        if(str_replace(' ','',strtoupper(trim($data))) == "NULL" || $data == "" || $data == null){
+            return null;
+        }else{
+            $all_match = [];
+            preg_match_all('/[^,]+,[^,]+/', $data, $all_match);
+            if(count($all_match[0]) > 0){
+                return $all_match;
+            }else{
+                return null;
+            }
         }
     }
 
@@ -117,6 +130,21 @@ class UserController extends Controller
 
         $k++;}
         dd($k);*/
+
+        $doctor_list_complete = $request[0]['doctor_list'];
+        $cell_physician = [
+            'Attending_Physician',	
+            'Admitting_Physician',
+            'Requesting_Physician',	
+            'Reffered_Physician',	
+            'Co_Management',	
+            'Anesthesiology_Physician',	
+            'Surgeon_Physician',	
+            'HealthCare_Physician',	
+            'ER_Physician'	
+        ];
+
+        //dd($request[0]['doctor_list']);
         for ($i=0; $i < count($request[0]['import_batch']); $i++) {
             //dd($request[0]['import_batch'][$i]);
             //dd(Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Y-m-d h:i:s') ,$type);
@@ -124,19 +152,33 @@ class UserController extends Controller
             $acpn = $request[0]['doctor_record'][$i]['content'];
             foreach($acpn as $each){
 
-                /*$data_split_arr = [];
-                $content = explode(',', $each['Attending_Physician']);
-                for ($i=0; $i < count($content); $i+=2) {
-                    array_push($data_split_arr, trim($content[$i].','.$content[$i + 1]));
-                }*/
+               
 
-                $hh = $this->splitTwoComma($each['Attending_Physician']);
-                $ii = $this->splitTwoComma($each['Admitting_Physician']);
-                $kk = $this->splitTwoComma($each['Requesting_Physician']);
+               // $doctor_list = [];
+                $doctor_ids = [];
+                $doctor_as = [];
+                
+                foreach($cell_physician as $physician){
+                    if($this->splitTwoComma($each[$physician]) != null){
+                        foreach($this->splitTwoComma($each[$physician])[0] as $name){
+                            //array_push($doctor_list, trim($name));
+                            foreach($doctor_list_complete as $doctor_info){
+                                if(str_replace(' ','',strtolower(trim($doctor_info['name']))) == str_replace(' ','',strtolower(trim($name)))){
+                                    array_push($doctor_ids, $doctor_info['id']);
+                                    array_push($doctor_as, $physician);
+                                }
+                            }
+                        }
+                    }
+                }
+                //dd($doctor_ids, $doctor_as);
 
 
+                /*$doctors = Doctor::where('hospital_id', 1)->whereIn('id', $doctor_ids)->get();
+                   dd($doctors);
+                dd($cell_physician);*/
+                
 
-                dd($hh, $ii, $kk);
                 $record = new CreditRecord;
                 $record->hospital()->associate(Auth::user()->hospital_id);
                 $record->patient_name = $each['Patient_Name'];
@@ -150,27 +192,27 @@ class UserController extends Controller
                         $record->non_medical_fee = 0;
                         $record->medical_fee = 0;
                         $record->save();
-                        $doctors = Doctor::where('hospital_id', $record->hospital_id)->get()->random(3);
+                        $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
                         foreach($doctors as $doctor) {
                             $doctor->credit_records()->attach($record->id, [
-                                'doctor_role' => 'attending',
+                                'doctor_role' => str_replace('_',' ',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])),
                                 'professional_fee' => $record->total,
                             ]);
                         }
                 }else{
                     if((Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Ymd')) < "20200301"){
                             $record->record_type = 'old';
-                            $record->total = rand(1000, 9999);
+                            $record->total = $each['Total_PF'];
                             $record->non_medical_fee = $record->total/2;
                             $record->medical_fee = $record->non_medical_fee;
                             $record->save();
                     }else{
                             $record->record_type = 'new';
-                            $record->total = rand(1000, 9999);
+                            $record->total = $each['Total_PF'];
                             $record->non_medical_fee = $record->total/2;
                             $record->medical_fee = $record->non_medical_fee;
                             $record->save();
-                            $doctors = Doctor::where('hospital_id', $record->hospital_id)->get()->random(3);
+                            $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
                             $full_time_doctors = Doctor::select('id')
                                 ->where('is_active', true)
                                 ->where('is_parttime', false)
@@ -193,7 +235,7 @@ class UserController extends Controller
                             $pooled_record->save();
                             foreach($doctors as $doctor) {
                                 $doctor->credit_records()->attach($record->id, [
-                                    'doctor_role' => 'attending',
+                                    'doctor_role' => str_replace('_',' ',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])),
                                     'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
                                 ]);
                             }
