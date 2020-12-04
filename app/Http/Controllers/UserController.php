@@ -27,6 +27,7 @@ use App\Models\Doctor;
 use App\Imports\User\DoctorImport;
 use App\Imports\User\CreditRecordImport;
 use App\Models\CreditRecord;
+use App\Models\PooledRecord;
 //end
 
 use App\Imports\User\PersonnelImport;
