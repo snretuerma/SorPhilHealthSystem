@@ -189,7 +189,7 @@
                     <el-progress v-if="progressbar_import" :percentage="percentage" color="#409eff"></el-progress>
                 </el-form-item>
             </el-form>
-            <el-row>
+            <el-row v-show="is_preview && preview_excel_sheet_data.length > 0">
                 <el-col>
                     <el-tabs type="border-card" tab-position="bottom" @tab-click="handleClickTab">
                         <!--<el-tab-pane>
@@ -304,7 +304,7 @@
                 </el-col>
             </el-row>
             <!-- for error-->
-            <div>
+            <div v-show="!is_preview && preview_excel_sheet_data.length > 0">
                 <el-alert
                     title='ERROR FOUND, Please see error log bellow'
                     type="error"
@@ -406,6 +406,7 @@ export default {
             import_batch:[],
             doctor_list_compress:[],
             doctor_list_complete:[],
+            is_preview: false,
 
         };
     },
@@ -1015,10 +1016,15 @@ export default {
                         var gg = JSON.stringify(_this.preview_excel);
                         console.log(gg);*/
 
-                        if(_this.excel_validation_error[0].length < 1){
-                            console.log("NO ERROR FOUND");
-                        }else if(_this.excel_validation_error[0].length < 1){
-                            console.log("ERROR FOUND");
+                        if(_this.excel_validation_error[0].length < 1 && 
+                           _this.excel_validation_error[1].length < 1 &&
+                           _this.excel_validation_error[2].length < 1
+                        ){
+                            //console.log("NO ERROR FOUND");
+                            _this.is_preview = true;
+                        }else{
+                            _this.is_preview = false;
+                            //console.log("ERROR FOUND");
                         }
                 
                 //console.log(_this.excel_validation_error.length);
