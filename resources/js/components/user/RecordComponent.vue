@@ -153,7 +153,7 @@
 
         <!-- Import excel -->
         <el-dialog title="Import Excel" :visible.sync="dialogExcelFile" :fullscreen="true">
-            <el-row>
+            <!--<el-row>
                 <el-col>
                     <span class="demonstration">Select Batch Date</span>
                     <el-date-picker
@@ -168,7 +168,7 @@
                         :picker-options="pickerOptions">
                     </el-date-picker>
                 </el-col>
-            </el-row><br>
+            </el-row><br>-->
             <el-form>
                 <el-form-item>
                     <el-upload
@@ -232,6 +232,7 @@
                                 <el-table-column
                                 prop="Discharge_Date"
                                 label="Discharge Date"
+                                :formatter="covertDate"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -297,11 +298,39 @@
                                 @current-change="handleCurrentChange"
                                 :page-size="page_size"
                                 :total="total"
-                            /><!---->
+                            />
                         </el-tab-pane>
                     </el-tabs>
                 </el-col>
             </el-row>
+            <!-- for error-->
+            <div>
+                <el-alert
+                    title='ERROR FOUND, Please see error log bellow'
+                    type="error"
+                    :closable="false"
+                    show-icon>
+                </el-alert>
+                <ul>
+                    <dl>
+                        <dt>WORKSHEET NAME</dt>
+                            <ol>
+                                <li>Sample error</li>
+                                <li v-for="item in excel_validation_error[0]" :key="item.id">({{item.cell_position}}) {{item.message}}</li>
+                            </ol>
+                        <dt>HEADER</dt>
+                            <ol>
+                                <li>Sample error</li>
+                                <li v-for="item in excel_validation_error[1]" :key="item.id">({{item.cell_position}}) {{item.message}}</li>
+                            </ol>
+                        <dt>CONTENT</dt>
+                            <ol>
+                                <li>Sample error</li>
+                                <li v-for="item in excel_validation_error[2]" :key="item.id">({{item.cell_position}}) {{item.message}}</li>
+                            </ol>
+                    </dl>
+                </ul>
+            </div>
         </el-dialog>
         <!-- Import excel end-->
 
@@ -359,7 +388,21 @@ export default {
             current_tab_table:[],
             data:[],
             current_tab: '',
-            excel_validation_error:[],
+            excel_validation_error:[
+                [
+                    {id: 1, cell_position: 'WorkSheetName1', message: 'Must be a valid1'},
+                    {id: 2, cell_position: 'WorkSheetName2', message: 'Must be a valid2'},
+                    {id: 3, cell_position: 'WorkSheetName3', message: 'Must be a valid3'}
+                ],
+                [
+                    {id: 4, cell_position: 'A1', message: 'invalid Header name'}
+                ],
+                [
+                    {id: 5, cell_position: 'F3', message: 'Invalid name format'},
+                    {id: 6, cell_position: 'H7', message: 'Content not match'},
+                    {id: 7, cell_position: 'D20', message: 'Required cell'}
+                ]
+            ],
             import_batch:[],
             doctor_list_compress:[],
             doctor_list_complete:[],
@@ -367,6 +410,9 @@ export default {
         };
     },
     methods: {
+        /*AddZeroToDate(num) {
+            return (num >= 0 && num < 10) ? "0" + num : num + "";
+        },*/
         covertDate(row, column, cellValue, index){
             /*const unixTimestamp = cellValue
 
@@ -390,7 +436,29 @@ export default {
             var dt = new Date(1318781876.721 * 1000);
             var f = dt.toLocaleString();*/
 
-            return cellValue.getFullYear() + "-" + (cellValue.getMonth() + 1) + "-" + cellValue.getDate() ;
+            //var now = new Date();
+           /* var strDateTime = [[this.AddZeroToDate(cellValue.getDate()), 
+                this.AddZeroToDate(cellValue.getMonth() + 1), 
+                cellValue.getFullYear()].join("/"), 
+                [this.AddZeroToDate(cellValue.getHours()), 
+                this.AddZeroToDate(cellValue.getMinutes())].join(":"), 
+                cellValue.getHours() >= 12 ? "PM" : "AM"].join(" ");
+            //document.getElementById("Console").innerHTML = "Now: " + strDateTime;
+            return strDateTime;*/
+
+            var hours = cellValue.getHours();
+            var minutes = cellValue.getMinutes();
+            var ampm = hours >= 12 ? 'pm' : 'am';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // the hour '0' should be '12'
+            minutes = minutes < 10 ? '0'+minutes : minutes;
+            //var strTime = hours + ':' + minutes + ' ' + ampm;
+            var strTime = hours + ampm;
+            return cellValue.getFullYear() + "-" + (cellValue.getMonth() + 1) + "-" + cellValue.getDate() + " " + strTime;
+
+            
+
+           // return cellValue.getFullYear() + "-" + (cellValue.getMonth() + 1) + "-" + cellValue.getDate() ;
 
             //console.log(dateObject);
         },
@@ -522,7 +590,7 @@ export default {
                     formData.append("import_batch[]", this.import_batch);
                     formData.append("doctor_list[]", this.doctor_list_complete);*/
 
-                    var arr = [{
+                    var excel_data = [{
                          doctor_record: this.preview_excel_sheet_data,
                          import_batch: this.import_batch,
                          doctor_list: this.doctor_list_complete
@@ -530,7 +598,7 @@ export default {
 
 
                     axios
-                    .post("import_doctor_record", arr)
+                    .post("import_doctor_record", excel_data)
                     .then(function(res) {
 
 
@@ -652,6 +720,13 @@ export default {
                                         sheetname: sheetName,
                                         error: "invalid sheet name format please check",
                                         is_sheetname: 1
+                                    });
+                                    _this.excel_validation_error[0].push({
+                                        sheetname: sheetName,
+                                        error: "invalid sheet name format please check",
+                                        is_sheetname: 1,
+                                        cell_position: 'worksheet number ' + (i + 1),
+                                        message: sheetName
                                     });
                                     console.log("invalid inside valid");
                                 }else{
@@ -937,9 +1012,16 @@ export default {
                          //console.log(JSON.stringify(_this.preview_excel_sheetname));
 
                         /*console.log("gg");
-                var gg = JSON.stringify(_this.preview_excel);
-                console.log(gg);*/
+                        var gg = JSON.stringify(_this.preview_excel);
+                        console.log(gg);*/
 
+                        if(_this.excel_validation_error[0].length < 1){
+                            console.log("NO ERROR FOUND");
+                        }else if(_this.excel_validation_error[0].length < 1){
+                            console.log("ERROR FOUND");
+                        }
+                
+                //console.log(_this.excel_validation_error.length);
                 } /**/
 
 
@@ -954,6 +1036,8 @@ export default {
                         var htmlstr = XLSX.write(wb,{sheet:"sheet no1", type:'binary',bookType:'html'});
                         $('#wrapper')[0].innerHTML += htmlstr;
                 }*/
+
+                
 
 
 
@@ -1073,6 +1157,9 @@ export default {
     mounted() {
         //console.log(this.tableData);
         this.getDoctors();
+        /*this.$alert('<div class="row" style="background-color:green;"><strong>This is <i>HTML</i> string</strong></div>', 'HTML String', {
+          dangerouslyUseHTMLString: true
+        });*/
 
     },
     computed: {
