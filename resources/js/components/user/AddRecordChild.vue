@@ -557,8 +557,9 @@ export default {
                 target: "#form",
                 fullscreen:false
             });
+            console.log(this.form);
             if (this.form.lname =="" || this.form.fname =="" ||
-            this.form.admitting =="" || this.form.discharge =="" ||
+            this.form.admission =="" || this.form.discharge =="" ||
             this.form.batch =="" || this.form.pf =="")
             {
                 this.$notify({
@@ -576,7 +577,15 @@ export default {
                 axios
                 .post("add_records",this.form)
                 .then(response => {
-                    console.log(response.data);
+                    this.$notify({
+                    type: 'success',
+                    title: 'Record',
+                    message: 'Record added successfully!',
+                    offset: 0,
+                });
+                    loading.close();
+                    this.btnLoading=false;
+                    this.clearField();
                 })
                 .catch(error=> {
                     this.errors=error.response.data.errors;
