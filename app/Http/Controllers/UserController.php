@@ -374,8 +374,7 @@ class UserController extends Controller
         ->setTimezone('Asia/Manila');
         $record->discharge_date = Carbon::parse($request->discharge)
         ->setTimezone('Asia/Manila');
-        if ($request->is_private)
-        {
+        if ($request->is_private) {
             $record->record_type="private";
             $record->total = $request->pf;
             $record->non_medical_fee = 0;
@@ -394,8 +393,7 @@ class UserController extends Controller
                     }
                 }
             }
-        } else
-        {
+        } else {
             if ($request->admission >= '2020-03-1') {
                 $record->record_type="new";
                 $record->total = $request->pf;
