@@ -183,7 +183,7 @@
                     accept=".xlsx"
                     >
                         <el-button slot="trigger" type="primary" plain>select supported excel file</el-button>
-                        <el-button type="success" @click="uploadToDatabase">upload to database</el-button>
+                        <el-button type="success" @click="uploadToDatabase" :disabled="!is_preview">upload to database</el-button>
 
                     </el-upload>
                     <el-progress v-if="progressbar_import" :percentage="percentage" color="#409eff"></el-progress>
@@ -315,18 +315,28 @@
                     <dl>
                         <dt>WORKSHEET NAME</dt>
                             <ol>
-                                <li>Sample error</li>
-                                <li v-for="item in excel_validation_error[0]" :key="item.id">({{item.cell_position}}) {{item.message}}</li>
+                                <!--<li>Sample error</li>-->
+                                <li v-for="item in excel_validation_error[0]" :key="item.id">
+                                    <strong>{{item.value}}</strong>
+                                            {{item.message}}
+                                    <strong>[{{item.cell_position}}]</strong>
+                                </li>
                             </ol>
                         <dt>HEADER</dt>
                             <ol>
-                                <li>Sample error</li>
-                                <li v-for="item in excel_validation_error[1]" :key="item.id">({{item.cell_position}}) {{item.message}}</li>
+                                <li v-for="item in excel_validation_error[1]" :key="item.id">
+                                    <strong>{{item.value}}</strong>
+                                            {{item.message}}
+                                    <strong>[{{item.cell_position}}]</strong>
+                                </li>
                             </ol>
                         <dt>CONTENT</dt>
                             <ol>
-                                <li>Sample error</li>
-                                <li v-for="item in excel_validation_error[2]" :key="item.id">({{item.cell_position}}) {{item.message}}</li>
+                                <li v-for="item in excel_validation_error[2]" :key="item.id">
+                                    <strong>{{item.value}}</strong>
+                                            {{item.message}}
+                                    <strong>[{{item.cell_position}}]</strong>
+                                </li>
                             </ol>
                     </dl>
                 </ul>
@@ -388,7 +398,8 @@ export default {
             current_tab_table:[],
             data:[],
             current_tab: '',
-            excel_validation_error:[
+            excel_validation_error:[[], [], []],
+            /*excel_validation_error:[
                 [
                     {id: 1, cell_position: 'WorkSheetName1', message: 'Must be a valid1'},
                     {id: 2, cell_position: 'WorkSheetName2', message: 'Must be a valid2'},
@@ -402,7 +413,7 @@ export default {
                     {id: 6, cell_position: 'H7', message: 'Content not match'},
                     {id: 7, cell_position: 'D20', message: 'Required cell'}
                 ]
-            ],
+            ],*/
             import_batch:[],
             doctor_list_compress:[],
             doctor_list_complete:[],
@@ -438,11 +449,11 @@ export default {
             var f = dt.toLocaleString();*/
 
             //var now = new Date();
-           /* var strDateTime = [[this.AddZeroToDate(cellValue.getDate()), 
-                this.AddZeroToDate(cellValue.getMonth() + 1), 
-                cellValue.getFullYear()].join("/"), 
-                [this.AddZeroToDate(cellValue.getHours()), 
-                this.AddZeroToDate(cellValue.getMinutes())].join(":"), 
+           /* var strDateTime = [[this.AddZeroToDate(cellValue.getDate()),
+                this.AddZeroToDate(cellValue.getMonth() + 1),
+                cellValue.getFullYear()].join("/"),
+                [this.AddZeroToDate(cellValue.getHours()),
+                this.AddZeroToDate(cellValue.getMinutes())].join(":"),
                 cellValue.getHours() >= 12 ? "PM" : "AM"].join(" ");
             //document.getElementById("Console").innerHTML = "Now: " + strDateTime;
             return strDateTime;*/
@@ -457,7 +468,7 @@ export default {
             var strTime = hours + ampm;
             return cellValue.getFullYear() + "-" + (cellValue.getMonth() + 1) + "-" + cellValue.getDate() + " " + strTime;
 
-            
+
 
            // return cellValue.getFullYear() + "-" + (cellValue.getMonth() + 1) + "-" + cellValue.getDate() ;
 
@@ -591,36 +602,71 @@ export default {
                     formData.append("import_batch[]", this.import_batch);
                     formData.append("doctor_list[]", this.doctor_list_complete);*/
 
-                    var excel_data = [{
-                         doctor_record: this.preview_excel_sheet_data,
-                         import_batch: this.import_batch,
-                         doctor_list: this.doctor_list_complete
-                    }];
+                    _this.getDoctors();
+
+                    if(_this.excel_validation_error[0].length < 1 &&
+                        _this.excel_validation_error[1].length < 1 &&
+                        _this.excel_validation_error[2].length < 1 &&
+                        _this.preview_excel_sheet_data.length > 0
+                    ){
+                        var excel_data = [{
+                            doctor_record: _this.preview_excel_sheet_data,
+                            import_batch: _this.import_batch,
+                            doctor_list: _this.doctor_list_complete
+                        }];
+                        axios
+                        .post("import_doctor_record", excel_data)
+                        .then(function(res) {
+                                _this.$notify({
+                                    type: 'success',
+                                    title: 'Import',
+                                    message: "Successfully imported",
+                                });
+                        })
+                        .catch(function(res) { });
+                    }else{
+                        _this.$notify({
+                            type: 'warning',
+                            title: 'Import',
+                            message: "Please re-import",
+                        });
+                    }
 
 
-                    axios
-                    .post("import_doctor_record", excel_data)
-                    .then(function(res) {
 
-
-
-                            _this.$notify({
-                                type: 'success',
-                                title: 'Import',
-                                message: "Successfully imported",
-                            });
-
-
-                    })
-                    .catch(function(res) { });
 
 
         },
         handleExceedFile(files, fileList) {
-                this.$message.warning(`The limit is 1, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`);
+               // this.$message.warning(`The limit is 1, you selected ${files.length} files this time, add up to ${files.length + fileList.length} totally`);
+                this.$notify({
+                    type: 'info',
+                    title: 'Import',
+                    message: "1 File limit please remove selected to re-select again",
+                });
 
         },
         handleRemoveFile(file, fileList) {
+
+            this.getDoctors();
+
+            this.doctorRecord = [];
+            this.preview_excel_sheetname = [];
+            this.preview_excel_sheet_data = [];
+            this.sheet_length = '';
+            this.page = 1;
+            this.total = 0;
+            this.current_tab_content = [];
+            this.current_tab_table = [];
+            this.data = [];
+            this.current_tab = '';
+            this.excel_validation_error = [[], [], []];
+            this.import_batch = [];
+            this.doctor_list_compress = [];
+            this.doctor_list_complete = [];
+            this.is_preview = false;
+
+
             this.$notify({
                 type: 'info',
                 title: 'Cancel',
@@ -717,17 +763,16 @@ export default {
                                 console.log(sheetName);
 
                                 if(_this.checkSheetName(sheetName ,i) == "invalid"){
-                                    _this.excel_validation_error.push({
+                                    /*_this.excel_validation_error.push({
                                         sheetname: sheetName,
                                         error: "invalid sheet name format please check",
                                         is_sheetname: 1
-                                    });
+                                    });*/
                                     _this.excel_validation_error[0].push({
-                                        sheetname: sheetName,
-                                        error: "invalid sheet name format please check",
-                                        is_sheetname: 1,
+                                        id: 'ws' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                        value: sheetName + " - ",
+                                        message: "invalid sheet name format please check",
                                         cell_position: 'worksheet number ' + (i + 1),
-                                        message: sheetName
                                     });
                                     console.log("invalid inside valid");
                                 }else{
@@ -752,13 +797,14 @@ export default {
                                     /* console.log(worksheet[cellref]);*/
 
                                     var cell_position = ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
+                                    //var random_text_number = Math.random().toString(36).substring(7);
 
 
 
                                     if(!worksheet[cellref]){
                                         if(R == 0 && C < 14 ){
                                             //var location = ((C + 1) + 9).toString(36).toUpperCase();
-                                            _this.excel_validation_error.push({
+                                            /*_this.excel_validation_error.push({
                                                 sheetname: sheetName,
                                                 row: R,
                                                 column: C,
@@ -766,10 +812,16 @@ export default {
                                                 error: "column header required no text found, must be 14 column",
                                                 value: '',
                                                 is_header: 1
+                                            });*/
+                                            _this.excel_validation_error[1].push({
+                                                id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "column header required no text found, must be 14 column",
+                                                cell_position: cell_position,
                                             });
                                         }
                                         if(R > 0 && C < 14){
-                                            switch (C) {
+                                            /*switch (C) {
                                                 case 3:
                                                     console.log(C + "-" + R + "-" + "no value");
 
@@ -777,6 +829,42 @@ export default {
 
                                                 default:
                                                     break;
+                                            }*/
+                                            if(C == 3){
+                                                _this.excel_validation_error[2].push({
+                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                    value: '',
+                                                    message: "all cell required or must be 'INTEGER' instead",
+                                                    cell_position: cell_position,
+                                                });
+                                            }else if(C == 13){
+                                                _this.excel_validation_error[2].push({
+                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                    value: '',
+                                                    message: "all cell required or must be '0 or 1' instead",
+                                                    cell_position: cell_position,
+                                                });
+                                            }else if(C == 0){
+                                                _this.excel_validation_error[2].push({
+                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                    value: '',
+                                                    message: "all cell required or must be 'NOT NULL' instead",
+                                                    cell_position: cell_position,
+                                                });
+                                            }else if(C == 1 || C == 2){
+                                                _this.excel_validation_error[2].push({
+                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                    value: '',
+                                                    message: "all cell required or must be 'DATETIME' instead",
+                                                    cell_position: cell_position,
+                                                });
+                                            }else{
+                                                _this.excel_validation_error[2].push({
+                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                    value: '',
+                                                    message: "all cell required or must be 'NULL' instead !! PHYSICIAN",
+                                                    cell_position: cell_position,
+                                                });
                                             }
                                         }
                                         continue;
@@ -802,7 +890,7 @@ export default {
                                         var column_cell = _this.trimToCompare(cell.v);
                                         if(header_required.indexOf(column_cell) == "-1"){
                                             //var location = ((C + 1) + 9).toString(36).toUpperCase();
-                                            _this.excel_validation_error.push({
+                                            /*_this.excel_validation_error.push({
                                                 sheetname: sheetName,
                                                 row: R,
                                                 column: C,
@@ -810,6 +898,12 @@ export default {
                                                 error: "column header required not match",
                                                 value: cell.v,
                                                 is_header: 1
+                                            });*/
+                                            _this.excel_validation_error[1].push({
+                                                id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: cell.v,
+                                                message: "column header required not match",
+                                                cell_position: cell_position,
                                             });
                                         }
                                         //console.log(cell.v);
@@ -823,7 +917,7 @@ export default {
                                                     if(isNaN(cell.v % 1)){
                                                         //console.log("deprecated must be a  number");
                                                         //var location = ((C + 1) + 9).toString(36).toUpperCase();
-                                                        _this.excel_validation_error.push({
+                                                        /*_this.excel_validation_error.push({
                                                             sheetname: sheetName,
                                                             row: R,
                                                             column: C,
@@ -831,6 +925,12 @@ export default {
                                                             error: "deprecated must be a  number",
                                                             value: cell.v,
                                                             is_header: 0
+                                                        });*/
+                                                        _this.excel_validation_error[2].push({
+                                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                            value: cell.v,
+                                                            message: "deprecated must be a  number",
+                                                            cell_position: cell_position,
                                                         });
                                                     }else{
                                                        // console.log(C + "-" + R + "-" + cell.v);
@@ -862,7 +962,7 @@ export default {
                                                             }*/
                                                         if(cell.v.match(/[^,]+,[^,]+/g) == null){
                                                             //var location = ((C + 1) + 9).toString(36).toUpperCase();
-                                                            _this.excel_validation_error.push({
+                                                            /*_this.excel_validation_error.push({
                                                                 sheetname: sheetName,
                                                                 row: R,
                                                                 column: C,
@@ -870,6 +970,12 @@ export default {
                                                                 error: "name must be a correct format",
                                                                 value: cell.v,
                                                                 is_header: 0
+                                                            });*/
+                                                            _this.excel_validation_error[2].push({
+                                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                                value: cell.v,
+                                                                message: "name must be a correct format",
+                                                                cell_position: cell_position,
                                                             });
                                                         }else if(cell.v.match(/[^,]+,[^,]+/g).length > 1){
                                                             var compress_to_compare = "";
@@ -884,9 +990,9 @@ export default {
                                                               // }
                                                               //console.log("--" + cell.v.match(/[^,]+,[^,]+/g)[index] + ",");
 
-                                                                /*//CHECK IF EXIST IN DATABASE
+                                                                //CHECK IF EXIST IN DATABASE
                                                                 if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[index]))){
-                                                                    _this.excel_validation_error.push({
+                                                                    /*_this.excel_validation_error.push({
                                                                         sheetname: sheetName,
                                                                         row: R,
                                                                         column: C,
@@ -894,14 +1000,20 @@ export default {
                                                                         error: "name not exist into database please add to proceed...",
                                                                         value: (cell.v.match(/[^,]+,[^,]+/g)[index]),
                                                                         is_header: 0
+                                                                    });*/
+                                                                    _this.excel_validation_error[2].push({
+                                                                        id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                                        value: (cell.v.match(/[^,]+,[^,]+/g)[index]),
+                                                                        message: "name not exist into database please add to proceed...",
+                                                                        cell_position: cell_position,
                                                                     });
                                                                 }
-                                                                //END HERE*/
+                                                                //END HERE/**/
 
                                                             }//console.log("[more than  > 1]:" + cell.v);
                                                             if(_this.trimToCompare(compress_to_compare) != _this.trimToCompare((cell.v + ","))){
                                                                 //console.log("not match row:" + R + " column:" +  C);
-                                                                _this.excel_validation_error.push({
+                                                                /*_this.excel_validation_error.push({
                                                                     sheetname: sheetName,
                                                                     row: R,
                                                                     column: C,
@@ -909,12 +1021,18 @@ export default {
                                                                     error: "there was a proble with the name format value not match",
                                                                     value: cell.v,
                                                                     is_header: 0
+                                                                });*/
+                                                                _this.excel_validation_error[2].push({
+                                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                                    value: cell.v,
+                                                                    message: "there was a proble with the name format value not match",
+                                                                    cell_position: cell_position,
                                                                 });
                                                             }
 
-                                                        }/* CHECK IF EXIST INTO DATABASE / else if(cell.v.match(/[^,]+,[^,]+/g).length == 1){
+                                                        }/* CHECK IF EXIST INTO DATABASE /*/  else if(cell.v.match(/[^,]+,[^,]+/g).length == 1){
                                                             if(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]) != _this.trimToCompare((cell.v))){
-                                                                _this.excel_validation_error.push({
+                                                                /*_this.excel_validation_error.push({
                                                                     sheetname: sheetName,
                                                                     row: R,
                                                                     column: C,
@@ -922,10 +1040,16 @@ export default {
                                                                     error: "there was a proble with the name format value not match",
                                                                     value: cell.v,
                                                                     is_header: 0
+                                                                });*/
+                                                                _this.excel_validation_error[2].push({
+                                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                                    value: cell.v,
+                                                                    message: "there was a proble with the name format value not match",
+                                                                    cell_position: cell_position,
                                                                 });
                                                             }else{
                                                                 if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]))){
-                                                                    _this.excel_validation_error.push({
+                                                                    /*_this.excel_validation_error.push({
                                                                         sheetname: sheetName,
                                                                         row: R,
                                                                         column: C,
@@ -933,17 +1057,23 @@ export default {
                                                                         error: "name not exist into database please add to proceed...",
                                                                         value: (cell.v.match(/[^,]+,[^,]+/g)[0]),
                                                                         is_header: 0
+                                                                    });*/
+                                                                    _this.excel_validation_error[2].push({
+                                                                        id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                                        value: (cell.v.match(/[^,]+,[^,]+/g)[0]),
+                                                                        message: "name not exist into database please add to proceed...",
+                                                                        cell_position: cell_position,
                                                                     });
                                                                 }
                                                             }
-                                                        }*/ console.log("--------------------------------------------------");
+                                                        }console.log("--------------------------------------------------");
                                                     }
 
                                                    // console.log(cell.v.match(/[^,]+,[^,]+/g));
                                             }else if(C == 13){
                                                     if(cell.v == 0 || cell.v == 1){
                                                     }else{
-                                                            _this.excel_validation_error.push({
+                                                            /*_this.excel_validation_error.push({
                                                                 sheetname: sheetName,
                                                                 row: R,
                                                                 column: C,
@@ -951,6 +1081,12 @@ export default {
                                                                 error: "is private must be 0 or 1 only",
                                                                 value: cell.v,
                                                                 is_header: 0
+                                                            });*/
+                                                            _this.excel_validation_error[2].push({
+                                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                                value: cell.v,
+                                                                message: "is private must be 0 or 1 only",
+                                                                cell_position: cell_position,
                                                             });
                                                     }
                                             }
@@ -1016,7 +1152,7 @@ export default {
                         var gg = JSON.stringify(_this.preview_excel);
                         console.log(gg);*/
 
-                        if(_this.excel_validation_error[0].length < 1 && 
+                        if(_this.excel_validation_error[0].length < 1 &&
                            _this.excel_validation_error[1].length < 1 &&
                            _this.excel_validation_error[2].length < 1
                         ){
@@ -1026,7 +1162,7 @@ export default {
                             _this.is_preview = false;
                             //console.log("ERROR FOUND");
                         }
-                
+
                 //console.log(_this.excel_validation_error.length);
                 } /**/
 
@@ -1043,7 +1179,7 @@ export default {
                         $('#wrapper')[0].innerHTML += htmlstr;
                 }*/
 
-                
+
 
 
 

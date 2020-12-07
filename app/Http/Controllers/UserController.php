@@ -134,15 +134,15 @@ class UserController extends Controller
 
         $doctor_list_complete = $request[0]['doctor_list'];
         $cell_physician = [
-            'Attending_Physician',	
+            'Attending_Physician',
             'Admitting_Physician',
-            'Requesting_Physician',	
-            'Reffered_Physician',	
-            'Co_Management',	
-            'Anesthesiology_Physician',	
-            'Surgeon_Physician',	
-            'HealthCare_Physician',	
-            'ER_Physician'	
+            'Requesting_Physician',
+            'Reffered_Physician',
+            'Co_Management',
+            'Anesthesiology_Physician',
+            'Surgeon_Physician',
+            'HealthCare_Physician',
+            'ER_Physician'
         ];
 
         //dd($request[0]['doctor_list']);
@@ -153,12 +153,12 @@ class UserController extends Controller
             $acpn = $request[0]['doctor_record'][$i]['content'];
             foreach($acpn as $each){
 
-               
+
 
                // $doctor_list = [];
                 $doctor_ids = [];
                 $doctor_as = [];
-                
+
                 foreach($cell_physician as $physician){
                     if($this->splitTwoComma($each[$physician]) != null){
                         foreach($this->splitTwoComma($each[$physician])[0] as $name){
@@ -178,7 +178,7 @@ class UserController extends Controller
                 /*$doctors = Doctor::where('hospital_id', 1)->whereIn('id', $doctor_ids)->get();
                    dd($doctors);
                 dd($cell_physician);*/
-                
+
 
                 $record = new CreditRecord;
                 $record->hospital()->associate(Auth::user()->hospital_id);
@@ -196,7 +196,7 @@ class UserController extends Controller
                         $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
                         foreach($doctors as $doctor) {
                             $doctor->credit_records()->attach($record->id, [
-                                'doctor_role' => str_replace('_',' ',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])),
+                                'doctor_role' => explode('_',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
                                 'professional_fee' => $record->total,
                             ]);
                         }
@@ -236,7 +236,7 @@ class UserController extends Controller
                             $pooled_record->save();
                             foreach($doctors as $doctor) {
                                 $doctor->credit_records()->attach($record->id, [
-                                    'doctor_role' => str_replace('_',' ',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])),
+                                    'doctor_role' => explode('_',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
                                     'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
                                 ]);
                             }
