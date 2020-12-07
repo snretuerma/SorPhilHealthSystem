@@ -197,10 +197,10 @@ class UserController extends Controller
         return view('roles.user.doctors');
     }
 
-    // public function getDoctors()
-    // {
-    //     return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
-    // }
+    public function getDoctors()
+    {
+        return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
+    }
 
     /**
      * Add a doctor record to the database
@@ -440,8 +440,8 @@ class UserController extends Controller
             }
         }
     }
-    
-    public function getDoctors()
+
+    public function getActiveDoctors()
     {
         return Doctor::where('hospital_id', Auth::user()->hospital_id)
         ->where('is_active', true)

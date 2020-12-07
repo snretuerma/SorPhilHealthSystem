@@ -100,8 +100,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('update_setting', 'UserController@updateSetting');
 
     //doctors
-    Route::get('get_doctors', 'UserController@getDoctors');
-    
+    Route::get('get_doctors', 'UserController@getActiveDoctors');
+
     //user record
     Route::get('/records', 'UserController@records')->name('records');
     Route::get('/get_records', 'UserController@getRecords');
