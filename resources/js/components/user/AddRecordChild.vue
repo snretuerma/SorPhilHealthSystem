@@ -11,13 +11,10 @@
         <!-- End Header -->
         <!-- Search Box -->
         <div class="row" id="search_box" style="margin-bottom: 10px">
-            <div class="col-xl-9 col-lg-8 col-md-6 col-sm-12">
-               
-            </div>
+            <div class="col-xl-9 col-lg-8 col-md-6 col-sm-12"></div>
             <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
                 <div class="row">
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                        
                     </div>
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                        <el-button
@@ -87,11 +84,11 @@
                     <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Requesting" prop="requesting">
-                                <el-select 
+                                <el-select
                                     style="width:100%"
                                     size="large"
                                     v-model="form.requesting"
-                                    value-key="id" 
+                                    value-key="id"
                                     multiple
                                     filterable
                                     allow-create
@@ -112,11 +109,11 @@
                     <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Surgeon" prop="surgeon">
-                                <el-select 
+                                <el-select
                                     style="width:100%"
                                     size="large"
                                     v-model="form.surgeon"
-                                    value-key="id" 
+                                    value-key="id"
                                     multiple
                                     filterable
                                     allow-create
@@ -137,11 +134,11 @@
                     <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Healthcare" prop="healthcare">
-                                <el-select 
+                                <el-select
                                     style="width:100%"
                                     size="large"
                                     v-model="form.healthcare"
-                                    value-key="id" 
+                                    value-key="id"
                                     multiple
                                     filterable
                                     allow-create
@@ -162,11 +159,11 @@
                     <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="ER" prop="er">
-                                <el-select 
+                                <el-select
                                     style="width:100%"
                                     size="large"
                                     v-model="form.er"
-                                    value-key="id" 
+                                    value-key="id"
                                     multiple
                                     filterable
                                     allow-create
@@ -187,11 +184,11 @@
                     <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Anesthesiologist" prop="anesthesiologist">
-                                <el-select 
+                                <el-select
                                     style="width:100%"
                                     size="large"
                                     v-model="form.anesthesiologist"
-                                    value-key="id" 
+                                    value-key="id"
                                     multiple
                                     filterable
                                     allow-create
@@ -212,11 +209,11 @@
                     <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Co-management" prop="comanagement">
-                                <el-select 
+                                <el-select
                                     style="width:100%"
                                     size="large"
                                     v-model="form.comanagement"
-                                    value-key="id" 
+                                    value-key="id"
                                     multiple
                                     filterable
                                     allow-create
@@ -237,11 +234,11 @@
                     <el-row v-if="form.is_private==false">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Admitting" prop="admitting">
-                                <el-select 
+                                <el-select
                                     style="width:100%"
                                     size="large"
                                     v-model="form.admitting"
-                                    value-key="id" 
+                                    value-key="id"
                                     @input="asd()"
                                     multiple
                                     filterable
@@ -263,7 +260,7 @@
                     <el-row>
                         <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                             <el-form-item label="Period Covered" prop="batch">
-                                <el-select 
+                                <el-select
                                     class="block-button"
                                     size="large"
                                     v-model="form.batch"
@@ -391,9 +388,7 @@
                     </el-row>
                     <el-row>
                         <el-col class="col-sm-4 col-md-4 col-lg-4 col-xl-4 block-button">
-                            <el-form-item>
-                                  
-                            </el-form-item>
+                            <el-form-item></el-form-item>
                         </el-col>
                          <el-col class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
                             <el-form-item>
@@ -408,7 +403,7 @@
                         </el-col>
                         <el-col class="col-sm-4 col-md-4 col-lg-4 col-xl-4 block-button">
                             <el-form-item>
-                                  
+
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -496,7 +491,7 @@ export default {
     methods: {
         //function to hide addrecordchild.vue
         triggerClose() {
-            //add-close was invoke in recordparent.vue so the emit will 
+            //add-close was invoke in recordparent.vue so the emit will
             //same just call 'add-close'
             this.$emit("add-close");
         },
@@ -528,31 +523,31 @@ export default {
             var temp=[];
             var attending = this.form.attending.map(function (value, index, array) {
                 _this.form.doctortype.push(value);
-                temp.push(value.id); 
+                temp.push(value.id);
             });
             var requesting = this.form.requesting.map(function (value, index, array) {
                 _this.form.doctortype.push(value);
-                temp.push(value.id); 
+                temp.push(value.id);
             });
             var surgeon = this.form.surgeon.map(function (value, index, array) {
                 _this.form.doctortype.push(value);
-                temp.push(value.id); 
+                temp.push(value.id);
             });
             var er = this.form.er.map(function (value, index, array) {
                 _this.form.doctortype.push(value);
-                temp.push(value.id); 
+                temp.push(value.id);
             });
             var anesthesiologist = this.form.anesthesiologist.map(function (value, index, array) {
                 _this.form.doctortype.push(value);
-                temp.push(value.id); 
+                temp.push(value.id);
             });
             var comanagement = this.form.comanagement.map(function (value, index, array) {
                 _this.form.doctortype.push(value);
-                temp.push(value.id); 
+                temp.push(value.id);
             });
             var admitting = this.form.admitting.map(function (value, index, array) {
                 _this.form.doctortype.push(value);
-                temp.push(value.id); 
+                temp.push(value.id);
             });
             console.log(this.form.doctortype);
             this.form.doctors_id=temp;
