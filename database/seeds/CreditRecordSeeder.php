@@ -19,7 +19,11 @@ class CreditRecordSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        for($index = 0; $index < 20; $index++) {
+        $physicians=[
+            'attending','requesting','surgeon','healthcare','er',
+            'anesthesiologist','comanagement','admitting'
+        ];
+        for($index = 0; $index < 5; $index++) {
             $record = new CreditRecord;
             $record->hospital()->associate(Hospital::find(1)->id);
             $record->patient_name = $faker->lastName.', '.$faker->firstName.' '.$faker->lastName;

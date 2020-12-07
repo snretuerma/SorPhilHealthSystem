@@ -88,7 +88,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::put('edit_doctor', 'UserController@editDoctor');
     Route::delete('delete_doctor/{id}', 'UserController@deleteDoctor');
     //Records
-    Route::get('/records', 'UserController@records')->name('records');
+    // Route::get('/records', 'UserController@records')->name('records');
 
     //Restore
     Route::get('/restore', 'UserController@restore')->name('restore');
@@ -108,6 +108,16 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     //Setting
     Route::get('/setting', 'UserController@setting')->name('setting');
     Route::post('update_setting', 'UserController@updateSetting');
+
+    //doctors
+    Route::get('get_doctors', 'UserController@getDoctors');
+    Route::get('get_active_doctors', 'UserController@getActiveDoctors');
+
+    //user record
+    Route::get('/records', 'UserController@records')->name('records');
+    Route::get('/get_records', 'UserController@getRecords');
+    Route::post('/add_records', 'UserController@addCreditRecord');
+    Route::get('/get_batch', 'UserController@getBatch');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');
