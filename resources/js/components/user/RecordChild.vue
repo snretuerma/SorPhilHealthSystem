@@ -90,7 +90,6 @@
                                     width="140"
                                     label="Attending"
                                     prop="allattending"
-                                
                                 >
                                 </el-table-column>
                                 <el-table-column

@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- call the this.$emit('add-open',parameter if needed) in child component-->
         <record-child  v-if="trigger==false" @add-open="addFormTrigger"></record-child>
         <add-record-child v-if="trigger==true" @add-close="closeFormTrigger" :data="data"></add-record-child>
     </div>

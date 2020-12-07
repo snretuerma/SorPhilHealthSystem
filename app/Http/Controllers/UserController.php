@@ -359,8 +359,7 @@ class UserController extends Controller
     }
     public function getRecords()
     {
-        $records=CreditRecord::with('hospital', 'doctors')
-        ->get();
+        $records=CreditRecord::with('hospital', 'doctors')->get();
         return response()->json($records);
     }
 
