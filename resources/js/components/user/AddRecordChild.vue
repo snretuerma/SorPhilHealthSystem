@@ -38,103 +38,12 @@
             </div>
             <el-form class="form" id="form" :model="form" :rules="rules" ref="form">
                     <el-row>
-                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                            <el-form-item label="Last Name" prop="lname">
-                                <el-input
-                                    v-model="form.lname"
-                                    autocomplete="off"
-                                    @input="buildFullName"
-                                />
-                                <span class="font-italic text-danger" v-if="errors.lname">
-                                    <small>{{ errors.lname[0] }}</small>
-                                </span>
-                            </el-form-item>
-                        </el-col>
-                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                            <el-form-item label="First Name" prop="fname">
-                                <el-input
-                                    v-model="form.fname"
-                                    autocomplete="off"
-                                    @input="buildFullName"
-                                />
-                                <span class="font-italic text-danger" v-if="errors.fname">
-                                    <small>{{ errors.fname[0] }}</small>
-                                </span>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                            <el-form-item label="Middle Name" prop="mname">
-                                <el-input
-                                    v-model="form.mname"
-                                    autocomplete="off"
-                                    @input="buildFullName"
-                                />
-                                <!-- <span class="font-italic text-danger" v-if="errors.middle_name">
-                                    <small>{{ errors.middle_name[0] }}</small>
-                                </span> -->
-                            </el-form-item>
-                        </el-col>
-                            <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                            <el-form-item label="Suffix" prop="suffix">
-                                <el-input
-                                    v-model="form.suffix"
-                                    autocomplete="off"
-                                    @input="buildFullName"
-                                />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                            <el-form-item label="Admission" prop="admission">
-                                <div class="block">
-                                    <el-date-picker
-                                    style="width:100%"
-                                    size="large"
-                                    v-model="form.admission"
-                                    type="datetime"
-                                    format="yyyy-MM-dd hh:mm:ss a"
-                                    placeholder="Pick a day"
-                                    :picker-options="pickerOptions">
-                                    </el-date-picker>
-                                </div>
-                            </el-form-item>
-                        </el-col>
-                            <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                            <el-form-item label="Discharge" prop="discharge">
-                                 <div class="block">
-                                    <el-date-picker
-                                    style="width:100%"
-                                    size="large"
-                                    v-model="form.discharge"
-                                    type="datetime"
-                                    format="yyyy-MM-dd hh:mm:ss a"
-                                    placeholder="Pick a day"
-                                    :picker-options="pickerOptions">
-                                    </el-date-picker>
-                                </div>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <el-form-item label="Name will appear like this on the database" prop="name">
-                                <el-input
-                                    v-model="form.name"
-                                    autocomplete="off"
-                                    :readonly="true"
-                                />
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Attending" prop="attending">
                                 <el-radio v-model="form.is_private" :label="false" @change="clearField()" >Public</el-radio>
                                 <el-radio v-model="form.is_private" :label="true" @change="clearField()">Private</el-radio>
                                 <el-select v-if="form.is_private"
+                                    ref="attending2"
                                     style="width:100%"
                                     size="large"
                                     v-model="form.attending"
@@ -154,6 +63,7 @@
                                     </el-option>
                                 </el-select>
                                 <el-select v-else
+                                    ref="attending1"
                                     style="width:100%"
                                     size="large"
                                     v-model="form.attending"
@@ -218,6 +128,31 @@
                                     :label="item.name"
                                     :value-key="item.id"
                                     :value="{id:item.id,name:item.name,role:'surgeon'}"
+                                    >
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row v-if="form.is_private==false">
+                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <el-form-item label="Healthcare" prop="healthcare">
+                                <el-select 
+                                    style="width:100%"
+                                    size="large"
+                                    v-model="form.healthcare"
+                                    value-key="id" 
+                                    multiple
+                                    filterable
+                                    allow-create
+                                    default-first-option
+                                    placeholder="Choose physician">
+                                    <el-option
+                                    v-for="item in doctors"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value-key="item.id"
+                                    :value="{id:item.id,name:item.name,role:'healthcare'}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -362,6 +297,98 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
+                <el-row>
+                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                            <el-form-item label="Last Name" prop="lname">
+                                <el-input
+                                    v-model="form.lname"
+                                    autocomplete="off"
+                                    @input="buildFullName"
+                                />
+                                <span class="font-italic text-danger" v-if="errors.lname">
+                                    <small>{{ errors.lname[0] }}</small>
+                                </span>
+                            </el-form-item>
+                        </el-col>
+                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                            <el-form-item label="First Name" prop="fname">
+                                <el-input
+                                    v-model="form.fname"
+                                    autocomplete="off"
+                                    @input="buildFullName"
+                                />
+                                <span class="font-italic text-danger" v-if="errors.fname">
+                                    <small>{{ errors.fname[0] }}</small>
+                                </span>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                            <el-form-item label="Middle Name" prop="mname">
+                                <el-input
+                                    v-model="form.mname"
+                                    autocomplete="off"
+                                    @input="buildFullName"
+                                />
+                                <!-- <span class="font-italic text-danger" v-if="errors.middle_name">
+                                    <small>{{ errors.middle_name[0] }}</small>
+                                </span> -->
+                            </el-form-item>
+                        </el-col>
+                            <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                            <el-form-item label="Suffix" prop="suffix">
+                                <el-input
+                                    v-model="form.suffix"
+                                    autocomplete="off"
+                                    @input="buildFullName"
+                                />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                            <el-form-item label="Admission" prop="admission">
+                                <div class="block">
+                                    <el-date-picker
+                                    style="width:100%"
+                                    size="large"
+                                    v-model="form.admission"
+                                    type="datetime"
+                                    format="yyyy-MM-dd hh:mm:ss a"
+                                    placeholder="Pick a day"
+                                    :picker-options="pickerOptions">
+                                    </el-date-picker>
+                                </div>
+                            </el-form-item>
+                        </el-col>
+                            <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                            <el-form-item label="Discharge" prop="discharge">
+                                 <div class="block">
+                                    <el-date-picker
+                                    style="width:100%"
+                                    size="large"
+                                    v-model="form.discharge"
+                                    type="datetime"
+                                    format="yyyy-MM-dd hh:mm:ss a"
+                                    placeholder="Pick a day"
+                                    :picker-options="pickerOptions">
+                                    </el-date-picker>
+                                </div>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
+                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <el-form-item label="Name will appear like this on the database" prop="name">
+                                <el-input
+                                    v-model="form.name"
+                                    autocomplete="off"
+                                    :readonly="true"
+                                />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
                     <el-row>
                         <el-col class="col-sm-4 col-md-4 col-lg-4 col-xl-4 block-button">
                             <el-form-item>
@@ -384,7 +411,6 @@
                                   
                             </el-form-item>
                         </el-col>
-
                     </el-row>
                 </el-form>
         </el-card>
@@ -439,6 +465,7 @@ export default {
                 attending: [],
                 requesting: [],
                 surgeon: [],
+                healthcare:[],
                 er: [],
                 anesthesiologist: [],
                 comanagement: [],
@@ -529,26 +556,27 @@ export default {
             });
             console.log(this.form.doctortype);
             this.form.doctors_id=temp;
-            // const loading = this.$loading({
-            //     lock: true,
-            //     spinner: "el-icon-loading",
-            //     target: "#form",
-            //     fullscreen:false
-            // });
-            // if(this.form.lname =="" ||this.form.fname==""||this.form.admitting==""||
-            // this.form.discharge==""||this.form.batch==""||this.form.pf=="")
-            // {
-            //     this.$notify({
-            //                 type: 'info',
-            //                 title: 'Adding Record Failed',
-            //                 message: 'All fields are required',
-            //                 offset: 0,
-            //             });
-            //     loading.close();
-            //     this.btnLoading=false;
-            // }
-            // else
-            // {
+            const loading = this.$loading({
+                lock: true,
+                spinner: "el-icon-loading",
+                target: "#form",
+                fullscreen:false
+            });
+            if (this.form.lname =="" || this.form.fname =="" ||
+            this.form.admitting =="" || this.form.discharge =="" ||
+            this.form.batch =="" || this.form.pf =="")
+            {
+                this.$notify({
+                    type: 'info',
+                    title: 'Adding Record Failed',
+                    message: 'All fields with * are required',
+                    offset: 0,
+                });
+                loading.close();
+                this.btnLoading=false;
+            }
+            else
+            {
                 this.form.pf=Number(this.form.pf);
                 axios
                 .post("add_records",this.form)
@@ -558,7 +586,7 @@ export default {
                 .catch(error=> {
                     this.errors=error.response.data.errors;
                 });
-            // }
+            }
         },
         getDoctors(){
              axios
