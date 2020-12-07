@@ -76,17 +76,6 @@ class UserController extends Controller
      */
     public function splitTwoComma(String $data)
     {
-        /*if(str_replace(' ','',strtoupper(trim($data))) == "NULL" || $data == ""){
-            return 'null';
-        }else{
-            $data_split_arr = [];
-            $content = explode(',', $data);
-            for ($i=0; $i < count($content); $i+=2) {
-                array_push($data_split_arr, trim($content[$i].','.$content[$i + 1]));
-            }
-            return $data_split_arr;
-        }*/
-       // dd($data);
         if(str_replace(' ','',strtoupper(trim($data))) == "NULL" || $data == "" || $data == null){
             return null;
         }else{
@@ -108,30 +97,6 @@ class UserController extends Controller
      */
     public function importExcel(Request $request)
     {
-        //dd(Auth::user()->hospital_id);
-        //$postData = request()->file('budgets');
-        //$postData = request()->file('doctorRecord');
-        //dd($postData_sample);
-
-        //for doctor import
-        /*$import = new DoctorImport;
-        $postData = request()->file('doctorRecord');
-        Excel::import($import, $postData[0]);
-        return $import->getRowCount();*/
-
-
-        //for credit record working
-        /*$import = new CreditRecordImport();
-        $postData = request()->file('doctorRecord');
-        Excel::import($import, $postData[0]);*/
-
-        /*$j = $request[0]['doctor_record'][0]['content'];
-        $k = 0;
-        foreach($j as $h){
-
-        $k++;}
-        dd($k);*/
-
         $doctor_list_complete = $request[0]['doctor_list'];
         $cell_physician = [
             'Attending_Physician',
@@ -144,25 +109,15 @@ class UserController extends Controller
             'HealthCare_Physician',
             'ER_Physician'
         ];
-
-        //dd($request[0]['doctor_list']);
         for ($i=0; $i < count($request[0]['import_batch']); $i++) {
-            //dd($request[0]['import_batch'][$i]);
-            //dd(Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Y-m-d h:i:s') ,$type);
             $batch = $request[0]['import_batch'][$i];
             $acpn = $request[0]['doctor_record'][$i]['content'];
             foreach($acpn as $each){
-
-
-
-               // $doctor_list = [];
                 $doctor_ids = [];
                 $doctor_as = [];
-
                 foreach($cell_physician as $physician){
                     if($this->splitTwoComma($each[$physician]) != null){
                         foreach($this->splitTwoComma($each[$physician])[0] as $name){
-                            //array_push($doctor_list, trim($name));
                             foreach($doctor_list_complete as $doctor_info){
                                 if(str_replace(' ','',strtolower(trim($doctor_info['name']))) == str_replace(' ','',strtolower(trim($name)))){
                                     array_push($doctor_ids, $doctor_info['id']);
@@ -172,14 +127,6 @@ class UserController extends Controller
                         }
                     }
                 }
-                //dd($doctor_ids, $doctor_as);
-
-
-                /*$doctors = Doctor::where('hospital_id', 1)->whereIn('id', $doctor_ids)->get();
-                   dd($doctors);
-                dd($cell_physician);*/
-
-
                 $record = new CreditRecord;
                 $record->hospital()->associate(Auth::user()->hospital_id);
                 $record->patient_name = $each['Patient_Name'];
@@ -188,120 +135,62 @@ class UserController extends Controller
                 $record->discharge_date = Carbon::parse($each['Discharge_Date'])->setTimeZone('Asia/Manila')->format('Y-m-d h:i:s');
 
                 if($each['Is_Private'] == "1"){
-                        $record->record_type = 'private';
+                    $record->record_type = 'private';
+                    $record->total = $each['Total_PF'];
+                    $record->non_medical_fee = 0;
+                    $record->medical_fee = 0;
+                    $record->save();
+                    $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
+                    foreach($doctors as $doctor) {
+                        $doctor->credit_records()->attach($record->id, [
+                            'doctor_role' => explode('_',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
+                            'professional_fee' => $record->total,
+                        ]);
+                    }
+                }else{
+                    if((Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Ymd')) < "20200301"){
+                        $record->record_type = 'old';
                         $record->total = $each['Total_PF'];
-                        $record->non_medical_fee = 0;
-                        $record->medical_fee = 0;
+                        $record->non_medical_fee = $record->total/2;
+                        $record->medical_fee = $record->non_medical_fee;
+                        $record->save();
+                    }else{
+                        $record->record_type = 'new';
+                        $record->total = $each['Total_PF'];
+                        $record->non_medical_fee = $record->total/2;
+                        $record->medical_fee = $record->non_medical_fee;
                         $record->save();
                         $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
+                        $full_time_doctors = Doctor::select('id')
+                            ->where('is_active', true)
+                            ->where('is_parttime', false)
+                            ->pluck('id')
+                            ->toArray();
+                        $part_time_doctors = Doctor::select('id')
+                            ->where('is_active', true)
+                            ->where('is_parttime', true)
+                            ->pluck('id')
+                            ->toArray();
+                        $pooled_record = new PooledRecord;
+                        $pooled_record->full_time_doctors = json_encode($full_time_doctors);
+                        $pooled_record->part_time_doctors = json_encode($part_time_doctors);
+                        $total_pooled_fee = $record->non_medical_fee*0.3;
+                        $initial_individual_fee = ($record->non_medical_fee*0.3)/(count($full_time_doctors)+(count($part_time_doctors)/2));
+
+                        $pooled_record->full_time_individual_fee = $initial_individual_fee;
+                        $pooled_record->part_time_individual_fee = $initial_individual_fee/2;
+                        $pooled_record->record_id = $record->id;
+                        $pooled_record->save();
                         foreach($doctors as $doctor) {
                             $doctor->credit_records()->attach($record->id, [
                                 'doctor_role' => explode('_',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
-                                'professional_fee' => $record->total,
+                                'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
                             ]);
                         }
-                }else{
-                    if((Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Ymd')) < "20200301"){
-                            $record->record_type = 'old';
-                            $record->total = $each['Total_PF'];
-                            $record->non_medical_fee = $record->total/2;
-                            $record->medical_fee = $record->non_medical_fee;
-                            $record->save();
-                    }else{
-                            $record->record_type = 'new';
-                            $record->total = $each['Total_PF'];
-                            $record->non_medical_fee = $record->total/2;
-                            $record->medical_fee = $record->non_medical_fee;
-                            $record->save();
-                            $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
-                            $full_time_doctors = Doctor::select('id')
-                                ->where('is_active', true)
-                                ->where('is_parttime', false)
-                                ->pluck('id')
-                                ->toArray();
-                            $part_time_doctors = Doctor::select('id')
-                                ->where('is_active', true)
-                                ->where('is_parttime', true)
-                                ->pluck('id')
-                                ->toArray();
-                            $pooled_record = new PooledRecord;
-                            $pooled_record->full_time_doctors = json_encode($full_time_doctors);
-                            $pooled_record->part_time_doctors = json_encode($part_time_doctors);
-                            $total_pooled_fee = $record->non_medical_fee*0.3;
-                            $initial_individual_fee = ($record->non_medical_fee*0.3)/(count($full_time_doctors)+(count($part_time_doctors)/2));
-
-                            $pooled_record->full_time_individual_fee = $initial_individual_fee;
-                            $pooled_record->part_time_individual_fee = $initial_individual_fee/2;
-                            $pooled_record->record_id = $record->id;
-                            $pooled_record->save();
-                            foreach($doctors as $doctor) {
-                                $doctor->credit_records()->attach($record->id, [
-                                    'doctor_role' => explode('_',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
-                                    'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
-                                ]);
-                            }
                     }
                 }
             }
         }
-        //dd(count($request[0]['import_batch']));
-
-        $excel_data = $request->doctorRecord;
-        $batch_list = $request->import_batch;
-        $doctor_list = $request->doctor_list;
-        dd($excel_data, $batch_list, $doctor_list);
-
-        //dd(count(explode(",", $batch_list[0])));
-        $excel_data_get = explode(",", $excel_data[0]);
-        $batch = explode(",", $batch_list[0]);
-        /*for ($i=0; $i < count($batch); $i++) {
-            dd(serialize($excel_data_get[$i]));
-            $j = json_decode($excel_data_get[$i], true);
-            dd($batch[$i], $j->title);
-            //dd($batch[$i]);
-        }*/
-
-
-        /*for ($i=0; $i < 5; $i++) {
-            dd($datas[0][0]->title);
-        }*/
-
-        //dd($datas[0]);
-        /*foreach($datas as $data){
-            dd($data->content);
-        }*/
-
-
-        //Excel::import($import, $postData[0]->getClientOriginalName());
-        //dd($postData[0]->getClientOriginalName());
-
-        //$data = Excel::load('file.csv', false, 'ISO-8859-1');
-
-        /*$i_action = $request->i_action;
-        try {
-            switch ($i_action) {
-                case "BudgetImport":
-                    $import = new BudgetImport;
-                    $postData = request()->file('budgets');
-                    Excel::import($import, $postData[0]);
-                    return $import->getRowCount();
-                    break;
-                case "PersonnelImport":
-                    $import = new PersonnelImport;
-                    $postData = request()->file('personnels');
-                    Excel::import($import, $postData[0]);
-                    return $import->getRowCount_imported() . '/' . $import->getRowCount();
-                    break;
-                case "PatientImport":
-                    $import = new PatientImport;
-                    $postData = request()->file('patients');
-                    Excel::import($import, $postData[0]);
-                    return $import->getRowCount_imported() . '/' . $import->getRowCount();
-                    break;
-            }
-        } catch (\Error $ex) {
-            return "Error, something went wrong!";
-        }*/
     }
 
     /**
