@@ -56,4 +56,4 @@ export default {
     is_parttime: is_parttime,
     designation: designation,
     contributionType:contributionType
-}
+};

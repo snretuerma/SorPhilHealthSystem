@@ -1,37 +1,51 @@
 <?php
+/**
+ * @file UserController
+ * Controller for all function used by a User model in the application
+ * php version 7.2.5
+ *
+ * @category App\Http\Controllers
+ * @package
+ * @author Shannon Francis Retuerma <snretuerma@up.edu.ph>
+ * @author Mark Dy <markdy61@gmail.com>
+ * @author Paul Bryan Dy <dy.paulbryan@gmail.com>
+ * @author John Kevin Noguera <johnkevin0829@gmail.com>
+ * @copyright  2020-present Provincial Government of Sorsogon ICTD
+ * @license N/A
+ * @version Development v.2
+ */
 
 namespace App\Http\Controllers;
 
 use Auth;
 use DB;
-
 use App\Models\Hospital;
 use App\Models\User;
 use App\Models\Personnel;
 use App\Models\MedicalRecord;
 use App\Models\Contribution;
 use App\Models\Doctor;
-
 use App\Imports\User\PersonnelImport;
 use App\Imports\User\PatientImport;
 use App\Exports\User\PatientExport;
 use App\Exports\User\PersonnelExport;
-
-use App\Http\Requests\userAddPatientRequest;
-use App\Http\Requests\userAddPersonnelRequest;
-use App\Http\Requests\userEditPatientRequest;
-use App\Http\Requests\userEditPersonnelRequest;
-use App\Http\Requests\resetPassRequest;
-
+use App\Http\Requests\ResetPassRequest;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class UserController extends Controller
 {
+    /**
+     * Define UserController file.
+     *
+     * @param null
+     */
     public function __construct()
     {
         $this->middleware('auth');
@@ -39,12 +53,23 @@ class UserController extends Controller
         date_default_timezone_set('Asia/Manila');
     }
 
-    // User Role Index View
-    public function index()
+    /**
+     * Landing page for the User logged in as user role
+     *
+     * @var null
+     * @return View
+     */
+    public function index(): View
     {
         return view('roles.user.index');
     }
 
+    /**
+     * Importing budget through file (deprecated)
+     *
+     * @var Request $request
+     * @return BudgetImport
+     */
     public function importExcel(Request $request)
     {
         $i_action = $request->i_action;
@@ -73,6 +98,13 @@ class UserController extends Controller
             return "Error, something went wrong!";
         }
     }
+
+    /**
+     * Exporting budget data as CSV
+     *
+     * @var Request $request
+     * @return Excel
+     */
     public function exportExcel(Request $request)
     {
         $date = Carbon::now()->format('Ymd_His');
@@ -124,14 +156,24 @@ class UserController extends Controller
         }
     }
 
-    //User Role Reset Password View
-    public function resetView()
+    /**
+     * Displays the page for the reset password
+     *
+     * @var void
+     * @return View
+     */
+    public function resetView(): View
     {
         return view('roles.user.reset');
     }
 
-    //User Role Reset Password function
-    public function resetPass(resetPassRequest $request)
+    /**
+     * Reset the password from user input
+     *
+     * @var App\Http\Requests\ResetPassRequest
+     * @return void
+     */
+    public function resetPass(ResetPassRequest $request): void
     {
         // TODO: Add validation and confirmation
         $new_pass = User::find(Auth::user()->id);
@@ -139,10 +181,13 @@ class UserController extends Controller
         $new_pass->save();
     }
 
-    //User Dashboard
-
-    //Doctors
-    public function doctors()
+    /**
+     * Displays the page for the doctors page
+     *
+     * @var void
+     * @return View
+     */
+    public function doctors(): View
     {
         return view('roles.user.doctors');
     }
@@ -162,17 +207,32 @@ class UserController extends Controller
     }
     //Budget
     public function getDoctors()
+    /**
+     * Gets the list of doctors for the current user's hospital
+     *
+     * @var void
+     * @return Collection
+     */
+    public function getDoctors(): Collection
     {
         return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
     }
 
+    /**
+     * Add a doctor record to the database
+     *
+     * @var Request $request
+     * @return Doctor
+     */
     public function addDoctor(Request $request): Doctor
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'is_active' => 'required',
-            'is_parttime' => 'required'
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|max:255',
+                'is_active' => 'required',
+                'is_parttime' => 'required'
+            ]
+        );
 
         $doctor = new Doctor;
         $doctor->name = $request->name;
@@ -183,98 +243,104 @@ class UserController extends Controller
         return $doctor;
     }
 
+    /**
+     * Edit a doctor record
+     *
+     * @var Request $request
+     * @return Doctor
+     */
     public function editDoctor(Request $request): Doctor
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'is_active' => 'required',
-            'is_parttime' => 'required'
-        ]);
+        $request->validate(
+            [
+                'name' => 'required|max:255',
+                'is_active' => 'required',
+                'is_parttime' => 'required'
+            ]
+        );
 
         $doctor = Doctor::find($request->id);
         $doctor->name = $request->name;
-        $doctor->is_active = (bool)$request->is_active;
-        $doctor->is_parttime = (bool)$request->is_parttime;
+        $doctor->is_active = $request->is_active;
+        $doctor->is_parttime = $request->is_parttime;
         $doctor->save();
 
         return $doctor;
     }
 
+    /**
+     * Delete a doctor's record if no CreditRecord is attached to it, else do not delete
+     *
+     * @var String
+     * @return JsonResponse
+     */
     public function deleteDoctor(String $id): JsonResponse
     {
         $doctor = Doctor::find($id);
         if ($doctor->credit_records->count() == 0) {
-            $message = "Doctor " . $doctor->name . " successfully deleted";
+            $message = "Doctor ".$doctor->name." successfully deleted";
             $doctor->delete();
-            return response()->json([
-                'title' => 'Deleting Doctor Success',
-                'message' => $message,
-                'status' => 'success',
-            ]);
+            return response()->json(
+                [
+                    'title' => 'Deleting Doctor Success',
+                    'message' => $message,
+                    'status' => 'success',
+                ]
+            );
         }
-        $message = "Failed to delete doctor " .
-            $doctor->name .
-            " because doctor has records in the database. Please contact the Administrator if you want to really delete this doctor data";
-        return response()->json([
-            'title' => 'Deleting Doctor Failed',
-            'message' => $message,
-            'status' => 'error',
-        ]);
+        $message = "Failed to delete doctor ".
+            $doctor->name.
+            " because doctor has records in the database.
+            Please contact the Administrator if you want to really delete this doctor data";
+        return response()->json(
+            [
+                'title' => 'Deleting Doctor Failed',
+                'message' => $message,
+                'status' => 'error',
+            ]
+        );
     }
 
-    //Records
-    public function records()
+    /**
+     * Page view for credit records
+     *
+     * @var void
+     * @return View
+     */
+    public function records(): View
     {
         return view('roles.user.records');
     }
 
-    //Restore
-    public function restore()
+    /**
+     * Page view restore page
+     *
+     * @var void
+     * @return View
+     */
+    public function restore(): View
     {
         return view('roles.user.restore');
     }
 
-    public function getRestore()
-    {
-        $result = MedicalRecord::join('patients as p', 'medical_records.patient_id', '=', 'p.id')
-            ->join('hospitals as h', 'p.hospital_id', '=', 'h.id')
-            ->join('records_personnels as rp', 'medical_records.id', '=', 'rp.medical_record_id')
-            ->join('personnels as ps', 'rp.personnel_id', '=', 'ps.id')
-            ->join('contributions as c', 'rp.contribution_id', '=', 'c.id')
-            ->select(
-                'medical_records.id',
-                'p.philhealth_number as philhealth',
-                'p.first_name as pfname',
-                'p.middle_name as pmname',
-                'p.last_name as plname',
-                'p.name_suffix as pnamesuffix',
-                'ps.first_name as psfname',
-                'ps.middle_name as psmname',
-                'ps.last_name as pslname',
-                'h.hospital_code as hcode',
-                'medical_records.admission_date',
-                'medical_records.discharge_date',
-                'medical_records.final_diagnosis',
-            )
-            ->where('medical_records.deleted_at', '<>', '', 'and')
-            ->where('h.id', Auth::user()->hospital_id)
-            ->getQuery()
-            ->get();
-        return $result;
-    }
-
-    public function editRestore(Request $request)
-    {
-        $restore = MedicalRecord::withTrashed()->find($request->id)->restore();
-        return $restore;
-    }
-
-    public function setting()
+    /**
+     * Page for hospital settings
+     *
+     * @var void
+     * @return View
+     */
+    public function setting(): View
     {
         return view('roles.user.setting');
     }
 
-    public function updateSetting(Request $request)
+    /**
+     * Update the hospital settings
+     *
+     * @var Request $request
+     * @return void
+     */
+    public function updateSetting(Request $request): void
     {
         // TODO: Validation
         $medical = intval($request->medical) / 100;
@@ -294,17 +360,17 @@ class UserController extends Controller
             "pooled":' . $pooled . ',
             "shared":' . $shared . ',
             "physicians":[
-                            ' . $requesting . ',
-                            ' . $surgeon . ',
-                            ' . $healthcare . ',
-                            ' . $er . ',
-                            ' . $anesthesiologist . ',
-                            ' . $comanagement . ',
-                            ' . $admitting . '
-                        }]
+                '.$requesting.',
+                '.$surgeon.',
+                '.$healthcare.',
+                '.$er.',
+                '.$anesthesiologist.',
+                '.$comanagement.',
+                '.$admitting.'
+            ]
         }';
         $hospital = Hospital::where('id', Auth::user()->hospital_id)->first();
         $hospital->setting = $data;
-        return $hospital->save();
+        return;
     }
 }
