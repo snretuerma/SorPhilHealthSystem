@@ -154,8 +154,10 @@ class UserController extends Controller
 
     public function getSummary()
     {
-        $summary = Doctor::with('credit_records')
-        ->get();
+        $summary = Doctor::with(['credit_records' => function ($query) {
+            $query->with('pooled_record');
+        }])
+            ->get();
         return response()->json($summary);
     }
     //Budget
@@ -164,7 +166,7 @@ class UserController extends Controller
         return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
     }
 
-    public function addDoctor(Request $request):Doctor
+    public function addDoctor(Request $request): Doctor
     {
         $request->validate([
             'name' => 'required|max:255',
@@ -181,7 +183,7 @@ class UserController extends Controller
         return $doctor;
     }
 
-    public function editDoctor(Request $request):Doctor
+    public function editDoctor(Request $request): Doctor
     {
         $request->validate([
             'name' => 'required|max:255',
@@ -191,18 +193,18 @@ class UserController extends Controller
 
         $doctor = Doctor::find($request->id);
         $doctor->name = $request->name;
-        $doctor->is_active = (boolean)$request->is_active;
-        $doctor->is_parttime = (boolean)$request->is_parttime;
+        $doctor->is_active = (bool)$request->is_active;
+        $doctor->is_parttime = (bool)$request->is_parttime;
         $doctor->save();
 
         return $doctor;
     }
 
-    public function deleteDoctor(String $id):JsonResponse
+    public function deleteDoctor(String $id): JsonResponse
     {
         $doctor = Doctor::find($id);
-        if($doctor->credit_records->count() == 0) {
-            $message = "Doctor ".$doctor->name." successfully deleted";
+        if ($doctor->credit_records->count() == 0) {
+            $message = "Doctor " . $doctor->name . " successfully deleted";
             $doctor->delete();
             return response()->json([
                 'title' => 'Deleting Doctor Success',
@@ -210,8 +212,8 @@ class UserController extends Controller
                 'status' => 'success',
             ]);
         }
-        $message = "Failed to delete doctor ".
-            $doctor->name.
+        $message = "Failed to delete doctor " .
+            $doctor->name .
             " because doctor has records in the database. Please contact the Administrator if you want to really delete this doctor data";
         return response()->json([
             'title' => 'Deleting Doctor Failed',
