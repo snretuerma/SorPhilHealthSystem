@@ -39,7 +39,11 @@
         <div class="card">
             <div class="card-body">
                 <!-- Table -->
-                <el-table :data="listData" @sort-change="changeTableSort">
+                <el-table
+                    :data="listData"
+                    @sort-change="changeTableSort"
+                    border
+                >
                     <el-table-column
                         width="350"
                         label="Name of Physician"
@@ -71,7 +75,7 @@
                         ></el-table-column>
                         <el-table-column
                             width="150"
-                            label="Pooled"
+                            label="Pooled (15%)"
                             prop="pooled"
                         ></el-table-column>
                         <el-table-column
@@ -93,7 +97,7 @@
                     </el-pagination>
                 </div>
                 <br />
-                <el-table :data="inactive">
+                <el-table :data="inactive" border>
                     <el-table-column
                         label="Physicians not included for performance based sharing"
                     >
@@ -128,7 +132,7 @@
                             ></el-table-column>
                             <el-table-column
                                 width="150"
-                                label="Pooled"
+                                label="Pooled (15%)"
                                 prop="pooled"
                             ></el-table-column>
                             <el-table-column
@@ -141,33 +145,47 @@
                 </el-table>
                 <!-- End table -->
                 <br />
-                <el-table :data="total">
-                    <el-table-column width="350"></el-table-column>
+                <el-table
+                    :data="sumOfAll"
+                    border
+                    :row-class-name="tableRowClassName"
+                >
                     <el-table-column
                         label="Nursing Services Total"
-                        width="150"
+                        width="170"
                         prop="nursing_services_total"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        label="Non-medical Total"
+                        width="180"
                         prop="non_medical_total"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        label="Total"
+                        width="180"
                         prop="fifty_total_total"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        label="Doctor Share Total"
+                        width="180"
                         prop="doctors_share_total"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        label="Pooled Total"
+                        width="180"
                         prop="pooled_total"
                     ></el-table-column>
                     <el-table-column
-                        width="150"
+                        label="Total"
+                        width="180"
                         prop="pbs_total_total"
                     ></el-table-column>
+                    <el-table-column
+                        label="Grand Total"
+                        width="180"
+                        prop="grand_total"
+                    >
+                    </el-table-column>
                 </el-table>
                 <!-- End table -->
             </div>
@@ -175,12 +193,26 @@
         <!-- Card ends here -->
     </div>
 </template>
+<style>
+.el-table .success-row {
+    background: #d9d8e0;
+}
+</style>
+
 <script>
 export default {
     data() {
         return {
-            active:[],
+            active: [],
             inactive: [],
+            sumOfAll: [],
+            nursing_services_total: 0,
+            non_medical_total: 0,
+            fifty_total_total: 0,
+            doctors_share_total: 0,
+            pooled_total: 0,
+            pbs_total_total: 0,
+            grand_total: 0,
             search: "",
             page: 1,
             pageSize: 10
@@ -207,6 +239,9 @@ export default {
         }
     },
     methods: {
+        tableRowClassName({ row, rowIndex }) {
+                return "success-row";
+        },
         changeTableSort(column) {
             console.log(column);
 
@@ -227,12 +262,12 @@ export default {
                 );
             }
         },
+        getSum() {},
         getSummary: function() {
             axios
                 .get("get_summary")
                 .then(response => {
                     response.data.forEach(doctor => {
-
                         doctor.nursing_services = 0;
                         doctor.non_medical = 0;
                         doctor.fifty_total = 0;
@@ -246,19 +281,22 @@ export default {
                             if (patient.pooled_record == null) {
                                 doctor.pooled = 0;
                             } else {
-
-                                if (doctor.is_parttime == 0 && JSON.parse(doctor.credit_records[0].pooled_record.full_time_doctors).includes(doctor.id)) {
-                                    doctor.pooled =
-                                        Number(
-                                            patient.pooled_record
-                                                .full_time_individual_fee
-                                        );
+                                if (
+                                    doctor.is_parttime == 0 &&
+                                    JSON.parse(
+                                        doctor.credit_records[0].pooled_record
+                                            .full_time_doctors
+                                    ).includes(doctor.id)
+                                ) {
+                                    doctor.pooled = Number(
+                                        patient.pooled_record
+                                            .full_time_individual_fee
+                                    );
                                 } else {
-                                    doctor.pooled =
-                                        Number(
-                                            patient.pooled_record
-                                                .part_time_individual_fee
-                                        );
+                                    doctor.pooled = Number(
+                                        patient.pooled_record
+                                            .part_time_individual_fee
+                                    );
                                 }
                             }
                             doctor.pbs_total = Number(
@@ -273,18 +311,45 @@ export default {
                             doctor.fifty_total = Number(
                                 doctor.nursing_services + doctor.non_medical
                             );
-                            // console.log(patient.pooled_record.part_time_individual_fee);
                         });
+
                         doctor.doctors_share = doctor.doctors_share.toFixed(4);
                         doctor.pooled = doctor.pooled.toFixed(4);
                         doctor.pbs_total = doctor.pbs_total.toFixed(4);
-
-                        if(doctor.is_active == true && doctor.pooled!=0) this.active.push(doctor);
-                        else if(doctor.is_active == false && doctor.pooled!=0) this.inactive.push(doctor);
+                        if (doctor.pooled != 0) {
+                            this.nursing_services_total +=
+                                doctor.nursing_services;
+                            this.non_medical_total += doctor.non_medical;
+                            this.fifty_total_total += doctor.fifty_total;
+                            this.doctors_share_total += Number(
+                                doctor.doctors_share
+                            );
+                            this.pooled_total += Number(doctor.pooled);
+                            this.pbs_total_total += Number(doctor.pbs_total);
+                            this.grand_total =
+                                this.fifty_total_total +
+                                this.pbs_total_total;
+                        }
+                        if (doctor.is_active == true && doctor.pooled != 0)
+                            this.active.push(doctor);
+                        else if (
+                            doctor.is_active == false &&
+                            doctor.pooled != 0
+                        )
+                            this.inactive.push(doctor);
                     });
-
+                    this.sumOfAll.push({
+                        nursing_services_total: this.nursing_services_total,
+                        non_medical_total: this.non_medical_total,
+                        fifty_total_total: this.fifty_total_total,
+                        doctors_share_total: this.doctors_share_total.toFixed(
+                            4
+                        ),
+                        pooled_total: this.pooled_total.toFixed(4),
+                        pbs_total_total: this.pbs_total_total.toFixed(4),
+                        grand_total: this.grand_total.toFixed(4)
+                    });
                     this.data = response.data;
-                    // console.log(this.data);
                 })
                 .catch(function(error) {});
         },

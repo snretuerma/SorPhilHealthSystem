@@ -206,7 +206,6 @@ class UserController extends Controller
         return response()->json($summary);
     }
     //Budget
-    public function getDoctors()
     /**
      * Gets the list of doctors for the current user's hospital
      *
