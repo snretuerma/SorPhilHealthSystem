@@ -585,7 +585,7 @@ export default {
         },
         getDoctors(){
              axios
-                .get("get_get_activedoctors")
+                .get("get_active_doctors")
                 .then(response => {
                     this.doctors = response.data;
                 })

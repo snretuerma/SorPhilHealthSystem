@@ -101,7 +101,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
     //doctors
     Route::get('get_doctors', 'UserController@getDoctors');
-    Route::get('get_activedoctors', 'UserController@getActiveDoctors');
+    Route::get('get_active_doctors', 'UserController@getActiveDoctors');
 
     //user record
     Route::get('/records', 'UserController@records')->name('records');
