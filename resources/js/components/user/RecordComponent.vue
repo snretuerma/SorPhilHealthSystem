@@ -21,175 +21,189 @@
                 <el-dropdown-item
                     icon="el-icon-upload2"
                     command="import_data"
-                    >Import Data</el-dropdown-item
+                    >Upload Data</el-dropdown-item
                 >
                 <el-dropdown-item
                     icon="el-icon-download"
                     command="export_data"
-                    >Export Data</el-dropdown-item
+                    >Download ...</el-dropdown-item
                 >
             </el-dropdown-menu>
         </el-dropdown>
 
         <!-- Import excel -->
-        <el-dialog title="Import Excel" :visible.sync="dialogExcelFile" :fullscreen="true">
-            <el-form>
-                <el-form-item>
-                    <el-upload
-                    class="upload-demo"
-                    ref="upload"
-                    action="import_doctor_record"
-                    :auto-upload="false"
-                    :on-change="fileData"
-                    :limit="1"
-                    :on-exceed="handleExceedFile"
-                    :on-remove="handleRemoveFile"
-                    accept=".xlsx"
-                    >
-                        <el-button slot="trigger" type="primary" plain>select supported excel file</el-button>
-                        <el-button type="success" @click="uploadToDatabase" :disabled="!is_preview">upload to database</el-button>
-                    </el-upload>
-                    <el-progress v-if="progressbar_import" :percentage="percentage" color="#409eff"></el-progress>
-                </el-form-item>
-            </el-form>
-            <el-row v-show="is_preview && preview_excel_sheet_data.length > 0">
+        <el-dialog :title="title" :visible.sync="dialogExcelFile" :fullscreen="fullscreen">
+            <el-row v-show="!isimport">
                 <el-col>
-                    <el-tabs type="border-card" tab-position="bottom" @tab-click="handleClickTab">
-                        <el-tab-pane
-                            v-for="(item,index) in preview_excel_sheet_data"
-                            :key="item.name"
-                            :label="item.title"
-                        >
-                        {{ item.title }}
-                            <el-table
-                                :data="data"
-                                style="width: 100%"
-                                height="350"
-                                >
-                                <el-table-column
-                                fixed
-                                prop="Patient_Name"
-                                label="Patient Name"
-                               >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Admission_Date"
-                                label="Admission Date"
-                                :formatter="covertDate"
-                               >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Discharge_Date"
-                                label="Discharge Date"
-                                :formatter="covertDate"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Total_PF"
-                                label="Total PF"
-                               >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Attending_Physician"
-                                label="Attending Physician"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Admitting_Physician"
-                                label="Admitting Physician"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Requesting_Physician"
-                                label="Requesting Physician"
-                               >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Reffered_Physician"
-                                label="Reffered Physician"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Co_Management"
-                                label="Co Management"
-                               >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Anesthesiology_Physician"
-                                label="Anesthesiology Physician"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Surgeon_Physician"
-                                label="Surgeon Physician"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                prop="HealthCare_Physician"
-                                label="HealthCare Physician"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                prop="ER_Physician"
-                                label="ER Physician"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                prop="Is_Private"
-                                label="Is Private"
-                                min-width="120">
-                                </el-table-column>
-                            </el-table>
-                            <el-pagination
-                                class="align-middle"
-                                background
-                                layout="prev, pager, next"
-                                @current-change="handleCurrentChange"
-                                :page-size="page_size"
-                                :total="total"
-                            />
-                        </el-tab-pane>
-                    </el-tabs>
+                    <el-form>
+                        <el-form-item>
+                            <el-button>Download Sample Excel File / Template</el-button>
+                            <el-button type="primary" @click="exportExcel">Download Data</el-button>
+                        </el-form-item>
+                    </el-form>
                 </el-col>
             </el-row>
+            <el-row v-show="isimport">
+                <el-link href="#" type="primary" style="margin-bottom:15px;" target="_blank">Click here to download sample excel file</el-link>
+                <el-form>
+                    <el-form-item>
+                        <el-upload
+                        class="upload-demo"
+                        ref="upload"
+                        action="import_doctor_record"
+                        :auto-upload="false"
+                        :on-change="fileData"
+                        :limit="1"
+                        :on-exceed="handleExceedFile"
+                        :on-remove="handleRemoveFile"
+                        accept=".xlsx"
+                        >
+                            <el-button slot="trigger" type="primary" plain>select supported excel file .xlsx</el-button>
+                            <el-button type="success" @click="uploadToDatabase" :disabled="!is_preview">upload to database</el-button>
+                        </el-upload>
+                        <el-progress v-if="progressbar_import" :percentage="percentage" color="#409eff"></el-progress>
+                    </el-form-item>
+                </el-form>
+                <el-row v-show="is_preview && preview_excel_sheet_data.length > 0">
+                    <el-col>
+                        <el-tabs type="border-card" tab-position="bottom" @tab-click="handleClickTab">
+                            <el-tab-pane
+                                v-for="(item,index) in preview_excel_sheet_data"
+                                :key="item.name"
+                                :label="item.title"
+                            >
+                            {{ item.title }}
+                                <el-table
+                                    :data="data"
+                                    style="width: 100%"
+                                    height="350"
+                                    >
+                                    <el-table-column
+                                    fixed
+                                    prop="Patient_Name"
+                                    label="Patient Name"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Admission_Date"
+                                    label="Admission Date"
+                                    :formatter="covertDate"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Discharge_Date"
+                                    label="Discharge Date"
+                                    :formatter="covertDate"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Total_PF"
+                                    label="Total PF"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Attending_Physician"
+                                    label="Attending Physician"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Admitting_Physician"
+                                    label="Admitting Physician"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Requesting_Physician"
+                                    label="Requesting Physician"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Reffered_Physician"
+                                    label="Reffered Physician"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Co_Management"
+                                    label="Co Management"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Anesthesiology_Physician"
+                                    label="Anesthesiology Physician"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Surgeon_Physician"
+                                    label="Surgeon Physician"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="HealthCare_Physician"
+                                    label="HealthCare Physician"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="ER_Physician"
+                                    label="ER Physician"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="Is_Private"
+                                    label="Is Private"
+                                    min-width="120"
+                                    :formatter="covertReadable">
+                                    </el-table-column>
+                                </el-table>
+                                <el-pagination
+                                    class="align-middle"
+                                    background
+                                    layout="prev, pager, next"
+                                    @current-change="handleCurrentChange"
+                                    :page-size="page_size"
+                                    :total="total"
+                                />
+                            </el-tab-pane>
+                        </el-tabs>
+                    </el-col>
+                </el-row>
 
-            <!-- for excel error validation -->
-            <div v-show="!is_preview && preview_excel_sheet_data.length > 0">
-                <el-alert
-                    title='ERROR FOUND, Please see error log bellow'
-                    type="error"
-                    :closable="false"
-                    show-icon>
-                </el-alert>
-                <ul>
-                    <dl>
-                        <dt>WORKSHEET NAME</dt>
-                            <ol>
-                                <li v-for="item in excel_validation_error[0]" :key="item.id">
-                                    <strong>{{item.value}}</strong>
-                                            {{item.message}}
-                                    <strong>[{{item.cell_position}}]</strong>
-                                </li>
-                            </ol>
-                        <dt>HEADER</dt>
-                            <ol>
-                                <li v-for="item in excel_validation_error[1]" :key="item.id">
-                                    <strong>{{item.value}}</strong>
-                                            {{item.message}}
-                                    <strong>[{{item.cell_position}}]</strong>
-                                </li>
-                            </ol>
-                        <dt>CONTENT</dt>
-                            <ol>
-                                <li v-for="item in excel_validation_error[2]" :key="item.id">
-                                    <strong>{{item.value}}</strong>
-                                            {{item.message}}
-                                    <strong>[{{item.cell_position}}]</strong>
-                                </li>
-                            </ol>
-                    </dl>
-                </ul>
-            </div>
+                <!-- for excel error validation -->
+                <div v-show="!is_preview && preview_excel_sheet_data.length > 0">
+                    <el-alert
+                        title='ERROR FOUND, Please see error log bellow'
+                        type="error"
+                        :closable="false"
+                        show-icon>
+                    </el-alert>
+                    <ul>
+                        <dl>
+                            <dt>WORKSHEET NAME, format( MonthName Day Year - MonthName Day Year )</dt>
+                                <ol>
+                                    <li v-for="item in excel_validation_error[0]" :key="item.id">
+                                        <strong>{{item.value}}</strong>
+                                                {{item.message}}
+                                        <strong>[{{item.cell_position}}]</strong>
+                                    </li>
+                                </ol>
+                            <dt>HEADER</dt>
+                                <ol>
+                                    <li v-for="item in excel_validation_error[1]" :key="item.id">
+                                        <strong>{{item.value}}</strong>
+                                                {{item.message}}
+                                        <strong>[{{item.cell_position}}]</strong>
+                                    </li>
+                                </ol>
+                            <dt>CONTENT</dt>
+                                <ol>
+                                    <li v-for="item in excel_validation_error[2]" :key="item.id">
+                                        <strong>{{item.value}}</strong>
+                                                {{item.message}}
+                                        <strong>[{{item.cell_position}}]</strong>
+                                    </li>
+                                </ol>
+                        </dl>
+                    </ul>
+                </div>
+            </el-row>
         </el-dialog>
         <!-- Import excel end-->
 
@@ -219,7 +233,23 @@ export default {
             import_batch:[],
             doctor_list_compress:[],
             doctor_list_complete:[],
+            doctor_export:[],
             is_preview: false,
+            fullscreen: true,
+            title: 'Import Excel',
+            isimport: true,
+            Datas: {
+                'animals': [
+                            {"name": "cat", "category": "animal"}
+                            ,{"name": "dog", "category": "animal"}
+                            ,{"name": "pig", "category": "animal"}
+                            ],
+                'pokemons': [
+                            {"name": "pikachu", "category": "pokemon"}
+                            ,{"name": "Arbok", "category": "pokemon"}
+                            ,{"name": "Eevee", "category": "pokemon"}
+                            ]
+            }
         };
     },
     methods: {
@@ -232,6 +262,15 @@ export default {
             minutes = minutes < 10 ? '0'+minutes : minutes;
             var strTime = hours + ampm;
             return cellValue.getFullYear() + "-" + (cellValue.getMonth() + 1) + "-" + cellValue.getDate() + " " + strTime;
+        },
+        covertReadable(row, column, cellValue, index){
+            if(cellValue == 1){
+                return 'Yes';
+            }else if(cellValue == 0){
+                return 'No';
+            }else{
+                return 'Not specified';
+            }
         },
         handleCurrentChange(value) {
             this.page = value;
@@ -278,7 +317,7 @@ export default {
                 _this.$notify({
                     type: 'warning',
                     title: 'Import',
-                    message: "Please re-import",
+                    message: "Please re-import, it looks like you want to override or force import a not valid file",
                 });
             }
         },
@@ -377,8 +416,8 @@ export default {
                         _this.excel_validation_error[0].push({
                             id: 'ws' + (Math.random().toString(36).substring(7)) + (i + 1),
                             value: sheetName + " - ",
-                            message: "invalid sheet name format please check",
-                            cell_position: 'worksheet number ' + (i + 1),
+                            message: "invalid format ",
+                            cell_position: 'worksheet #' + (i + 1),
                         });
                     }
                     try {
@@ -387,8 +426,8 @@ export default {
                             _this.excel_validation_error[2].push({
                                 id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                 value: '',
-                                message: "each worksheet required input",
-                                cell_position: 'worksheet number ' + (i + 1),
+                                message: "It looks like you don't have data in this page ",
+                                cell_position: 'worksheet #' + (i + 1),
                             });
                         }
                     } catch (error) {}
@@ -396,13 +435,12 @@ export default {
                         for(var C = range.s.c; C <= range.e.c; ++C) {
                             var cellref = XLSX.utils.encode_cell({c:C, r:R});
                             var cell_position = "#"+ (i + 1) + " " + ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
-                            //console.log( "console me:", XLSX.utils.sheet_to_row_object_array(wb.Sheets[sheetName]).length);
                             if(!worksheet[cellref]){
                                 if(R == 0 && C < 14 ){
                                     _this.excel_validation_error[1].push({
                                         id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
                                         value: '',
-                                        message: "column header required no text found, must be 14 column",
+                                        message: "Must be 14 column ",
                                         cell_position: cell_position,
                                     });
                                 }
@@ -411,35 +449,35 @@ export default {
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
-                                            message: "all cell required or must be 'INTEGER' instead",
+                                            message: "This cell can only contain numbers",
                                             cell_position: cell_position,
                                         });
                                     }else if(C == 13){
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
-                                            message: "all cell required or must be '0 or 1' instead",
+                                            message: "This cell must be '0 or 1' only ",
                                             cell_position: cell_position,
                                         });
                                     }else if(C == 0){
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
-                                            message: "all cell required or must be 'NOT NULL' instead",
+                                            message: "This cell must contain string patient name, format(LastName, FirstName MiddleName) ",
                                             cell_position: cell_position,
                                         });
                                     }else if(C == 1 || C == 2){
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
-                                            message: "all cell required or must be 'DATETIME' instead",
+                                            message: "This cell must be 'DATETIME' format(Month/Day/Year Hour:Minutes:Second AM or PM) ",
                                             cell_position: cell_position,
                                         });
                                     }else{
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
-                                            message: "all cell required or must be 'NULL' instead !! PHYSICIAN",
+                                            message: "This cell must be 'NULL' or Physician Name, format(LastName, FirstName MiddleName) if more than 1 physician required delimeter is a comma ',' ",
                                             cell_position: cell_position,
                                         });
                                     }
@@ -453,7 +491,7 @@ export default {
                                     _this.excel_validation_error[1].push({
                                         id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
                                         value: cell.v,
-                                        message: "column header required not match",
+                                        message: "required header not match, download the sample excel file",
                                         cell_position: cell_position,
                                     });
                                 }
@@ -465,7 +503,7 @@ export default {
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: cell.v,
-                                            message: "deprecated must be a  number",
+                                            message: "this cell can only contain numbers",
                                             cell_position: cell_position,
                                         });
                                     }
@@ -476,18 +514,18 @@ export default {
                                             _this.excel_validation_error[2].push({
                                                 id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                 value: cell.v,
-                                                message: "name must be a correct format",
+                                                message: "must be 'NULL' or Physician Name, format(LastName, FirstName MiddleName) ",
                                                 cell_position: cell_position,
                                             });
                                         }else if(cell.v.match(/[^,]+,[^,]+/g).length > 1){
                                             var compress_to_compare = "";
                                             for (let index = 0; index < cell.v.match(/[^,]+,[^,]+/g).length; index++) {
-                                                    compress_to_compare += cell.v.match(/[^,]+,[^,]+/g)[index] + ",";
+                                                compress_to_compare += cell.v.match(/[^,]+,[^,]+/g)[index] + ",";
                                                 if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[index]))){
                                                     _this.excel_validation_error[2].push({
                                                         id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                         value: (cell.v.match(/[^,]+,[^,]+/g)[index]),
-                                                        message: "name not exist into database please add to proceed...",
+                                                        message: "does not exist in the database please add it manually to proceed ",
                                                         cell_position: cell_position,
                                                     });
                                                 }
@@ -496,7 +534,7 @@ export default {
                                                 _this.excel_validation_error[2].push({
                                                     id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                     value: cell.v,
-                                                    message: "there was a proble with the name format value not match",
+                                                    message: "must be 'NULL' or Physician Name, format(LastName, FirstName MiddleName) if more than 1 physician required delimeter is a comma ',' ",
                                                     cell_position: cell_position,
                                                 });
                                             }
@@ -505,7 +543,7 @@ export default {
                                                 _this.excel_validation_error[2].push({
                                                     id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                     value: cell.v,
-                                                    message: "there was a proble with the name format value not match",
+                                                    message: "must be 'NULL' or Physician Name, format(LastName, FirstName MiddleName) if more than 1 physician required delimeter is a comma ',' ",
                                                     cell_position: cell_position,
                                                 });
                                             }else{
@@ -513,7 +551,7 @@ export default {
                                                     _this.excel_validation_error[2].push({
                                                         id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                         value: (cell.v.match(/[^,]+,[^,]+/g)[0]),
-                                                        message: "name not exist into database please add to proceed...",
+                                                        message: "does not exist in the database please add it manually to proceed ",
                                                         cell_position: cell_position,
                                                     });
                                                 }
@@ -526,7 +564,7 @@ export default {
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: cell.v,
-                                            message: "is private must be 0 or 1 only",
+                                            message: "must contain '0 or 1' only",
                                             cell_position: cell_position,
                                         });
                                     }
@@ -568,10 +606,76 @@ export default {
             this.page = parseInt(1);
             this.data = this.data.slice(this.page_size * this.page - this.page_size, this.page_size * this.page);
         },
+        exportExcel(){
+            /*// export json to Worksheet of Excel
+            // only array possible
+            var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals) 
+            var pokemonWS = XLSX.utils.json_to_sheet(this.Datas.pokemons) 
+
+            // A workbook is the name given to an Excel file
+            var wb = XLSX.utils.book_new() // make Workbook of Excel
+
+            // add Worksheet to Workbook
+            // Workbook contains one or more worksheets
+            XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
+            XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')   
+
+            // export Excel file
+            XLSX.writeFile(wb, 'book.xlsx') // name of the file is 'book.xlsx'*/
+
+            this.doctor_list_complete.forEach((doctor)=>{
+                this.doctor_export.push({
+                    name: doctor.name,
+                    is_active: (doctor.is_active) ? 'Yes':'No',
+                    is_parttime: (doctor.is_parttime) ? 'Yes' : 'No'
+                });
+            });
+            var doctors = XLSX.utils.json_to_sheet(this.doctor_export) 
+            var wb = XLSX.utils.book_new()
+            XLSX.utils.book_append_sheet(wb, doctors, 'Doctor or Physician')
+            XLSX.writeFile(wb, 'Doctor_List.xlsx')
+        },
         formDialog: function(key) {
             switch (key) {
                 case "import_data":
-                      this.dialogExcelFile = true
+                        this.title = 'Import Excel';
+                        this.fullscreen = true;
+                        this.isimport = true;
+                        this.dialogExcelFile = true
+                    break;
+                case "export_data":
+                        this.title = 'Download / Export Excel';
+                        this.fullscreen = false;
+                        this.isimport = false;
+                        this.dialogExcelFile = true;
+                        /*this.$confirm('Please select which to download', 'Select', {
+                            confirmButtonText: 'Download Data',
+                            cancelButtonText: 'Download Sample Excel File / Template',
+                            type: 'success'
+                            }).then(() => {
+                                // export json to Worksheet of Excel
+                                // only array possible
+                                var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals) 
+                                var pokemonWS = XLSX.utils.json_to_sheet(this.Datas.pokemons) 
+
+                                // A workbook is the name given to an Excel file
+                                var wb = XLSX.utils.book_new() // make Workbook of Excel
+
+                                // add Worksheet to Workbook
+                                // Workbook contains one or more worksheets
+                                XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
+                                XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')   
+
+                                // export Excel file
+                                XLSX.writeFile(wb, 'book.xlsx') // name of the file is 'book.xlsx'
+                                //alert("hi export me");
+                            }).catch(() => {
+                                this.$message({
+                                    type: 'info',
+                                    message: 'Download Sample excel file'
+                                });          
+                        });*/
+                    
                     break;
                 default:
                     break;
