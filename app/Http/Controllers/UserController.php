@@ -1,4 +1,5 @@
 <?php
+
 /**
  * @file UserController
  * Controller for all function used by a User model in the application
@@ -105,7 +106,7 @@ class UserController extends Controller
             'HealthCare_Physician',
             'ER_Physician'
         ];
-        for ($i=0; $i < count($request[0]['import_batch']); $i++) {
+        for ($i = 0; $i < count($request[0]['import_batch']); $i++) {
             $batch = $request[0]['import_batch'][$i];
             $acpn = $request[0]['doctor_record'][$i]['content'];
             foreach ($acpn as $each) {
@@ -115,8 +116,10 @@ class UserController extends Controller
                     if ($this->splitTwoComma($each[$physician]) != null) {
                         foreach ($this->splitTwoComma($each[$physician])[0] as $name) {
                             foreach ($doctor_list_complete as $doctor_info) {
-                                if (str_replace(' ', '', strtolower(trim($doctor_info['name']))) ==
-                                    str_replace(' ', '', strtolower(trim($name)))) {
+                                if (
+                                    str_replace(' ', '', strtolower(trim($doctor_info['name']))) ==
+                                    str_replace(' ', '', strtolower(trim($name)))
+                                ) {
                                     array_push($doctor_ids, $doctor_info['id']);
                                     array_push($doctor_as, $physician);
                                 }
@@ -156,13 +159,13 @@ class UserController extends Controller
                         ->format('Ymd')) < "20200301") {
                         $record->record_type = 'old';
                         $record->total = $each['Total_PF'];
-                        $record->non_medical_fee = $record->total/2;
+                        $record->non_medical_fee = $record->total / 2;
                         $record->medical_fee = $record->non_medical_fee;
                         $record->save();
                     } else {
                         $record->record_type = 'new';
                         $record->total = $each['Total_PF'];
-                        $record->non_medical_fee = $record->total/2;
+                        $record->non_medical_fee = $record->total / 2;
                         $record->medical_fee = $record->non_medical_fee;
                         $record->save();
                         $doctors = Doctor::where('hospital_id', $record->hospital_id)
@@ -181,12 +184,12 @@ class UserController extends Controller
                         $pooled_record = new PooledRecord;
                         $pooled_record->full_time_doctors = json_encode($full_time_doctors);
                         $pooled_record->part_time_doctors = json_encode($part_time_doctors);
-                        $total_pooled_fee = $record->non_medical_fee*0.3;
-                        $initial_individual_fee = ($record->non_medical_fee*0.3)/
-                            (count($full_time_doctors)+(count($part_time_doctors)/2));
+                        $total_pooled_fee = $record->non_medical_fee * 0.3;
+                        $initial_individual_fee = ($record->non_medical_fee * 0.3) /
+                            (count($full_time_doctors) + (count($part_time_doctors) / 2));
 
                         $pooled_record->full_time_individual_fee = $initial_individual_fee;
-                        $pooled_record->part_time_individual_fee = $initial_individual_fee/2;
+                        $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
                         $pooled_record->record_id = $record->id;
                         $pooled_record->save();
                         foreach ($doctors as $doctor) {
@@ -195,7 +198,7 @@ class UserController extends Controller
                                     '_',
                                     strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
                                 )[0],
-                                'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
+                                'professional_fee' => ($record->non_medical_fee * 0.7) / $doctor->count()
                             ]);
                         }
                     }
@@ -328,7 +331,7 @@ class UserController extends Controller
     {
         $doctor = Doctor::find($id);
         if ($doctor->credit_records->count() == 0) {
-            $message = "Doctor ".$doctor->name." successfully deleted";
+            $message = "Doctor " . $doctor->name . " successfully deleted";
             $doctor->delete();
             return response()->json(
                 [
@@ -338,8 +341,8 @@ class UserController extends Controller
                 ]
             );
         }
-        $message = "Failed to delete doctor ".
-            $doctor->name.
+        $message = "Failed to delete doctor " .
+            $doctor->name .
             " because doctor has records in the database.
             Please contact the Administrator if you want to really delete this doctor data";
         return response()->json(
@@ -410,13 +413,13 @@ class UserController extends Controller
             "pooled":' . $pooled . ',
             "shared":' . $shared . ',
             "physicians":[
-                '.$requesting.',
-                '.$surgeon.',
-                '.$healthcare.',
-                '.$er.',
-                '.$anesthesiologist.',
-                '.$comanagement.',
-                '.$admitting.'
+                ' . $requesting . ',
+                ' . $surgeon . ',
+                ' . $healthcare . ',
+                ' . $er . ',
+                ' . $anesthesiologist . ',
+                ' . $comanagement . ',
+                ' . $admitting . '
             ]
         }';
         $hospital = Hospital::where('id', Auth::user()->hospital_id)->first();
@@ -428,11 +431,11 @@ class UserController extends Controller
         if ($batch != "All") {
             $summary = Doctor::with(['credit_records' => function ($query) use ($batch) {
                 $query
-                ->where('batch', $batch)
-                ->with('pooled_record');
+                    ->where('batch', $batch)
+                    ->with('pooled_record');
             }])
-            ->get();
-        return response()->json($summary);
+                ->get();
+            return response()->json($summary);
         } else {
             $summary = Doctor::with(['credit_records' => function ($query) {
                 $query->with('pooled_record');
@@ -444,12 +447,12 @@ class UserController extends Controller
     public function getRecords($batch)
     {
         if ($batch != "All") {
-            $records=CreditRecord::with('hospital', 'doctors')
-            ->where('batch', $batch)->get();
+            $records = CreditRecord::with('hospital', 'doctors')
+                ->where('batch', $batch)->get();
             return response()->json($records);
         } else {
-            $records=CreditRecord::with('hospital', 'doctors')
-            ->get();
+            $records = CreditRecord::with('hospital', 'doctors')
+                ->get();
             return response()->json($records);
         }
     }
@@ -461,18 +464,18 @@ class UserController extends Controller
         $record->patient_name = $request->name;
         $record->batch = $request->batch[0];
         $record->admission_date = Carbon::parse($request->admission)
-        ->setTimezone('Asia/Manila');
+            ->setTimezone('Asia/Manila');
         $record->discharge_date = Carbon::parse($request->discharge)
-        ->setTimezone('Asia/Manila');
+            ->setTimezone('Asia/Manila');
         if ($request->is_private) {
-            $record->record_type="private";
+            $record->record_type = "private";
             $record->total = $request->pf;
             $record->non_medical_fee = 0;
             $record->medical_fee = 0;
             $record->save();
             $doctors = Doctor::where('hospital_id', $record->hospital_id)
-            ->whereIn('id', $request->doctors_id)
-            ->get();
+                ->whereIn('id', $request->doctors_id)
+                ->get();
             foreach ($doctors as $doctor) {
                 foreach ($request->doctortype as $types_of_doctors) {
                     if ($doctor->id == $types_of_doctors['id']) {
@@ -485,30 +488,30 @@ class UserController extends Controller
             }
         } else {
             if ($request->admission >= '2020-03-1') {
-                $record->record_type="new";
+                $record->record_type = "new";
                 $record->total = $request->pf;
-                $record->non_medical_fee = $request->pf/2;
-                $record->medical_fee = $request->pf/2;
+                $record->non_medical_fee = $request->pf / 2;
+                $record->medical_fee = $request->pf / 2;
                 $record->save();
                 $doctors = Doctor::where('hospital_id', $record->hospital_id)
-                ->whereIn('id', $request->doctors_id)
-                ->get();
+                    ->whereIn('id', $request->doctors_id)
+                    ->get();
                 $full_time_doctors = Doctor::select('id')
                     ->where('is_active', true)
                     ->where('is_parttime', false)
                     ->pluck('id')
                     ->toArray();
                 $part_time_doctors = Doctor::select('id')->where('is_active', true)
-                ->where('is_parttime', true)->pluck('id')->toArray();
+                    ->where('is_parttime', true)->pluck('id')->toArray();
                 $pooled_record = new PooledRecord;
                 $pooled_record->full_time_doctors = json_encode($full_time_doctors);
                 $pooled_record->part_time_doctors = json_encode($part_time_doctors);
-                $total_pooled_fee = $record->non_medical_fee*0.3;
-                $initial_individual_fee = ($record->non_medical_fee*0.3)/
-                (count($full_time_doctors)+
-                (count($part_time_doctors)/2));
+                $total_pooled_fee = $record->non_medical_fee * 0.3;
+                $initial_individual_fee = ($record->non_medical_fee * 0.3) /
+                    (count($full_time_doctors) +
+                        (count($part_time_doctors) / 2));
                 $pooled_record->full_time_individual_fee = $initial_individual_fee;
-                $pooled_record->part_time_individual_fee = $initial_individual_fee/2;
+                $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
                 $pooled_record->record_id = $record->id;
                 $pooled_record->save();
                 foreach ($doctors as $doctor) {
@@ -516,15 +519,15 @@ class UserController extends Controller
                         if ($doctor->id == $types_of_doctors['id']) {
                             $doctor->credit_records()->attach($record->id, [
                                 'doctor_role' => $types_of_doctors['role'],
-                                'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
+                                'professional_fee' => ($record->non_medical_fee * 0.7) / $doctor->count()
                             ]);
                         }
                     }
                 }
             } else {
-                $record->record_type="old";
+                $record->record_type = "old";
                 $record->total = $request->pf;
-                $record->non_medical_fee = $request->pf/2;
+                $record->non_medical_fee = $request->pf / 2;
                 $record->medical_fee = $record->non_medical_fee;
                 $record->save();
             }
@@ -534,15 +537,15 @@ class UserController extends Controller
     public function getActiveDoctors()
     {
         return Doctor::where('hospital_id', Auth::user()->hospital_id)
-        ->where('is_active', true)
-        ->get();
+            ->where('is_active', true)
+            ->get();
     }
 
     public function getBatch()
     {
         return CreditRecord::distinct()
-        ->where('hospital_id', Auth::user()->hospital_id)
-        ->orderBy('batch', 'DESC')
-        ->get(['batch']);
+            ->where('hospital_id', Auth::user()->hospital_id)
+            ->orderBy('batch', 'DESC')
+            ->get(['batch']);
     }
 }
