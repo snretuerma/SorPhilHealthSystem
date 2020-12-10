@@ -137,8 +137,10 @@ class UserController extends Controller
                     $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
                     foreach ($doctors as $doctor) {
                         $doctor->credit_records()->attach($record->id, [
-                            'doctor_role' => explode('_',
-                                strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
+                            'doctor_role' => explode(
+                                '_',
+                                strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
+                            )[0],
                             'professional_fee' => $record->total,
                         ]);
                     }
@@ -184,7 +186,8 @@ class UserController extends Controller
                         foreach ($doctors as $doctor) {
                             $doctor->credit_records()->attach($record->id, [
                                 'doctor_role' => explode(
-                                    '_', strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
+                                    '_',
+                                    strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
                                 )[0],
                                 'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
                             ]);
