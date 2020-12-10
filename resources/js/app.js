@@ -43,6 +43,7 @@ Vue.component('resetpassadmin-component', require('./components/admin/ResetPassw
 
 //Users
 Vue.component('userdashboard-component', require('./components/user/chart/UserDashboard.vue').default);
+Vue.component('summary-component', require('./components/user/SummaryComponent.vue').default);
 Vue.component('doctors-component', require('./components/user/DoctorComponent.vue').default);
 Vue.component('restore-component', require('./components/user/RestoreComponent.vue').default);
 Vue.component('resetpass-component', require('./components/user/ResetPasswordComponent.vue').default);

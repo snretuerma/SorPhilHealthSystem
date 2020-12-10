@@ -196,8 +196,28 @@ class UserController extends Controller
     {
         return view('roles.user.doctors');
     }
+    //Summary
+    public function summary()
+    {
+        return view('roles.user.summary');
+    }
 
-    public function getDoctors()
+    public function getSummary()
+    {
+        $summary = Doctor::with(['credit_records' => function ($query) {
+            $query->with('pooled_record');
+        }])
+            ->get();
+        return response()->json($summary);
+    }
+    //Budget
+    /**
+     * Gets the list of doctors for the current user's hospital
+     *
+     * @var void
+     * @return Collection
+     */
+    public function getDoctors(): Collection
     {
         return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
     }
