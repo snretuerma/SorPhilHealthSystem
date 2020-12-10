@@ -520,6 +520,7 @@ export default {
             }
         },
         addCreditRecord(){
+            console.log(this.form.batch);
             var _this=this;
             var temp=[];
             var attending = this.form.attending.map(function (value, index, array) {
@@ -550,7 +551,6 @@ export default {
                 _this.form.doctortype.push(value);
                 temp.push(value.id);
             });
-            console.log(this.form.doctortype);
             this.form.doctors_id=temp;
             const loading = this.$loading({
                 lock: true,
@@ -559,7 +559,7 @@ export default {
                 fullscreen:false
             });
             if (this.form.lname =="" || this.form.fname =="" ||
-            this.form.admitting =="" || this.form.discharge =="" ||
+            this.form.admission =="" || this.form.discharge =="" ||
             this.form.batch =="" || this.form.pf =="")
             {
                 this.$notify({
@@ -577,7 +577,15 @@ export default {
                 axios
                 .post("add_records",this.form)
                 .then(response => {
-                    console.log(response.data);
+                    this.$notify({
+                        type: 'success',
+                        title: 'Record',
+                        message: 'Record added successfully!',
+                        offset: 0,
+                    });
+                loading.close();
+                this.btnLoading=false;
+                this.clearField();
                 })
                 .catch(error=> {
                     this.errors=error.response.data.errors;
