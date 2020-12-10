@@ -17,7 +17,7 @@ import lang from 'element-ui/lib/locale/lang/en';
 import locale from 'element-ui/lib/locale';
 Vue.use(ElementUI);
 
-locale.use(lang)
+locale.use(lang);
 import { DataTables, DataTablesServer } from 'vue-data-tables';
 Vue.use(DataTables);
 Vue.use(DataTablesServer);
@@ -43,11 +43,9 @@ Vue.component('resetpassadmin-component', require('./components/admin/ResetPassw
 
 //Users
 Vue.component('userdashboard-component', require('./components/user/chart/UserDashboard.vue').default);
-Vue.component('patient-component', require('./components/user/PatientComponent.vue').default);
-Vue.component('budget-component', require('./components/user/BudgetComponent.vue').default);
-Vue.component('record-component', require('./components/user/RecordContainer.vue').default);
+Vue.component('summary-component', require('./components/user/SummaryComponent.vue').default);
+Vue.component('doctors-component', require('./components/user/DoctorComponent.vue').default);
 Vue.component('restore-component', require('./components/user/RestoreComponent.vue').default);
-Vue.component('personnel-component', require('./components/user/PersonnelContainer.vue').default);
 Vue.component('resetpass-component', require('./components/user/ResetPasswordComponent.vue').default);
 
 //Observer
@@ -63,6 +61,10 @@ Vue.component('observerresetpassword-component', require('./components/observer/
 Vue.component('setting-component', require('./components/user/SettingContainer.vue').default);
 
 Vue.component('medical-component', require('./components/user/MedicalRecordComponent.vue').default);
+
+//user records
+Vue.component('record-parent', require('./components/user/RecordParent.vue').default);
+
 const app = new Vue({
     el: '#app'
 });

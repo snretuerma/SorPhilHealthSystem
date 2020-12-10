@@ -19,9 +19,9 @@ class Doctor extends Model
     {
         return $this->belongsToMany(
             'App\Models\CreditRecord',
-            'record_doctors',
+            'doctor_records',
             'doctor_id',
             'record_id'
-        )->withPivot('doctor_role', 'professional_fee', 'pooled_fee');
+        )->withPivot('doctor_role', 'professional_fee');
     }
 }

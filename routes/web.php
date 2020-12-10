@@ -70,43 +70,25 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/', 'UserController@index')->name('user');
     Route::get('reset', 'UserController@resetView')->name('reset');
     Route::post('resetpass', 'UserController@resetPass');
+
+    //Doctors
+    Route::get('/doctors', 'UserController@doctors')->name('doctors');
+
+    //Summary
+    Route::get('/summary', 'UserController@summary')->name('summary');
+    Route::get('get_summary', 'UserController@getSummary');
     //Budget
-    Route::get('/budget', 'UserController@budget')->name('budget');
-    Route::get('budget_get', 'UserController@getBudget');
-    Route::post('add_budget', 'UserController@addBudget');
-    Route::post('/edit_budget/{id}', 'UserController@editBudget');
-    Route::post('budget_import', 'UserController@importExcel');
-    Route::get('/budget_export', 'UserController@exportExcel');
-    Route::post('budget_delete/{id}', 'UserController@deleteBudget');
+
     //Staffs
-    Route::get('/personnel', 'UserController@personnel')->name('personnel');
-    Route::get('personnels_get', 'UserController@getPersonnels');
-    Route::post('add_personnel', 'UserController@addPersonnel');
-    Route::post('/edit_personnel/{id}', 'UserController@editPersonnel');
-    Route::post('personnel_delete/{id}', 'UserController@deletePersonnel');
-    Route::post('personnels_import', 'UserController@importExcel');
-    Route::get('/personnels_export', 'UserController@exportExcel');
-    Route::post('personnelcontribution_get', 'UserController@getPersonnelContribution');
 
     //Patients
-    Route::get('/patients', 'UserController@patients')->name('patients');
-    Route::get('patients_get', 'UserController@getPatients');
-    Route::post('add_patient', 'UserController@addPatient');
-    Route::post('patient_delete/{id}', 'UserController@deletePatient');
-    Route::post('patient_edit/{id}', 'UserController@editPatient');
-    Route::post('patients_import', 'UserController@importExcel');
-    Route::get('/patients_export', 'UserController@exportExcel');
 
+    Route::get('get_doctors', 'UserController@getDoctors');
+    Route::post('add_doctor', 'UserController@addDoctor');
+    Route::put('edit_doctor', 'UserController@editDoctor');
+    Route::delete('delete_doctor/{id}', 'UserController@deleteDoctor');
     //Records
-    Route::get('/record', 'UserController@record')->name('record');
-    Route::get('/medicalrecord/{id}', 'UserController@medicalrecord');
-    Route::get('record_get', 'UserController@getRecord');
-    Route::post('medicalrecord_add', 'UserController@addMedicalRecord');
-    Route::post('personnels_get/{id}', 'UserController@getPersonnel');
-    Route::get('personnel_get', 'UserController@getPersonnellist');
-    Route::post('delete_record/{id}', 'UserController@deleteRecord');
-    Route::post('contribution_delete/{id}', 'UserController@deleteContribution');
-    Route::post('contribution_edit/{id}', 'UserController@editContribution');
+    // Route::get('/records', 'UserController@records')->name('records');
 
     //Restore
     Route::get('/restore', 'UserController@restore')->name('restore');
@@ -127,6 +109,15 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/setting', 'UserController@setting')->name('setting');
     Route::post('update_setting', 'UserController@updateSetting');
 
+    //doctors
+    Route::get('get_doctors', 'UserController@getDoctors');
+    Route::get('get_active_doctors', 'UserController@getActiveDoctors');
+
+    //user record
+    Route::get('/records', 'UserController@records')->name('records');
+    Route::get('/get_records/{batch}', 'UserController@getRecords');
+    Route::post('/add_records', 'UserController@addCreditRecord');
+    Route::get('/get_batch', 'UserController@getBatch');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');

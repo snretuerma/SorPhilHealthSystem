@@ -18,13 +18,13 @@ class CreateCreditRecordsTable extends Migration
             $table->foreignId('hospital_id')->constrained('hospitals');
             $table->string('patient_name');
             $table->string('batch');
-            $table->date('admission_date');
-            $table->date('discharge_date');
+            $table->dateTime('admission_date');
+            $table->dateTime('discharge_date');
             // private, new, old
-            $table->string('type');
-            $table->decimal('total', 19, 2);
-            $table->decimal('non_medical_fee', 19, 2)->nullable();
-            $table->decimal('medical_fee', 19, 2)->nullable();
+            $table->string('record_type');
+            $table->decimal('total', 19, 4);
+            $table->decimal('non_medical_fee', 19, 4)->nullable();
+            $table->decimal('medical_fee', 19, 4)->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
