@@ -11,46 +11,47 @@
         <!-- End Header -->
         <!-- Search Box -->
         <div class="row" id="search_box" style="margin-bottom: 10px">
-            <div class="col-xl-6 col-lg-7 col-md-6 col-sm-12">
-                <el-input
-                    prefix-icon="el-icon-search"
-                    v-model="search"
-                    placeholder="Type to search"
-                />
-            </div>
-            <div class="col-xl-6 col-lg-4 col-md-6 col-sm-12">
+            <div class="col-xl-8 col-lg-7 col-md-12 col-sm-12">
                 <div class="row">
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                        <el-input
+                            prefix-icon="el-icon-search"
+                            v-model="search"
+                            placeholder="Type to search"
+                        />
+                    </div>
+                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
                         <el-form ref="form">
                             <el-form-item prop="batch">
-                                <el-select
-                                    ref="defaultValue"
-                                    :required="true"
-                                    v-model="value"
-                                    class="block-button"
-                                    size="large"
-                                    value-key="batch"
-                                    multiple
-                                    :multiple-limit="1"
-                                    filterable
-                                    default-first-option
-                                    allow-create
-                                    @change="changes">
-                                    <el-option
-                                        v-for="item in batch"
-                                        :key="item.batch"
-                                        :label="item.label"
-                                        :value="item.batch"
-                                        >
-                                    {{item.batch}}</el-option>
-                                </el-select>
-                        </el-form-item>
-                        <!-- <span class="font-italic text-danger" v-if="errors.batch">
-                            <small>{{ errors.batch[0] }}</small>
-                        </span> -->
+                                    <el-select
+                                        ref="defaultValue"
+                                        :required="true"
+                                        v-model="value"
+                                        class="block-button"
+                                        size="large"
+                                        value-key="batch"
+                                        multiple
+                                        :multiple-limit="1"
+                                        filterable
+                                        default-first-option
+                                        allow-create
+                                        @change="changes">
+                                        <el-option
+                                            v-for="item in batch"
+                                            :key="item.batch"
+                                            :label="item.label"
+                                            :value="item.batch"
+                                            >
+                                        {{item.batch}}</el-option>
+                                    </el-select>
+                            </el-form-item>
                         </el-form>
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
                         <el-button
                             class="btn-action block-button"
                             @click="triggerAdd"
@@ -58,7 +59,7 @@
                             Add
                         </el-button>
                     </div>
-                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
+                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
                         <el-dropdown  class="block-button btn-action">
                             <el-button>
                                 Excel
