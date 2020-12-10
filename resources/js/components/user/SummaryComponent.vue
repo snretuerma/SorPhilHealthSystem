@@ -41,13 +41,15 @@
                 <!-- Table -->
                 <el-table
                     :data="listData"
-                    @sort-change="changeTableSort"
+                    :sort-by = "['name']"
+                    @sort-change="changeTableSort1"
                     border
                 >
                     <el-table-column
                         width="350"
                         label="Name of Physician"
                         prop="name"
+                        :sortable="'custom'"
                     ></el-table-column>
                     <el-table-column label="50%">
                         <el-table-column
@@ -64,6 +66,7 @@
                             width="140"
                             label="Total"
                             prop="fifty_total"
+                            :sortable="'custom'"
                         ></el-table-column>
                     </el-table-column>
                     <el-table-column label="Performance Based Sharing">
@@ -97,7 +100,7 @@
                     </el-pagination>
                 </div>
                 <br />
-                <el-table :data="inactive" border>
+                <el-table :data="inactive" @sort-change="changeTableSort2" border>
                     <el-table-column
                         label="Physicians not included for performance based sharing"
                     >
@@ -105,6 +108,7 @@
                             width="350"
                             label="Name of Physician"
                             prop="name"
+                            sortable
                         ></el-table-column>
                         <el-table-column label="50%">
                             <el-table-column
@@ -121,6 +125,7 @@
                                 width="140"
                                 label="Total"
                                 prop="fifty_total"
+                                :sortable="'custom'"
                             ></el-table-column>
                         </el-table-column>
                         <el-table-column label="Performance Based Sharing">
@@ -128,7 +133,7 @@
                                 width="170"
                                 label="Doctors Share (35%)"
                                 prop="doctors_share"
-                                sortable
+                                :sortable="'custom'"
                             ></el-table-column>
                             <el-table-column
                                 width="150"
@@ -188,6 +193,57 @@
                     </el-table-column>
                 </el-table>
                 <!-- End table -->
+                </br>
+                <br />
+                <el-table :data="privateDoctors" @sort-change="changeTableSort3" border >
+                    <el-table-column
+                        label="Private Doctor Records"
+                    >
+                        <el-table-column
+                            width="350"
+                            label="Name of Physician"
+                            prop="name"
+                            sortable
+                        ></el-table-column>
+                        <el-table-column label="50%">
+                            <el-table-column
+                                width="150"
+                                label="Nursing Services"
+                                prop="nursing_services"
+                            ></el-table-column>
+                            <el-table-column
+                                width="150"
+                                label="Non-medical"
+                                prop="non_medical"
+                            ></el-table-column>
+                            <el-table-column
+                                width="140"
+                                label="Total"
+                                prop="fifty_total"
+                                :sortable="'custom'"
+                            ></el-table-column>
+                        </el-table-column>
+                        <el-table-column label="Performance Based Sharing">
+                            <el-table-column
+                                width="170"
+                                label="Doctors Share (35%)"
+                                prop="doctors_share"
+                                :sortable="'custom'"
+                            ></el-table-column>
+                            <el-table-column
+                                width="150"
+                                label="Pooled (15%)"
+                                prop="pooled"
+                            ></el-table-column>
+                            <el-table-column
+                                width="140"
+                                label="Total"
+                                prop="pbs_total"
+                            ></el-table-column>
+                        </el-table-column>
+                    </el-table-column>
+                </el-table>
+                <!-- End table -->
             </div>
         </div>
         <!-- Card ends here -->
@@ -195,7 +251,7 @@
 </template>
 <style>
 .el-table .success-row {
-    background: #d9d8e0;
+    background: #fce9e9;
 }
 </style>
 
@@ -206,6 +262,7 @@ export default {
             active: [],
             inactive: [],
             sumOfAll: [],
+            privateDoctors:[],
             nursing_services_total: 0,
             non_medical_total: 0,
             fifty_total_total: 0,
@@ -242,9 +299,8 @@ export default {
         tableRowClassName({ row, rowIndex }) {
                 return "success-row";
         },
-        changeTableSort(column) {
+        changeTableSort1(column) {
             console.log(column);
-
             //Get the field name and sort type
             var fieldName = column.prop;
             var sortingType = column.order;
@@ -258,6 +314,44 @@ export default {
             //Sort in ascending order
             else {
                 this.data = this.active.sort(
+                    (a, b) => a[fieldName] - b[fieldName]
+                );
+            }
+        },
+        changeTableSort2(column) {
+
+            //Get the field name and sort type
+            var fieldName = column.prop;
+            var sortingType = column.order;
+
+            //Sort in descending order
+            if (sortingType == "descending") {
+                this.data = this.inactive.sort(
+                    (a, b) => b[fieldName] - a[fieldName]
+                );
+            }
+            //Sort in ascending order
+            else {
+                this.data = this.inactive.sort(
+                    (a, b) => a[fieldName] - b[fieldName]
+                );
+            }
+        },
+        changeTableSort3(column) {
+
+            //Get the field name and sort type
+            var fieldName = column.prop;
+            var sortingType = column.order;
+
+            //Sort in descending order
+            if (sortingType == "descending") {
+                this.data = this.privateDoctors.sort(
+                    (a, b) => b[fieldName] - a[fieldName]
+                );
+            }
+            //Sort in ascending order
+            else {
+                this.data = this.privateDoctors.sort(
                     (a, b) => a[fieldName] - b[fieldName]
                 );
             }
@@ -337,6 +431,7 @@ export default {
                             doctor.pooled != 0
                         )
                             this.inactive.push(doctor);
+                        else  this.privateDoctors.push(doctor);
                     });
                     this.sumOfAll.push({
                         nursing_services_total: this.nursing_services_total,
