@@ -29,10 +29,6 @@ use App\Models\Contribution;
 use App\Models\CreditRecord;
 use App\Models\Doctor;
 use App\Models\PooledRecord;
-use App\Imports\User\PersonnelImport;
-use App\Imports\User\PatientImport;
-use App\Exports\User\PatientExport;
-use App\Exports\User\PersonnelExport;
 use App\Http\Requests\ResetPassRequest;
 use App\Http\Requests\AddCreditRecordRequest;
 use Carbon\Carbon;
@@ -55,7 +51,6 @@ class UserController extends Controller
     {
         $this->middleware('auth');
         $this->middleware('role:user');
-        date_default_timezone_set('Asia/Manila');
     }
 
     /**
@@ -70,37 +65,142 @@ class UserController extends Controller
     }
 
     /**
+     * Split data with two comma
+     *
+     * @var String $data
+     * @return Array
+     */
+    public function splitTwoComma(String $data)
+    {
+        if (str_replace(' ', '', strtoupper(trim($data))) == "NULL" || $data == "" || $data == null) {
+            return null;
+        } else {
+            $all_match = [];
+            preg_match_all('/[^,]+,[^,]+/', $data, $all_match);
+            if (count($all_match[0]) > 0) {
+                return $all_match;
+            } else {
+                return null;
+            }
+        }
+    }
+
+    /**
      * Importing budget through file (deprecated)
      *
      * @var Request $request
-     * @return BudgetImport
+     * @return CreditRecord
      */
     public function importExcel(Request $request)
     {
-        $i_action = $request->i_action;
-        try {
-            switch ($i_action) {
-                case "BudgetImport":
-                    $import = new BudgetImport;
-                    $postData = request()->file('budgets');
-                    Excel::import($import, $postData[0]);
-                    return $import->getRowCount();
-                    break;
-                case "PersonnelImport":
-                    $import = new PersonnelImport;
-                    $postData = request()->file('personnels');
-                    Excel::import($import, $postData[0]);
-                    return $import->getRowCount_imported() . '/' . $import->getRowCount();
-                    break;
-                case "PatientImport":
-                    $import = new PatientImport;
-                    $postData = request()->file('patients');
-                    Excel::import($import, $postData[0]);
-                    return $import->getRowCount_imported() . '/' . $import->getRowCount();
-                    break;
+        $doctor_list_complete = $request[0]['doctor_list'];
+        $cell_physician = [
+            'Attending_Physician',
+            'Admitting_Physician',
+            'Requesting_Physician',
+            'Reffered_Physician',
+            'Co_Management',
+            'Anesthesiology_Physician',
+            'Surgeon_Physician',
+            'HealthCare_Physician',
+            'ER_Physician'
+        ];
+        for ($i=0; $i < count($request[0]['import_batch']); $i++) {
+            $batch = $request[0]['import_batch'][$i];
+            $acpn = $request[0]['doctor_record'][$i]['content'];
+            foreach ($acpn as $each) {
+                $doctor_ids = [];
+                $doctor_as = [];
+                foreach ($cell_physician as $physician) {
+                    if ($this->splitTwoComma($each[$physician]) != null) {
+                        foreach ($this->splitTwoComma($each[$physician])[0] as $name) {
+                            foreach ($doctor_list_complete as $doctor_info) {
+                                if (str_replace(' ', '', strtolower(trim($doctor_info['name']))) ==
+                                    str_replace(' ', '', strtolower(trim($name)))) {
+                                    array_push($doctor_ids, $doctor_info['id']);
+                                    array_push($doctor_as, $physician);
+                                }
+                            }
+                        }
+                    }
+                }
+                $record = new CreditRecord;
+                $record->hospital()->associate(Auth::user()->hospital_id);
+                $record->patient_name = $each['Patient_Name'];
+                $record->batch = $batch;
+                $record->admission_date = Carbon::parse($each['Admission_Date'])
+                    ->setTimeZone('Asia/Manila')
+                    ->format('Y-m-d h:i:s');
+                $record->discharge_date = Carbon::parse($each['Discharge_Date'])
+                    ->setTimeZone('Asia/Manila')
+                    ->format('Y-m-d h:i:s');
+                if ($each['Is_Private'] == "1") {
+                    $record->record_type = 'private';
+                    $record->total = $each['Total_PF'];
+                    $record->non_medical_fee = 0;
+                    $record->medical_fee = 0;
+                    $record->save();
+                    $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
+                    foreach ($doctors as $doctor) {
+                        $doctor->credit_records()->attach($record->id, [
+                            'doctor_role' => explode(
+                                '_',
+                                strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
+                            )[0],
+                            'professional_fee' => $record->total,
+                        ]);
+                    }
+                } else {
+                    if ((Carbon::parse($each['Admission_Date'])
+                        ->setTimeZone('Asia/Manila')
+                        ->format('Ymd')) < "20200301") {
+                        $record->record_type = 'old';
+                        $record->total = $each['Total_PF'];
+                        $record->non_medical_fee = $record->total/2;
+                        $record->medical_fee = $record->non_medical_fee;
+                        $record->save();
+                    } else {
+                        $record->record_type = 'new';
+                        $record->total = $each['Total_PF'];
+                        $record->non_medical_fee = $record->total/2;
+                        $record->medical_fee = $record->non_medical_fee;
+                        $record->save();
+                        $doctors = Doctor::where('hospital_id', $record->hospital_id)
+                            ->whereIn('id', $doctor_ids)
+                            ->get();
+                        $full_time_doctors = Doctor::select('id')
+                            ->where('is_active', true)
+                            ->where('is_parttime', false)
+                            ->pluck('id')
+                            ->toArray();
+                        $part_time_doctors = Doctor::select('id')
+                            ->where('is_active', true)
+                            ->where('is_parttime', true)
+                            ->pluck('id')
+                            ->toArray();
+                        $pooled_record = new PooledRecord;
+                        $pooled_record->full_time_doctors = json_encode($full_time_doctors);
+                        $pooled_record->part_time_doctors = json_encode($part_time_doctors);
+                        $total_pooled_fee = $record->non_medical_fee*0.3;
+                        $initial_individual_fee = ($record->non_medical_fee*0.3)/
+                            (count($full_time_doctors)+(count($part_time_doctors)/2));
+
+                        $pooled_record->full_time_individual_fee = $initial_individual_fee;
+                        $pooled_record->part_time_individual_fee = $initial_individual_fee/2;
+                        $pooled_record->record_id = $record->id;
+                        $pooled_record->save();
+                        foreach ($doctors as $doctor) {
+                            $doctor->credit_records()->attach($record->id, [
+                                'doctor_role' => explode(
+                                    '_',
+                                    strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
+                                )[0],
+                                'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
+                            ]);
+                        }
+                    }
+                }
             }
-        } catch (\Error $ex) {
-            return "Error, something went wrong!";
         }
     }
 
@@ -112,53 +212,6 @@ class UserController extends Controller
      */
     public function exportExcel(Request $request)
     {
-        $date = Carbon::now()->format('Ymd_His');
-        $exceltype = $request->exceltype;
-        $e_action = $request->e_action;
-
-        if (isset($exceltype) && $exceltype != "") {
-            switch ($exceltype) {
-                case "csv":
-                    switch ($e_action) {
-                        case "BudgetExport":
-                            return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.csv');
-                            break;
-                        case "PersonnelExport":
-                            return Excel::download(new PersonnelExport, 'StaffsExportData_' . $date . '.csv');
-                            break;
-                        case "PatientExport":
-                            return Excel::download(new PatientExport, 'PatientExportData_' . $date . '.csv');
-                            break;
-                    }
-                    break;
-                case "xlsx":
-                    switch ($e_action) {
-                        case "BudgetExport":
-                            return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.xlsx');
-                            break;
-                        case "PersonnelExport":
-                            return Excel::download(new PersonnelExport, 'StaffsExportData_' . $date . '.xlsx');
-                            break;
-                        case "PatientExport":
-                            return Excel::download(new PatientExport, 'PatientExportData_' . $date . '.xlsx');
-                            break;
-                    }
-                    break;
-                case "xls":
-                    switch ($e_action) {
-                        case "BudgetExport":
-                            return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.xls');
-                            break;
-                        case "PersonnelExport":
-                            return Excel::download(new PersonnelExport, 'StaffsExportData_' . $date . '.xls');
-                            break;
-                        case "PatientExport":
-                            return Excel::download(new PatientExport, 'PatientExportData_' . $date . '.xls');
-                            break;
-                    }
-                    break;
-            }
-        }
     }
 
     /**

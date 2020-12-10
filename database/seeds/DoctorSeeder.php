@@ -17,7 +17,7 @@ class DoctorSeeder extends Seeder
      */
     public function run(Faker $faker)
     {
-        for($index = 0; $index < 30; $index++) {
+        for($index = 0; $index <5; $index++) {
             $doctor = new Doctor;
             $doctor->hospital()->associate(Hospital::find(1)->id);
             $doctor->name = $faker->lastName.', '.$faker->firstName.' '.$faker->lastName;
@@ -26,7 +26,7 @@ class DoctorSeeder extends Seeder
             $doctor->save();
         }
 
-        for($index = 0; $index < rand(10, 20); $index++) {
+        for($index = 0; $index < 5; $index++) {
             $doctor = new Doctor;
             $doctor->hospital()->associate(Hospital::find(1)->id);
             $doctor->name = $faker->lastName.', '.$faker->firstName.' '.$faker->lastName;
@@ -35,7 +35,7 @@ class DoctorSeeder extends Seeder
             $doctor->save();
         }
 
-        for($index = 0; $index < 10; $index++) {
+        for($index = 0; $index < 5; $index++) {
             $doctor = new Doctor;
             $doctor->hospital()->associate(Hospital::find(1)->id);
             $doctor->name = $faker->lastName.', '.$faker->firstName.' '.$faker->lastName;
