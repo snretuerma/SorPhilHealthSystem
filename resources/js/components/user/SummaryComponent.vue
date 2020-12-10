@@ -13,23 +13,37 @@
 
         <!-- Search Box -->
         <div class="row" style="margin-bottom: 10px">
-            <div class="col-xl-9 col-lg-8 col-md-6 col-sm-12">
+            <div class="col-xl-7 col-lg-7 col-md-6 col-sm-12">
                 <el-input
                     prefix-icon="el-icon-search"
                     v-model="search"
                     placeholder="Type to search"
                 />
             </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-                <el-form>
-                    <el-form-item>
-                        <el-autocomplete
-                            prefix-icon="el-icon-search"
-                            class="inline-input"
-                            placeholder="Batch"
-                            value=""
-                            :trigger-on-focus="false"
-                        ></el-autocomplete>
+            <div class="col-xl-5 col-lg-5 col-md-6 col-sm-12">
+                <el-form ref="form">
+                    <el-form-item prop="batch">
+                        <el-select
+                            ref="defaultValue"
+                            :required="true"
+                            v-model="value"
+                            class="block-button"
+                            size="large"
+                            value-key="batch"
+                            multiple
+                            :multiple-limit="1"
+                            filterable
+                            default-first-option
+                            allow-create
+                            @change="changes">
+                            <el-option
+                                v-for="item in batch"
+                                :key="item.batch"
+                                :label="item.label"
+                                :value="item.batch"
+                                >
+                            {{item.batch}}</el-option>
+                        </el-select>
                     </el-form-item>
                 </el-form>
             </div>
@@ -262,6 +276,8 @@ export default {
             active: [],
             inactive: [],
             sumOfAll: [],
+            batch:[],
+            value:[],
             privateDoctors:[],
             nursing_services_total: 0,
             non_medical_total: 0,
@@ -296,6 +312,23 @@ export default {
         }
     },
     methods: {
+        changes(){
+            if(this.value != '') {
+                this.getRecords(this.value);
+            }
+        },
+        getBatch(){
+             axios
+                .get("get_batch")
+                .then(response => {
+                    response.data.push({batch:'All'});
+                    this.batch = response.data;
+                    this.value[0] = response.data[0].batch;
+                    this.first_batch = response.data[0].batch;
+                    this.getSummary(response.data[0].batch);
+                })
+                .catch(function(error) {});
+        },
         tableRowClassName({ row, rowIndex }) {
                 return "success-row";
         },
@@ -356,10 +389,9 @@ export default {
                 );
             }
         },
-        getSum() {},
-        getSummary: function() {
+        getSummary: function(batch) {
             axios
-                .get("get_summary")
+                .get("get_summary/" + batch)
                 .then(response => {
                     response.data.forEach(doctor => {
                         doctor.nursing_services = 0;
@@ -453,7 +485,7 @@ export default {
         }
     },
     mounted() {
-        this.getSummary();
+        this.getBatch();
     }
 };
 </script>

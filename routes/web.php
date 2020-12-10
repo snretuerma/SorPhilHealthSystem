@@ -76,7 +76,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
     //Summary
     Route::get('/summary', 'UserController@summary')->name('summary');
-    Route::get('get_summary', 'UserController@getSummary');
+    Route::get('/get_summary/{batch}', 'UserController@getSummary');
     //Budget
 
     //Staffs

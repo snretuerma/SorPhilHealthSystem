@@ -202,14 +202,7 @@ class UserController extends Controller
         return view('roles.user.summary');
     }
 
-    public function getSummary()
-    {
-        $summary = Doctor::with(['credit_records' => function ($query) {
-            $query->with('pooled_record');
-        }])
-            ->get();
-        return response()->json($summary);
-    }
+
     //Budget
     /**
      * Gets the list of doctors for the current user's hospital
@@ -376,6 +369,24 @@ class UserController extends Controller
         $hospital = Hospital::where('id', Auth::user()->hospital_id)->first();
         $hospital->setting = $data;
         return;
+    }
+    public function getSummary($batch)
+    {
+        if ($batch != "All") {
+            $summary = Doctor::with(['credit_records' => function ($query) use ($batch) {
+                $query
+                ->where('batch', $batch)
+                ->with('pooled_record');
+            }])
+            ->get();
+        return response()->json($summary);
+        } else {
+            $summary = Doctor::with(['credit_records' => function ($query) {
+                $query->with('pooled_record');
+            }])
+                ->get();
+            return response()->json($summary);
+        }
     }
     public function getRecords($batch)
     {
