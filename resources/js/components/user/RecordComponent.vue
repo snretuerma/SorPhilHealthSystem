@@ -592,10 +592,10 @@ export default {
                     is_parttime: (doctor.is_parttime) ? 'Yes' : 'No'
                 });
             });
-            var doctors = XLSX.utils.json_to_sheet(this.doctor_export)
-            var wb = XLSX.utils.book_new()
-            XLSX.utils.book_append_sheet(wb, doctors, 'Doctor or Physician')
-            XLSX.writeFile(wb, 'Doctor_List.xlsx')
+            var doctors = XLSX.utils.json_to_sheet(this.doctor_export);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, doctors, 'Doctor or Physician');
+            XLSX.writeFile(wb, 'Doctor_List.xlsx');
         },
         formDialog: function(key) {
             switch (key) {
@@ -603,7 +603,7 @@ export default {
                         this.dialogtitle = 'Import Excel';
                         this.fullscreen = true;
                         this.isimport = true;
-                        this.dialogExcelFile = true
+                        this.dialogExcelFile = true;
                     break;
                 case "export_data":
                         this.dialogtitle = 'Download / Export Excel';
