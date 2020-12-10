@@ -19,12 +19,18 @@ namespace App\Http\Controllers;
 
 use Auth;
 use DB;
+use Illuminate\Database\Eloquent\Model;
+
 use App\Models\Hospital;
 use App\Models\User;
-use App\Models\Doctor;
+use App\Models\Personnel;
+use App\Models\MedicalRecord;
+use App\Models\Contribution;
 use App\Models\CreditRecord;
+use App\Models\Doctor;
 use App\Models\PooledRecord;
 use App\Http\Requests\ResetPassRequest;
+use App\Http\Requests\AddCreditRecordRequest;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Maatwebsite\Excel\Facades\Excel;
@@ -243,7 +249,21 @@ class UserController extends Controller
     {
         return view('roles.user.doctors');
     }
+    //Summary
+    public function summary()
+    {
+        return view('roles.user.summary');
+    }
 
+    public function getSummary()
+    {
+        $summary = Doctor::with(['credit_records' => function ($query) {
+            $query->with('pooled_record');
+        }])
+            ->get();
+        return response()->json($summary);
+    }
+    //Budget
     /**
      * Gets the list of doctors for the current user's hospital
      *
@@ -392,10 +412,10 @@ class UserController extends Controller
         $comanagement = intval($request->comanagement) / 100;
         $admitting = intval($request->admitting) / 100;
         $data = '{
-            "medical":'.$medical.',
-            "nonmedical":'.$nonmedical.',
-            "pooled":'.$pooled.',
-            "shared":'.$shared.',
+            "medical":' . $medical . ',
+            "nonmedical":' . $nonmedical . ',
+            "pooled":' . $pooled . ',
+            "shared":' . $shared . ',
             "physicians":[
                 '.$requesting.',
                 '.$surgeon.',
@@ -409,5 +429,109 @@ class UserController extends Controller
         $hospital = Hospital::where('id', Auth::user()->hospital_id)->first();
         $hospital->setting = $data;
         return;
+    }
+    public function getRecords($batch)
+    {
+        if ($batch != "All") {
+            $records=CreditRecord::with('hospital', 'doctors')
+            ->where('batch', $batch)->get();
+            return response()->json($records);
+        } else {
+            $records=CreditRecord::with('hospital', 'doctors')
+            ->get();
+            return response()->json($records);
+        }
+    }
+
+    public function addCreditRecord(AddCreditRecordRequest $request)
+    {
+        $record = new CreditRecord;
+        $record->hospital()->associate(Hospital::find(1)->id);
+        $record->patient_name = $request->name;
+        $record->batch = $request->batch[0];
+        $record->admission_date = Carbon::parse($request->admission)
+        ->setTimezone('Asia/Manila');
+        $record->discharge_date = Carbon::parse($request->discharge)
+        ->setTimezone('Asia/Manila');
+        if ($request->is_private) {
+            $record->record_type="private";
+            $record->total = $request->pf;
+            $record->non_medical_fee = 0;
+            $record->medical_fee = 0;
+            $record->save();
+            $doctors = Doctor::where('hospital_id', $record->hospital_id)
+            ->whereIn('id', $request->doctors_id)
+            ->get();
+            foreach ($doctors as $doctor) {
+                foreach ($request->doctortype as $types_of_doctors) {
+                    if ($doctor->id == $types_of_doctors['id']) {
+                        $doctor->credit_records()->attach($record->id, [
+                            'doctor_role' => $types_of_doctors['role'],
+                            'professional_fee' =>  $request->pf
+                        ]);
+                    }
+                }
+            }
+        } else {
+            if ($request->admission >= '2020-03-1') {
+                $record->record_type="new";
+                $record->total = $request->pf;
+                $record->non_medical_fee = $request->pf/2;
+                $record->medical_fee = $request->pf/2;
+                $record->save();
+                $doctors = Doctor::where('hospital_id', $record->hospital_id)
+                ->whereIn('id', $request->doctors_id)
+                ->get();
+                $full_time_doctors = Doctor::select('id')
+                    ->where('is_active', true)
+                    ->where('is_parttime', false)
+                    ->pluck('id')
+                    ->toArray();
+                $part_time_doctors = Doctor::select('id')->where('is_active', true)
+                ->where('is_parttime', true)->pluck('id')->toArray();
+                $pooled_record = new PooledRecord;
+                $pooled_record->full_time_doctors = json_encode($full_time_doctors);
+                $pooled_record->part_time_doctors = json_encode($part_time_doctors);
+                $total_pooled_fee = $record->non_medical_fee*0.3;
+                $initial_individual_fee = ($record->non_medical_fee*0.3)/
+                (count($full_time_doctors)+
+                (count($part_time_doctors)/2));
+                $pooled_record->full_time_individual_fee = $initial_individual_fee;
+                $pooled_record->part_time_individual_fee = $initial_individual_fee/2;
+                $pooled_record->record_id = $record->id;
+                $pooled_record->save();
+                foreach ($doctors as $doctor) {
+                    foreach ($request->doctortype as $types_of_doctors) {
+                        if ($doctor->id == $types_of_doctors['id']) {
+                            $doctor->credit_records()->attach($record->id, [
+                                'doctor_role' => $types_of_doctors['role'],
+                                'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
+                            ]);
+                        }
+                    }
+                }
+            } else {
+                $record->record_type="old";
+                $record->total = $request->pf;
+                $record->non_medical_fee = $request->pf/2;
+                $record->medical_fee = $record->non_medical_fee;
+                $record->save();
+            }
+        }
+    }
+
+    public function getActiveDoctors()
+    {
+        return Doctor::where('hospital_id', Auth::user()->hospital_id)
+        ->where('is_active', true)
+        ->get();
+    }
+
+    public function getBatch()
+    {
+        return CreditRecord::distinct()
+        ->where('hospital_id', Auth::user()->hospital_id)
+        ->orderBy('batch', 'DESC')
+        ->get(['batch']);
     }
 }

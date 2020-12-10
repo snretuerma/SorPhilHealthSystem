@@ -1,5 +1,5 @@
 @extends('layouts.user')
 
 @section('content')
-<doctors-component/>
+<summary-component></summary-component>
 @endsection
