@@ -22,18 +22,8 @@ use DB;
 use App\Models\Hospital;
 use App\Models\User;
 use App\Models\Doctor;
-
-//doctor imp
-use App\Imports\User\DoctorImport;
-use App\Imports\User\CreditRecordImport;
 use App\Models\CreditRecord;
 use App\Models\PooledRecord;
-//end
-
-use App\Imports\User\PersonnelImport;
-use App\Imports\User\PatientImport;
-use App\Exports\User\PatientExport;
-use App\Exports\User\PersonnelExport;
 use App\Http\Requests\ResetPassRequest;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
@@ -93,7 +83,7 @@ class UserController extends Controller
      * Importing budget through file (deprecated)
      *
      * @var Request $request
-     * @return BudgetImport
+     * @return CreditRecord
      */
     public function importExcel(Request $request)
     {
@@ -133,7 +123,6 @@ class UserController extends Controller
                 $record->batch = $batch;
                 $record->admission_date = Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Y-m-d h:i:s');
                 $record->discharge_date = Carbon::parse($each['Discharge_Date'])->setTimeZone('Asia/Manila')->format('Y-m-d h:i:s');
-
                 if($each['Is_Private'] == "1"){
                     $record->record_type = 'private';
                     $record->total = $each['Total_PF'];
@@ -201,53 +190,6 @@ class UserController extends Controller
      */
     public function exportExcel(Request $request)
     {
-        $date = Carbon::now()->format('Ymd_His');
-        $exceltype = $request->exceltype;
-        $e_action = $request->e_action;
-
-        if (isset($exceltype) && $exceltype != "") {
-            switch ($exceltype) {
-                case "csv":
-                    switch ($e_action) {
-                        case "BudgetExport":
-                            return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.csv');
-                            break;
-                        case "PersonnelExport":
-                            return Excel::download(new PersonnelExport, 'StaffsExportData_' . $date . '.csv');
-                            break;
-                        case "PatientExport":
-                            return Excel::download(new PatientExport, 'PatientExportData_' . $date . '.csv');
-                            break;
-                    }
-                    break;
-                case "xlsx":
-                    switch ($e_action) {
-                        case "BudgetExport":
-                            return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.xlsx');
-                            break;
-                        case "PersonnelExport":
-                            return Excel::download(new PersonnelExport, 'StaffsExportData_' . $date . '.xlsx');
-                            break;
-                        case "PatientExport":
-                            return Excel::download(new PatientExport, 'PatientExportData_' . $date . '.xlsx');
-                            break;
-                    }
-                    break;
-                case "xls":
-                    switch ($e_action) {
-                        case "BudgetExport":
-                            return Excel::download(new BudgetExport, 'BudgetExportData_' . $date . '.xls');
-                            break;
-                        case "PersonnelExport":
-                            return Excel::download(new PersonnelExport, 'StaffsExportData_' . $date . '.xls');
-                            break;
-                        case "PatientExport":
-                            return Excel::download(new PatientExport, 'PatientExportData_' . $date . '.xls');
-                            break;
-                    }
-                    break;
-            }
-        }
     }
 
     /**

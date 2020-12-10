@@ -61,7 +61,6 @@
                             <el-button slot="trigger" type="primary" plain>select supported excel file .xlsx</el-button>
                             <el-button type="success" @click="uploadToDatabase" :disabled="!is_preview">upload to database</el-button>
                         </el-upload>
-                        <el-progress v-if="progressbar_import" :percentage="percentage" color="#409eff"></el-progress>
                     </el-form-item>
                 </el-form>
                 <el-row v-show="is_preview && preview_excel_sheet_data.length > 0">
@@ -74,7 +73,7 @@
                             >
                             {{ item.title }}
                                 <el-table
-                                    :data="data"
+                                    :data="exceldata"
                                     style="width: 100%"
                                     height="350"
                                     >
@@ -159,7 +158,7 @@
                                     layout="prev, pager, next"
                                     @current-change="handleCurrentChange"
                                     :page-size="page_size"
-                                    :total="total"
+                                    :total="tablelength"
                                 />
                             </el-tab-pane>
                         </el-tabs>
@@ -215,19 +214,14 @@ import XLSX from 'xlsx';
 export default {
     data() {
         return {
-            progressbar_import: false,
-            doctorRecord:[],
             dialogExcelFile: false,
-            percentage: 0,
-            preview_excel_sheetname:[],
             preview_excel_sheet_data:[],
             sheet_length: '',
-            page: 1,
+            tablepage: 1,
             page_size: 10,
-            total: 0,
+            tablelength: 0,
             current_tab_content:[],
-            current_tab_table:[],
-            data:[],
+            exceldata:[],
             current_tab: '',
             excel_validation_error:[[], [], []],
             import_batch:[],
@@ -238,18 +232,6 @@ export default {
             fullscreen: true,
             title: 'Import Excel',
             isimport: true,
-            Datas: {
-                'animals': [
-                            {"name": "cat", "category": "animal"}
-                            ,{"name": "dog", "category": "animal"}
-                            ,{"name": "pig", "category": "animal"}
-                            ],
-                'pokemons': [
-                            {"name": "pikachu", "category": "pokemon"}
-                            ,{"name": "Arbok", "category": "pokemon"}
-                            ,{"name": "Eevee", "category": "pokemon"}
-                            ]
-            }
         };
     },
     methods: {
@@ -273,10 +255,10 @@ export default {
             }
         },
         handleCurrentChange(value) {
-            this.page = value;
-            this.total = this.current_tab_content[this.current_tab].length;
-            this.data = this.current_tab_content[this.current_tab];
-            this.data = this.data.slice(this.page_size * this.page - this.page_size, this.page_size * this.page);
+            this.tablepage = value;
+            this.tablelength = this.current_tab_content[this.current_tab].length;
+            this.exceldata = this.current_tab_content[this.current_tab];
+            this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
         getDoctors(){
             var _this = this;
@@ -330,15 +312,12 @@ export default {
         },
         handleRemoveFile(file, fileList) {
             this.getDoctors();
-            this.doctorRecord = [];
-            this.preview_excel_sheetname = [];
             this.preview_excel_sheet_data = [];
             this.sheet_length = '';
-            this.page = 1;
-            this.total = 0;
+            this.tablepage = 1;
+            this.tablelength = 0;
             this.current_tab_content = [];
-            this.current_tab_table = [];
-            this.data = [];
+            this.exceldata = [];
             this.current_tab = '';
             this.excel_validation_error = [[], [], []];
             this.import_batch = [];
@@ -386,7 +365,6 @@ export default {
         },
         fileData(file, fileList){
             var _this = this;
-            this.doctorRecord.push(file.raw);
             var header_required = [
                 "patient_name",
                 "admission_date",
@@ -594,35 +572,19 @@ export default {
         },
         handleClickTab(tab, event){
             this.current_tab = tab.index;
-            this.total = this.current_tab_content[tab.index].length;
-            this.data = this.current_tab_content[tab.index];
-            this.page = parseInt(1);
-            this.data = this.data.slice(this.page_size * this.page - this.page_size, this.page_size * this.page);
+            this.tablelength = this.current_tab_content[tab.index].length;
+            this.exceldata = this.current_tab_content[tab.index];
+            this.tablepage = parseInt(1);
+            this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
         defaultTabSelected(){
             this.current_tab = 0;
-            this.total = this.current_tab_content[0].length;
-            this.data = this.current_tab_content[0];
-            this.page = parseInt(1);
-            this.data = this.data.slice(this.page_size * this.page - this.page_size, this.page_size * this.page);
+            this.tablelength = this.current_tab_content[0].length;
+            this.exceldata = this.current_tab_content[0];
+            this.tablepage = parseInt(1);
+            this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
         exportExcel(){
-            /*// export json to Worksheet of Excel
-            // only array possible
-            var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals) 
-            var pokemonWS = XLSX.utils.json_to_sheet(this.Datas.pokemons) 
-
-            // A workbook is the name given to an Excel file
-            var wb = XLSX.utils.book_new() // make Workbook of Excel
-
-            // add Worksheet to Workbook
-            // Workbook contains one or more worksheets
-            XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
-            XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')   
-
-            // export Excel file
-            XLSX.writeFile(wb, 'book.xlsx') // name of the file is 'book.xlsx'*/
-
             this.doctor_list_complete.forEach((doctor)=>{
                 this.doctor_export.push({
                     name: doctor.name,
@@ -630,7 +592,7 @@ export default {
                     is_parttime: (doctor.is_parttime) ? 'Yes' : 'No'
                 });
             });
-            var doctors = XLSX.utils.json_to_sheet(this.doctor_export) 
+            var doctors = XLSX.utils.json_to_sheet(this.doctor_export)
             var wb = XLSX.utils.book_new()
             XLSX.utils.book_append_sheet(wb, doctors, 'Doctor or Physician')
             XLSX.writeFile(wb, 'Doctor_List.xlsx')
@@ -648,45 +610,12 @@ export default {
                         this.fullscreen = false;
                         this.isimport = false;
                         this.dialogExcelFile = true;
-                        /*this.$confirm('Please select which to download', 'Select', {
-                            confirmButtonText: 'Download Data',
-                            cancelButtonText: 'Download Sample Excel File / Template',
-                            type: 'success'
-                            }).then(() => {
-                                // export json to Worksheet of Excel
-                                // only array possible
-                                var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals) 
-                                var pokemonWS = XLSX.utils.json_to_sheet(this.Datas.pokemons) 
-
-                                // A workbook is the name given to an Excel file
-                                var wb = XLSX.utils.book_new() // make Workbook of Excel
-
-                                // add Worksheet to Workbook
-                                // Workbook contains one or more worksheets
-                                XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
-                                XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')   
-
-                                // export Excel file
-                                XLSX.writeFile(wb, 'book.xlsx') // name of the file is 'book.xlsx'
-                                //alert("hi export me");
-                            }).catch(() => {
-                                this.$message({
-                                    type: 'info',
-                                    message: 'Download Sample excel file'
-                                });          
-                        });*/
-                    
-                    break;
-                default:
                     break;
             }
         },
     },
     mounted() {
         this.getDoctors();
-    },
-    computed: {
     }
-
 }
 </script>

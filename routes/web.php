@@ -79,7 +79,6 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::delete('delete_doctor/{id}', 'UserController@deleteDoctor');
     //Records
     Route::get('/records', 'UserController@records')->name('records');
-    //Records read excel
     Route::post('import_doctor_record', 'UserController@importExcel');
 
     //Restore
