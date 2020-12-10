@@ -377,10 +377,17 @@ class UserController extends Controller
         $hospital->setting = $data;
         return;
     }
-    public function getRecords()
+    public function getRecords($batch)
     {
-        $records=CreditRecord::with('hospital', 'doctors')->get();
-        return response()->json($records);
+        if ($batch != "All") {
+            $records=CreditRecord::with('hospital', 'doctors')
+            ->where('batch', $batch)->get();
+            return response()->json($records);
+        } else {
+            $records=CreditRecord::with('hospital', 'doctors')
+            ->get();
+            return response()->json($records);
+        }
     }
 
     public function addCreditRecord(AddCreditRecordRequest $request)
@@ -388,7 +395,7 @@ class UserController extends Controller
         $record = new CreditRecord;
         $record->hospital()->associate(Hospital::find(1)->id);
         $record->patient_name = $request->name;
-        $record->batch = $request->batch;
+        $record->batch = $request->batch[0];
         $record->admission_date = Carbon::parse($request->admission)
         ->setTimezone('Asia/Manila');
         $record->discharge_date = Carbon::parse($request->discharge)
