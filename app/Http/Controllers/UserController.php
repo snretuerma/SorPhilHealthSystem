@@ -359,16 +359,15 @@ class UserController extends Controller
     }
     public function getRecords($batch)
     {
-        if($batch != "All") {
+        if ($batch != "All") {
             $records=CreditRecord::with('hospital', 'doctors')
-            ->where('batch',$batch)->get();
+            ->where('batch', $batch)->get();
             return response()->json($records);
         } else {
             $records=CreditRecord::with('hospital', 'doctors')
             ->get();
             return response()->json($records);
         }
-
     }
 
     public function addCreditRecord(AddCreditRecordRequest $request)
