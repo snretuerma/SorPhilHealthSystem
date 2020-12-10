@@ -66,14 +66,14 @@ class UserController extends Controller
      */
     public function splitTwoComma(String $data)
     {
-        if(str_replace(' ','',strtoupper(trim($data))) == "NULL" || $data == "" || $data == null){
+        if (str_replace(' ', '', strtoupper(trim($data))) == "NULL" || $data == "" || $data == null){
             return null;
-        }else{
+        } else {
             $all_match = [];
             preg_match_all('/[^,]+,[^,]+/', $data, $all_match);
-            if(count($all_match[0]) > 0){
+            if (count($all_match[0]) > 0) {
                 return $all_match;
-            }else{
+            } else {
                 return null;
             }
         }
@@ -105,11 +105,11 @@ class UserController extends Controller
             foreach($acpn as $each){
                 $doctor_ids = [];
                 $doctor_as = [];
-                foreach($cell_physician as $physician){
-                    if($this->splitTwoComma($each[$physician]) != null){
-                        foreach($this->splitTwoComma($each[$physician])[0] as $name){
-                            foreach($doctor_list_complete as $doctor_info){
-                                if(str_replace(' ','',strtolower(trim($doctor_info['name']))) == str_replace(' ','',strtolower(trim($name)))){
+                foreach ($cell_physician as $physician) {
+                    if ($this->splitTwoComma($each[$physician]) != null) {
+                        foreach ($this->splitTwoComma($each[$physician])[0] as $name) {
+                            foreach ($doctor_list_complete as $doctor_info) {
+                                if (str_replace(' ', '', strtolower(trim($doctor_info['name']))) == str_replace(' ', '', strtolower(trim($name)))) {
                                     array_push($doctor_ids, $doctor_info['id']);
                                     array_push($doctor_as, $physician);
                                 }
@@ -121,29 +121,33 @@ class UserController extends Controller
                 $record->hospital()->associate(Auth::user()->hospital_id);
                 $record->patient_name = $each['Patient_Name'];
                 $record->batch = $batch;
-                $record->admission_date = Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Y-m-d h:i:s');
-                $record->discharge_date = Carbon::parse($each['Discharge_Date'])->setTimeZone('Asia/Manila')->format('Y-m-d h:i:s');
-                if($each['Is_Private'] == "1"){
+                $record->admission_date = Carbon::parse($each['Admission_Date'])
+                    ->setTimeZone('Asia/Manila')
+                    ->format('Y-m-d h:i:s');
+                $record->discharge_date = Carbon::parse($each['Discharge_Date'])
+                    ->setTimeZone('Asia/Manila')
+                    ->format('Y-m-d h:i:s');
+                if ($each['Is_Private'] == "1") {
                     $record->record_type = 'private';
                     $record->total = $each['Total_PF'];
                     $record->non_medical_fee = 0;
                     $record->medical_fee = 0;
                     $record->save();
                     $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
-                    foreach($doctors as $doctor) {
+                    foreach ($doctors as $doctor) {
                         $doctor->credit_records()->attach($record->id, [
                             'doctor_role' => explode('_',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
                             'professional_fee' => $record->total,
                         ]);
                     }
-                }else{
-                    if((Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Ymd')) < "20200301"){
+                } else {
+                    if ((Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Ymd')) < "20200301") {
                         $record->record_type = 'old';
                         $record->total = $each['Total_PF'];
                         $record->non_medical_fee = $record->total/2;
                         $record->medical_fee = $record->non_medical_fee;
                         $record->save();
-                    }else{
+                    } else {
                         $record->record_type = 'new';
                         $record->total = $each['Total_PF'];
                         $record->non_medical_fee = $record->total/2;
