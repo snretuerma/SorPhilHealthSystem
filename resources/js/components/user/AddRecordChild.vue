@@ -265,7 +265,8 @@
                                     size="large"
                                     v-model="form.batch"
                                     value-key="id"
-                                    @input="asd()"
+                                    multiple
+                                    :multiple-limit="1"
                                     filterable
                                     allow-create
                                     default-first-option

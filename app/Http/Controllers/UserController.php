@@ -357,10 +357,18 @@ class UserController extends Controller
         $hospital->setting = $data;
         return;
     }
-    public function getRecords()
+    public function getRecords($batch)
     {
-        $records=CreditRecord::with('hospital', 'doctors')->get();
-        return response()->json($records);
+        if($batch != "All") {
+            $records=CreditRecord::with('hospital', 'doctors')
+            ->where('batch',$batch)->get();
+            return response()->json($records);
+        } else {
+            $records=CreditRecord::with('hospital', 'doctors')
+            ->get();
+            return response()->json($records);
+        }
+
     }
 
     public function addCreditRecord(AddCreditRecordRequest $request)
