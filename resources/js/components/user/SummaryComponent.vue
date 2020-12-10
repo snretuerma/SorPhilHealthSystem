@@ -314,7 +314,7 @@ export default {
     methods: {
         changes(){
             if(this.value != '') {
-                this.getRecords(this.value);
+                this.getSummary(this.value);
             }
         },
         getBatch(){
