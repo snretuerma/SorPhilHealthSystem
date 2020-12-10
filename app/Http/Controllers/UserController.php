@@ -66,7 +66,7 @@ class UserController extends Controller
      */
     public function splitTwoComma(String $data)
     {
-        if (str_replace(' ', '', strtoupper(trim($data))) == "NULL" || $data == "" || $data == null){
+        if (str_replace(' ', '', strtoupper(trim($data))) == "NULL" || $data == "" || $data == null) {
             return null;
         } else {
             $all_match = [];
@@ -102,14 +102,15 @@ class UserController extends Controller
         for ($i=0; $i < count($request[0]['import_batch']); $i++) {
             $batch = $request[0]['import_batch'][$i];
             $acpn = $request[0]['doctor_record'][$i]['content'];
-            foreach($acpn as $each){
+            foreach ($acpn as $each) {
                 $doctor_ids = [];
                 $doctor_as = [];
                 foreach ($cell_physician as $physician) {
                     if ($this->splitTwoComma($each[$physician]) != null) {
                         foreach ($this->splitTwoComma($each[$physician])[0] as $name) {
                             foreach ($doctor_list_complete as $doctor_info) {
-                                if (str_replace(' ', '', strtolower(trim($doctor_info['name']))) == str_replace(' ', '', strtolower(trim($name)))) {
+                                if (str_replace(' ', '', strtolower(trim($doctor_info['name']))) ==
+                                    str_replace(' ', '', strtolower(trim($name)))) {
                                     array_push($doctor_ids, $doctor_info['id']);
                                     array_push($doctor_as, $physician);
                                 }
@@ -136,12 +137,14 @@ class UserController extends Controller
                     $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
                     foreach ($doctors as $doctor) {
                         $doctor->credit_records()->attach($record->id, [
-                            'doctor_role' => explode('_',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
+                            'doctor_role' => explode('_', strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
                             'professional_fee' => $record->total,
                         ]);
                     }
                 } else {
-                    if ((Carbon::parse($each['Admission_Date'])->setTimeZone('Asia/Manila')->format('Ymd')) < "20200301") {
+                    if ((Carbon::parse($each['Admission_Date'])
+                        ->setTimeZone('Asia/Manila')
+                        ->format('Ymd')) < "20200301") {
                         $record->record_type = 'old';
                         $record->total = $each['Total_PF'];
                         $record->non_medical_fee = $record->total/2;
@@ -153,7 +156,9 @@ class UserController extends Controller
                         $record->non_medical_fee = $record->total/2;
                         $record->medical_fee = $record->non_medical_fee;
                         $record->save();
-                        $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
+                        $doctors = Doctor::where('hospital_id', $record->hospital_id)
+                            ->whereIn('id', $doctor_ids)
+                            ->get();
                         $full_time_doctors = Doctor::select('id')
                             ->where('is_active', true)
                             ->where('is_parttime', false)
@@ -168,7 +173,8 @@ class UserController extends Controller
                         $pooled_record->full_time_doctors = json_encode($full_time_doctors);
                         $pooled_record->part_time_doctors = json_encode($part_time_doctors);
                         $total_pooled_fee = $record->non_medical_fee*0.3;
-                        $initial_individual_fee = ($record->non_medical_fee*0.3)/(count($full_time_doctors)+(count($part_time_doctors)/2));
+                        $initial_individual_fee = ($record->non_medical_fee*0.3)/
+                            (count($full_time_doctors)+(count($part_time_doctors)/2));
 
                         $pooled_record->full_time_individual_fee = $initial_individual_fee;
                         $pooled_record->part_time_individual_fee = $initial_individual_fee/2;
@@ -176,7 +182,8 @@ class UserController extends Controller
                         $pooled_record->save();
                         foreach($doctors as $doctor) {
                             $doctor->credit_records()->attach($record->id, [
-                                'doctor_role' => explode('_',strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
+                                'doctor_role' => explode('_',
+                                    strtolower($doctor_as[array_search($doctor->id, $doctor_ids)]))[0],
                                 'professional_fee' => ($record->non_medical_fee*0.7)/$doctor->count()
                             ]);
                         }
