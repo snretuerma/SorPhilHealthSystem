@@ -11,16 +11,46 @@
         <!-- End Header -->
         <!-- Search Box -->
         <div class="row" id="search_box" style="margin-bottom: 10px">
-            <div class="col-xl-9 col-lg-8 col-md-6 col-sm-12">
+            <div class="col-xl-6 col-lg-7 col-md-6 col-sm-12">
                 <el-input
                     prefix-icon="el-icon-search"
                     v-model="search"
                     placeholder="Type to search"
                 />
             </div>
-            <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+            <div class="col-xl-6 col-lg-4 col-md-6 col-sm-12">
                 <div class="row">
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                        <el-form ref="form">
+                            <el-form-item prop="batch">
+                                <el-select
+                                    ref="defaultValue"
+                                    :required="true"
+                                    v-model="value"
+                                    class="block-button"
+                                    size="large"
+                                    value-key="batch"
+                                    multiple
+                                    :multiple-limit="1"
+                                    filterable
+                                    default-first-option
+                                    allow-create
+                                    @change="changes">
+                                    <el-option
+                                        v-for="item in batch"
+                                        :key="item.batch"
+                                        :label="item.label"
+                                        :value="item.batch"
+                                        >
+                                    {{item.batch}}</el-option>
+                                </el-select>
+                        </el-form-item>
+                        <!-- <span class="font-italic text-danger" v-if="errors.batch">
+                            <small>{{ errors.batch[0] }}</small>
+                        </span> -->
+                        </el-form>
+                    </div>
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
                         <el-button
                             class="btn-action block-button"
                             @click="triggerAdd"
@@ -28,7 +58,7 @@
                             Add
                         </el-button>
                     </div>
-                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
+                    <div class="col-xl-3 col-lg-3 col-md-6 col-sm-12">
                         <el-dropdown  class="block-button btn-action">
                             <el-button>
                                 Excel
@@ -216,7 +246,10 @@ export default {
         return {
             search: "",
             data:[],
+            batch:[],
             page: 1,
+            value:[],
+            first_batch:"",
             pageSize: 10,
             total:"",
         };
@@ -230,19 +263,13 @@ export default {
             this.page = 1;
             return this.data.filter(
                 data =>
-                    data.first_name
+                    data.patient_name
                         .toLowerCase()
                         .includes(this.search.toLowerCase()) ||
-                    data.last_name
+                    data.admission_date
                         .toLowerCase()
                         .includes(this.search.toLowerCase()) ||
-                    data.philhealth_number
-                        .toLowerCase()
-                        .includes(this.search.toLowerCase()) ||
-                    data.final_diagnosis
-                        .toLowerCase()
-                        .includes(this.search.toLowerCase()) ||
-                    data.record_type
+                    data.discharge_date
                         .toLowerCase()
                         .includes(this.search.toLowerCase())
             );
@@ -263,9 +290,26 @@ export default {
         handleCurrentChange(val) {
             this.page = val;
         },
-        getRecords(){
+        changes(){
+            if(this.value != '') {
+                this.getRecords(this.value);
+            }
+        },
+         getBatch(){
              axios
-                .get("get_records")
+                .get("get_batch")
+                .then(response => {
+                    response.data.push({batch:'All'});
+                    this.batch = response.data;
+                    this.value[0] = response.data[0].batch;
+                    this.first_batch = response.data[0].batch;
+                    this.getRecords(response.data[0].batch);
+                })
+                .catch(function(error) {});
+        },
+        getRecords(batch){
+             axios
+                .get("get_records/" + batch)
                 .then(response => {
                     response.data.forEach(record => {
                         record.allattending="";
@@ -304,13 +348,14 @@ export default {
                         });
                     });
                     this.data = response.data;
+                    console.log(this.data);
                 })
                 .catch(function(error) {});
         },
     },
     mounted(){
-        this.getRecords();
-    }
+        this.getBatch();
+    },
 }
 </script>
 <style scoped>
