@@ -491,7 +491,7 @@ export default {
                 this.getRecords(this.value);
             }
         },
-         getBatch(){
+        getBatch(){
              axios
                 .get("get_batch")
                 .then(response => {
