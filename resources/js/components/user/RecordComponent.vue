@@ -32,7 +32,7 @@
         </el-dropdown>
 
         <!-- Import excel -->
-        <el-dialog :title="title" :visible.sync="dialogExcelFile" :fullscreen="fullscreen">
+        <el-dialog :title="dialogtitle" :visible.sync="dialogExcelFile" :fullscreen="fullscreen">
             <el-row v-show="!isimport">
                 <el-col>
                     <el-form>
@@ -230,7 +230,7 @@ export default {
             doctor_export:[],
             is_preview: false,
             fullscreen: true,
-            title: 'Import Excel',
+            dialogtitle: 'Import Excel',
             isimport: true,
         };
     },
@@ -600,13 +600,13 @@ export default {
         formDialog: function(key) {
             switch (key) {
                 case "import_data":
-                        this.title = 'Import Excel';
+                        this.dialogtitle = 'Import Excel';
                         this.fullscreen = true;
                         this.isimport = true;
                         this.dialogExcelFile = true
                     break;
                 case "export_data":
-                        this.title = 'Download / Export Excel';
+                        this.dialogtitle = 'Download / Export Excel';
                         this.fullscreen = false;
                         this.isimport = false;
                         this.dialogExcelFile = true;
