@@ -391,7 +391,7 @@ export default {
         },
         getSummary: function(batch) {
             axios
-                .get("get_summary/" + batch)
+                .get(`get_summary/${batch}`)
                 .then(response => {
                     response.data.forEach(doctor => {
                         doctor.nursing_services = 0;
