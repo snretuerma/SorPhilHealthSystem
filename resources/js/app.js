@@ -9,6 +9,7 @@ require('./bootstrap');
 require('./custom');
 
 var Chart = require('chart.js');
+//import XLSX from 'xlsx';
 
 window.Vue = require('vue');
 import ElementUI from 'element-ui';
