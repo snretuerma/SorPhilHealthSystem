@@ -926,7 +926,7 @@ export default {
             }
         },
         getTemplate(){
-            window.open(window.location.origin+"/template/Import_Record_Template.xlsx", "_blank");
+            window.open(window.location.origin+"/template/Import_Record_Template.xlsx");
         }
     },
     mounted(){
