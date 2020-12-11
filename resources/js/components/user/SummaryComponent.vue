@@ -589,13 +589,13 @@ export default {
         
 
 
-        /* XLSX.writeFile({
+         XLSX.writeFile({
             SheetNames:["Sheet1"],
             Sheets: {
                 Sheet1: this.sheet_data
             }
         }, 'test.xlsx');    
-            */
+           /* */
               
 
         //window.open(window.location.origin+"/template/Import_Record_Template.xlsx", "_blank"); 
