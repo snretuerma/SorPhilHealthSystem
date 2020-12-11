@@ -553,15 +553,14 @@ export default {
             this.sheet_data["E"+row] = {t: 'n', v: physician.doctors_share};
             this.sheet_data["F"+row] = {t: 'n', v: physician.pooled};
             this.sheet_data["G"+row] = {t: 'n', v: physician.pbs_total};
-            
         });
         row += 1;
         this.sheet_data["A"+(row)] = {t: 's', v: "PHYSICIANS NOT INCLUDED FOR PERFORMANCE BASED SHARING"};
         this.sheet_data['!merges'].push({s:{r:(row-1),c:0},e:{r:(row-1),c:7}});
 
-        row += 1;
-        this.sheet_data["A"+row] = {t: 's', v: "dd"};
-        /*this.inactive.forEach((physician)=>{
+        //row += 1;
+        //this.sheet_data["A"+row] = {t: 's', v: "dd"};
+        this.inactive.forEach((physician)=>{
             row += 1;
             this.sheet_data["A"+row] = {t: 's', v: physician.name};
             this.sheet_data["B"+row] = {t: 'n', v: physician.nursing_services};
@@ -570,15 +569,27 @@ export default {
             this.sheet_data["E"+row] = {t: 'n', v: physician.doctors_share};
             this.sheet_data["F"+row] = {t: 'n', v: physician.pooled};
             this.sheet_data["G"+row] = {t: 'n', v: physician.pbs_total};
-            
-        });*/
+        });/**/
+        row += 2;
+        this.sheet_data["A"+row] = {t: 's', v: "TOTAL"};
+        this.sheet_data["B"+row] = {t: 'n', v: this.nursing_services_total};
+        this.sheet_data["C"+row] = {t: 'n', v: this.non_medical_total};
+        this.sheet_data["D"+row] = {t: 'n', v: this.fifty_total_total};
+        this.sheet_data["E"+row] = {t: 'n', v: this.doctors_share_total};
+        this.sheet_data["F"+row] = {t: 'n', v: this.pooled_total};
+        this.sheet_data["G"+row] = {t: 'n', v: this.pbs_total_total};
+
+        row += 1;
+        this.sheet_data["G"+row] = {t: 's', v: "GRAND TOTAL"};
+        this.sheet_data["H"+row] = {t: 'n', v: this.grand_total};
+
         this.sheet_data['!ref'] = "A1:H" + row;
         console.log(row);
 
         
 
 
-       XLSX.writeFile({
+        XLSX.writeFile({
             SheetNames:["Sheet1"],
             Sheets: {
                 Sheet1: this.sheet_data
