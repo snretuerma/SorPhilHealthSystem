@@ -5,7 +5,7 @@
             <div class="header-title-parent">
                 <span class="header-title">
                     <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Summary of
-                    Doctor's Performance Base
+                    Doctor's Performance Base<el-button type="primary" icon="el-icon-download" @click="exportSummary">Export</el-button>
                 </span>
             </div>
         </div>
@@ -270,6 +270,7 @@
 </style>
 
 <script>
+import XLSX from 'xlsx';
 export default {
     data() {
         return {
@@ -288,7 +289,30 @@ export default {
             grand_total: 0,
             search: "",
             page: 1,
-            pageSize: 10
+            pageSize: 10,
+            sheet_data: {
+                    A1:{t:'s', v:"SUMMARY OF DOCTOR'S PERFORMANCE BASE"},
+                    A2:{t:'s', v:"COVERED PERIOD: DATE TO DATE"},
+                    A3:{t:'s', v:"NAME OF PHYSICIAN"},
+                    B3:{t:'s', v:"50%"},
+                    B4:{t:'s', v:"NURSING SERVICES"},
+                    C4:{t:'s', v:"NONE-MEDICAL"},
+                    D4:{t:'s', v:"TOTAL"},
+                    E3:{t:'s', v:"PERFORMANCE BASED SHARING"},
+                    E4:{t:'s', v:"DOCTORS SHARE (35%)"},
+                    F4:{t:'s', v:"POOLED (15%)"},
+                    G4:{t:'s', v:"TOTAL"},
+                    H3:{t:'s', v:"SIGNATURE"},
+                    "!merges":[
+                        {s:{r:0,c:0},e:{r:0,c:7}},
+                        {s:{r:1,c:0},e:{r:1,c:7}},
+                        {s:{r:2,c:0},e:{r:3,c:0}},
+                        {s:{r:2,c:1},e:{r:2,c:3}},
+                        {s:{r:2,c:4},e:{r:2,c:6}},
+                        {s:{r:2,c:7},e:{r:3,c:7}},
+                    ],
+                    "!ref": "A1:H5",
+            }
         };
     },
     computed: {
@@ -482,6 +506,109 @@ export default {
         },
         handleCurrentChange(val) {
             this.page = val;
+        },
+        exportSummary() {
+            //alert("goods naman");
+            //console.log(this.value[0]);
+            
+            /*// export json to Worksheet of Excel
+            // only array possible
+            var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals) 
+            var pokemonWS = XLSX.utils.json_to_sheet(this.Datas.pokemons) 
+
+            // A workbook is the name given to an Excel file
+            var wb = XLSX.utils.book_new() // make Workbook of Excel
+
+            // add Worksheet to Workbook
+            // Workbook contains one or more worksheets
+            XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
+            XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')   
+
+            // export Excel file
+            XLSX.writeFile(wb, 'book.xlsx') // name of the file is 'book.xlsx'*/
+
+        /*XLSX.writeFile({
+            SheetNames:["Sheet1"],
+            Sheets: {
+                Sheet1: {
+                    A1:{t:'s', v:"A1:A2"},
+                    B1:{t:'n', v:1},
+                    B2:{t:'b', v:true},
+                    A3:{t:'bS', v:'FFY'},
+                    "!merges":[
+                        {s:{r:0,c:0},e:{r:1,c:0}},
+                        {s:{r:2,c:0},e:{r:2,c:2}}
+                    ],
+                    "!ref": "A1:C3",
+                }
+            }
+        }, 'test.xlsx');*/
+        var row = 4;
+        this.active.forEach((physician)=>{
+            row += 1;
+            this.sheet_data["A"+row] = {t: 's', v: physician.name};
+            this.sheet_data["B"+row] = {t: 'n', v: physician.nursing_services};
+            this.sheet_data["C"+row] = {t: 'n', v: physician.non_medical};
+            this.sheet_data["D"+row] = {t: 'n', v: physician.fifty_total};
+            this.sheet_data["E"+row] = {t: 'n', v: physician.doctors_share};
+            this.sheet_data["F"+row] = {t: 'n', v: physician.pooled};
+            this.sheet_data["G"+row] = {t: 'n', v: physician.pbs_total};
+            
+        });
+        row += 1;
+        this.sheet_data["A"+(row)] = {t: 's', v: "PHYSICIANS NOT INCLUDED FOR PERFORMANCE BASED SHARING"};
+        this.sheet_data['!merges'].push({s:{r:(row-1),c:0},e:{r:(row-1),c:7}});
+
+        row += 1;
+        this.sheet_data["A"+row] = {t: 's', v: "dd"};
+        /*this.inactive.forEach((physician)=>{
+            row += 1;
+            this.sheet_data["A"+row] = {t: 's', v: physician.name};
+            this.sheet_data["B"+row] = {t: 'n', v: physician.nursing_services};
+            this.sheet_data["C"+row] = {t: 'n', v: physician.non_medical};
+            this.sheet_data["D"+row] = {t: 'n', v: physician.fifty_total};
+            this.sheet_data["E"+row] = {t: 'n', v: physician.doctors_share};
+            this.sheet_data["F"+row] = {t: 'n', v: physician.pooled};
+            this.sheet_data["G"+row] = {t: 'n', v: physician.pbs_total};
+            
+        });*/
+        this.sheet_data['!ref'] = "A1:H" + row;
+        console.log(row);
+
+        
+
+
+       XLSX.writeFile({
+            SheetNames:["Sheet1"],
+            Sheets: {
+                Sheet1: this.sheet_data
+            }
+        }, 'test.xlsx');    
+           /*  */
+
+        //var val = {t:'s', v:"kahit ano"};
+        
+        /*this.sheet_data.push({
+            "A4": {
+                t:'s', 
+                v:"kahit ano"
+            },
+        });*/
+        
+       
+
+       
+        /*function obj(){
+            obj=new Object();
+            this.add=function(key,value){
+                obj[""+key+""]=value;
+            }
+            this.obj=obj
+        }*/
+
+        console.log(this.sheet_data);
+    
+
         }
     },
     mounted() {
