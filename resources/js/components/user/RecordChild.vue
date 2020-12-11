@@ -246,14 +246,13 @@
                 <el-col>
                     <el-form>
                         <el-form-item>
-                            <el-button>Download Sample Excel File / Template</el-button>
+                            <el-button @click="getTemplate">Download Sample Excel File / Template</el-button>
                             <el-button type="primary" @click="exportExcel">Download Data</el-button>
                         </el-form-item>
                     </el-form>
                 </el-col>
             </el-row>
             <el-row v-show="isimport">
-                <el-link href="#" type="primary" style="margin-bottom:15px;" target="_blank">Click here to download sample excel file</el-link>
                 <el-form>
                     <el-form-item>
                         <el-upload
@@ -926,6 +925,9 @@ export default {
                     break;
             }
         },
+        getTemplate(){
+            window.open(window.location.origin+"/template/Import_Record_Template.xlsx", "_blank");
+        }
     },
     mounted(){
         this.getBatch();
