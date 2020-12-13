@@ -283,7 +283,6 @@
                                 <el-table
                                     :data="exceldata"
                                     style="width: 100%"
-                                    height="350"
                                     border
                                     >
                                     <el-table-column
@@ -886,7 +885,7 @@ export default {
             this.current_tab = tab.index;
             this.tablelength = this.current_tab_content[tab.index].length;
             this.exceldata = this.current_tab_content[tab.index];
-            this.tablepage = parseInt(1);
+            //this.tablepage = parseInt(1);
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
         defaultTabSelected(){

@@ -207,6 +207,25 @@ class UserController extends Controller
     }
 
     /**
+     * Importing doctor list through file (deprecated)
+     *
+     * @var Request $request
+     * @return Doctor
+     */
+    public function importExcelDoctorList(Request $request)
+    {
+        $physicians = $request[0];
+        foreach ($physicians as $physician) {
+            $doctor = new Doctor;
+            $doctor->hospital_id = Auth::user()->hospital_id;
+            $doctor->name = $physician['Physician_Name'];
+            $doctor->is_active = (($physician['Is_active'] == 'Yes') ? 1 : 0);
+            $doctor->is_parttime = (($physician['Is_parttime'] == 'Yes') ? 1 : 0);
+            $doctor->save();
+        }
+    }
+
+    /**
      * Exporting budget data as CSV
      *
      * @var Request $request
