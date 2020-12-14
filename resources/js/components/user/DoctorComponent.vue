@@ -76,6 +76,21 @@
                                     <el-tooltip
                                         class="item"
                                         effect="light"
+                                        content="View"
+                                        placement="top"
+                                        :enterable="false"
+                                    >
+                                        <el-button
+                                            size="mini"
+                                            type="info"
+                                            icon="el-icon-info"
+                                            circle
+                                            @click="handleView(scope.row)"
+                                        ></el-button>
+                                    </el-tooltip>
+                                    <el-tooltip
+                                        class="item"
+                                        effect="light"
                                         content="Edit"
                                         placement="top"
                                         :enterable="false"
@@ -247,6 +262,16 @@
                 </el-button>
             </span>
         </el-dialog>
+
+        <el-dialog
+            title=""
+            :visible.sync="show_doctor_summary"
+            width="70%"
+            top="5vh"
+            :close-on-press-escape="false"
+            :close-on-click-modal="false"
+        >
+        </el-dialog>
     </div>
 </template>
 
@@ -315,6 +340,7 @@ export default {
             },
             search: '',
             show_dialog: false,
+            show_doctor_summary: false,
             total: '',
         }
     },
@@ -525,6 +551,9 @@ export default {
             this.show_dialog = true;
             this.form.form_type = "add";
             this.formResetFields();
+        },
+        handleView(row_data) {
+            this.show_doctor_summary = true;
         },
         handleEdit(row_data) {
             this.formResetFields();

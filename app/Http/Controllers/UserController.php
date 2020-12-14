@@ -265,9 +265,12 @@ class UserController extends Controller
      * @var void
      * @return Collection
      */
-    public function getDoctors(): Collection
+    public function getDoctors()
     {
-        return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
+        $summary = Doctor::with('credit_records')
+            ->where('hospital_id', Auth::user()->hospital_id)
+            ->get();
+        return response()->json($summary);
     }
 
     /**
@@ -290,6 +293,7 @@ class UserController extends Controller
         $doctor->name = $request->name;
         $doctor->is_active = $request->is_active;
         $doctor->is_parttime = $request->is_parttime;
+        $doctor->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $doctor->save();
 
         return $doctor;
@@ -315,6 +319,7 @@ class UserController extends Controller
         $doctor->name = $request->name;
         $doctor->is_active = $request->is_active;
         $doctor->is_parttime = $request->is_parttime;
+        $doctor->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $doctor->save();
 
         return $doctor;
@@ -433,12 +438,14 @@ class UserController extends Controller
                     ->where('batch', $batch)
                     ->with('pooled_record');
             }])
+                ->where('hospital_id', Auth::user()->hospital_id)
                 ->get();
             return response()->json($summary);
         } else {
             $summary = Doctor::with(['credit_records' => function ($query) {
                 $query->with('pooled_record');
             }])
+                ->where('hospital_id', Auth::user()->hospital_id)
                 ->get();
             return response()->json($summary);
         }
