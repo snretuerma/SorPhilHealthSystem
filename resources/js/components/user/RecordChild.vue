@@ -446,6 +446,7 @@ export default {
             fullscreen: true,
             dialogtitle: 'Import Excel',
             isimport: true,
+            export_excel:[],
         };
     },
     computed: {
@@ -516,28 +517,28 @@ export default {
                         record.alladmitting="";
                         record.doctors.forEach(doctor=>{
                             if(doctor.pivot.doctor_role=="attending") {
-                                record.allattending+=doctor.name+", ";
+                                record.allattending+=doctor.name+"; ";
                             }
                             if(doctor.pivot.doctor_role=="requesting") {
-                                record.allrequesting+=doctor.name+", ";
+                                record.allrequesting+=doctor.name+"; ";
                             }
                             if(doctor.pivot.doctor_role=="surgeon") {
-                                record.allsurgeon+=doctor.name+", ";
+                                record.allsurgeon+=doctor.name+"; ";
                             }
                             if(doctor.pivot.doctor_role=="healthcare") {
-                                record.allhealthcare+=doctor.name+", ";
+                                record.allhealthcare+=doctor.name+"; ";
                             }
                             if(doctor.pivot.doctor_role=="er") {
-                                record.aller+=doctor.name+", ";
+                                record.aller+=doctor.name+"; ";
                             }
                             if(doctor.pivot.doctor_role=="anesthesiologist") {
-                                record.allanesthesiologist+=doctor.name+", ";
+                                record.allanesthesiologist+=doctor.name+"; ";
                             }
                             if(doctor.pivot.doctor_role=="comanagement") {
-                                record.allcomanagement+=doctor.name+", ";
+                                record.allcomanagement+=doctor.name+"; ";
                             }
                             if(doctor.pivot.doctor_role=="admitting") {
-                                record.alladmmitting+=doctor.name+", ";
+                                record.alladmmitting+=doctor.name+"; ";
                             }
                         });
                     });
@@ -896,7 +897,7 @@ export default {
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
         exportExcel(){
-            this.doctor_list_complete.forEach((doctor)=>{
+            /*this.doctor_list_complete.forEach((doctor)=>{
                 this.doctor_export.push({
                     name: doctor.name,
                     is_active: (doctor.is_active) ? 'Yes':'No',
@@ -907,6 +908,84 @@ export default {
             var wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, doctors, 'Doctor or Physician');
             XLSX.writeFile(wb, 'Doctor_List.xlsx');
+
+            Patient_Name
+            Admission_Date
+            Discharge_Date
+            Total_PF
+            Attending_Physician
+            Admitting_Physician
+            Requesting_Physician
+            Reffered_Physician
+            Co_Management
+            Anesthesiology_Physician
+            Surgeon_Physician
+            HealthCare_Physician
+            ER_Physician
+            Is_Private*/
+
+
+            this.data.forEach((record)=>{
+                this.export_excel.push({
+                    Patient_Name: record.patient_name,
+                    Admission_Date: this.getDateTime(record.admission_date),
+                    Discharge_Date: this.getDateTime(record.discharge_date),
+                    Total_PF: record.total,
+                    Attending_Physician: this.changeDelimeter(record.allattending),
+                    Admitting_Physician: this.changeDelimeter(record.alladmitting),
+                    Requesting_Physician: this.changeDelimeter(record.allrequesting),
+                    Reffered_Physician: this.changeDelimeter(record.allrequesting),
+                    Co_Management: this.changeDelimeter(record.allcomanagement),
+                    Anesthesiology_Physician: this.changeDelimeter(record.allanesthesiologist),
+                    Surgeon_Physician: this.changeDelimeter(record.allsurgeon),
+                    HealthCare_Physician: this.changeDelimeter(record.allhealthcare),
+                    ER_Physician: this.changeDelimeter(record.aller),
+                    Is_Private: (record.record_type == "private")? 1 : 0,
+                });
+            });
+
+            var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+            var s = ("22112020-28112020").trim();
+            var d = s.split('-');
+            var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
+            var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
+            var sheet_name = date_from + " - " + date_to;
+
+            var acpn_rec = XLSX.utils.json_to_sheet(this.export_excel);
+            var wb = XLSX.utils.book_new();
+            XLSX.utils.book_append_sheet(wb, acpn_rec, sheet_name);
+            XLSX.writeFile(wb, 'Record_List.xlsx');
+
+            /*var physician = "Oberbrunner, Sage Walsh; Hamill, Delaney D'Amore; Kuhn, Mario Nicolas; ";
+            var remove_extra_semicolon = physician.split(";").filter(function (el) {
+                if(el != " " && el != ""){
+                    return el;
+                }
+            });*/
+
+        },
+        changeDelimeter(physician) {
+            if(physician != "" && physician != "; " && physician != ";"){
+                return (physician.replaceAll(";", ",")).trim().slice(0, -1);
+            }else{
+                return "NULL";
+            }
+        },
+        getDateTime(dt) {
+            var date = false;
+            if (dt) {
+                var c_date = new Date(dt);
+                var dates = (c_date.getMonth()) + 1 + "/" + c_date.getDate() + "/" + c_date.getFullYear();
+                var hrs = c_date.getHours();
+                var min = c_date.getMinutes();
+                var sec = c_date.getSeconds();
+                if (isNaN(hrs) || isNaN(min) || isNaN(sec) || c_date === "Invalid Date") {
+                    return null;
+                }
+                var type = (hrs <= 12) ? " AM" : " PM";
+                date = dates + " "+ ((+hrs % 12) || hrs) + ":" + min + ":" + sec + type;
+            }
+            return date;
         },
         formDialog: function(key) {
             switch (key) {
