@@ -586,16 +586,40 @@ export default {
         this.sheet_data['!ref'] = "A1:H" + row;
         console.log(row);
 
-        
+        var sheet_name;
+        if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
+            if (this.value[0] == 'All') {
+                sheet_name = "All Record";
+            } else {
+                var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+                var d = (this.value[0]).trim().split('-');
+                var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
+                var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
+                sheet_name = date_from + " - " + date_to;
+            }
+            //sheet_name = 'All';
+            var sheet_data_object = {};
+            sheet_data_object[sheet_name] = this.sheet_data;
+            XLSX.writeFile({
+                SheetNames:[sheet_name],
+                Sheets: sheet_data_object
+            }, 'Summary_Export.xlsx');
+        } else {
+            this.$notify({
+                type: 'warning',
+                title: 'Export',
+                message: "Please select batch to proceed",
+            });
+        }
 
 
-         XLSX.writeFile({
+        /*XLSX.writeFile({
             SheetNames:["Sheet1"],
             Sheets: {
                 Sheet1: this.sheet_data
             }
         }, 'test.xlsx');    
-           /* */
+            */
               
 
         //window.open(window.location.origin+"/template/Import_Record_Template.xlsx", "_blank"); 

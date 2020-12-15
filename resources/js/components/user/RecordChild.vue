@@ -934,7 +934,7 @@ export default {
                     Attending_Physician: this.changeDelimeter(record.allattending),
                     Admitting_Physician: this.changeDelimeter(record.alladmitting),
                     Requesting_Physician: this.changeDelimeter(record.allrequesting),
-                    Reffered_Physician: this.changeDelimeter(record.allrequesting),
+                    Reffered_Physician: 'NULL',
                     Co_Management: this.changeDelimeter(record.allcomanagement),
                     Anesthesiology_Physician: this.changeDelimeter(record.allanesthesiologist),
                     Surgeon_Physician: this.changeDelimeter(record.allsurgeon),
@@ -944,8 +944,32 @@ export default {
                 });
             });
 
-            var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
-            var s = ("22112020-28112020").trim();
+            var sheet_name;
+            if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
+                if (this.value[0] == 'All') {
+                    sheet_name = "All Record";
+                } else {
+                    var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+                    var d = (this.value[0]).trim().split('-');
+                    var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
+                    var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
+                    sheet_name = date_from + " - " + date_to;
+                }
+                var acpn_rec = XLSX.utils.json_to_sheet(this.export_excel);
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, acpn_rec, sheet_name);
+                XLSX.writeFile(wb, 'Record_List.xlsx');
+            } else {
+                this.$notify({
+                    type: 'warning',
+                    title: 'Export',
+                    message: "Please select batch to proceed",
+                });
+            }
+
+            /*var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+            //var s = ("22112020-28112020").trim();
+            var s = (this.value[0]).trim();
             var d = s.split('-');
             var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
             var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
@@ -954,14 +978,9 @@ export default {
             var acpn_rec = XLSX.utils.json_to_sheet(this.export_excel);
             var wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, acpn_rec, sheet_name);
-            XLSX.writeFile(wb, 'Record_List.xlsx');
+            XLSX.writeFile(wb, 'Record_List.xlsx');*/
 
-            /*var physician = "Oberbrunner, Sage Walsh; Hamill, Delaney D'Amore; Kuhn, Mario Nicolas; ";
-            var remove_extra_semicolon = physician.split(";").filter(function (el) {
-                if(el != " " && el != ""){
-                    return el;
-                }
-            });*/
+           
 
         },
         changeDelimeter(physician) {
