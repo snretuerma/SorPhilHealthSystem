@@ -290,7 +290,6 @@ export default {
     data() {
         return {
             active: [],
-            //   inactive: [],
             sumOfAll: [],
             batch: [],
             value: [],
