@@ -210,7 +210,7 @@
                                         <el-tooltip
                                             class="item"
                                             effect="light"
-                                            content="delete"
+                                            content="Delete"
                                             placement="top"
                                             :enterable = false
                                         >
@@ -768,7 +768,7 @@ export default {
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
-                                            message: "This cell must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName).If you need to add more physician, a delimeter comma ',' is required. ",
+                                            message: "This cell must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
                                             cell_position: cell_position,
                                         });
                                     }
@@ -794,7 +794,7 @@ export default {
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: cell.v,
-                                            message: "this cell can only contain numbers",
+                                            message: "must only contain numbers",
                                             cell_position: cell_position,
                                         });
                                     }
@@ -825,7 +825,7 @@ export default {
                                                 _this.excel_validation_error[2].push({
                                                     id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                     value: cell.v,
-                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a delimeter comma ',' is required.",
+                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
                                                     cell_position: cell_position,
                                                 });
                                             }
@@ -834,7 +834,7 @@ export default {
                                                 _this.excel_validation_error[2].push({
                                                     id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                     value: cell.v,
-                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a delimeter comma ',' is required.",
+                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
                                                     cell_position: cell_position,
                                                 });
                                             }else{

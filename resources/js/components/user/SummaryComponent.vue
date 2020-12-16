@@ -345,15 +345,15 @@ export default {
         },
         getBatch() {
             axios
-                .get("get_batch")
-                .then(response => {
-                    response.data.push({ batch: "All" });
-                    this.batch = response.data;
-                    this.value[0] = response.data[0].batch;
-                    this.first_batch = response.data[0].batch;
-                    this.getSummary(response.data[0].batch);
-                })
-                .catch(function(error) {});
+            .get("get_batch")
+            .then(response => {
+                response.data.push({ batch: "All" });
+                this.batch = response.data;
+                this.value[0] = response.data[0].batch;
+                this.first_batch = response.data[0].batch;
+                this.getSummary(response.data[0].batch);
+            })
+            .catch(function(error) {});
         },
         tableRowClassName({ row, rowIndex }) {
             return "success-row";
@@ -410,90 +410,90 @@ export default {
         },
         getSummary: function(batch) {
             axios
-                .get(`get_summary/${batch}`)
-                .then(response => {
-                    response.data.forEach(doctor => {
-                        doctor.nursing_services = 0;
-                        doctor.non_medical = 0;
-                        doctor.fifty_total = 0;
-                        doctor.doctors_share = 0;
-                        doctor.pooled = 0;
-                        doctor.pbs_total = 0;
-                        doctor.credit_records.forEach(patient => {
-                            doctor.doctors_share += Number(
-                                patient.pivot.professional_fee
-                            );
-                            if (patient.pooled_record == null) {
-                                doctor.pooled = 0;
+            .get(`get_summary/${batch}`)
+            .then(response => {
+                response.data.forEach(doctor => {
+                    doctor.nursing_services = 0;
+                    doctor.non_medical = 0;
+                    doctor.fifty_total = 0;
+                    doctor.doctors_share = 0;
+                    doctor.pooled = 0;
+                    doctor.pbs_total = 0;
+                    doctor.credit_records.forEach(patient => {
+                        doctor.doctors_share += Number(
+                            patient.pivot.professional_fee
+                        );
+                        if (patient.pooled_record == null) {
+                            doctor.pooled = 0;
+                        } else {
+                            if (
+                                doctor.is_parttime == 0 &&
+                                JSON.parse(
+                                    doctor.credit_records[0].pooled_record
+                                        .full_time_doctors
+                                ).includes(doctor.id)
+                            ) {
+                                doctor.pooled = Number(
+                                    patient.pooled_record
+                                        .full_time_individual_fee
+                                );
                             } else {
-                                if (
-                                    doctor.is_parttime == 0 &&
-                                    JSON.parse(
-                                        doctor.credit_records[0].pooled_record
-                                            .full_time_doctors
-                                    ).includes(doctor.id)
-                                ) {
-                                    doctor.pooled = Number(
-                                        patient.pooled_record
-                                            .full_time_individual_fee
-                                    );
-                                } else {
-                                    doctor.pooled = Number(
-                                        patient.pooled_record
-                                            .part_time_individual_fee
-                                    );
-                                }
+                                doctor.pooled = Number(
+                                    patient.pooled_record
+                                        .part_time_individual_fee
+                                );
                             }
-                            doctor.pbs_total = Number(
-                                doctor.doctors_share + doctor.pooled
-                            );
-                            doctor.nursing_services += Number(
-                                patient.medical_fee
-                            );
-                            doctor.non_medical += Number(
-                                patient.non_medical_fee
-                            );
-                            doctor.fifty_total = Number(
-                                doctor.nursing_services + doctor.non_medical
-                            );
-                        });
-
-                        doctor.doctors_share = doctor.doctors_share.toFixed(4);
-                        doctor.pooled = doctor.pooled.toFixed(4);
-                        doctor.pbs_total = doctor.pbs_total.toFixed(4);
-                        if (doctor.pooled != 0) {
-                            this.nursing_services_total +=
-                                doctor.nursing_services;
-                            this.non_medical_total += doctor.non_medical;
-                            this.fifty_total_total += doctor.fifty_total;
-                            this.doctors_share_total += Number(
-                                doctor.doctors_share
-                            );
-                            this.pooled_total += Number(doctor.pooled);
-                            this.pbs_total_total += Number(doctor.pbs_total);
-                            this.grand_total =
-                                this.fifty_total_total + this.pbs_total_total;
                         }
-                        if (doctor.pooled != 0) this.active.push(doctor);
-                        // else if (doctor.is_active == false && doctor.pooled != 0)
-                        //   this.inactive.push(doctor);
-                        else if (doctor.fifty_total && doctor.pbs_total != 0)
-                            this.privateDoctors.push(doctor);
+                        doctor.pbs_total = Number(
+                            doctor.doctors_share + doctor.pooled
+                        );
+                        doctor.nursing_services += Number(
+                            patient.medical_fee
+                        );
+                        doctor.non_medical += Number(
+                            patient.non_medical_fee
+                        );
+                        doctor.fifty_total = Number(
+                            doctor.nursing_services + doctor.non_medical
+                        );
                     });
-                    this.sumOfAll.push({
-                        nursing_services_total: this.nursing_services_total,
-                        non_medical_total: this.non_medical_total,
-                        fifty_total_total: this.fifty_total_total,
-                        doctors_share_total: this.doctors_share_total.toFixed(
-                            4
-                        ),
-                        pooled_total: this.pooled_total.toFixed(4),
-                        pbs_total_total: this.pbs_total_total.toFixed(4),
-                        grand_total: this.grand_total.toFixed(4)
-                    });
-                    this.data = response.data;
-                })
-                .catch(function(error) {});
+
+                    doctor.doctors_share = doctor.doctors_share.toFixed(4);
+                    doctor.pooled = doctor.pooled.toFixed(4);
+                    doctor.pbs_total = doctor.pbs_total.toFixed(4);
+                    if (doctor.pooled != 0) {
+                        this.nursing_services_total +=
+                            doctor.nursing_services;
+                        this.non_medical_total += doctor.non_medical;
+                        this.fifty_total_total += doctor.fifty_total;
+                        this.doctors_share_total += Number(
+                            doctor.doctors_share
+                        );
+                        this.pooled_total += Number(doctor.pooled);
+                        this.pbs_total_total += Number(doctor.pbs_total);
+                        this.grand_total =
+                            this.fifty_total_total + this.pbs_total_total;
+                    }
+                    if (doctor.pooled != 0) this.active.push(doctor);
+                    // else if (doctor.is_active == false && doctor.pooled != 0)
+                    //   this.inactive.push(doctor);
+                    else if (doctor.fifty_total && doctor.pbs_total != 0)
+                        this.privateDoctors.push(doctor);
+                });
+                this.sumOfAll.push({
+                    nursing_services_total: this.nursing_services_total,
+                    non_medical_total: this.non_medical_total,
+                    fifty_total_total: this.fifty_total_total,
+                    doctors_share_total: this.doctors_share_total.toFixed(
+                        4
+                    ),
+                    pooled_total: this.pooled_total.toFixed(4),
+                    pbs_total_total: this.pbs_total_total.toFixed(4),
+                    grand_total: this.grand_total.toFixed(4)
+                });
+                this.data = response.data;
+            })
+            .catch(function(error) {});
         },
         handleCurrentChange(val) {
             this.page = val;
