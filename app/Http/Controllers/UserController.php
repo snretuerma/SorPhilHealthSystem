@@ -161,7 +161,9 @@ class UserController extends Controller
                         $record->non_medical_fee = $record->total / 2;
                         $record->medical_fee = $record->non_medical_fee;
                         $record->save();
-                        $doctors = Doctor::where('hospital_id', $record->hospital_id)->whereIn('id', $doctor_ids)->get();
+                        $doctors = Doctor::where('hospital_id', $record->hospital_id)
+                            ->whereIn('id', $doctor_ids)
+                            ->get();
                         foreach ($doctors as $doctor) {
                             $doctor->credit_records()->attach($record->id, [
                                 'doctor_role' => explode(
