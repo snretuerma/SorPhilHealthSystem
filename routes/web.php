@@ -73,6 +73,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
     //Doctors
     Route::get('/doctors', 'UserController@doctors')->name('doctors');
+    Route::post('import_doctor_list', 'UserController@importExcelDoctorList');
 
     //Summary
     Route::get('/summary', 'UserController@summary')->name('summary');
