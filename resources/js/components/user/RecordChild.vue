@@ -539,7 +539,7 @@ export default {
                                 record.allcomanagement+=doctor.name+", ";
                             }
                             if(doctor.pivot.doctor_role=="admitting") {
-                                record.alladmmitting+=doctor.name+", ";
+                                record.alladmitting+=doctor.name+", ";
                             }
                         });
                     });

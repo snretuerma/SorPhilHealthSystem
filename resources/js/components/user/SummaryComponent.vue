@@ -61,25 +61,28 @@
                                     border
                                 >
                                     <el-table-column
-                                        max-width="350"
+                                        min-width="300"
                                         label="Name of Physician"
                                         prop="name"
                                         :sortable="'custom'"
                                     ></el-table-column>
                                     <el-table-column label="50%">
                                         <el-table-column
-                                            max-width="150"
+                                            min-width="150"
                                             label="Nursing Services"
+                                            :formatter="formatNumber"
                                             prop="nursing_services"
                                         ></el-table-column>
                                         <el-table-column
-                                            max-width="150"
+                                            min-width="150"
                                             label="Non-medical"
+                                            :formatter="formatNumber"
                                             prop="non_medical"
                                         ></el-table-column>
                                         <el-table-column
-                                            max-width="140"
+                                            min-width="140"
                                             label="Total"
+                                            :formatter="formatNumber"
                                             prop="fifty_total"
                                             :sortable="'custom'"
                                         ></el-table-column>
@@ -88,19 +91,22 @@
                                         label="Performance Based Sharing"
                                     >
                                         <el-table-column
-                                            max-width="170"
+                                            min-width="170"
                                             label="Doctors Share (35%)"
+                                            :formatter="formatNumber"
                                             prop="doctors_share"
                                             :sortable="'custom'"
                                         ></el-table-column>
                                         <el-table-column
-                                            max-width="150"
+                                            min-width="150"
                                             label="Pooled (15%)"
+                                            :formatter="formatNumber"
                                             prop="pooled"
                                         ></el-table-column>
                                         <el-table-column
-                                            max-width="140"
+                                            min-width="140"
                                             label="Total"
+                                            :formatter="formatNumber"
                                             prop="pbs_total"
                                         ></el-table-column>
                                     </el-table-column>
@@ -123,24 +129,24 @@
                         label="Physicians not included for performance based sharing"
                     >
                         <el-table-column
-                            max-width="350"
+                            min-width="350"
                             label="Name of Physician"
                             prop="name"
                             sortable
                         ></el-table-column>
                         <el-table-column label="50%">
                             <el-table-column
-                                max-width="150"
+                                min-width="150"
                                 label="Nursing Services"
                                 prop="nursing_services"
                             ></el-table-column>
                             <el-table-column
-                                max-width="150"
+                                min-width="150"
                                 label="Non-medical"
                                 prop="non_medical"
                             ></el-table-column>
                             <el-table-column
-                                max-width="140"
+                                min-width="140"
                                 label="Total"
                                 prop="fifty_total"
                                 :sortable="'custom'"
@@ -148,18 +154,18 @@
                         </el-table-column>
                         <el-table-column label="Performance Based Sharing">
                             <el-table-column
-                                max-width="170"
+                                min-width="170"
                                 label="Doctors Share (35%)"
                                 prop="doctors_share"
                                 :sortable="'custom'"
                             ></el-table-column>
                             <el-table-column
-                                max-width="150"
+                                min-width="150"
                                 label="Pooled (15%)"
                                 prop="pooled"
                             ></el-table-column>
                             <el-table-column
-                                max-width="140"
+                                min-width="140"
                                 label="Total"
                                 prop="pbs_total"
                             ></el-table-column>
@@ -176,37 +182,44 @@
                                 >
                                     <el-table-column
                                         label="Nursing Services Total"
-                                        max-width="170"
+                                        :formatter="formatNumber"
+                                        min-width="150"
                                         prop="nursing_services_total"
                                     ></el-table-column>
                                     <el-table-column
                                         label="Non-medical Total"
-                                        max-width="180"
+                                        :formatter="formatNumber"
+                                        min-width="150"
                                         prop="non_medical_total"
                                     ></el-table-column>
                                     <el-table-column
                                         label="Total"
-                                        max-width="180"
+                                        :formatter="formatNumber"
+                                        min-width="140"
                                         prop="fifty_total_total"
                                     ></el-table-column>
                                     <el-table-column
                                         label="Doctor Share Total"
-                                        max-width="180"
+                                        :formatter="formatNumber"
+                                        min-width="170"
                                         prop="doctors_share_total"
                                     ></el-table-column>
                                     <el-table-column
                                         label="Pooled Total"
-                                        max-width="180"
+                                        :formatter="formatNumber"
+                                        min-width="150"
                                         prop="pooled_total"
                                     ></el-table-column>
                                     <el-table-column
                                         label="Total"
-                                        max-width="180"
+                                        :formatter="formatNumber"
+                                        min-width="140"
                                         prop="pbs_total_total"
                                     ></el-table-column>
                                     <el-table-column
                                         label="Grand Total"
-                                        max-width="180"
+                                        :formatter="formatNumber"
+                                        min-width="180"
                                         prop="grand_total"
                                     >
                                     </el-table-column>
@@ -226,25 +239,29 @@
                                         label="Private Doctor Records"
                                     >
                                         <el-table-column
-                                            max-width="350"
+                                            min-width="300"
                                             label="Name of Physician"
+                                            :formatter="formatNumber"
                                             prop="name"
                                             sortable
                                         ></el-table-column>
                                         <el-table-column label="50%">
                                             <el-table-column
-                                                max-width="150"
+                                                min-width="150"
                                                 label="Nursing Services"
+                                                :formatter="formatNumber"
                                                 prop="nursing_services"
                                             ></el-table-column>
                                             <el-table-column
-                                                max-width="150"
+                                                min-width="150"
                                                 label="Non-medical"
+                                                :formatter="formatNumber"
                                                 prop="non_medical"
                                             ></el-table-column>
                                             <el-table-column
-                                                max-width="140"
+                                                min-width="140"
                                                 label="Total"
+                                                :formatter="formatNumber"
                                                 prop="fifty_total"
                                                 :sortable="'custom'"
                                             ></el-table-column>
@@ -253,19 +270,22 @@
                                             label="Performance Based Sharing"
                                         >
                                             <el-table-column
-                                                max-width="170"
+                                                min-width="170"
                                                 label="Doctors Share (35%)"
+                                                :formatter="formatNumber"
                                                 prop="doctors_share"
                                                 :sortable="'custom'"
                                             ></el-table-column>
                                             <el-table-column
-                                                max-width="150"
+                                                min-width="150"
                                                 label="Pooled (15%)"
+                                                :formatter="formatNumber"
                                                 prop="pooled"
                                             ></el-table-column>
                                             <el-table-column
-                                                max-width="140"
+                                                min-width="140"
                                                 label="Total"
+                                                :formatter="formatNumber"
                                                 prop="pbs_total"
                                             ></el-table-column>
                                         </el-table-column>
@@ -327,6 +347,9 @@ export default {
         }
     },
     methods: {
+        formatNumber(row, column, cellValue, index){
+           return new Intl.NumberFormat().format(cellValue)
+        },
         changes() {
             if (this.value != "") {
                 this.privateDoctors = [];
@@ -419,6 +442,7 @@ export default {
                     doctor.doctors_share = 0;
                     doctor.pooled = 0;
                     doctor.pbs_total = 0;
+                    doctor.record_type = "";
                     doctor.credit_records.forEach(patient => {
                         doctor.doctors_share += Number(
                             patient.pivot.professional_fee
@@ -456,11 +480,17 @@ export default {
                         doctor.fifty_total = Number(
                             doctor.nursing_services + doctor.non_medical
                         );
+                        doctor.record_type = patient.record_type;
+                        // this.record_type = patient.record_type;
+                        // if(patient.record_type == "private"){
+                        //     this.privateDoctors.push(doctor);
+                        // }
+                        // else this.active.push(doctor);
                     });
-
-                    doctor.doctors_share = doctor.doctors_share.toFixed(4);
-                    doctor.pooled = doctor.pooled.toFixed(4);
-                    doctor.pbs_total = doctor.pbs_total.toFixed(4);
+                    // // doctor.nursing_services = doctor.nursing_services);
+                    // doctor.doctors_share = doctor.doctors_share;
+                    // doctor.pooled = doctor.pooled.toFixed(4);
+                    // doctor.pbs_total = doctor.pbs_total.toFixed(4);
                     if (doctor.pooled != 0) {
                         this.nursing_services_total +=
                             doctor.nursing_services;
@@ -474,12 +504,23 @@ export default {
                         this.grand_total =
                             this.fifty_total_total + this.pbs_total_total;
                     }
-                    if (doctor.pooled != 0) this.active.push(doctor);
+                        if(doctor.record_type == "private"){
+                            if (doctor.fifty_total || doctor.pbs_total != 0) {
+                                this.privateDoctors.push(doctor);
+                            }
+                        }
+                        else
+                         if (doctor.fifty_total || doctor.pbs_total != 0) {
+                            this.active.push(doctor);
+                         }
+                        // console.log(doctor);
+                    // if (doctor.pooled != 0) this.active.push(doctor);
                     // else if (doctor.is_active == false && doctor.pooled != 0)
                     //   this.inactive.push(doctor);
-                    else if (doctor.fifty_total && doctor.pbs_total != 0)
-                        this.privateDoctors.push(doctor);
+                    // else if (doctor.fifty_total || doctor.pbs_total != 0)
+                    //     this.privateDoctors.push(doctor);
                 });
+                console.log(this.privateDoctors);
                 this.sumOfAll.push({
                     nursing_services_total: this.nursing_services_total,
                     non_medical_total: this.non_medical_total,
