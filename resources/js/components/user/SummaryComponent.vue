@@ -4,13 +4,13 @@
             <div class="header-title-parent">
                 <span class="header-title">
                     <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Summary of
-                    Doctor's Performance Base<el-button type="primary" icon="el-icon-download" @click="exportSummary">Export</el-button>
+                    Doctor's Performance Base<!--<el-button type="primary" icon="el-icon-download" @click="exportSummary">Export</el-button>-->
                 </span>
             </div>
         </div>
 
         <div class="row" style="margin-bottom: 10px">
-            <div class="col-xl-7 col-lg-7 col-md-6 col-sm-12">
+            <div class="col-xl-5 col-lg-5 col-md-6 col-sm-12">
                 <el-input
                     prefix-icon="el-icon-search"
                     v-model="search"
@@ -45,6 +45,9 @@
                         </el-select>
                     </el-form-item>
                 </el-form>
+            </div><!--start changes-->
+            <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12">
+                <el-button icon="el-icon-download" style="width:100%" @click="exportSummary">Export</el-button>
             </div>
         </div>
 
@@ -241,7 +244,6 @@
                                         <el-table-column
                                             min-width="300"
                                             label="Name of Physician"
-                                            :formatter="formatNumber"
                                             prop="name"
                                             sortable
                                         ></el-table-column>
