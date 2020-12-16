@@ -153,14 +153,26 @@ class UserController extends Controller
                         ]);
                     }
                 } else {
-                    if ((Carbon::parse($each['Admission_Date'])
-                        ->setTimeZone('Asia/Manila')
-                        ->format('Ymd')) < "20200301") {
+                    if (Carbon::parse($each['Admission_Date'])
+                    ->setTimeZone('Asia/Manila')
+                    ->format('Y-m-d h:i:s') < "2020-03-01") {
                         $record->record_type = 'old';
                         $record->total = $each['Total_PF'];
                         $record->non_medical_fee = $record->total / 2;
                         $record->medical_fee = $record->non_medical_fee;
                         $record->save();
+                        $doctors = Doctor::where('hospital_id', $record->hospital_id)
+                            ->whereIn('id', $doctor_ids)
+                            ->get();
+                        foreach ($doctors as $doctor) {
+                            $doctor->credit_records()->attach($record->id, [
+                                'doctor_role' => explode(
+                                    '_',
+                                    strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
+                                )[0],
+                                'professional_fee' => ($record->non_medical_fee/ $doctor->count())
+                            ]);
+                        }
                     } else {
                         $record->record_type = 'new';
                         $record->total = $each['Total_PF'];
@@ -284,9 +296,12 @@ class UserController extends Controller
      * @var void
      * @return Collection
      */
-    public function getDoctors(): Collection
+    public function getDoctors()
     {
-        return Doctor::where('hospital_id', Auth::user()->hospital_id)->get();
+        $summary = Doctor::with('credit_records')
+            ->where('hospital_id', Auth::user()->hospital_id)
+            ->get();
+        return response()->json($summary);
     }
 
     /**
@@ -309,6 +324,7 @@ class UserController extends Controller
         $doctor->name = $request->name;
         $doctor->is_active = $request->is_active;
         $doctor->is_parttime = $request->is_parttime;
+        $doctor->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $doctor->save();
 
         return $doctor;
@@ -334,6 +350,7 @@ class UserController extends Controller
         $doctor->name = $request->name;
         $doctor->is_active = $request->is_active;
         $doctor->is_parttime = $request->is_parttime;
+        $doctor->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $doctor->save();
 
         return $doctor;
@@ -452,12 +469,14 @@ class UserController extends Controller
                     ->where('batch', $batch)
                     ->with('pooled_record');
             }])
+                ->where('hospital_id', Auth::user()->hospital_id)
                 ->get();
             return response()->json($summary);
         } else {
             $summary = Doctor::with(['credit_records' => function ($query) {
                 $query->with('pooled_record');
             }])
+                ->where('hospital_id', Auth::user()->hospital_id)
                 ->get();
             return response()->json($summary);
         }
