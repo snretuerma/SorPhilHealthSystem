@@ -210,7 +210,7 @@
                                         <el-tooltip
                                             class="item"
                                             effect="light"
-                                            content="delete"
+                                            content="Delete"
                                             placement="top"
                                             :enterable = false
                                         >
@@ -539,7 +539,7 @@ export default {
                                 record.allcomanagement+=doctor.name+", ";
                             }
                             if(doctor.pivot.doctor_role=="admitting") {
-                                record.alladmmitting+=doctor.name+", ";
+                                record.alladmitting+=doctor.name+", ";
                             }
                         });
                     });
@@ -604,7 +604,7 @@ export default {
                     _this.$notify({
                         type: 'success',
                         title: 'Import',
-                        message: "Successfully imported",
+                        message: "Data imported successfully!",
                     });
                 })
                 .catch(function(res) { });
@@ -612,7 +612,7 @@ export default {
                 _this.$notify({
                     type: 'warning',
                     title: 'Import',
-                    message: "Please re-import, it looks like you want to override or force import a not valid file",
+                    message: "Upload request error, please check your file.",
                 });
             }
         },
@@ -620,7 +620,7 @@ export default {
             this.$notify({
                 type: 'info',
                 title: 'Import',
-                message: "1 File limit please remove selected to re-select again",
+                message: "You can only upload one file at a time",
             });
         },
         handleRemoveFile(file, fileList) {
@@ -639,8 +639,8 @@ export default {
             this.is_preview = false;
             this.$notify({
                 type: 'info',
-                title: 'Cancel',
-                message: "Cancel upload filename: ' " + file.name + " '",
+                title: 'Cancelled',
+                message: file.name + " was removed",
             });
         },
         trimToCompare(text){
@@ -717,7 +717,7 @@ export default {
                             _this.excel_validation_error[2].push({
                                 id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                 value: '',
-                                message: "It looks like you don't have data in this page ",
+                                message: "It looks like you don't have any data in this page ",
                                 cell_position: 'worksheet #' + (i + 1),
                             });
                         }
@@ -731,7 +731,7 @@ export default {
                                     _this.excel_validation_error[1].push({
                                         id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
                                         value: '',
-                                        message: "Must be 14 column ",
+                                        message: "Header must have 14 column.",
                                         cell_position: cell_position,
                                     });
                                 }
@@ -747,28 +747,28 @@ export default {
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
-                                            message: "This cell must be '0 or 1' only ",
+                                            message: "This cell must contain '0 or 1' only ",
                                             cell_position: cell_position,
                                         });
                                     }else if(C == 0){
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
-                                            message: "This cell must contain string patient name, format(LastName, FirstName MiddleName) ",
+                                            message: "This cell must contain Patient Name, format(LastName, FirstName MiddleName) ",
                                             cell_position: cell_position,
                                         });
                                     }else if(C == 1 || C == 2){
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
-                                            message: "This cell must be 'DATETIME' format(Month/Day/Year Hour:Minutes:Second AM or PM) ",
+                                            message: "This cell must contain 'DATETIME' format(Month/Day/Year Hour:Minutes:Second AM or PM) ",
                                             cell_position: cell_position,
                                         });
                                     }else{
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
-                                            message: "This cell must be 'NULL' or Physician Name, format(LastName, FirstName MiddleName) if more than 1 physician required delimeter is a comma ',' ",
+                                            message: "This cell must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
                                             cell_position: cell_position,
                                         });
                                     }
@@ -782,7 +782,7 @@ export default {
                                     _this.excel_validation_error[1].push({
                                         id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
                                         value: cell.v,
-                                        message: "required header not match, download the sample excel file",
+                                        message: "Required header did not match, download the sample excel file",
                                         cell_position: cell_position,
                                     });
                                 }
@@ -794,7 +794,7 @@ export default {
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: cell.v,
-                                            message: "this cell can only contain numbers",
+                                            message: "must only contain numbers",
                                             cell_position: cell_position,
                                         });
                                     }
@@ -805,7 +805,7 @@ export default {
                                             _this.excel_validation_error[2].push({
                                                 id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                 value: cell.v,
-                                                message: "must be 'NULL' or Physician Name, format(LastName, FirstName MiddleName) ",
+                                                message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName) ",
                                                 cell_position: cell_position,
                                             });
                                         }else if(cell.v.match(/[^,]+,[^,]+/g).length > 1){
@@ -825,7 +825,7 @@ export default {
                                                 _this.excel_validation_error[2].push({
                                                     id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                     value: cell.v,
-                                                    message: "must be 'NULL' or Physician Name, format(LastName, FirstName MiddleName) if more than 1 physician required delimeter is a comma ',' ",
+                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
                                                     cell_position: cell_position,
                                                 });
                                             }
@@ -834,7 +834,7 @@ export default {
                                                 _this.excel_validation_error[2].push({
                                                     id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                     value: cell.v,
-                                                    message: "must be 'NULL' or Physician Name, format(LastName, FirstName MiddleName) if more than 1 physician required delimeter is a comma ',' ",
+                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
                                                     cell_position: cell_position,
                                                 });
                                             }else{
