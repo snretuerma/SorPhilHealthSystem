@@ -4,7 +4,7 @@
             <div class="header-title-parent">
                 <span class="header-title">
                     <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Summary of
-                    Doctor's Performance Base<!--<el-button type="primary" icon="el-icon-download" @click="exportSummary">Export</el-button>-->
+                    Doctor's Performance Base
                 </span>
             </div>
         </div>
@@ -45,7 +45,7 @@
                         </el-select>
                     </el-form-item>
                 </el-form>
-            </div><!--start changes-->
+            </div>
             <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12">
                 <el-button icon="el-icon-download" style="width:100%" @click="exportSummary">Export</el-button>
             </div>
@@ -127,55 +127,6 @@
                             </div>
                         </div>
                         <br />
-                        <!-- <el-table :data="inactive" @sort-change="changeTableSort2" border>
-                    <el-table-column
-                        label="Physicians not included for performance based sharing"
-                    >
-                        <el-table-column
-                            min-width="350"
-                            label="Name of Physician"
-                            prop="name"
-                            sortable
-                        ></el-table-column>
-                        <el-table-column label="50%">
-                            <el-table-column
-                                min-width="150"
-                                label="Nursing Services"
-                                prop="nursing_services"
-                            ></el-table-column>
-                            <el-table-column
-                                min-width="150"
-                                label="Non-medical"
-                                prop="non_medical"
-                            ></el-table-column>
-                            <el-table-column
-                                min-width="140"
-                                label="Total"
-                                prop="fifty_total"
-                                :sortable="'custom'"
-                            ></el-table-column>
-                        </el-table-column>
-                        <el-table-column label="Performance Based Sharing">
-                            <el-table-column
-                                min-width="170"
-                                label="Doctors Share (35%)"
-                                prop="doctors_share"
-                                :sortable="'custom'"
-                            ></el-table-column>
-                            <el-table-column
-                                min-width="150"
-                                label="Pooled (15%)"
-                                prop="pooled"
-                            ></el-table-column>
-                            <el-table-column
-                                min-width="140"
-                                label="Total"
-                                prop="pbs_total"
-                            ></el-table-column>
-                        </el-table-column>
-                    </el-table-column>
-                </el-table>
-                <br /> -->
                         <div class="row">
                             <div class="col-12">
                                 <el-table
@@ -403,7 +354,6 @@ export default {
             if (this.value != "") {
                 this.privateDoctors = [];
                 this.active = [];
-                // this.inactive = [];
                 this.sumOfAll = [];
                 this.nursing_services_total = 0;
                 this.non_medical_total = 0;
@@ -431,50 +381,28 @@ export default {
             return "success-row";
         },
         changeTableSort1(column) {
-            //Get the field name and sort type
             var fieldName = column.prop;
             var sortingType = column.order;
 
-            //Sort in descending order
             if (sortingType == "descending") {
                 this.data = this.active.sort(
                     (a, b) => b[fieldName] - a[fieldName]
                 );
-            }
-            //Sort in ascending order
-            else {
+            } else {
                 this.data = this.active.sort(
                     (a, b) => a[fieldName] - b[fieldName]
                 );
             }
         },
-        // changeTableSort2(column) {
-        //   //Get the field name and sort type
-        //   var fieldName = column.prop;
-        //   var sortingType = column.order;
-
-        //   //Sort in descending order
-        //   if (sortingType == "descending") {
-        //     this.data = this.inactive.sort((a, b) => b[fieldName] - a[fieldName]);
-        //   }
-        //   //Sort in ascending order
-        //   else {
-        //     this.data = this.inactive.sort((a, b) => a[fieldName] - b[fieldName]);
-        //   }
-        // },
         changeTableSort3(column) {
-            //Get the field name and sort type
             var fieldName = column.prop;
             var sortingType = column.order;
 
-            //Sort in descending order
             if (sortingType == "descending") {
                 this.data = this.privateDoctors.sort(
                     (a, b) => b[fieldName] - a[fieldName]
                 );
-            }
-            //Sort in ascending order
-            else {
+            }else {
                 this.data = this.privateDoctors.sort(
                     (a, b) => a[fieldName] - b[fieldName]
                 );
@@ -530,16 +458,7 @@ export default {
                             doctor.nursing_services + doctor.non_medical
                         );
                         doctor.record_type = patient.record_type;
-                        // this.record_type = patient.record_type;
-                        // if(patient.record_type == "private"){
-                        //     this.privateDoctors.push(doctor);
-                        // }
-                        // else this.active.push(doctor);
                     });
-                    // // doctor.nursing_services = doctor.nursing_services);
-                    // doctor.doctors_share = doctor.doctors_share;
-                    // doctor.pooled = doctor.pooled.toFixed(4);
-                    // doctor.pbs_total = doctor.pbs_total.toFixed(4);
                     if (doctor.pooled != 0) {
                         this.nursing_services_total +=
                             doctor.nursing_services;
@@ -562,12 +481,6 @@ export default {
                          if (doctor.fifty_total || doctor.pbs_total != 0) {
                             this.active.push(doctor);
                          }
-                        // console.log(doctor);
-                    // if (doctor.pooled != 0) this.active.push(doctor);
-                    // else if (doctor.is_active == false && doctor.pooled != 0)
-                    //   this.inactive.push(doctor);
-                    // else if (doctor.fifty_total || doctor.pbs_total != 0)
-                    //     this.privateDoctors.push(doctor);
                 });
                 console.log(this.privateDoctors);
                 this.sumOfAll.push({
@@ -589,157 +502,66 @@ export default {
             this.page = val;
         },
         exportSummary() {
-            //alert("goods naman");
-            //console.log(this.value[0]);
-
-            /*// export json to Worksheet of Excel
-            // only array possible
-            var animalWS = XLSX.utils.json_to_sheet(this.Datas.animals)
-            var pokemonWS = XLSX.utils.json_to_sheet(this.Datas.pokemons)
-
-            // A workbook is the name given to an Excel file
-            var wb = XLSX.utils.book_new() // make Workbook of Excel
-
-            // add Worksheet to Workbook
-            // Workbook contains one or more worksheets
-            XLSX.utils.book_append_sheet(wb, animalWS, 'animals') // sheetAName is name of Worksheet
-            XLSX.utils.book_append_sheet(wb, pokemonWS, 'pokemons')
-
-            // export Excel file
-            XLSX.writeFile(wb, 'book.xlsx') // name of the file is 'book.xlsx'*/
-
-        /*XLSX.writeFile({
-            SheetNames:["Sheet1"],
-            Sheets: {
-                Sheet1: {
-                    A1:{t:'s', v:"A1:A2"},
-                    B1:{t:'n', v:1},
-                    B2:{t:'b', v:true},
-                    A3:{t:'bS', v:'FFY'},
-                    "!merges":[
-                        {s:{r:0,c:0},e:{r:1,c:0}},
-                        {s:{r:2,c:0},e:{r:2,c:2}}
-                    ],
-                    "!ref": "A1:C3",
-                }
-            }
-        }, 'test.xlsx');*/
-        var row = 4;
-        var prow = 4;
-        this.active.forEach((physician)=>{
-            row += 1;
-            this.sheet_data["A"+row] = {t: 's', v: physician.name};
-            this.sheet_data["B"+row] = {t: 'n', v: physician.nursing_services};
-            this.sheet_data["C"+row] = {t: 'n', v: physician.non_medical};
-            this.sheet_data["D"+row] = {t: 'n', v: physician.fifty_total};
-            this.sheet_data["E"+row] = {t: 'n', v: physician.doctors_share};
-            this.sheet_data["F"+row] = {t: 'n', v: physician.pooled};
-            this.sheet_data["G"+row] = {t: 'n', v: physician.pbs_total};
-        });
-
-        this.privateDoctors.forEach((physician)=>{
-            prow += 1;
-            this.sheet_data_private["A"+prow] = {t: 's', v: physician.name};
-            this.sheet_data_private["B"+prow] = {t: 'n', v: physician.nursing_services};
-            this.sheet_data_private["C"+prow] = {t: 'n', v: physician.non_medical};
-            this.sheet_data_private["D"+prow] = {t: 'n', v: physician.fifty_total};
-            this.sheet_data_private["E"+prow] = {t: 'n', v: physician.doctors_share};
-            this.sheet_data_private["F"+prow] = {t: 'n', v: physician.pooled};
-            this.sheet_data_private["G"+prow] = {t: 'n', v: physician.pbs_total};
-        });
-        /*
-        row += 1;
-        this.sheet_data["A"+(row)] = {t: 's', v: "PHYSICIANS NOT INCLUDED FOR PERFORMANCE BASED SHARING"};
-        this.sheet_data['!merges'].push({s:{r:(row-1),c:0},e:{r:(row-1),c:7}});
-
-        this.inactive.forEach((physician)=>{
-            row += 1;
-            this.sheet_data["A"+row] = {t: 's', v: physician.name};
-            this.sheet_data["B"+row] = {t: 'n', v: physician.nursing_services};
-            this.sheet_data["C"+row] = {t: 'n', v: physician.non_medical};
-            this.sheet_data["D"+row] = {t: 'n', v: physician.fifty_total};
-            this.sheet_data["E"+row] = {t: 'n', v: physician.doctors_share};
-            this.sheet_data["F"+row] = {t: 'n', v: physician.pooled};
-            this.sheet_data["G"+row] = {t: 'n', v: physician.pbs_total};
-        });*/
-        row += 2;
-        this.sheet_data["A"+row] = {t: 's', v: "TOTAL"};
-        this.sheet_data["B"+row] = {t: 'n', v: this.nursing_services_total};
-        this.sheet_data["C"+row] = {t: 'n', v: this.non_medical_total};
-        this.sheet_data["D"+row] = {t: 'n', v: this.fifty_total_total};
-        this.sheet_data["E"+row] = {t: 'n', v: this.doctors_share_total};
-        this.sheet_data["F"+row] = {t: 'n', v: this.pooled_total};
-        this.sheet_data["G"+row] = {t: 'n', v: this.pbs_total_total};
-
-        row += 1;
-        this.sheet_data["G"+row] = {t: 's', v: "GRAND TOTAL"};
-        this.sheet_data["H"+row] = {t: 'n', v: this.grand_total};
-
-        this.sheet_data['!ref'] = "A1:H" + row;
-        this.sheet_data_private['!ref'] = "A1:H" + prow;
-        console.log(row);
-
-        var sheet_name;
-        if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
-            if (this.value[0] == 'All') {
-                sheet_name = "All Record";
-            } else {
-                var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
-                var d = (this.value[0]).trim().split('-');
-                var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
-                var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
-                sheet_name = date_from + " - " + date_to;
-            }
-            //sheet_name = 'All';
-            var sheet_data_object = {};
-            sheet_data_object[sheet_name] = this.sheet_data;
-            sheet_data_object['Private'] = this.sheet_data_private;
-            XLSX.writeFile({
-                SheetNames:[sheet_name, 'Private'],
-                Sheets: sheet_data_object
-            }, 'Summary_Export.xlsx');
-        } else {
-            this.$notify({
-                type: 'warning',
-                title: 'Export',
-                message: "Please select batch to proceed",
+            var row = 4;
+            var prow = 4;
+            this.active.forEach((physician)=>{
+                row += 1;
+                this.sheet_data["A"+row] = {t: 's', v: physician.name};
+                this.sheet_data["B"+row] = {t: 'n', v: physician.nursing_services};
+                this.sheet_data["C"+row] = {t: 'n', v: physician.non_medical};
+                this.sheet_data["D"+row] = {t: 'n', v: physician.fifty_total};
+                this.sheet_data["E"+row] = {t: 'n', v: physician.doctors_share};
+                this.sheet_data["F"+row] = {t: 'n', v: physician.pooled};
+                this.sheet_data["G"+row] = {t: 'n', v: physician.pbs_total};
             });
-        }
-
-        /*XLSX.writeFile({
-            SheetNames:["Sheet1"],
-            Sheets: {
-                Sheet1: this.sheet_data
+            this.privateDoctors.forEach((physician)=>{
+                prow += 1;
+                this.sheet_data_private["A"+prow] = {t: 's', v: physician.name};
+                this.sheet_data_private["B"+prow] = {t: 'n', v: physician.nursing_services};
+                this.sheet_data_private["C"+prow] = {t: 'n', v: physician.non_medical};
+                this.sheet_data_private["D"+prow] = {t: 'n', v: physician.fifty_total};
+                this.sheet_data_private["E"+prow] = {t: 'n', v: physician.doctors_share};
+                this.sheet_data_private["F"+prow] = {t: 'n', v: physician.pooled};
+                this.sheet_data_private["G"+prow] = {t: 'n', v: physician.pbs_total};
+            });
+            row += 2;
+            this.sheet_data["A"+row] = {t: 's', v: "TOTAL"};
+            this.sheet_data["B"+row] = {t: 'n', v: this.nursing_services_total};
+            this.sheet_data["C"+row] = {t: 'n', v: this.non_medical_total};
+            this.sheet_data["D"+row] = {t: 'n', v: this.fifty_total_total};
+            this.sheet_data["E"+row] = {t: 'n', v: this.doctors_share_total};
+            this.sheet_data["F"+row] = {t: 'n', v: this.pooled_total};
+            this.sheet_data["G"+row] = {t: 'n', v: this.pbs_total_total};
+            row += 1;
+            this.sheet_data["G"+row] = {t: 's', v: "GRAND TOTAL"};
+            this.sheet_data["H"+row] = {t: 'n', v: this.grand_total};
+            this.sheet_data['!ref'] = "A1:H" + row;
+            this.sheet_data_private['!ref'] = "A1:H" + prow;
+            var sheet_name;
+            if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
+                if (this.value[0] == 'All') {
+                    sheet_name = "All Record";
+                } else {
+                    var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+                    var d = (this.value[0]).trim().split('-');
+                    var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
+                    var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
+                    sheet_name = date_from + " - " + date_to;
+                }
+                var sheet_data_object = {};
+                sheet_data_object[sheet_name] = this.sheet_data;
+                sheet_data_object['Private'] = this.sheet_data_private;
+                XLSX.writeFile({
+                    SheetNames:[sheet_name, 'Private'],
+                    Sheets: sheet_data_object
+                }, 'Summary_Export.xlsx');
+            } else {
+                this.$notify({
+                    type: 'warning',
+                    title: 'Export',
+                    message: "Please select batch to proceed",
+                });
             }
-        }, 'test.xlsx');
-            */
-
-
-        //window.open(window.location.origin+"/template/Import_Record_Template.xlsx", "_blank");
-
-        //var val = {t:'s', v:"kahit ano"};
-
-        /*this.sheet_data.push({
-            "A4": {
-                t:'s',
-                v:"kahit ano"
-            },
-        });*/
-
-
-
-
-        /*function obj(){
-            obj=new Object();
-            this.add=function(key,value){
-                obj[""+key+""]=value;
-            }
-            this.obj=obj
-        }*/
-
-        console.log(this.sheet_data);
-
-
         }
     },
     mounted() {

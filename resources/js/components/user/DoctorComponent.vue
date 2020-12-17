@@ -739,7 +739,6 @@ export default {
                     batch.push(el.batch);
                 }
             }));
-            //console.log(row_data, batch, row_data.credit_records.length);
         },
         handleEdit(row_data) {
             this.formResetFields();
