@@ -349,6 +349,29 @@ export default {
                         {s:{r:2,c:7},e:{r:3,c:7}},
                     ],
                     "!ref": "A1:H5",
+            },
+            sheet_data_private: {
+                    A1:{t:'s', v:"SUMMARY OF DOCTOR'S PERFORMANCE BASE"},
+                    A2:{t:'s', v:"COVERED PERIOD: DATE TO DATE"},
+                    A3:{t:'s', v:"NAME OF PHYSICIAN"},
+                    B3:{t:'s', v:"50%"},
+                    B4:{t:'s', v:"NURSING SERVICES"},
+                    C4:{t:'s', v:"NONE-MEDICAL"},
+                    D4:{t:'s', v:"TOTAL"},
+                    E3:{t:'s', v:"PERFORMANCE BASED SHARING"},
+                    E4:{t:'s', v:"DOCTORS SHARE (35%)"},
+                    F4:{t:'s', v:"POOLED (15%)"},
+                    G4:{t:'s', v:"TOTAL"},
+                    H3:{t:'s', v:"SIGNATURE"},
+                    "!merges":[
+                        {s:{r:0,c:0},e:{r:0,c:7}},
+                        {s:{r:1,c:0},e:{r:1,c:7}},
+                        {s:{r:2,c:0},e:{r:3,c:0}},
+                        {s:{r:2,c:1},e:{r:2,c:3}},
+                        {s:{r:2,c:4},e:{r:2,c:6}},
+                        {s:{r:2,c:7},e:{r:3,c:7}},
+                    ],
+                    "!ref": "A1:H5",
             }
         };
     },
@@ -602,6 +625,7 @@ export default {
             }
         }, 'test.xlsx');*/
         var row = 4;
+        var prow = 4;
         this.active.forEach((physician)=>{
             row += 1;
             this.sheet_data["A"+row] = {t: 's', v: physician.name};
@@ -612,12 +636,22 @@ export default {
             this.sheet_data["F"+row] = {t: 'n', v: physician.pooled};
             this.sheet_data["G"+row] = {t: 'n', v: physician.pbs_total};
         });
+
+        this.privateDoctors.forEach((physician)=>{
+            prow += 1;
+            this.sheet_data_private["A"+prow] = {t: 's', v: physician.name};
+            this.sheet_data_private["B"+prow] = {t: 'n', v: physician.nursing_services};
+            this.sheet_data_private["C"+prow] = {t: 'n', v: physician.non_medical};
+            this.sheet_data_private["D"+prow] = {t: 'n', v: physician.fifty_total};
+            this.sheet_data_private["E"+prow] = {t: 'n', v: physician.doctors_share};
+            this.sheet_data_private["F"+prow] = {t: 'n', v: physician.pooled};
+            this.sheet_data_private["G"+prow] = {t: 'n', v: physician.pbs_total};
+        });
+        /*
         row += 1;
         this.sheet_data["A"+(row)] = {t: 's', v: "PHYSICIANS NOT INCLUDED FOR PERFORMANCE BASED SHARING"};
         this.sheet_data['!merges'].push({s:{r:(row-1),c:0},e:{r:(row-1),c:7}});
 
-        //row += 1;
-        //this.sheet_data["A"+row] = {t: 's', v: "dd"};
         this.inactive.forEach((physician)=>{
             row += 1;
             this.sheet_data["A"+row] = {t: 's', v: physician.name};
@@ -627,7 +661,7 @@ export default {
             this.sheet_data["E"+row] = {t: 'n', v: physician.doctors_share};
             this.sheet_data["F"+row] = {t: 'n', v: physician.pooled};
             this.sheet_data["G"+row] = {t: 'n', v: physician.pbs_total};
-        });/**/
+        });*/
         row += 2;
         this.sheet_data["A"+row] = {t: 's', v: "TOTAL"};
         this.sheet_data["B"+row] = {t: 'n', v: this.nursing_services_total};
@@ -642,6 +676,7 @@ export default {
         this.sheet_data["H"+row] = {t: 'n', v: this.grand_total};
 
         this.sheet_data['!ref'] = "A1:H" + row;
+        this.sheet_data_private['!ref'] = "A1:H" + prow;
         console.log(row);
 
         var sheet_name;
@@ -658,8 +693,9 @@ export default {
             //sheet_name = 'All';
             var sheet_data_object = {};
             sheet_data_object[sheet_name] = this.sheet_data;
+            sheet_data_object['Private'] = this.sheet_data_private;
             XLSX.writeFile({
-                SheetNames:[sheet_name],
+                SheetNames:[sheet_name, 'Private'],
                 Sheets: sheet_data_object
             }, 'Summary_Export.xlsx');
         } else {
@@ -669,7 +705,6 @@ export default {
                 message: "Please select batch to proceed",
             });
         }
-
 
         /*XLSX.writeFile({
             SheetNames:["Sheet1"],

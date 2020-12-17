@@ -685,7 +685,7 @@ export default {
                 "attending_physician",
                 "admitting_physician",
                 "requesting_physician",
-                "reffered_physician",
+                //"reffered_physician",
                 "co_management",
                 "anesthesiology_physician",
                 "surgeon_physician",
@@ -726,15 +726,15 @@ export default {
                             var cellref = XLSX.utils.encode_cell({c:C, r:R});
                             var cell_position = "#"+ (i + 1) + " " + ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
                             if(!worksheet[cellref]){
-                                if(R == 0 && C < 14 ){
+                                if(R == 0 && C < 13 ){
                                     _this.excel_validation_error[1].push({
                                         id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
                                         value: '',
-                                        message: "Header must have 14 column.",
+                                        message: "Header must have 13 column.",
                                         cell_position: cell_position,
                                     });
                                 }
-                                if(R > 0 && C < 14){
+                                if(R > 0 && C < 13){
                                     if(C == 3){
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
@@ -742,7 +742,7 @@ export default {
                                             message: "This cell can only contain numbers",
                                             cell_position: cell_position,
                                         });
-                                    }else if(C == 13){
+                                    }else if(C == 12){
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
@@ -775,7 +775,7 @@ export default {
                                 continue;
                             }
                             var cell = worksheet[cellref];
-                            if(R == 0 && C < 14){
+                            if(R == 0 && C < 13){
                                 var column_cell = _this.trimToCompare(cell.v);
                                 if(header_required.indexOf(column_cell) == "-1"){
                                     _this.excel_validation_error[1].push({
@@ -786,7 +786,7 @@ export default {
                                     });
                                 }
                             }
-                            if(R > 0 && C < 14){
+                            if(R > 0 && C < 13){
                                 if(C == 1){
                                 }else if (C == 3) {
                                     if(isNaN(cell.v % 1)){
@@ -797,7 +797,7 @@ export default {
                                             cell_position: cell_position,
                                         });
                                     }
-                                }else if(C > 3 && C < 13){
+                                }else if(C > 3 && C < 12){
                                     if(cell.v == "NULL"){
                                     }else{
                                         if(cell.v.match(/[^,]+,[^,]+/g) == null){
@@ -848,7 +848,7 @@ export default {
                                             }
                                         }
                                     }
-                                }else if(C == 13){
+                                }else if(C == 12){
                                     if(cell.v == 0 || cell.v == 1){
                                     }else{
                                         _this.excel_validation_error[2].push({
@@ -934,7 +934,7 @@ export default {
                     Attending_Physician: this.changeDelimeter(record.allattending),
                     Admitting_Physician: this.changeDelimeter(record.alladmitting),
                     Requesting_Physician: this.changeDelimeter(record.allrequesting),
-                    Reffered_Physician: 'NULL',
+                    //Reffered_Physician: 'NULL',
                     Co_Management: this.changeDelimeter(record.allcomanagement),
                     Anesthesiology_Physician: this.changeDelimeter(record.allanesthesiologist),
                     Surgeon_Physician: this.changeDelimeter(record.allsurgeon),
