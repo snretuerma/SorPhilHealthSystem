@@ -264,13 +264,55 @@
             </span>
         </el-dialog>
         <el-dialog
-            title=""
+            :title="dialogViewTitle"
             :visible.sync="show_doctor_summary"
-            width="70%"
+            width="90%"
             top="5vh"
             :close-on-press-escape="false"
             :close-on-click-modal="false"
         >
+            <el-row>
+                <el-col>
+                    <el-collapse v-model="activeName" accordion>
+                        <el-collapse-item v-for="item in batch_list" :key="item.name" :title="item.title" :name="item.name">
+                            <el-table
+                                    :data="item.record"
+                                    style="width: 100%"
+                                    border
+                                    >
+                                    <el-table-column
+                                    fixed
+                                    prop="patient_name"
+                                    label="Patient Name"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="admission_date"
+                                    label="Admission Date"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="discharge_date"
+                                    label="Discharge Date"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="pivot.professional_fee"
+                                    label="Professional fee"
+                                    :formatter="formatNumber"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="pivot.doctor_role"
+                                    label="Role"
+                                    :formatter="firstLetterOfWordUpperCase"
+                                    >
+                                    </el-table-column>
+                                </el-table>
+                        </el-collapse-item>
+                    </el-collapse>
+                </el-col>
+            </el-row>
         </el-dialog>
         <el-dialog :title="dialogtitle" :visible.sync="dialogExcelFile" :fullscreen="fullscreen">
             <el-row v-show="!isimport">
@@ -451,6 +493,9 @@ export default {
             fullscreen: true,
             dialogtitle: 'Import Excel',
             isimport: true,
+            batch_list:[],
+            activeName: '1',
+            dialogViewTitle: 'Doctor Record'
         }
     },
     computed: {
@@ -671,7 +716,29 @@ export default {
             this.formResetFields();
         },
         handleView(row_data) {
+            this.dialogViewTitle = row_data.name.toUpperCase();
             this.show_doctor_summary = true;
+            this.batch_list = [];
+            var batch = [];
+            var count = 0;
+            row_data.credit_records.forEach((el=>{
+                if(batch.includes(el.batch)){
+                    this.batch_list.forEach((b)=>{
+                        if(b.title == el.batch){
+                           b.record.push(el);
+                        }
+                    });
+                    batch.push(el.batch);
+                }else{
+                    count += 1;
+                    this.batch_list.push({
+                        title: el.batch,
+                        name: count,
+                        record: []
+                    });
+                    batch.push(el.batch);
+                }
+            }));
         },
         handleEdit(row_data) {
             this.formResetFields();
@@ -738,7 +805,7 @@ export default {
                     _this.$notify({
                         type: 'success',
                         title: 'Import',
-                        message: "Successfully imported",
+                        message: "Data imported successfully!",
                     });
                 })
                 .catch(function(res) { });
@@ -746,7 +813,7 @@ export default {
                 _this.$notify({
                     type: 'warning',
                     title: 'Import',
-                    message: "Please re-import, it looks like you want to override or force import a not valid file",
+                    message: "Upload request error, please check your file.",
                 });
             }
         },
@@ -754,7 +821,7 @@ export default {
             this.$notify({
                 type: 'info',
                 title: 'Import',
-                message: "1 File limit please remove selected to re-select again",
+                message: "You can only upload one file at a time",
             });
         },
         handleRemoveFile(file, fileList) {
@@ -769,8 +836,8 @@ export default {
             this.is_preview = false;
             this.$notify({
                 type: 'info',
-                title: 'Cancel',
-                message: "Cancel upload filename: ' " + file.name + " '",
+                title: 'Cancelled',
+                message: file.name + " was removed",
             });
         },
         trimToCompare(text){
@@ -797,7 +864,7 @@ export default {
                         _this.excel_validation_error[1].push({
                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                             value: '',
-                            message: "It looks like you don't have data in this page ",
+                            message: "It looks like you don't have any data in this page ",
                             cell_position: 'worksheet #' + (i + 1),
                         });
                     }
@@ -811,7 +878,7 @@ export default {
                                 _this.excel_validation_error[0].push({
                                     id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
                                     value: '',
-                                    message: "Must be 3 column ",
+                                    message: "Header must have 3 column.",
                                     cell_position: cell_position,
                                 });
                             }
@@ -820,7 +887,7 @@ export default {
                                     _this.excel_validation_error[1].push({
                                         id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                         value: '',
-                                        message: "This cell must contain string patient name, format(LastName, FirstName MiddleName) ",
+                                        message: "This cell must contain Physician Name, format(LastName, FirstName MiddleName) ",
                                         cell_position: cell_position,
                                     });
                                 }else if(C > 0 && C < 3){
@@ -841,7 +908,7 @@ export default {
                                 _this.excel_validation_error[0].push({
                                     id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
                                     value: cell.v,
-                                    message: "required header not match, download the sample excel file",
+                                    message: "Required header did not match, download the sample excel file",
                                     cell_position: cell_position,
                                 });
                             }
@@ -904,6 +971,7 @@ export default {
             }
         },
         exportExcel(){
+            this.doctor_export = [];
             this.doctors.forEach((doctor)=>{
                 this.doctor_export.push({
                     Physician_Name: doctor.name,
@@ -918,6 +986,12 @@ export default {
         },
         getTemplate(){
             window.open(window.location.origin+"/template/Import_DoctorList_Template.xlsx");
+        },
+        formatNumber(row, column, cellValue, index){
+           return new Intl.NumberFormat().format(cellValue)
+        },
+        firstLetterOfWordUpperCase(row, column, cellValue, index){
+           return (cellValue).charAt(0).toUpperCase() + cellValue.slice(1)
         },
     },
     mounted() {

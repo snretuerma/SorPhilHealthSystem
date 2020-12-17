@@ -1,6 +1,5 @@
 <template>
     <div>
-         <!-- Header -->
         <div class="row header-top">
             <div class="header-title-parent">
                 <span class="header-title">
@@ -8,8 +7,6 @@
                 </span>
             </div>
         </div>
-        <!-- End Header -->
-        <!-- Search Box -->
         <div class="row" id="search_box" style="margin-bottom: 10px">
             <div class="col-xl-8 col-lg-7 col-md-12 col-sm-12">
                 <div class="row">
@@ -85,8 +82,6 @@
                 </div>
             </div>
         </div>
-        <!-- Search End -->
-        <!-- table -->
         <div class="row">
             <div class="col-sm-12">
                 <div class="card">
@@ -239,8 +234,6 @@
                 </div>
             </div>
         </div>
-        <!-- end table -->
-        <!-- Import export excel -->
         <el-dialog :title="dialogtitle" :visible.sync="dialogExcelFile" :fullscreen="fullscreen">
             <el-row v-show="!isimport">
                 <el-col>
@@ -372,8 +365,6 @@
                         </el-tabs>
                     </el-col>
                 </el-row>
-
-                <!-- for excel error validation -->
                 <div v-show="!is_preview && preview_excel_sheet_data.length > 0">
                     <el-alert
                         title='ERROR FOUND, Please see error log bellow'
@@ -412,7 +403,6 @@
                 </div>
             </el-row>
         </el-dialog>
-        <!-- Import export excel end-->
     </div>
 </template>
 <script>
@@ -479,7 +469,6 @@ export default {
     },
     methods: {
          triggerAdd() {
-             //add-trigger the funtion in parent with parameter
             this.$emit("add-open", "hi");
         },
         handleCurrentChange(val) {
@@ -685,7 +674,6 @@ export default {
                 "attending_physician",
                 "admitting_physician",
                 "requesting_physician",
-                "reffered_physician",
                 "co_management",
                 "anesthesiology_physician",
                 "surgeon_physician",
@@ -726,15 +714,15 @@ export default {
                             var cellref = XLSX.utils.encode_cell({c:C, r:R});
                             var cell_position = "#"+ (i + 1) + " " + ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
                             if(!worksheet[cellref]){
-                                if(R == 0 && C < 14 ){
+                                if(R == 0 && C < 13 ){
                                     _this.excel_validation_error[1].push({
                                         id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
                                         value: '',
-                                        message: "Header must have 14 column.",
+                                        message: "Header must have 13 column.",
                                         cell_position: cell_position,
                                     });
                                 }
-                                if(R > 0 && C < 14){
+                                if(R > 0 && C < 13){
                                     if(C == 3){
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
@@ -742,7 +730,7 @@ export default {
                                             message: "This cell can only contain numbers",
                                             cell_position: cell_position,
                                         });
-                                    }else if(C == 13){
+                                    }else if(C == 12){
                                         _this.excel_validation_error[2].push({
                                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                             value: '',
@@ -775,7 +763,7 @@ export default {
                                 continue;
                             }
                             var cell = worksheet[cellref];
-                            if(R == 0 && C < 14){
+                            if(R == 0 && C < 13){
                                 var column_cell = _this.trimToCompare(cell.v);
                                 if(header_required.indexOf(column_cell) == "-1"){
                                     _this.excel_validation_error[1].push({
@@ -786,7 +774,7 @@ export default {
                                     });
                                 }
                             }
-                            if(R > 0 && C < 14){
+                            if(R > 0 && C < 13){
                                 if(C == 1){
                                 }else if (C == 3) {
                                     if(isNaN(cell.v % 1)){
@@ -797,7 +785,7 @@ export default {
                                             cell_position: cell_position,
                                         });
                                     }
-                                }else if(C > 3 && C < 13){
+                                }else if(C > 3 && C < 12){
                                     if(cell.v == "NULL"){
                                     }else{
                                         if(cell.v.match(/[^,]+,[^,]+/g) == null){
@@ -848,7 +836,7 @@ export default {
                                             }
                                         }
                                     }
-                                }else if(C == 13){
+                                }else if(C == 12){
                                     if(cell.v == 0 || cell.v == 1){
                                     }else{
                                         _this.excel_validation_error[2].push({
@@ -886,7 +874,6 @@ export default {
             this.current_tab = tab.index;
             this.tablelength = this.current_tab_content[tab.index].length;
             this.exceldata = this.current_tab_content[tab.index];
-            //this.tablepage = parseInt(1);
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
         defaultTabSelected(){
@@ -897,34 +884,7 @@ export default {
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
         exportExcel(){
-            /*this.doctor_list_complete.forEach((doctor)=>{
-                this.doctor_export.push({
-                    name: doctor.name,
-                    is_active: (doctor.is_active) ? 'Yes':'No',
-                    is_parttime: (doctor.is_parttime) ? 'Yes' : 'No'
-                });
-            });
-            var doctors = XLSX.utils.json_to_sheet(this.doctor_export);
-            var wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, doctors, 'Doctor or Physician');
-            XLSX.writeFile(wb, 'Doctor_List.xlsx');
-
-            Patient_Name
-            Admission_Date
-            Discharge_Date
-            Total_PF
-            Attending_Physician
-            Admitting_Physician
-            Requesting_Physician
-            Reffered_Physician
-            Co_Management
-            Anesthesiology_Physician
-            Surgeon_Physician
-            HealthCare_Physician
-            ER_Physician
-            Is_Private*/
-
-
+            this.export_excel = [];
             this.data.forEach((record)=>{
                 this.export_excel.push({
                     Patient_Name: record.patient_name,
@@ -934,7 +894,6 @@ export default {
                     Attending_Physician: this.changeDelimeter(record.allattending),
                     Admitting_Physician: this.changeDelimeter(record.alladmitting),
                     Requesting_Physician: this.changeDelimeter(record.allrequesting),
-                    Reffered_Physician: 'NULL',
                     Co_Management: this.changeDelimeter(record.allcomanagement),
                     Anesthesiology_Physician: this.changeDelimeter(record.allanesthesiologist),
                     Surgeon_Physician: this.changeDelimeter(record.allsurgeon),
@@ -943,7 +902,6 @@ export default {
                     Is_Private: (record.record_type == "private")? 1 : 0,
                 });
             });
-
             var sheet_name;
             if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
                 if (this.value[0] == 'All') {
@@ -966,22 +924,6 @@ export default {
                     message: "Please select batch to proceed",
                 });
             }
-
-            /*var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
-            //var s = ("22112020-28112020").trim();
-            var s = (this.value[0]).trim();
-            var d = s.split('-');
-            var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
-            var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
-            var sheet_name = date_from + " - " + date_to;
-
-            var acpn_rec = XLSX.utils.json_to_sheet(this.export_excel);
-            var wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, acpn_rec, sheet_name);
-            XLSX.writeFile(wb, 'Record_List.xlsx');*/
-
-
-
         },
         changeDelimeter(physician) {
             if(physician != "" && physician != "; " && physician != ";"){
@@ -1033,7 +975,6 @@ export default {
 }
 </script>
 <style scoped>
-  /*add scoped styles here*/
   #search_box {
         margin-bottom: 10px;
     }

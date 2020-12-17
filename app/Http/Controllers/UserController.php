@@ -99,7 +99,6 @@ class UserController extends Controller
             'Attending_Physician',
             'Admitting_Physician',
             'Requesting_Physician',
-            'Reffered_Physician',
             'Co_Management',
             'Anesthesiology_Physician',
             'Surgeon_Physician',
