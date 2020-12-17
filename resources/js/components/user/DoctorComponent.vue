@@ -264,13 +264,55 @@
             </span>
         </el-dialog>
         <el-dialog
-            title=""
+            :title="dialogViewTitle"
             :visible.sync="show_doctor_summary"
-            width="70%"
+            width="90%"
             top="5vh"
             :close-on-press-escape="false"
             :close-on-click-modal="false"
         >
+            <el-row>
+                <el-col>
+                    <el-collapse v-model="activeName" accordion>
+                        <el-collapse-item v-for="item in batch_list" :key="item.name" :title="item.title" :name="item.name">
+                            <el-table
+                                    :data="item.record"
+                                    style="width: 100%"
+                                    border
+                                    >
+                                    <el-table-column
+                                    fixed
+                                    prop="patient_name"
+                                    label="Patient Name"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="admission_date"
+                                    label="Admission Date"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="discharge_date"
+                                    label="Discharge Date"
+                                    >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="pivot.professional_fee"
+                                    label="Professional fee"
+                                    :formatter="formatNumber"
+                                >
+                                    </el-table-column>
+                                    <el-table-column
+                                    prop="pivot.doctor_role"
+                                    label="Role"
+                                    :formatter="firstLetterOfWordUpperCase"
+                                    >
+                                    </el-table-column>
+                                </el-table>
+                        </el-collapse-item>
+                    </el-collapse>
+                </el-col>
+            </el-row>
         </el-dialog>
         <el-dialog :title="dialogtitle" :visible.sync="dialogExcelFile" :fullscreen="fullscreen">
             <el-row v-show="!isimport">
@@ -451,6 +493,9 @@ export default {
             fullscreen: true,
             dialogtitle: 'Import Excel',
             isimport: true,
+            batch_list:[],
+            activeName: '1',
+            dialogViewTitle: 'Doctor Record'
         }
     },
     computed: {
@@ -671,7 +716,30 @@ export default {
             this.formResetFields();
         },
         handleView(row_data) {
+            this.dialogViewTitle = row_data.name.toUpperCase();
             this.show_doctor_summary = true;
+            this.batch_list = [];
+            var batch = [];
+            var count = 0;
+            row_data.credit_records.forEach((el=>{
+                if(batch.includes(el.batch)){
+                    this.batch_list.forEach((b)=>{
+                        if(b.title == el.batch){
+                           b.record.push(el);
+                        }
+                    });
+                    batch.push(el.batch);
+                }else{
+                    count += 1;
+                    this.batch_list.push({
+                        title: el.batch,
+                        name: count,
+                        record: []
+                    });
+                    batch.push(el.batch);
+                }
+            }));
+            //console.log(row_data, batch, row_data.credit_records.length);
         },
         handleEdit(row_data) {
             this.formResetFields();
@@ -919,6 +987,12 @@ export default {
         },
         getTemplate(){
             window.open(window.location.origin+"/template/Import_DoctorList_Template.xlsx");
+        },
+        formatNumber(row, column, cellValue, index){
+           return new Intl.NumberFormat().format(cellValue)
+        },
+        firstLetterOfWordUpperCase(row, column, cellValue, index){
+           return (cellValue).charAt(0).toUpperCase() + cellValue.slice(1)
         },
     },
     mounted() {
