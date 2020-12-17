@@ -738,7 +738,7 @@ export default {
                     _this.$notify({
                         type: 'success',
                         title: 'Import',
-                        message: "Successfully imported",
+                        message: "Data imported successfully!",
                     });
                 })
                 .catch(function(res) { });
@@ -746,7 +746,7 @@ export default {
                 _this.$notify({
                     type: 'warning',
                     title: 'Import',
-                    message: "Please re-import, it looks like you want to override or force import a not valid file",
+                    message: "Upload request error, please check your file.",
                 });
             }
         },
@@ -754,7 +754,7 @@ export default {
             this.$notify({
                 type: 'info',
                 title: 'Import',
-                message: "1 File limit please remove selected to re-select again",
+                message: "You can only upload one file at a time",
             });
         },
         handleRemoveFile(file, fileList) {
@@ -769,8 +769,8 @@ export default {
             this.is_preview = false;
             this.$notify({
                 type: 'info',
-                title: 'Cancel',
-                message: "Cancel upload filename: ' " + file.name + " '",
+                title: 'Cancelled',
+                message: file.name + " was removed",
             });
         },
         trimToCompare(text){
@@ -797,7 +797,7 @@ export default {
                         _this.excel_validation_error[1].push({
                             id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                             value: '',
-                            message: "It looks like you don't have data in this page ",
+                            message: "It looks like you don't have any data in this page ",
                             cell_position: 'worksheet #' + (i + 1),
                         });
                     }
@@ -811,7 +811,7 @@ export default {
                                 _this.excel_validation_error[0].push({
                                     id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
                                     value: '',
-                                    message: "Must be 3 column ",
+                                    message: "Header must have 3 column.",
                                     cell_position: cell_position,
                                 });
                             }
@@ -820,7 +820,7 @@ export default {
                                     _this.excel_validation_error[1].push({
                                         id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                         value: '',
-                                        message: "This cell must contain string patient name, format(LastName, FirstName MiddleName) ",
+                                        message: "This cell must contain Physician Name, format(LastName, FirstName MiddleName) ",
                                         cell_position: cell_position,
                                     });
                                 }else if(C > 0 && C < 3){
@@ -841,7 +841,7 @@ export default {
                                 _this.excel_validation_error[0].push({
                                     id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
                                     value: cell.v,
-                                    message: "required header not match, download the sample excel file",
+                                    message: "Required header did not match, download the sample excel file",
                                     cell_position: cell_position,
                                 });
                             }
