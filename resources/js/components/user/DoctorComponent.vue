@@ -904,6 +904,7 @@ export default {
             }
         },
         exportExcel(){
+            this.doctor_export = [];
             this.doctors.forEach((doctor)=>{
                 this.doctor_export.push({
                     Physician_Name: doctor.name,

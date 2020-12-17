@@ -925,6 +925,9 @@ export default {
             Is_Private*/
 
 
+            this.export_excel = [];
+
+
             this.data.forEach((record)=>{
                 this.export_excel.push({
                     Patient_Name: record.patient_name,
