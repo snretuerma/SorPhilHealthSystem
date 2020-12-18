@@ -3,9 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class CreditRecord extends Model
 {
+    use SoftDeletes;
     protected $guarded  = [
         'patient_name', 'batch', 'admission_date', 'discharge_date',
         'record_type', 'total', 'non_medical_fee', 'medical_fee',

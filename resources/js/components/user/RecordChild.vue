@@ -49,12 +49,33 @@
             <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12">
                 <div class="row">
                     <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
-                        <el-button
+                        <!-- <el-button
                             class="btn-action block-button"
                             @click="triggerAdd"
                         >
                             Add
-                        </el-button>
+                        </el-button> -->
+                        <el-dropdown @command="formDialog" class="block-button btn-action">
+                            <el-button>
+                                Actions
+                                <i class="el-icon-arrow-down el-icon--right"/>
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item
+                                    icon="el-icon-document-add"
+                                    command="add_record"
+                                    >
+                                    Add Record
+                                </el-dropdown-item>
+                                <el-dropdown-item
+                                    icon="el-icon-delete"
+                                    command="delete_batch"
+                                    >
+                                    Delete by batch
+                                </el-dropdown-item
+                                >
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </div>
                     <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
                         <el-dropdown @command="formDialog" class="block-button btn-action">
@@ -87,7 +108,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div id="test">
-                            <el-table :data="listData">
+                            <el-table v-loading="loading" :data="listData">
                                 <el-table-column
                                     width="200"
                                     label="Patient"
@@ -173,15 +194,15 @@
                                         <el-tooltip
                                             class="item"
                                             effect="light"
-                                            content="Add Contribution"
+                                            content="Edit"
                                             placement="top"
-                                            v-if="scope.row.totalPersonnel == 0"
                                             :enterable = false
                                         >
                                             <el-button
                                                 size="mini"
-                                                type="success"
-                                                icon="el-icon-plus"
+                                                type="primary"
+                                                icon="el-icon-edit"
+                                                @click="handleEditRecord(scope.$index, scope.row)"
                                                 circle
                                             >
                                             </el-button>
@@ -189,23 +210,7 @@
                                         <el-tooltip
                                             class="item"
                                             effect="light"
-                                            content="view"
-                                            placement="top"
-                                            v-if="scope.row.totalPersonnel > 0"
-                                            :enterable = false
-                                        >
-                                            <el-button
-                                                size="mini"
-                                                type="info"
-                                                icon="el-icon-info"
-                                                circle
-                                            >
-                                            </el-button>
-                                        </el-tooltip>
-                                        <el-tooltip
-                                            class="item"
-                                            effect="light"
-                                            content="Delete"
+                                            content="delete"
                                             placement="top"
                                             :enterable = false
                                         >
@@ -213,6 +218,7 @@
                                                 size="mini"
                                                 type="danger"
                                                 icon="el-icon-delete"
+                                                @click="handleDeleteRecord(scope.$index, scope.row)"
                                                 circle
                                             ></el-button>
                                         </el-tooltip>
@@ -437,6 +443,7 @@ export default {
             dialogtitle: 'Import Excel',
             isimport: true,
             export_excel:[],
+            loading:true
         };
     },
     computed: {
@@ -468,8 +475,45 @@ export default {
         }
     },
     methods: {
-         triggerAdd() {
-            this.$emit("add-open", "hi");
+        triggerAdd() {
+            this.$emit("add-open", "", "add");
+        },
+        handleDeleteRecord(index, row) {
+            var data = this.data;
+            this.deleteRecord(row.id, res_value => {
+                if (res_value) {
+                    data.splice(data.indexOf(row), 1);
+                }
+            });
+        },
+        handleEditRecord(index, row) {
+            console.log(row);
+            this.$emit("add-open", row, "edit");
+        },
+        deleteRecord: function(id, res) {
+            this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: "Delete",
+                    cancelButtonText: "Cancel",
+                    type: "warning"
+                }
+            ).then(() => {
+                    var _this = this;
+                    axios.delete(`delete_record/${id}`).then(function(response) {
+                        if (response.status > 199 && response.status < 203) {
+                            _this.$notify({
+                                type: 'success',
+                                title: 'Delete',
+                                message: "Successfully deleted",
+                            });
+                            _this.getBatch();
+                            res(id);
+                        }
+                    });
+                })
+                .catch(action => {
+                    this.open_notif("info", "Cancelled", "No Changes");
+                });
         },
         handleCurrentChange(val) {
             this.page = val;
@@ -532,7 +576,7 @@ export default {
                         });
                     });
                     this.data = response.data;
-                    console.log(this.data);
+                    this.loading=false;
                 })
                 .catch(function(error) {});
         },
@@ -961,6 +1005,46 @@ export default {
                         this.fullscreen = false;
                         this.isimport = false;
                         this.dialogExcelFile = true;
+                    break;
+                case "add_record":
+                        this.triggerAdd();
+                    break;
+                case "delete_batch":
+                    if (this.value.length == 0 || this.value[0] == 'All' ) {
+                       this.$notify({
+                            type: 'info',
+                            title: 'info',
+                            message: "Please select batch to delete",
+                        });
+                    } else {
+                        this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+                                distinguishCancelAndClose: true,
+                                confirmButtonText: "Delete",
+                                cancelButtonText: "Cancel",
+                                type: "warning"
+                            }
+                        ).then(() => {
+                                var _this = this;
+                                axios.delete(`delete_recordBybatch/${this.value[0]}`)
+                                .then(function(response) {
+                                    if (response.status > 199 && response.status < 203) {
+                                        _this.$notify({
+                                            type: 'success',
+                                            title: 'Delete',
+                                            message: "Successfully deleted",
+                                        });
+                                    }
+                                    _this.getBatch();
+                                });
+                            })
+                            .catch(action => {
+                                _this.$notify({
+                                    type: 'info',
+                                    title: 'Cancelled',
+                                    message: "No Changes",
+                                });
+                            });
+                    }
                     break;
             }
         },

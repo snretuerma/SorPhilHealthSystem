@@ -1,7 +1,7 @@
 <template>
     <div>
         <record-child  v-if="trigger==false" @add-open="addFormTrigger"></record-child>
-        <add-record-child v-if="trigger==true" @add-close="closeFormTrigger" :data="data"></add-record-child>
+        <add-record-child v-if="trigger==true" @add-close="closeFormTrigger" :process-type="processType" :data="data"></add-record-child>
     </div>
 </template>
 
@@ -12,14 +12,22 @@ export default {
     data() {
         return {
             trigger: false,
+            processType:'',
             data:[]
         };
     },
     methods: {
         //parent trigger and data is parameter to pass
-        addFormTrigger(data) {
+        addFormTrigger(data, type) {
             this.data=data;
             this.trigger = true;
+            console.log(type);
+            if (type == "edit") {
+                this.processType="edit";
+            } else {
+                this.processType="add";
+            }
+
         },
         closeFormTrigger() {
             this.trigger = false;
