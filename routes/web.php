@@ -120,6 +120,9 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::get('/get_records/{batch}', 'UserController@getRecords');
     Route::post('/add_records', 'UserController@addCreditRecord');
     Route::get('/get_batch', 'UserController@getBatch');
+    Route::delete('delete_record/{id}', 'UserController@deleteRecord');
+    Route::delete('delete_recordBybatch/{id}', 'UserController@deleteByBatch');
+    Route::put('edit_record', 'UserController@editRecord');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');
