@@ -639,7 +639,6 @@ class UserController extends Controller
 
     public function editRecord(Request $request): CreditRecord
     {
-        // dd($request);
         $record = CreditRecord::find($request->id);
         $record->patient_name=$request->name;
         $record->batch = $request->batch[0];
@@ -658,16 +657,16 @@ class UserController extends Controller
                 ->get();
 
             foreach ($doctors as $doctor) {
-                    foreach ($request->doctortype as $types_of_doctors) {
-                        if ($doctor->id == $types_of_doctors['id']) {
-                            $doctor->credit_records()->attach($record->id, [
-                                'doctor_role' => $types_of_doctors['role'],
-                                'professional_fee' =>  $request->pf
-                            ]);
-                        } else {
-                            $doctor->credit_records()->detach([$record->id]);
-                        }
+                foreach ($request->doctortype as $types_of_doctors) {
+                    if ($doctor->id == $types_of_doctors['id']) {
+                        $doctor->credit_records()->attach($record->id, [
+                            'doctor_role' => $types_of_doctors['role'],
+                            'professional_fee' =>  $request->pf
+                        ]);
+                    } else {
+                        $doctor->credit_records()->detach([$record->id]);
                     }
+                }
             }
         } else {
             if ($request->admission >= '2020-03-1') {
@@ -698,7 +697,7 @@ class UserController extends Controller
                 $pooled_record->record_id = $record->id;
                 $pooled_record->save();
                 $doctorrecord = DB::table('doctor_records')->select('*')
-                ->where('record_id',$request->id)->get();
+                ->where('record_id', $request->id)->get();
                 foreach ($doctorrecord as $dr) {
                     DB::table('doctor_records')->where('id', $dr->id)->delete();
                 }
