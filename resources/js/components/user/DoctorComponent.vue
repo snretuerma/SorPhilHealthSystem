@@ -276,40 +276,45 @@
                     <el-collapse v-model="activeName" accordion>
                         <el-collapse-item v-for="item in batch_list" :key="item.name" :title="item.title" :name="item.name">
                             <el-table
-                                    :data="item.record"
-                                    style="width: 100%"
-                                    border
-                                    >
-                                    <el-table-column
-                                    fixed
-                                    prop="patient_name"
-                                    label="Patient Name"
+                                :data="item.record"
+                                style="width: 100%"
+                                border
                                 >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="admission_date"
-                                    label="Admission Date"
+                                <el-table-column
+                                fixed
+                                prop="patient_name"
+                                label="Patient Name"
+                            >
+                                </el-table-column>
+                                <el-table-column
+                                prop="admission_date"
+                                label="Admission Date"
+                            >
+                                </el-table-column>
+                                <el-table-column
+                                prop="discharge_date"
+                                label="Discharge Date"
                                 >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="discharge_date"
-                                    label="Discharge Date"
-                                    >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="pivot.professional_fee"
-                                    label="Professional fee"
-                                    :formatter="formatNumber"
+                                </el-table-column>
+                                <el-table-column
+                                prop="pivot.professional_fee"
+                                label="Professional fee"
+                                :formatter="formatNumber"
+                            >
+                                </el-table-column>
+                                <el-table-column
+                                prop="pivot.doctor_role"
+                                label="Role"
+                                :formatter="firstLetterOfWordUpperCase"
                                 >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="pivot.doctor_role"
-                                    label="Role"
-                                    :formatter="firstLetterOfWordUpperCase"
-                                    >
-                                    </el-table-column>
-                                </el-table>
+                                </el-table-column>
+                            </el-table>
                         </el-collapse-item>
+                        <div v-if="batch_list.length == 0" class="center">
+                            <strong>
+                                No record found
+                            </strong>
+                        </div>
                     </el-collapse>
                 </el-col>
             </el-row>
@@ -735,6 +740,11 @@ export default {
                         title: el.batch,
                         name: count,
                         record: []
+                    });
+                    this.batch_list.forEach((b)=>{
+                        if(b.title == el.batch){
+                           b.record.push(el);
+                        }
                     });
                     batch.push(el.batch);
                 }

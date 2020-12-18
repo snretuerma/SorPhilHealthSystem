@@ -1010,6 +1010,7 @@ export default {
                         this.triggerAdd();
                     break;
                 case "delete_batch":
+                    var _this = this;
                     if (this.value.length == 0 || this.value[0] == 'All' ) {
                        this.$notify({
                             type: 'info',
@@ -1024,7 +1025,6 @@ export default {
                                 type: "warning"
                             }
                         ).then(() => {
-                                var _this = this;
                                 axios.delete(`delete_recordBybatch/${this.value[0]}`)
                                 .then(function(response) {
                                     if (response.status > 199 && response.status < 203) {
