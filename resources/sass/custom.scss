@@ -1,23 +1,23 @@
 .login-block {
-    background: #e31b23; /* fallback for old browsers */
-    background: -webkit-linear-gradient(
-        to bottom,
-        #3b4783,
-        #e31b23
-    ); /* Chrome 10-25, Safari 5.1-6 */
-    background: linear-gradient(
-        to bottom,
-        #3b4783,
-        #e31b23
-    ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    background: #e31b23;
+    /* fallback for old browsers */
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to bottom, #3b4783, #e31b23);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     float: left;
     width: 100%;
-    padding: 30px 0;
+    /* padding: 30px 0; */
+    min-height: 100vh;
+}
+.center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .banner-sec {
     background: "" no-repeat left bottom;
     background-size: cover;
-    min-height: 500px;
+    height: auto;
     border-radius: 0 10px 10px 0;
     padding: 0;
 }
@@ -30,18 +30,27 @@
     border-radius: 0 10px 10px 0;
 }
 .img-fluid {
-    min-height: 450px;
-    padding: 50px;
-} //image padding
+    padding: 20px;
+    width: 100%;
+    height: auto;
+  }
+.login-sec-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
 .login-sec {
-    padding: 180px 30px;
+    padding: 40px;
+    height: auto;
     position: relative;
-} //pababain ung login
+    width: 100%;
+}
 .login-sec .copy-text {
     position: absolute;
-    width: 80%;
-    bottom: 20px;
-    font-size: 13px;
+    width: 100%;
+    bottom: 0;
+    font-size: 12px;
     text-align: center;
 } //with <3
 .login-sec .copy-text i {
@@ -66,6 +75,9 @@
     border-radius: 3px;
     margin-left: auto;
     margin-right: auto;
+}
+#logout-form {
+    display: none;
 }
 // .banner-text{width:70%; position:absolute; bottom:40px; padding-left:20px;}
 // .banner-text h2{color:rgb(0, 0, 0); font-weight:600;}
@@ -130,6 +142,7 @@ body {
     -ms-transition: all 0.3s ease;
     -o-transition: all 0.3s ease;
     transition: all 0.3s ease;
+    z-index:999;
 }
 
 /*----------------page-wrapper----------------*/
