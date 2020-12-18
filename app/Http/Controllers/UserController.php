@@ -297,7 +297,9 @@ class UserController extends Controller
      */
     public function getDoctors()
     {
-        $summary = Doctor::with('credit_records')
+        $summary = Doctor::with(['credit_records' => function ($query) {
+            $query->with('pooled_record');
+        }])
             ->where('hospital_id', Auth::user()->hospital_id)
             ->get();
         return response()->json($summary);
