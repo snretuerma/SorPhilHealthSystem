@@ -3,9 +3,10 @@
          <!-- Header -->
         <div class="row header-top">
             <div class="header-title-parent">
-                <span class="header-title">
-                <i class="fa fa-file-medical-alt"></i>&nbsp;&nbsp;Add Record
-                </span>
+                <span class="header-title" v-if="processType == 'add'"><i class="fa fa-file-medical-alt">
+                    </i>&nbsp;&nbsp;Add Record</span>
+                <span class="header-title" v-if="processType == 'edit'"><i class="fa fa-file-medical-alt">
+                    </i>&nbsp;&nbsp;Edit Record</span>
             </div>
         </div>
         <!-- End Header -->
@@ -394,11 +395,22 @@
                          <el-col class="col-sm-4 col-md-4 col-lg-4 col-xl-4">
                             <el-form-item>
                                     <el-button
+                                    v-if="this.processType == 'add'"
                                     class="btn-action block-button"
                                     :loading="btnLoading"
-                                    @click="addCreditRecord"
+                                    @click="addCreditRecord('add')"
                                 >
                                     Save
+                                </el-button>
+                            </el-form-item>
+                            <el-form-item>
+                                    <el-button
+                                    v-if="this.processType == 'edit'"
+                                    class="btn-action block-button"
+                                    :loading="btnLoading"
+                                    @click="addCreditRecord('edit')"
+                                >
+                                    Save Changes
                                 </el-button>
                             </el-form-item>
                         </el-col>
@@ -415,7 +427,7 @@
 </template>
 <script>
 export default {
-    props:['data'],
+    props:['data','processType'],
     data() {
         return {
             is_private:false,
@@ -466,6 +478,9 @@ export default {
                 anesthesiologist: [],
                 comanagement: [],
                 admitting: [],
+                mode:'',
+                id:'',
+                hospital_id:''
             },
             rules: {
                 lname: [
@@ -519,77 +534,225 @@ export default {
                 this.form.name = `${this.form.lname.trim()}, ${this.form.fname.trim()} ${this.form.mname.trim()}`;
             }
         },
-        addCreditRecord(){
-            console.log(this.form.batch);
-            var _this=this;
-            var temp=[];
-            var attending = this.form.attending.map(function (value, index, array) {
-                _this.form.doctortype.push(value);
-                temp.push(value.id);
-            });
-            var requesting = this.form.requesting.map(function (value, index, array) {
-                _this.form.doctortype.push(value);
-                temp.push(value.id);
-            });
-            var surgeon = this.form.surgeon.map(function (value, index, array) {
-                _this.form.doctortype.push(value);
-                temp.push(value.id);
-            });
-            var er = this.form.er.map(function (value, index, array) {
-                _this.form.doctortype.push(value);
-                temp.push(value.id);
-            });
-            var anesthesiologist = this.form.anesthesiologist.map(function (value, index, array) {
-                _this.form.doctortype.push(value);
-                temp.push(value.id);
-            });
-            var comanagement = this.form.comanagement.map(function (value, index, array) {
-                _this.form.doctortype.push(value);
-                temp.push(value.id);
-            });
-            var admitting = this.form.admitting.map(function (value, index, array) {
-                _this.form.doctortype.push(value);
-                temp.push(value.id);
-            });
-            this.form.doctors_id=temp;
-            const loading = this.$loading({
-                lock: true,
-                spinner: "el-icon-loading",
-                target: "#form",
-                fullscreen:false
-            });
-            if (this.form.lname =="" || this.form.fname =="" ||
-            this.form.admission =="" || this.form.discharge =="" ||
-            this.form.batch =="" || this.form.pf =="")
-            {
-                this.$notify({
-                    type: 'info',
-                    title: 'Adding Record Failed',
-                    message: 'All fields with * are required',
-                    offset: 0,
+        loadRecord(){
+            try {
+                var allattending = this.data.allattending.split(";");
+                var allrequesting = this.data.allrequesting.split(";");
+                var allsurgeon = this.data.allsurgeon.split(";");
+                var allhealthcare = this.data.allhealthcare.split(";");
+                var aller = this.data.aller.split(";");
+                var allanesthesiologist = this.data.allanesthesiologist.split(";");
+                var allcomanagement = this.data.allcomanagement.split(";");
+                var alladmitting = this.data.alladmitting.split(";");
+                this.form.name=this.data.patient_name;
+                this.data.doctors.forEach(name => {
+                    allattending.forEach(ap => {
+                        if (ap.trim() == name.name) {
+                            this.form.attending.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                        }
+                    })
+                    allrequesting.forEach(ap => {
+                        if (ap.trim() == name.name) {
+                            this.form.requesting.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                        }
+                    })
+                    allhealthcare.forEach(ap => {
+                        if (ap.trim() == name.name) {
+                            this.form.healthcare.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                        }
+                    })
+                    allsurgeon.forEach(ap => {
+                        if (ap.trim() == name.name) {
+                            this.form.surgeon.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                        }
+                    })
+                    aller.forEach(ap => {
+                        if (ap.trim() == name.name) {
+                            this.form.aller.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                        }
+                    })
+                    allanesthesiologist.forEach(ap => {
+                        if (ap.trim() == name.name) {
+                            this.form.anesthesiologist.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                        }
+                    })
+                    allcomanagement.forEach(ap => {
+                        if (ap.trim() == name.name) {
+                            this.form.comanagement.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                        }
+                    })
+                    alladmitting.forEach(ap => {
+                        if (ap.trim() == name.name) {
+                            this.form.admitting.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                        }
+                    })
                 });
-                loading.close();
-                this.btnLoading=false;
+                this.form.batch[0] = this.data.batch;
+                this.form.pf = this.data.total;
+                this.form.admission = this.data.admission_date;
+                this.form.discharge = this.data.discharge_date;
+            } catch (error) {
+               // console.log(error)
             }
-            else
-            {
-                this.form.pf=Number(this.form.pf);
-                axios
-                .post("add_records",this.form)
-                .then(response => {
-                    this.$notify({
-                        type: 'success',
-                        title: 'Record',
-                        message: 'Record added successfully!',
-                        offset: 0,
+        },
+        addCreditRecord(mode){
+            switch (mode) {
+                case 'add':
+                    var _this=this;
+                    _this.form.mode=mode;
+                    var temp=[];
+                    var attending = this.form.attending.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
                     });
-                loading.close();
-                this.btnLoading=false;
-                this.clearField();
-                })
-                .catch(error=> {
-                    this.errors=error.response.data.errors;
-                });
+                    var requesting = this.form.requesting.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var surgeon = this.form.surgeon.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var er = this.form.er.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var anesthesiologist = this.form.anesthesiologist.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var comanagement = this.form.comanagement.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var admitting = this.form.admitting.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    this.form.doctors_id=temp;
+                    const loading = this.$loading({
+                        lock: true,
+                        spinner: "el-icon-loading",
+                        target: "#form",
+                        fullscreen:false
+                    });
+                    if (this.form.lname =="" || this.form.fname =="" ||
+                    this.form.admission =="" || this.form.discharge =="" ||
+                    this.form.batch =="" || this.form.pf =="")
+                    {
+                        this.$notify({
+                            type: 'info',
+                            title: 'Adding Record Failed',
+                            message: 'All fields with * are required',
+                            offset: 0,
+                        });
+                        loading.close();
+                        this.btnLoading=false;
+                    }
+                    else
+                    {
+                        this.form.pf=Number(this.form.pf);
+                        axios
+                        .post("add_records",this.form)
+                        .then(response => {
+                            this.$notify({
+                                type: 'success',
+                                title: 'Record',
+                                message: 'Record added successfully!',
+                                offset: 0,
+                            });
+                        loading.close();
+                        this.btnLoading=false;
+                        this.clearField();
+                        })
+                        .catch(error=> {
+                            this.errors=error.response.data.errors;
+                        });
+                    }
+                    break;
+                case 'edit':
+                    var _this=this;
+                    _this.form.mode=mode;
+                    var temp=[];
+                    var attending = this.form.attending.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var requesting = this.form.requesting.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var surgeon = this.form.surgeon.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var er = this.form.er.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var anesthesiologist = this.form.anesthesiologist.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var comanagement = this.form.comanagement.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    var admitting = this.form.admitting.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
+                    this.form.doctors_id=temp;
+                    this.form.id=this.data.id;
+                    this.form.hospital_id=this.data.hospital_id;
+                    console.log(this.form)
+                    axios.put('edit_record', this.form)
+                        .then(response => {
+                            if (response.status >= 200 && response.status <=299) {
+                                // console.log(response)
+                                // var index = this.doctors.findIndex(object => object.id == response.data.id);
+                                // if (index !== undefined) {
+                                //     this.doctors[index].name = response.data.name;
+                                //     this.doctors[index].is_parttime = response.data.is_parttime;
+                                //     this.doctors[index].is_active = response.data.is_active;
+                                // }
+                                // this.show_dialog = false;
+                                // this.formResetFields();
+                                // this.edit_object = '';
+                                // loading.close();
+                                this.$notify({
+                                    type: 'success',
+                                    title: 'Editing Doctor Successful',
+                                    message: `Successfully edited`,
+                                    offset: 0,
+                                });
+                                this.form.doctortype=[];
+                            }else {
+                                // this.show_dialog = false;
+                                // this.formResetFields();
+                                // this.edit_object = '';
+                                // loading.close();
+                                // this.$notify({
+                                //     type: 'error',
+                                //     title: 'Editing Doctor Failed',
+                                //     message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                //     offset: 0,
+                                // });
+                            }
+                        }).catch(error => {
+                            // this.show_dialog = false;
+                            // this.formResetFields();
+                            // this.edit_object = '';
+                            // loading.close();
+                            // this.$notify({
+                            //     type: 'error',
+                            //     title: 'Editing Doctor Failed',
+                            //     message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                            //     offset: 0,
+                            // });
+                            this.form.doctortype=[];
+                        });
+                    break;
             }
         },
         getDoctors(){
@@ -605,7 +768,7 @@ export default {
                 .get("get_batch")
                 .then(response => {
                     this.batch = response.data;
-                    console.log(this.batch);
+                    // console.log(this.batch);
                 })
                 .catch(function(error) {});
         },
@@ -618,6 +781,8 @@ export default {
     mounted(){
         this.getDoctors();
         this.getBatch();
+        this.loadRecord();
+        // console.log(this.form);
     }
 }
 </script>
