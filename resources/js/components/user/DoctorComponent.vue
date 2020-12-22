@@ -500,7 +500,60 @@ export default {
             isimport: true,
             batch_list:[],
             activeName: '1',
-            dialogViewTitle: 'Doctor Record'
+            dialogViewTitle: 'Doctor Record',
+            sheet_data: {
+                    A1:{t:'s', v:"PROFESSIONAL FEE"},
+                    A2:{t:'s', v:"COVERED PERIOD:"},
+                    A3:{t:'s', v:"DOCTOR NAME:"},
+
+                    A4:{t:'s', v:"NAME OF PATIENT"},
+                    B4:{t:'s', v:"CONFINEMENT PERIOD"},
+                    C4:{t:'s', v:"GROSS PF"},
+                    D4:{t:'s', v:"NET PF (50%)"},
+                    E4:{t:'s', v:"PROFESSIONAL FEE (PF)(35%)"},
+                    F4:{t:'s', v:"POOLED (15%)"},
+
+                    G4:{t:'s', v:"DOCTOR NAME:"},
+                    G5:{t:'s', v:"AP"},
+                    I5:{t:'s', v:"REF"},
+                    K5:{t:'s', v:"ANES"},
+                    M5:{t:'s', v:"CO-MGT"},
+                    O5:{t:'s', v:"ADMIT"},
+
+                    Q4:{t:'s', v:"CO-PHYSICIAN"},
+                    Q5:{t:'s', v:"ATTENDING PHYSICIAN"},
+                    S5:{t:'s', v:"REFFERAL 10% of PF"},
+                    U5:{t:'s', v:"ANES 30% of PF"},
+                    W5:{t:'s', v:"CO-MANAGEMENT 20% of PF"},
+                    Y5:{t:'s', v:"ADMITTING 10% of PF"},
+                    "!merges":[
+                        {s:{r:0,c:0},e:{r:0,c:25}},
+                        {s:{r:1,c:0},e:{r:1,c:25}},
+                        {s:{r:2,c:0},e:{r:2,c:25}},
+
+                        {s:{r:3,c:0},e:{r:4,c:0}},
+                        {s:{r:3,c:1},e:{r:4,c:1}},
+                        {s:{r:3,c:2},e:{r:4,c:2}},
+                        {s:{r:3,c:3},e:{r:4,c:3}},
+                        {s:{r:3,c:4},e:{r:4,c:4}},
+                        {s:{r:3,c:5},e:{r:4,c:5}},
+
+                        {s:{r:3,c:6},e:{r:3,c:15}},
+                        {s:{r:4,c:6},e:{r:4,c:7}},
+                        {s:{r:4,c:8},e:{r:4,c:9}},
+                        {s:{r:4,c:10},e:{r:4,c:11}},
+                        {s:{r:4,c:12},e:{r:4,c:13}},
+                        {s:{r:4,c:14},e:{r:4,c:15}},
+
+                        {s:{r:3,c:16},e:{r:3,c:25}},
+                        {s:{r:4,c:16},e:{r:4,c:17}},
+                        {s:{r:4,c:18},e:{r:4,c:19}},
+                        {s:{r:4,c:20},e:{r:4,c:21}},
+                        {s:{r:4,c:22},e:{r:4,c:23}},
+                        {s:{r:4,c:24},e:{r:4,c:25}},
+                    ],
+                    "!ref": "A1:Z5",
+            }
         }
     },
     computed: {
@@ -749,6 +802,15 @@ export default {
                     batch.push(el.batch);
                 }
             }));
+
+            var sheet_name = "hh";
+            this.sheet_data.A2.v = "COVERED PERIOD: " + sheet_name.toUpperCase();
+            var sheet_data_object = {};
+            sheet_data_object[sheet_name] = this.sheet_data;
+            XLSX.writeFile({
+                SheetNames:[sheet_name],
+                Sheets: sheet_data_object
+            }, 'Doctor_Record.xlsx');
         },
         handleEdit(row_data) {
             this.formResetFields();

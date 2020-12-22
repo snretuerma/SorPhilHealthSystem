@@ -610,6 +610,8 @@ export default {
             axios
                 .get("get_doctors")
                 .then(function(res) {
+                    _this.doctor_list_compress = [];
+                    _this.doctor_list_complete = [];
                     res.data.forEach(el => {
                         _this.doctor_list_compress.push(_this.trimToCompare(el.name));
                         _this.doctor_list_complete.push(el);
@@ -625,14 +627,17 @@ export default {
                 _this.excel_validation_error[2].length < 1 &&
                 _this.preview_excel_sheet_data.length > 0
             ){
-                var excel_data = [{
+                var excel_data = [];
+                excel_data = [{
                     doctor_record: _this.preview_excel_sheet_data,
                     import_batch: _this.import_batch,
                     doctor_list: _this.doctor_list_complete
                 }];
+                console.log(excel_data);
                 axios
                 .post("import_doctor_record", excel_data)
                 .then(function(res) {
+                    console.log(res.data);
                     _this.$notify({
                         type: 'success',
                         title: 'Import',
