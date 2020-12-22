@@ -496,7 +496,7 @@ class UserController extends Controller
     public function addCreditRecord(AddCreditRecordRequest $request)
     {
         $record = new CreditRecord;
-        $record->hospital()->associate(Hospital::find(1)->id);
+        $record->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $record->patient_name = $request->name;
         $record->batch = $request->batch[0];
         $record->admission_date = Carbon::parse($request->admission)
@@ -570,10 +570,9 @@ class UserController extends Controller
         }
     }
 
-    public function getActiveDoctors()
+    public function getAllDoctors()
     {
         return Doctor::where('hospital_id', Auth::user()->hospital_id)
-            ->where('is_active', true)
             ->get();
     }
 
@@ -652,10 +651,14 @@ class UserController extends Controller
             $record->non_medical_fee = 0;
             $record->medical_fee = 0;
             $record->save();
+            $doctorrecord = DB::table('doctor_records')->select('*')
+                ->where('record_id', $request->id)->get();
+            foreach ($doctorrecord as $dr) {
+                DB::table('doctor_records')->where('id', $dr->id)->delete();
+            }
             $doctors = Doctor::where('hospital_id', $record->hospital_id)
                 ->whereIn('id', $request->doctors_id)
                 ->get();
-
             foreach ($doctors as $doctor) {
                 foreach ($request->doctortype as $types_of_doctors) {
                     if ($doctor->id == $types_of_doctors['id']) {
@@ -668,6 +671,7 @@ class UserController extends Controller
                     }
                 }
             }
+            DB::table('pooled_records')->where('record_id', $request->id)->delete();
         } else {
             if ($request->admission >= '2020-03-1') {
                 $record->record_type = "new";
@@ -679,10 +683,10 @@ class UserController extends Controller
                     ->whereIn('id', $request->doctors_id)
                     ->get();
                 $full_time_doctors = Doctor::select('id')
-                    ->where('is_active', true)
-                    ->where('is_parttime', false)
-                    ->pluck('id')
-                    ->toArray();
+                ->where('is_active', true)
+                ->where('is_parttime', false)
+                ->pluck('id')
+                ->toArray();
                 $part_time_doctors = Doctor::select('id')->where('is_active', true)
                     ->where('is_parttime', true)->pluck('id')->toArray();
                 $pooled_record = new PooledRecord;
@@ -717,6 +721,42 @@ class UserController extends Controller
                 $record->non_medical_fee = $request->pf / 2;
                 $record->medical_fee = $record->non_medical_fee;
                 $record->save();
+                $doctorrecord = DB::table('doctor_records')->select('*')
+                ->where('record_id', $request->id)->get();
+                $full_time_doctors = Doctor::select('id')
+                    ->where('is_active', true)
+                    ->where('is_parttime', false)
+                    ->pluck('id')
+                    ->toArray();
+                $part_time_doctors = Doctor::select('id')->where('is_active', true)
+                    ->where('is_parttime', true)->pluck('id')->toArray();
+                $pooled_record = new PooledRecord;
+                $pooled_record->full_time_doctors = json_encode($full_time_doctors);
+                $pooled_record->part_time_doctors = json_encode($part_time_doctors);
+                $total_pooled_fee = $record->non_medical_fee * 0.3;
+                $initial_individual_fee = ($record->non_medical_fee * 0.3) /
+                    (count($full_time_doctors) +
+                        (count($part_time_doctors) / 2));
+                $pooled_record->full_time_individual_fee = $initial_individual_fee;
+                $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
+                $pooled_record->record_id = $record->id;
+                $pooled_record->save();
+                foreach ($doctorrecord as $dr) {
+                    DB::table('doctor_records')->where('id', $dr->id)->delete();
+                }
+                $doctors = Doctor::where('hospital_id', $record->hospital_id)
+                    ->whereIn('id', $request->doctors_id)
+                    ->get();
+                foreach ($doctors as $doctor) {
+                    foreach ($request->doctortype as $types_of_doctors) {
+                        if ($doctor->id == $types_of_doctors['id']) {
+                            $doctor->credit_records()->attach($record->id, [
+                                'doctor_role' => $types_of_doctors['role'],
+                                'professional_fee' =>  $request->pf / $doctors->count()
+                            ]);
+                        }
+                    }
+                }
             }
         }
         return $record;

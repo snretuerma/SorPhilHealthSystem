@@ -34,12 +34,18 @@
             <div slot="header" class="clearfix">
                 <span>Patient</span>
             </div>
-            <el-form class="form" id="form" :model="form" :rules="rules" ref="form">
+            <el-form class="form" id="form" :model="form" :rules="rules1" ref="form">
                     <el-row>
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Attending" prop="attending">
-                                <el-radio v-model="form.is_private" :label="false" @change="clearField()" >Public</el-radio>
-                                <el-radio v-model="form.is_private" :label="true" @change="clearField()">Private</el-radio>
+                                <div v-if="processType == 'add'">
+                                    <el-radio v-model="form.is_private" :label="false" @change="clearField()" >Public</el-radio>
+                                    <el-radio v-model="form.is_private" :label="true" @change="clearField()">Private</el-radio>
+                                </div>
+                                <div v-else>
+                                    <el-radio v-model="form.is_private" :label="false">Public</el-radio>
+                                    <el-radio v-model="form.is_private" @change="privateRecord" :label="true">Private</el-radio>
+                                </div>
                                 <el-select v-if="form.is_private"
                                     ref="attending2"
                                     style="width:100%"
@@ -49,7 +55,6 @@
                                     :multiple-limit="1"
                                     value-key="id"
                                     filterable
-                                    allow-create
                                     default-first-option
                                     placeholder="Choose physician">
                                     <el-option
@@ -68,7 +73,6 @@
                                     value-key="id"
                                     multiple
                                     filterable
-                                    allow-create
                                     default-first-option
                                     placeholder="Choose physician">
                                     <el-option
@@ -92,7 +96,6 @@
                                     value-key="id"
                                     multiple
                                     filterable
-                                    allow-create
                                     default-first-option
                                     placeholder="Choose physician">
                                     <el-option
@@ -117,7 +120,6 @@
                                     value-key="id"
                                     multiple
                                     filterable
-                                    allow-create
                                     default-first-option
                                     placeholder="Choose physician">
                                     <el-option
@@ -142,7 +144,6 @@
                                     value-key="id"
                                     multiple
                                     filterable
-                                    allow-create
                                     default-first-option
                                     placeholder="Choose physician">
                                     <el-option
@@ -167,7 +168,6 @@
                                     value-key="id"
                                     multiple
                                     filterable
-                                    allow-create
                                     default-first-option
                                     placeholder="Choose physician">
                                     <el-option
@@ -192,7 +192,6 @@
                                     value-key="id"
                                     multiple
                                     filterable
-                                    allow-create
                                     default-first-option
                                     placeholder="Choose physician">
                                     <el-option
@@ -217,7 +216,6 @@
                                     value-key="id"
                                     multiple
                                     filterable
-                                    allow-create
                                     default-first-option
                                     placeholder="Choose physician">
                                     <el-option
@@ -243,7 +241,6 @@
                                     @input="asd()"
                                     multiple
                                     filterable
-                                    allow-create
                                     default-first-option
                                     placeholder="Choose physician">
                                     <el-option
@@ -269,7 +266,6 @@
                                     multiple
                                     :multiple-limit="1"
                                     filterable
-                                    allow-create
                                     default-first-option
                                     placeholder="Choose batch">
                                     <el-option
@@ -287,8 +283,9 @@
                         <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                             <el-form-item label="Professional Fee" prop="pf">
                                 <el-input
-                                    v-model="form.pf"
+                                    v-model.number="form.pf"
                                     autocomplete="off"
+                                    placeholder="Amount"
                                 />
                                 <span class="font-italic text-danger" v-if="errors.pf">
                                     <small>{{ errors.pf[0] }}</small>
@@ -296,21 +293,35 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-                <el-row>
-                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                            <el-form-item label="Last Name" prop="lname">
-                                <el-input
-                                    v-model="form.lname"
-                                    autocomplete="off"
-                                    @input="buildFullName"
-                                />
-                                <span class="font-italic text-danger" v-if="errors.lname">
-                                    <small>{{ errors.lname[0] }}</small>
-                                </span>
-                            </el-form-item>
-                        </el-col>
-                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                            <el-form-item label="First Name" prop="fname">
+                    <el-row>
+                        <div v-if="processType=='add'">
+                            <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                <el-form-item label="Last Name" prop="lname">
+                                    <el-input
+                                        v-model="form.lname"
+                                        autocomplete="off"
+                                        @input="buildFullName"
+                                    />
+                                    <span class="font-italic text-danger" v-if="errors.lname">
+                                        <small>{{ errors.lname[0] }}</small>
+                                    </span>
+                                </el-form-item>
+                            </el-col>
+                        </div>
+                        <div v-else>
+                            <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                <el-form-item label="Last Name">
+                                    <el-input
+                                        v-model="form.lname"
+                                        autocomplete="off"
+                                        @input="buildFullName"
+                                    />
+                                </el-form-item>
+                            </el-col>
+                        </div>
+                        <div v-if="processType=='add'">
+                            <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                <el-form-item label="First Name" prop="fname">
                                 <el-input
                                     v-model="form.fname"
                                     autocomplete="off"
@@ -320,7 +331,19 @@
                                     <small>{{ errors.fname[0] }}</small>
                                 </span>
                             </el-form-item>
-                        </el-col>
+                            </el-col>
+                        </div>
+                        <div v-else>
+                            <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
+                                <el-form-item label="First Name">
+                                <el-input
+                                    v-model="form.fname"
+                                    autocomplete="off"
+                                    @input="buildFullName"
+                                />
+                            </el-form-item>
+                            </el-col>
+                        </div>
                     </el-row>
                     <el-row>
                         <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
@@ -482,7 +505,7 @@ export default {
                 id:'',
                 hospital_id:''
             },
-            rules: {
+            rules1: {
                 lname: [
                     { required: true, message: 'Please input Lastname', trigger: 'blur' },
                 ],
@@ -501,7 +524,10 @@ export default {
                 pf: [
                     { required: true, message: 'Please input Professional fee', trigger: 'blur' },
                 ],
-            }
+                editdata: [
+                    { required: false },
+                ],
+            },
         };
     },
     methods: {
@@ -515,6 +541,15 @@ export default {
             if(this.$refs.form !== undefined) {
                 this.$refs.form.resetFields();
             }
+        },
+        privateRecord() {
+            this.form.requesting=[];
+            this.form.surgeon=[];
+            this.form.healthcare=[];
+            this.form.er=[];
+            this.form.anesthesiologist=[];
+            this.form.comanagement=[];
+            this.form.admitting=[];
         },
         onSubmit() {
         console.log('submit!');
@@ -613,6 +648,10 @@ export default {
                         _this.form.doctortype.push(value);
                         temp.push(value.id);
                     });
+                    var healthcare = this.form.healthcare.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
                     var er = this.form.er.map(function (value, index, array) {
                         _this.form.doctortype.push(value);
                         temp.push(value.id);
@@ -686,6 +725,10 @@ export default {
                         _this.form.doctortype.push(value);
                         temp.push(value.id);
                     });
+                    var healthcare = this.form.healthcare.map(function (value, index, array) {
+                        _this.form.doctortype.push(value);
+                        temp.push(value.id);
+                    });
                     var er = this.form.er.map(function (value, index, array) {
                         _this.form.doctortype.push(value);
                         temp.push(value.id);
@@ -705,8 +748,19 @@ export default {
                     this.form.doctors_id=temp;
                     this.form.id=this.data.id;
                     this.form.hospital_id=this.data.hospital_id;
-                    console.log(this.form)
-                    axios.put('edit_record', this.form)
+                    if (this.form.admission =="" || this.form.discharge =="" ||
+                    this.form.batch =="" || this.form.pf =="")
+                    {
+                        this.$notify({
+                            type: 'info',
+                            title: 'Adding Record Failed',
+                            message: 'All fields with * are required',
+                            offset: 0,
+                        });
+                        loading.close();
+                        this.btnLoading=false;
+                    } else {
+                        axios.put('edit_record', this.form)
                         .then(response => {
                             if (response.status >= 200 && response.status <=299) {
                                 // console.log(response)
@@ -722,42 +776,44 @@ export default {
                                 // loading.close();
                                 this.$notify({
                                     type: 'success',
-                                    title: 'Editing Doctor Successful',
-                                    message: `Successfully edited`,
+                                    title: 'Editing Record Successful',
+                                    message: `Successfully edited ${this.form.name}`,
                                     offset: 0,
                                 });
-                                this.form.doctortype=[];
+                                _this.form.doctortype=[];
+                                this.triggerClose();
                             }else {
                                 // this.show_dialog = false;
                                 // this.formResetFields();
                                 // this.edit_object = '';
                                 // loading.close();
-                                // this.$notify({
-                                //     type: 'error',
-                                //     title: 'Editing Doctor Failed',
-                                //     message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
-                                //     offset: 0,
-                                // });
+                                this.$notify({
+                                    type: 'error',
+                                    title: 'Editing Record Failed',
+                                    message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                    offset: 0,
+                                });
                             }
                         }).catch(error => {
                             // this.show_dialog = false;
                             // this.formResetFields();
                             // this.edit_object = '';
                             // loading.close();
-                            // this.$notify({
-                            //     type: 'error',
-                            //     title: 'Editing Doctor Failed',
-                            //     message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
-                            //     offset: 0,
-                            // });
+                            this.$notify({
+                                type: 'error',
+                                title: 'Editing Record Failed',
+                                message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                offset: 0,
+                            });
                             this.form.doctortype=[];
                         });
+                    }
                     break;
             }
         },
         getDoctors(){
              axios
-                .get("get_active_doctors")
+                .get("getAllDoctors")
                 .then(response => {
                     this.doctors = response.data;
                 })
@@ -783,7 +839,7 @@ export default {
         this.getBatch();
         this.loadRecord();
         // console.log(this.form);
-    }
+    },
 }
 </script>
 <style scoped>
