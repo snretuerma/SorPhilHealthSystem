@@ -285,9 +285,9 @@
                         <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                             <el-form-item label="Professional Fee" prop="pf">
                                 <el-input
-                                    v-model.number="form.pf"
+                                    v-model="form.pf"
                                     autocomplete="off"
-                                    placeholder="Amount"
+                                    onkeypress='return event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)'
                                 />
                                 <span class="font-italic text-danger" v-if="errors.pf">
                                     <small>{{ errors.pf[0] }}</small>
@@ -837,6 +837,10 @@ export default {
             // this.form.batch.forEach(el=>{
                 console.log(this.form.admitting);
             // })
+        },
+        numOnlyAndDot(s) {
+            var rgx = /^[0-9]*\.?[0-9]*$/;
+            return s.match(rgx);
         }
     },
     mounted(){
