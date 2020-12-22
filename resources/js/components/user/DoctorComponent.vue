@@ -327,6 +327,7 @@
                 </el-button>
             </span>
         </el-dialog>
+
         <el-dialog
             :title="dialogViewTitle"
             :visible.sync="show_doctor_summary"
@@ -337,97 +338,110 @@
         >
             <el-row>
                 <el-col>
-                    <el-collapse v-model="activeName" accordion>
-                        <el-collapse-item
-                            v-for="item in batch_list"
-                            :key="item.name"
-                            :title="item.title"
-                            :name="item.name"
+                    <el-row>
+                        <el-col class="col-sm-12 col-md-12 col-lg-8 col-xl-20">
+                            <el-form ref="form">
+                                <el-form-item prop="batch">
+                                    <el-select
+                                        ref="defaultValue"
+                                        :required="true"
+                                        v-model="value"
+                                        class="block-button"
+                                        size="large"
+                                        value-key="batch"
+                                        multiple
+                                        :multiple-limit="1"
+                                        filterable
+                                        default-first-option
+                                        allow-create
+                                        @change="changes"
+                                    >
+                                        <el-option
+                                            v-for="item in batch"
+                                            :key="item.batch"
+                                            :label="item.label"
+                                            :value="item.batch"
+                                        >
+                                            {{ item.batch }}</el-option
+                                        >
+                                    </el-select>
+                                </el-form-item>
+                            </el-form>
+                        </el-col>
+                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
+                            <el-button type="primary">Export</el-button>
+                        </el-col>
+                    </el-row>
+                    <el-table :data="batch_list" border>
+                        <el-table-column
+                            fixed
+                            prop="patient_name"
+                            min-width="200"
+                            label="Patient Name"
                         >
-                            <el-table
-                                :data="item.record"
-                                style="width: 100%"
-                                border
+                        </el-table-column>
+                        <el-table-column label="Confinement Period">
+                            <el-table-column
+                                prop="admission_date"
+                                label="Admission Date"
+                                min-width="150"
                             >
-                                <el-table-column
-                                    fixed
-                                    prop="patient_name"
-                                    label="Patient Name"
-                                >
-                                </el-table-column>
-                                <el-table-column label="Confinement Period">
-                                    <el-table-column
-                                        prop="admission_date"
-                                        label="Admission Date"
-                                    >
-                                    </el-table-column>
-                                    <el-table-column
-                                        prop="discharge_date"
-                                        label="Discharge Date"
-                                    >
-                                    </el-table-column>
-                                </el-table-column>
-                                <el-table-column
-                                    prop="grossPF"
-                                    label="Gross PF"
-                                    :formatter="formatNumber"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                    prop="netPF"
-                                    label="Net PF"
-                                    :formatter="formatNumber"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                    prop="pooled_record.full_time_individual_fee"
-                                    label="Pooled"
-                                    :formatter="formatNumber"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                    prop="pivot.professional_fee"
-                                    label="Professional fee"
-                                    :formatter="formatNumber"
-                                >
-                                </el-table-column>
-                                <el-table-column
-                                    :label="dialogViewTitle"
-                                >
-                                    <el-table-column
-                                    prop="#"
-                                    label="AP"
-                                    >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="#"
-                                    label="REF"
-                                    >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="#"
-                                    label="ANES"
-                                    >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="#"
-                                    label="CO_MGT"
-                                    >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="#"
-                                    label="ADMIT"
-                                    >
-                                    </el-table-column>
-                                </el-table-column>
-                            </el-table>
-                        </el-collapse-item>
+                            </el-table-column>
+                            <el-table-column
+                                prop="discharge_date"
+                                label="Discharge Date"
+                                min-width="140"
+                            >
+                            </el-table-column>
+                        </el-table-column>
+                        <el-table-column
+                            prop="grossPF"
+                            label="Gross PF"
+                            min-width="80"
+                            :formatter="formatNumber"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="netPF"
+                            label="Net PF"
+                            min-width="80"
+                            :formatter="formatNumber"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="pooled_record.full_time_individual_fee"
+                            label="Pooled"
+                            min-width="80"
+                            :formatter="formatNumber"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="pivot.professional_fee"
+                            label="Professional fee"
+                            min-width="90"
+                            :formatter="formatNumber"
+                        >
+                        </el-table-column>
+                        <el-table-column :label="dialogViewTitle">
+                            <el-table-column prop="#" label="AP">
+                            </el-table-column>
+                            <el-table-column prop="#" label="REF">
+                            </el-table-column>
+                            <el-table-column prop="#" label="ANES">
+                            </el-table-column>
+                            <el-table-column prop="#" label="CO_MGT">
+                            </el-table-column>
+                            <el-table-column prop="#" label="ADMIT">
+                            </el-table-column>
+                        </el-table-column>
+                    </el-table>
+                    <!-- </el-collapse-item>
                         <div v-if="batch_list.length == 0" class="center">
                             <strong>
                                 No record found
                             </strong>
                         </div>
-                    </el-collapse>
+                    </el-collapse> -->
                 </el-col>
             </el-row>
         </el-dialog>
@@ -551,12 +565,18 @@
  **/
 "use strict";
 import XLSX from "xlsx";
+import _ from "lodash";
 export default {
     data() {
         return {
+            value: [],
+            batch: [],
             doctors: [],
+            doctor_id: '',
+            temp: [],
             edit_object: "",
             errors: [],
+            holder: [],
             form: {
                 id: "",
                 name: "",
@@ -627,6 +647,11 @@ export default {
             dialogtitle: "Import Excel",
             isimport: true,
             batch_list: [],
+            form1: {
+                doctor_id: "",
+                record_id: [],
+                batch: ""
+            },
             activeName: "1",
             dialogViewTitle: "Doctor Record"
         };
@@ -651,6 +676,52 @@ export default {
         }
     },
     methods: {
+        getCoPhysicians:function (id) {
+            var temp = [];
+            this.batch_list.forEach(el =>{
+                temp.push(el.id);
+            });
+            this.form1.doctor_id = id;
+            this.form1.record_id = temp;
+            this.form1.batch = this.value[0];
+            axios.post("getCoPhysicians", this.form1).then(response => {
+
+            }).catch(function(error) {});
+        },
+        getBatch() {
+            axios
+                .get("get_batch")
+                .then(response => {
+                    this.batch = response.data;
+                    this.value[0] = response.data[0].batch;
+                    this.first_batch = response.data[0].batch;
+                })
+                .catch(function(error) {});
+        },
+        changes() {
+            if (this.value != "") {
+                this.batch_list = [];
+                var batch = [];
+                var count = 0;
+                this.holder.credit_records.forEach(el => {
+                    el.netPF = 0;
+                    el.grossPF = 0;
+
+                    if (el.pooled_record != null) {
+                        el.netPF =
+                            Number(el.pivot.professional_fee) +
+                            Number(el.pooled_record.full_time_individual_fee);
+                        el.grossPF = el.netPF * 2;
+                    } else el.netPF = Number(el.pivot.professional_fee + 0);
+                    el.grossPF = el.netPF * 2;
+                    if (el.batch == this.value[0]) {
+                        this.batch_list.push(el);
+                    }
+                });
+
+                this.getBatch();
+            }
+        },
         getDoctors() {
             var _this = this;
             axios.get("get_doctors").then(response => {
@@ -662,6 +733,34 @@ export default {
                     );
                 });
             });
+        },
+        handleView(row_data) {
+            this.dialogViewTitle = row_data.name.toUpperCase();
+            this.show_doctor_summary = true;
+            this.batch_list = [];
+            var batch = [];
+            var count = 0;
+            this.doctor_id = row_data.id;
+            row_data.credit_records.forEach(el => {
+                el.netPF = 0;
+                el.grossPF = 0;
+
+                if (el.pooled_record != null) {
+                    el.netPF =
+                        Number(el.pivot.professional_fee) +
+                        Number(el.pooled_record.full_time_individual_fee);
+                    el.grossPF = el.netPF * 2;
+                } else el.netPF = Number(el.pivot.professional_fee + 0);
+                el.grossPF = el.netPF * 2;
+                if (el.batch == this.value[0]) {
+                    this.batch_list.push(el);
+                }
+
+            });
+
+            this.getBatch();
+            this.getCoPhysicians(this.doctor_id);
+            this.holder = row_data;
         },
         doctorsFormAction() {
             const loading = this.$loading({
@@ -871,54 +970,6 @@ export default {
             this.show_dialog = true;
             this.form.form_type = "add";
             this.formResetFields();
-        },
-        handleView(row_data) {
-            this.dialogViewTitle = row_data.name.toUpperCase();
-            this.show_doctor_summary = true;
-            this.batch_list = [];
-            var batch = [];
-            var count = 0;
-            row_data.credit_records.forEach(el => {
-                 el.netPF = 0;
-                 el.grossPF = 0;
-
-                    if(el.pooled_record != null) {
-                        el.netPF = Number(el.pivot.professional_fee) + Number(el.pooled_record.full_time_individual_fee);
-                        el.grossPF = el.netPF*2;
-                    }
-                    else
-                    el.netPF = Number(el.pivot.professional_fee + 0);
-                    el.grossPF = el.netPF*2;
-
-                if (batch.includes(el.batch)) {
-                    this.batch_list.forEach(b => {
-                        if (b.title == el.batch) {
-
-                            // console.log(el.netPF);
-                            b.record.push(el);
-                        }
-                    });
-                    batch.push(el.batch);
-                } else {
-                    count += 1;
-                    this.batch_list.push({
-                        title: el.batch,
-                        name: count,
-                        record: []
-                    });
-                    this.batch_list.forEach(b => {
-                        if (b.title == el.batch) {
-                            //  el.netPF = 0;
-                            // if(el.pooled_record != null) el.netPF = Number(el.pivot.professional_fee) + Number(el.pooled_record.full_time_individual_fee);
-                            // else el.netPF = Number(el.pivot.professional_fee + 0);
-                            // console.log(el.netPF);
-                            b.record.push(el);
-                        }
-                    });
-                    batch.push(el.batch);
-
-                }
-            });
         },
         handleEdit(row_data) {
             this.formResetFields();
@@ -1264,6 +1315,7 @@ export default {
     },
     mounted() {
         this.getDoctors();
+        this.getBatch();
     }
 };
 </script>

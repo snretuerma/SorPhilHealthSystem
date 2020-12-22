@@ -38,6 +38,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB as FacadesDB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -311,6 +312,7 @@ class UserController extends Controller
      * @var Request $request
      * @return Doctor
      */
+
     public function addDoctor(Request $request): Doctor
     {
         $request->validate(
@@ -388,6 +390,16 @@ class UserController extends Controller
                 'status' => 'error',
             ]
         );
+    }
+
+    public function getCoPhysicians(Request $request)
+    {
+        $records = DB::table("doctor_records")->join("credit_records" , "credit_records.id", "doctor_records.record_id")
+        ->distinct('record_id')->whereIn('record_id', $request->record_id)
+        ->where('doctor_id', '<>', $request->doctor_id)
+        ->where('credit_records.batch', '=' , $request->batch)->get();
+
+        return $records;
     }
 
     /**
