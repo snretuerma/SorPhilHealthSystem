@@ -838,10 +838,6 @@ export default {
             // this.form.batch.forEach(el=>{
                 console.log(this.form.admitting);
             // })
-        },
-        numOnlyAndDot(s) {
-            var rgx = /^[0-9]*\.?[0-9]*$/;
-            return s.match(rgx);
         }
     },
     mounted(){
