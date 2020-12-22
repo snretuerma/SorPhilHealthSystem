@@ -287,7 +287,8 @@
                                 <el-input
                                     v-model="form.pf"
                                     autocomplete="off"
-                                    onkeypress='return event.charCode == 46 || (event.charCode >= 48 && event.charCode <= 57)'
+                                    onkeypress='return event.charCode == 46 ||
+                                    (event.charCode >= 48 && event.charCode <= 57)'
                                 />
                                 <span class="font-italic text-danger" v-if="errors.pf">
                                     <small>{{ errors.pf[0] }}</small>
