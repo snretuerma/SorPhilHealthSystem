@@ -37,7 +37,9 @@
             <el-form class="form" id="form" :model="form" :rules="rules1" ref="form">
                     <el-row>
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <span><i>Note: Specify correctly public or private doctors</i></span>
                             <el-form-item label="Attending" prop="attending">
+
                                 <div v-if="processType == 'add'">
                                     <el-radio v-model="form.is_private" :label="false" @change="clearField()" >Public</el-radio>
                                     <el-radio v-model="form.is_private" :label="true" @change="clearField()">Private</el-radio>
@@ -626,6 +628,9 @@ export default {
                 this.form.pf = this.data.total;
                 this.form.admission = this.data.admission_date;
                 this.form.discharge = this.data.discharge_date;
+                if (this.data.record_type == "private") {
+                    this.form.is_private=true;
+                }
             } catch (error) {
                // console.log(error)
             }
