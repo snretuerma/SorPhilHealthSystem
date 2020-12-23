@@ -88,6 +88,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('add_doctor', 'UserController@addDoctor');
     Route::put('edit_doctor', 'UserController@editDoctor');
     Route::delete('delete_doctor/{id}', 'UserController@deleteDoctor');
+    Route::post('get_co_physician/{batch}', 'UserController@getDoctorsWithCoPhysician');
 
     Route::post('getCoPhysicians/', 'UserController@getCoPhysicians');
     //Records

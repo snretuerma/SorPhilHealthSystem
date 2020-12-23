@@ -101,7 +101,7 @@ class UserController extends Controller
             'Admitting_Physician',
             'Requesting_Physician',
             'Co_Management',
-            'Anesthesiology_Physician',
+            'Anesthesiologist_Physician',
             'Surgeon_Physician',
             'HealthCare_Physician',
             'ER_Physician'
@@ -304,6 +304,29 @@ class UserController extends Controller
             ->where('hospital_id', Auth::user()->hospital_id)
             ->get();
         return response()->json($summary);
+    }
+
+    //Co-Physician
+    /**
+     * Gets the list of co-doctors for the current user's hospital
+     *
+     * @var void
+     * @return Collection
+     */
+    public function getDoctorsWithCoPhysician(Request $request)
+    {
+        //dd($request->batch);
+        /*$summary = Doctor::with(['credit_records')
+            ->where('hospital_id', Auth::user()->hospital_id)
+            ->get();
+        return response()->json($summary);*/
+
+        $doctor_records = DB::table('doctor_records')
+            ->join('doctors', 'doctor_records.doctor_id', '=', 'doctors.id')
+            ->join('credit_records', 'doctor_records.record_id', '=', 'credit_records.id')
+            ->select('doctor_records.*', 'doctors.name', 'credit_records.batch')->where('credit_records.batch', $request->batch)
+            ->get();
+        return $doctor_records;
     }
 
     /**

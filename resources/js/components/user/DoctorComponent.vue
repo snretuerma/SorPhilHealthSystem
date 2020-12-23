@@ -423,15 +423,68 @@
                         >
                         </el-table-column>
                         <el-table-column :label="dialogViewTitle">
-                            <el-table-column prop="#" label="AP">
+                            <el-table-column label="AP">
+                                <el-table-column prop="pivot.attending_name" min-width="90">
+                                </el-table-column>
+                                <el-table-column prop="pivot.attending_fee" min-width="90" :formatter="terminateZeroValue">
+                                </el-table-column>
                             </el-table-column>
-                            <el-table-column prop="#" label="REF">
+                            <el-table-column label="REF">
+                                <el-table-column prop="pivot.ref_name" min-width="90">
+                                </el-table-column>
+                                <el-table-column prop="pivot.ref_fee" min-width="90" :formatter="terminateZeroValue">
+                                </el-table-column>
                             </el-table-column>
-                            <el-table-column prop="#" label="ANES">
+                            <el-table-column label="ANES">
+                                <el-table-column prop="pivot.anesthesiologist_name" min-width="90">
+                                </el-table-column>
+                                <el-table-column prop="pivot.anesthesiologist_fee" min-width="90" :formatter="terminateZeroValue">
+                                </el-table-column>
                             </el-table-column>
-                            <el-table-column prop="#" label="CO_MGT">
+                            <el-table-column label="CO_MGT">
+                                <el-table-column prop="pivot.comanagement_name" min-width="90">
+                                </el-table-column>
+                                <el-table-column prop="pivot.comanagement_fee" min-width="90" :formatter="terminateZeroValue">
+                                </el-table-column>
                             </el-table-column>
-                            <el-table-column prop="#" label="ADMIT">
+                            <el-table-column label="ADMIT">
+                                <el-table-column prop="pivot.admitting_name" min-width="90">
+                                </el-table-column>
+                                <el-table-column prop="pivot.admitting_fee" min-width="90" :formatter="terminateZeroValue">
+                                </el-table-column>
+                            </el-table-column>
+                        </el-table-column>
+
+                         <el-table-column label="Co-Physicians">
+                            <el-table-column label="AP">
+                                <el-table-column prop="co_ap_name" min-width="200">
+                                </el-table-column>
+                                <el-table-column prop="co_ap_fee" min-width="90" :formatter="terminateZeroValue">
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="REF">
+                                <el-table-column prop="co_ref_name" min-width="200">
+                                </el-table-column>
+                                <el-table-column prop="co_ref_fee" min-width="90" :formatter="terminateZeroValue">
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="ANES">
+                                <el-table-column prop="co_anes_name" min-width="200">
+                                </el-table-column>
+                                <el-table-column prop="co_anes_fee" min-width="90" :formatter="terminateZeroValue">
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="CO_MGT">
+                                <el-table-column prop="co_coman_name" min-width="200">
+                                </el-table-column>
+                                <el-table-column prop="co_coman_fee" min-width="90" :formatter="terminateZeroValue">
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="ADMIT">
+                                <el-table-column prop="co_admi_name" min-width="200">
+                                </el-table-column>
+                                <el-table-column prop="co_admi_fee" min-width="90" :formatter="terminateZeroValue">
+                                </el-table-column>
                             </el-table-column>
                         </el-table-column>
                     </el-table>
@@ -653,7 +706,8 @@ export default {
                 batch: ""
             },
             activeName: "1",
-            dialogViewTitle: "Doctor Record"
+            dialogViewTitle: "Doctor Record",
+            co_physician:[]
         };
     },
     computed: {
@@ -676,6 +730,9 @@ export default {
         }
     },
     methods: {
+        terminateZeroValue(row, column, cellValue, index){
+            return cellValue || '';
+        },
         getCoPhysicians:function (id) {
             var temp = [];
             this.batch_list.forEach(el =>{
@@ -685,7 +742,15 @@ export default {
             this.form1.record_id = temp;
             this.form1.batch = this.value[0];
             axios.post("getCoPhysicians", this.form1).then(response => {
-
+                 console.log(response.data);
+            }).catch(function(error) {});
+        },
+        getCoDoctor(batch){
+            //'get_co_physician'
+            var _this = this;
+            axios.post("get_co_physician/" + batch).then(response => {
+                 console.log('co doctors.....',response.data);
+                 _this.co_physician.push(response.data);
             }).catch(function(error) {});
         },
         getBatch() {
@@ -695,31 +760,83 @@ export default {
                     this.batch = response.data;
                     this.value[0] = response.data[0].batch;
                     this.first_batch = response.data[0].batch;
+
                 })
                 .catch(function(error) {});
         },
         changes() {
             if (this.value != "") {
-                this.batch_list = [];
-                var batch = [];
-                var count = 0;
-                this.holder.credit_records.forEach(el => {
-                    el.netPF = 0;
-                    el.grossPF = 0;
+                axios.post("get_co_physician/" + this.value[0]).then(response => {
+                    this.co_physician = [];
+                    this.co_physician.push(response.data);
+                    this.batch_list = [];
+                    var batch = [];
+                    var count = 0;
+                    this.holder.credit_records.forEach(el => {
+                        el.co_ap_name = '';
+                        el.co_ap_fee = 0;
+                        el.co_ref_name = '';
+                        el.co_ref_fee = 0;
+                        el.co_anes_name = '';
+                        el.co_anes_fee = 0;
+                        el.co_coman_name = '';
+                        el.co_coman_fee = 0;
+                        el.co_admi_name = '';
+                        el.co_admi_fee = 0;
+                        this.co_physician[0].forEach((physician)=>{
+                            if(el.pivot.record_id == physician.record_id && el.pivot.doctor_id == physician.doctor_id){
+                                if(physician.doctor_role == 'requesting' ||
+                                    physician.doctor_role == 'surgeon' ||
+                                    physician.doctor_role == 'healthcare' ||
+                                    physician.doctor_role == 'er'){
 
-                    if (el.pooled_record != null) {
-                        el.netPF =
-                            Number(el.pivot.professional_fee) +
-                            Number(el.pooled_record.full_time_individual_fee);
+                                    el.pivot['ref_name'] = physician.name;
+                                    el.pivot['ref_fee'] = physician.professional_fee;
+                                }else{
+                                    el.pivot[el.pivot.doctor_role + '_name'] = physician.name;
+                                    el.pivot[el.pivot.doctor_role + '_fee'] = physician.professional_fee;
+                                }
+                            }else{
+                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'attending'){
+                                    el.co_ap_name += physician.name + ', ';
+                                    el.co_ap_fee += Number(physician.professional_fee);
+                                }
+                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'requesting' ||
+                                    physician.doctor_role == 'surgeon' ||
+                                    physician.doctor_role == 'healthcare' ||
+                                    physician.doctor_role == 'er'){
+
+                                    el.co_ref_name += physician.name + ', ';
+                                    el.co_ref_fee += Number(physician.professional_fee);
+                                }
+                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'anesthesiologist'){
+                                    el.co_anes_name += physician.name + ', ';
+                                    el.co_anes_fee += Number(physician.professional_fee);
+                                }
+                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'comanagement'){
+                                    el.co_coman_name += physician.name + ', ';
+                                    el.co_coman_fee += Number(physician.professional_fee);
+                                }
+                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'admitting'){
+                                    el.co_admi_name += physician.name + ', ';
+                                    el.co_admi_fee += Number(physician.professional_fee);
+                                }
+                            }
+                        });
+                        el.netPF = 0;
+                        el.grossPF = 0;
+                        if (el.pooled_record != null) {
+                            el.netPF =
+                                Number(el.pivot.professional_fee) +
+                                Number(el.pooled_record.full_time_individual_fee);
+                            el.grossPF = el.netPF * 2;
+                        } else el.netPF = Number(el.pivot.professional_fee + 0);
                         el.grossPF = el.netPF * 2;
-                    } else el.netPF = Number(el.pivot.professional_fee + 0);
-                    el.grossPF = el.netPF * 2;
-                    if (el.batch == this.value[0]) {
-                        this.batch_list.push(el);
-                    }
-                });
-
-                this.getBatch();
+                        if (el.batch == this.value[0]) {
+                            this.batch_list.push(el);
+                        }
+                    });
+                }).catch(function(error) {});
             }
         },
         getDoctors() {
@@ -735,32 +852,81 @@ export default {
             });
         },
         handleView(row_data) {
-            this.dialogViewTitle = row_data.name.toUpperCase();
-            this.show_doctor_summary = true;
-            this.batch_list = [];
-            var batch = [];
-            var count = 0;
-            this.doctor_id = row_data.id;
-            row_data.credit_records.forEach(el => {
-                el.netPF = 0;
-                el.grossPF = 0;
-
-                if (el.pooled_record != null) {
-                    el.netPF =
-                        Number(el.pivot.professional_fee) +
-                        Number(el.pooled_record.full_time_individual_fee);
+            axios.post("get_co_physician/" + this.value[0]).then(response => {
+                this.co_physician = [];
+                this.co_physician.push(response.data);
+                this.dialogViewTitle = row_data.name.toUpperCase();
+                this.show_doctor_summary = true;
+                this.batch_list = [];
+                var batch = [];
+                var count = 0;
+                this.doctor_id = row_data.id;
+                row_data.credit_records.forEach(el => {
+                    el.netPF = 0;
+                    el.grossPF = 0;
+                    if (el.pooled_record != null) {
+                        el.netPF =
+                            Number(el.pivot.professional_fee) +
+                            Number(el.pooled_record.full_time_individual_fee);
+                        el.grossPF = el.netPF * 2;
+                    } else el.netPF = Number(el.pivot.professional_fee + 0);
                     el.grossPF = el.netPF * 2;
-                } else el.netPF = Number(el.pivot.professional_fee + 0);
-                el.grossPF = el.netPF * 2;
-                if (el.batch == this.value[0]) {
-                    this.batch_list.push(el);
-                }
+                    if (el.batch == this.value[0]) {
+                        el.co_ap_name = '';
+                        el.co_ap_fee = 0;
+                        el.co_ref_name = '';
+                        el.co_ref_fee = 0;
+                        el.co_anes_name = '';
+                        el.co_anes_fee = 0;
+                        el.co_coman_name = '';
+                        el.co_coman_fee = 0;
+                        el.co_admi_name = '';
+                        el.co_admi_fee = 0;
+                        this.co_physician[0].forEach((physician)=>{
+                            if(el.pivot.record_id == physician.record_id && el.pivot.doctor_id == physician.doctor_id){
+                                if(physician.doctor_role == 'requesting' ||
+                                    physician.doctor_role == 'surgeon' ||
+                                    physician.doctor_role == 'healthcare' ||
+                                    physician.doctor_role == 'er'){
 
-            });
+                                    el.pivot['ref_name'] = physician.name;
+                                    el.pivot['ref_fee'] = physician.professional_fee;
+                                }else{
+                                    el.pivot[el.pivot.doctor_role + '_name'] = physician.name;
+                                    el.pivot[el.pivot.doctor_role + '_fee'] = physician.professional_fee;
+                                }
+                            }else{
+                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'attending'){
+                                    el.co_ap_name += physician.name + ', ';
+                                    el.co_ap_fee += Number(physician.professional_fee);
+                                }
+                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'requesting' ||
+                                    physician.doctor_role == 'surgeon' ||
+                                    physician.doctor_role == 'healthcare' ||
+                                    physician.doctor_role == 'er'){
 
-            this.getBatch();
-            this.getCoPhysicians(this.doctor_id);
-            this.holder = row_data;
+                                    el.co_ref_name += physician.name + ', ';
+                                    el.co_ref_fee += Number(physician.professional_fee);
+                                }
+                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'anesthesiologist'){
+                                    el.co_anes_name += physician.name + ', ';
+                                    el.co_anes_fee += Number(physician.professional_fee);
+                                }
+                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'comanagement'){
+                                    el.co_coman_name += physician.name + ', ';
+                                    el.co_coman_fee += Number(physician.professional_fee);
+                                }
+                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'admitting'){
+                                    el.co_admi_name += physician.name + ', ';
+                                    el.co_admi_fee += Number(physician.professional_fee);
+                                }
+                            }
+                        });
+                        this.batch_list.push(el);
+                    }
+                });
+                this.holder = row_data;
+           }).catch(function(error) {});
         },
         doctorsFormAction() {
             const loading = this.$loading({
@@ -1316,6 +1482,8 @@ export default {
     mounted() {
         this.getDoctors();
         this.getBatch();
+       // console.log('dd',this.value[0]);
+
     }
 };
 </script>
