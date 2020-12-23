@@ -719,7 +719,7 @@ export default {
                 "admitting_physician",
                 "requesting_physician",
                 "co_management",
-                "anesthesiology_physician",
+                "anesthesiologist_physician",
                 "surgeon_physician",
                 "healthcare_physician",
                 "er_physician",
