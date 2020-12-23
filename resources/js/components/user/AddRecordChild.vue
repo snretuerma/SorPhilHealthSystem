@@ -795,7 +795,7 @@ export default {
                                     offset: 0,
                                 });
                                 _this.form.doctortype=[];
-                                _thi.form.doctors_id=[];
+                                _this.form.doctors_id=[];
                                 this.triggerClose();
                             }else {
                                 // this.show_dialog = false;
