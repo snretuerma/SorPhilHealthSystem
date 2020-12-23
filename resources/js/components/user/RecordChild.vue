@@ -517,13 +517,13 @@ export default {
         handleCurrentChange(val) {
             this.page = val;
         },
-        changes(){
+        changes() {
             if(this.value != '') {
-                this.loading=true;
+                this.loading = true;
                 this.getRecords(this.value);
             }
         },
-        getBatch(){
+        getBatch() {
              axios
                 .get("get_batch")
                 .then(response => {
@@ -535,43 +535,43 @@ export default {
                 })
                 .catch(function(error) {});
         },
-        getRecords(batch){
+        getRecords(batch) {
              axios
                 .get("get_records/" + batch)
                 .then(response => {
                     response.data.forEach(record => {
-                        record.allattending="";
-                        record.allrequesting="";
-                        record.allsurgeon="";
-                        record.allhealthcare="";
-                        record.aller="";
-                        record.allanesthesiologist="";
-                        record.allcomanagement="";
-                        record.alladmitting="";
-                        record.doctors.forEach(doctor=>{
-                            if(doctor.pivot.doctor_role=="attending") {
-                                record.allattending+=doctor.name+"; ";
+                        record.allattending = "";
+                        record.allrequesting = "";
+                        record.allsurgeon = "";
+                        record.allhealthcare = "";
+                        record.aller = "";
+                        record.allanesthesiologist = "";
+                        record.allcomanagement = "";
+                        record.alladmitting = "";
+                        record.doctors.forEach(doctor => {
+                            if (doctor.pivot.doctor_role == "attending") {
+                                record.allattending += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="requesting") {
-                                record.allrequesting+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "requesting") {
+                                record.allrequesting += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="surgeon") {
-                                record.allsurgeon+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "surgeon") {
+                                record.allsurgeon += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="healthcare") {
-                                record.allhealthcare+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "healthcare") {
+                                record.allhealthcare += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="er") {
-                                record.aller+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "er") {
+                                record.aller += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="anesthesiologist") {
+                            if (doctor.pivot.doctor_role == "anesthesiologist") {
                                 record.allanesthesiologist+=doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="comanagement") {
-                                record.allcomanagement+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "comanagement") {
+                                record.allcomanagement += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="admitting") {
-                                record.alladmitting+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "admitting") {
+                                record.alladmitting += doctor.name+"; ";
                             }
                         });
                     });
@@ -580,7 +580,7 @@ export default {
                 })
                 .catch(function(error) {});
         },
-        covertDate(row, column, cellValue, index){
+        covertDate(row, column, cellValue, index) {
             var hours = cellValue.getHours();
             var minutes = cellValue.getMinutes();
             var ampm = hours >= 12 ? 'pm' : 'am';
@@ -590,7 +590,7 @@ export default {
             var strTime = hours + ampm;
             return cellValue.getFullYear() + "-" + (cellValue.getMonth() + 1) + "-" + cellValue.getDate() + " " + strTime;
         },
-        covertReadable(row, column, cellValue, index){
+        covertReadable(row, column, cellValue, index) {
             if(cellValue == 1){
                 return 'Yes';
             }else if(cellValue == 0){
@@ -605,7 +605,7 @@ export default {
             this.exceldata = this.current_tab_content[this.current_tab];
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
-        getDoctors(){
+        getDoctors() {
             var _this = this;
             axios
                 .get("get_doctors")
@@ -675,10 +675,10 @@ export default {
                 message: file.name + " was removed",
             });
         },
-        trimToCompare(text){
+        trimToCompare(text) {
             return (text).trim().toLowerCase().replace(/\s/g, '');
         },
-        checkSheetName(sheetname, position_in_object){
+        checkSheetName(sheetname, position_in_object) {
             var split_scope = sheetname.split('-');
             var value_from, value_to = "";
             if(new Date(split_scope[0]) != "Invalid Date"){
@@ -708,7 +708,7 @@ export default {
                 return "invalid";
             }
         },
-        fileData(file, fileList){
+        fileData(file, fileList) {
             var _this = this;
             var header_required = [
                 "patient_name",
@@ -914,20 +914,20 @@ export default {
                 _this.defaultTabSelected();
             }
         },
-        handleClickTab(tab, event){
+        handleClickTab(tab, event) {
             this.current_tab = tab.index;
             this.tablelength = this.current_tab_content[tab.index].length;
             this.exceldata = this.current_tab_content[tab.index];
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
-        defaultTabSelected(){
+        defaultTabSelected() {
             this.current_tab = 0;
             this.tablelength = this.current_tab_content[0].length;
             this.exceldata = this.current_tab_content[0];
             this.tablepage = parseInt(1);
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
-        exportExcel(){
+        exportExcel() {
             this.export_excel = [];
             this.data.forEach((record)=>{
                 this.export_excel.push({
@@ -992,7 +992,7 @@ export default {
             }
             return date;
         },
-        formDialog: function(key) {
+        formDialog(key) {
             switch (key) {
                 case "import_data":
                         this.dialogtitle = 'Import Excel';
@@ -1048,11 +1048,11 @@ export default {
                     break;
             }
         },
-        getTemplate(){
+        getTemplate() {
             window.open(window.location.origin+"/template/Import_Record_Template.xlsx");
         }
     },
-    mounted(){
+    mounted() {
         this.getBatch();
         this.getDoctors();
     },
