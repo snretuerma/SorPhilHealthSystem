@@ -543,6 +543,7 @@ export default {
         clearField() {
             if(this.$refs.form !== undefined) {
                 this.$refs.form.resetFields();
+                console.log(this.form.attending.length)
             }
         },
         privateRecord() {
@@ -553,6 +554,11 @@ export default {
             this.form.anesthesiologist=[];
             this.form.comanagement=[];
             this.form.admitting=[];
+            if (this.form.attending.length != 1) {
+                for (var i=1; i < this.form.attending.length; i++) {
+                    this.form.attending.pop();
+                }
+            }
         },
         onSubmit() {
         console.log('submit!');
@@ -606,7 +612,7 @@ export default {
                     })
                     aller.forEach(ap => {
                         if (ap.trim() == name.name) {
-                            this.form.aller.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                            this.form.er.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
                         }
                     })
                     allanesthesiologist.forEach(ap => {
@@ -709,6 +715,8 @@ export default {
                         loading.close();
                         this.btnLoading=false;
                         this.clearField();
+                        _this.form.doctortype=[];
+                        _this.form.doctors_id=[];
                         })
                         .catch(error=> {
                             this.errors=error.response.data.errors;
@@ -787,6 +795,7 @@ export default {
                                     offset: 0,
                                 });
                                 _this.form.doctortype=[];
+                                _thi.form.doctors_id=[];
                                 this.triggerClose();
                             }else {
                                 // this.show_dialog = false;

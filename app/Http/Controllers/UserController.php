@@ -208,7 +208,7 @@ class UserController extends Controller
                                     '_',
                                     strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
                                 )[0],
-                                'professional_fee' => ($record->non_medical_fee * 0.7) / $doctor->count()
+                                'professional_fee' => ($record->non_medical_fee * $setting->shared) / $doctor->count()
                             ]);
                         }
                     }
@@ -495,6 +495,8 @@ class UserController extends Controller
 
     public function addCreditRecord(AddCreditRecordRequest $request)
     {
+        $hospital=Hospital::find(Auth::user()->hospital_id);
+        $setting = json_decode($hospital->setting);
         $record = new CreditRecord;
         $record->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
         $record->patient_name = $request->name;
@@ -509,25 +511,41 @@ class UserController extends Controller
             $record->non_medical_fee = 0;
             $record->medical_fee = 0;
             $record->save();
+            $countAttending=0;
+            $total=$request->pf;
             $doctors = Doctor::where('hospital_id', $record->hospital_id)
                 ->whereIn('id', $request->doctors_id)
                 ->get();
-            foreach ($doctors as $doctor) {
-                foreach ($request->doctortype as $types_of_doctors) {
-                    if ($doctor->id == $types_of_doctors['id']) {
-                        $doctor->credit_records()->attach($record->id, [
-                            'doctor_role' => $types_of_doctors['role'],
-                            'professional_fee' =>  $request->pf
-                        ]);
+                foreach ($doctors as $doctor) {
+                    foreach ($request->doctortype as $types_of_doctors) {
+                        if ($doctor->id == $types_of_doctors['id']) {
+                            if ($types_of_doctors['role'] == 'attending') {
+                                $countAttending++;
+                            }
+                        } else {
+                            $doctor->credit_records()->detach([$record->id]);
+                        }
                     }
                 }
-            }
+                foreach ($doctors as $doctor) {
+                    foreach ($request->doctortype as $types_of_doctors) {
+                        if ($doctor->id == $types_of_doctors['id']) {
+                            if ($types_of_doctors['role'] == 'attending') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $total / $countAttending
+                                    ]);
+                            }
+                        }
+                    }
+                }
+                DB::table('pooled_records')->where('record_id', $request->id)->delete();
         } else {
             if ($request->admission >= '2020-03-1') {
                 $record->record_type = "new";
                 $record->total = $request->pf;
-                $record->non_medical_fee = $request->pf / 2;
-                $record->medical_fee = $request->pf / 2;
+                $record->non_medical_fee = $request->pf * $setting->nonmedical;
+                $record->medical_fee = $request->pf * $setting->medical;
                 $record->save();
                 $doctors = Doctor::where('hospital_id', $record->hospital_id)
                     ->whereIn('id', $request->doctors_id)
@@ -542,30 +560,253 @@ class UserController extends Controller
                 $pooled_record = new PooledRecord;
                 $pooled_record->full_time_doctors = json_encode($full_time_doctors);
                 $pooled_record->part_time_doctors = json_encode($part_time_doctors);
-                $total_pooled_fee = $record->non_medical_fee * 0.3;
-                $initial_individual_fee = ($record->non_medical_fee * 0.3) /
+                $total_pooled_fee = $record->non_medical_fee * $setting->pooled;
+                $initial_individual_fee = ($record->non_medical_fee * $setting->pooled) /
                     (count($full_time_doctors) +
                         (count($part_time_doctors) / 2));
                 $pooled_record->full_time_individual_fee = $initial_individual_fee;
                 $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
                 $pooled_record->record_id = $record->id;
                 $pooled_record->save();
+                $requesting=0;
+                $surgeon=0;
+                $healthcare=0;
+                $er=0;
+                $anesthesiologist=0;
+                $comanage=0;
+                $admitting=0;
+                $countAttending=0;
+                $countRequesting=0;
+                $countSurgeon=0;
+                $countHealthcare=0;
+                $countEr=0;
+                $countAnesthesiologist=0;
+                $countComanagement=0;
+                $countAdmitting=0;
+                $total=$request->pf;
                 foreach ($doctors as $doctor) {
                     foreach ($request->doctortype as $types_of_doctors) {
                         if ($doctor->id == $types_of_doctors['id']) {
-                            $doctor->credit_records()->attach($record->id, [
-                                'doctor_role' => $types_of_doctors['role'],
-                                'professional_fee' => ($record->non_medical_fee * 0.7) / $doctor->count()
-                            ]);
+                            if ($types_of_doctors['role'] == 'attending') {
+                                $countAttending++;
+                            } else if ($types_of_doctors['role'] == 'requesting') {
+                                $countRequesting++;
+                                $requesting = ($total * $setting->physicians[0]);
+                            } else if ($types_of_doctors['role'] == 'surgeon') {
+                                $countSurgeon++;
+                                $surgeon = ($total * $setting->physicians[1]);
+                            } else if ($types_of_doctors['role'] == 'healthcare') {
+                                $countHealthcare++;
+                                $healthcare = ($total * $setting->physicians[2]);
+                            } else if ($types_of_doctors['role'] == 'er') {
+                                $countEr++;
+                                $er = ($total * $setting->physicians[3]);
+                            } else if ($types_of_doctors['role'] == 'anesthesiologist') {
+                                $countAnesthesiologist++;
+                                $anesthesiologist = ($total * $setting->physicians[4]);
+                            } else if ($types_of_doctors['role'] == 'comanagement') {
+                                $countComanagement++;
+                                $comanage = ($total * $setting->physicians[5]);
+                            } else if ($types_of_doctors['role'] == 'admitting') {
+                                $countAdmitting++;
+                                $admitting = ($total * $setting->physicians[6]);
+                            }
+                        }
+                    }
+                }
+                foreach ($doctors as $doctor) {
+                    foreach ($request->doctortype as $types_of_doctors) {
+                        if ($doctor->id == $types_of_doctors['id']) {
+                            if ($types_of_doctors['role'] == 'attending') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  ($total -
+                                        (($requesting * $countRequesting)
+                                        + ($surgeon * $countSurgeon)
+                                        + ($healthcare * $countHealthcare)
+                                        + ($er * $countEr)
+                                        + ($anesthesiologist * $countAnesthesiologist)
+                                        + ($comanage * $countComanagement)
+                                        + ($admitting * $countAdmitting))) / $countAttending
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'requesting') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[0]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'surgeon') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[1]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'healthcare') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[2]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'er') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[3]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'anesthesiologist') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[4]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'comanagement') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[5]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'admitting') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[6]
+                                    ]);
+                            }
                         }
                     }
                 }
             } else {
+                $requesting=0;
+                $surgeon=0;
+                $healthcare=0;
+                $er=0;
+                $anesthesiologist=0;
+                $comanage=0;
+                $admitting=0;
+                $countAttending=0;
+                $countRequesting=0;
+                $countSurgeon=0;
+                $countHealthcare=0;
+                $countEr=0;
+                $countAnesthesiologist=0;
+                $countComanagement=0;
+                $countAdmitting=0;
+                $total=$request->pf;
                 $record->record_type = "old";
                 $record->total = $request->pf;
-                $record->non_medical_fee = $request->pf / 2;
-                $record->medical_fee = $record->non_medical_fee;
+                $record->non_medical_fee = $request->pf * $setting->nonmedical;
+                $record->medical_fee = $request->pf * $setting->medical;
                 $record->save();
+                $doctorrecord = DB::table('doctor_records')->select('*')
+                ->where('record_id', $request->id)->get();
+                $full_time_doctors = Doctor::select('id')
+                    ->where('is_active', true)
+                    ->where('is_parttime', false)
+                    ->pluck('id')
+                    ->toArray();
+                $part_time_doctors = Doctor::select('id')->where('is_active', true)
+                    ->where('is_parttime', true)->pluck('id')->toArray();
+                $deletePooled=DB::table('pooled_records')->where('record_id', $request->id)->delete();
+                $pooled_record = new PooledRecord;
+                $pooled_record->full_time_doctors = json_encode($full_time_doctors);
+                $pooled_record->part_time_doctors = json_encode($part_time_doctors);
+                $total_pooled_fee = $record->non_medical_fee * $setting->pooled;
+                $initial_individual_fee = ($record->non_medical_fee * $setting->pooled) /
+                    (count($full_time_doctors) +
+                        (count($part_time_doctors) / 2));
+                $pooled_record->full_time_individual_fee = $initial_individual_fee;
+                $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
+                $pooled_record->record_id = $record->id;
+                $pooled_record->save();
+                foreach ($doctorrecord as $dr) {
+                    DB::table('doctor_records')->where('id', $dr->id)->delete();
+                }
+                $doctors = Doctor::where('hospital_id', $record->hospital_id)
+                    ->whereIn('id', $request->doctors_id)
+                    ->get();
+                    $countAttending=0;
+                    $total=$request->pf;
+                    foreach ($doctors as $doctor) {
+                        foreach ($request->doctortype as $types_of_doctors) {
+                            if ($doctor->id == $types_of_doctors['id']) {
+                                if ($types_of_doctors['role'] == 'attending') {
+                                    $countAttending++;
+                                } else if ($types_of_doctors['role'] == 'requesting') {
+                                    $countRequesting++;
+                                    $requesting = ($total * $setting->physicians[0]);
+                                } else if ($types_of_doctors['role'] == 'surgeon') {
+                                    $countSurgeon++;
+                                    $surgeon = ($total * $setting->physicians[1]);
+                                } else if ($types_of_doctors['role'] == 'healthcare') {
+                                    $countHealthcare++;
+                                    $healthcare = ($total * $setting->physicians[2]);
+                                } else if ($types_of_doctors['role'] == 'er') {
+                                    $countEr++;
+                                    $er = ($total * $setting->physicians[3]);
+                                } else if ($types_of_doctors['role'] == 'anesthesiologist') {
+                                    $countAnesthesiologist++;
+                                    $anesthesiologist = ($total * $setting->physicians[4]);
+                                } else if ($types_of_doctors['role'] == 'comanagement') {
+                                    $countComanagement++;
+                                    $comanage = ($total * $setting->physicians[5]);
+                                } else if ($types_of_doctors['role'] == 'admitting') {
+                                    $countAdmitting++;
+                                    $admitting = ($total * $setting->physicians[6]);
+                                }
+                            } else {
+                                $doctor->credit_records()->detach([$record->id]);
+                            }
+                        }
+                    }
+                    foreach ($doctors as $doctor) {
+                        foreach ($request->doctortype as $types_of_doctors) {
+                            if ($doctor->id == $types_of_doctors['id']) {
+                                if ($types_of_doctors['role'] == 'attending') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  ($total -
+                                            (($requesting * $countRequesting)
+                                            + ($surgeon * $countSurgeon)
+                                            + ($healthcare * $countHealthcare)
+                                            + ($er * $countEr)
+                                            + ($anesthesiologist * $countAnesthesiologist)
+                                            + ($comanage * $countComanagement)
+                                            + ($admitting * $countAdmitting))) / $countAttending
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'requesting') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[0]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'surgeon') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[1]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'healthcare') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[2]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'er') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[3]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'anesthesiologist') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[4]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'comanagement') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[5]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'admitting') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[6]
+                                        ]);
+                                }
+                            }
+                        }
+                    }
+
+
             }
         }
     }
@@ -638,6 +879,8 @@ class UserController extends Controller
 
     public function editRecord(Request $request): CreditRecord
     {
+        $hospital=Hospital::find(Auth::user()->hospital_id);
+        $setting = json_decode($hospital->setting);
         $record = CreditRecord::find($request->id);
         $record->patient_name=$request->name;
         $record->batch = $request->batch[0];
@@ -659,15 +902,35 @@ class UserController extends Controller
             $doctors = Doctor::where('hospital_id', $record->hospital_id)
                 ->whereIn('id', $request->doctors_id)
                 ->get();
+            $countAttending=0;
+            $countRequesting=0;
+            $countSurgeon=0;
+            $countHealthcare=0;
+            $countEr=0;
+            $countAnesthesiologist=0;
+            $countComanagement=0;
+            $countAdmitting=0;
+            $total=$request->pf;
             foreach ($doctors as $doctor) {
                 foreach ($request->doctortype as $types_of_doctors) {
                     if ($doctor->id == $types_of_doctors['id']) {
-                        $doctor->credit_records()->attach($record->id, [
-                            'doctor_role' => $types_of_doctors['role'],
-                            'professional_fee' =>  $request->pf
-                        ]);
+                        if ($types_of_doctors['role'] == 'attending') {
+                            $countAttending++;
+                        }
                     } else {
                         $doctor->credit_records()->detach([$record->id]);
+                    }
+                }
+            }
+            foreach ($doctors as $doctor) {
+                foreach ($request->doctortype as $types_of_doctors) {
+                    if ($doctor->id == $types_of_doctors['id']) {
+                        if ($types_of_doctors['role'] == 'attending') {
+                            $doctor->credit_records()->attach($record->id, [
+                                    'doctor_role' => $types_of_doctors['role'],
+                                    'professional_fee' =>  $total / $countAttending
+                                ]);
+                        }
                     }
                 }
             }
@@ -676,8 +939,8 @@ class UserController extends Controller
             if ($request->admission >= '2020-03-1') {
                 $record->record_type = "new";
                 $record->total = $request->pf;
-                $record->non_medical_fee = $request->pf / 2;
-                $record->medical_fee = $request->pf / 2;
+                $record->non_medical_fee = $request->pf * $setting->nonmedical;
+                $record->medical_fee = $request->pf * $setting->medical;
                 $record->save();
                 $doctors = Doctor::where('hospital_id', $record->hospital_id)
                     ->whereIn('id', $request->doctors_id)
@@ -689,11 +952,12 @@ class UserController extends Controller
                 ->toArray();
                 $part_time_doctors = Doctor::select('id')->where('is_active', true)
                     ->where('is_parttime', true)->pluck('id')->toArray();
+                $deletePooled=DB::table('pooled_records')->where('record_id', $request->id)->delete();
                 $pooled_record = new PooledRecord;
                 $pooled_record->full_time_doctors = json_encode($full_time_doctors);
                 $pooled_record->part_time_doctors = json_encode($part_time_doctors);
-                $total_pooled_fee = $record->non_medical_fee * 0.3;
-                $initial_individual_fee = ($record->non_medical_fee * 0.3) /
+                $total_pooled_fee = $record->non_medical_fee * $setting->pooled;
+                $initial_individual_fee = ($record->non_medical_fee * $setting->pooled) /
                     (count($full_time_doctors) +
                         (count($part_time_doctors) / 2));
                 $pooled_record->full_time_individual_fee = $initial_individual_fee;
@@ -705,21 +969,129 @@ class UserController extends Controller
                 foreach ($doctorrecord as $dr) {
                     DB::table('doctor_records')->where('id', $dr->id)->delete();
                 }
+                $requesting=0;
+                $surgeon=0;
+                $healthcare=0;
+                $er=0;
+                $anesthesiologist=0;
+                $comanage=0;
+                $admitting=0;
+                $countAttending=0;
+                $countRequesting=0;
+                $countSurgeon=0;
+                $countHealthcare=0;
+                $countEr=0;
+                $countAnesthesiologist=0;
+                $countComanagement=0;
+                $countAdmitting=0;
+                $total=$request->pf;
                 foreach ($doctors as $doctor) {
                     foreach ($request->doctortype as $types_of_doctors) {
                         if ($doctor->id == $types_of_doctors['id']) {
-                            $doctor->credit_records()->attach($record->id, [
-                                'doctor_role' => $types_of_doctors['role'],
-                                'professional_fee' =>  $request->pf
-                            ]);
+                            if ($types_of_doctors['role'] == 'attending') {
+                                $countAttending++;
+                            } else if ($types_of_doctors['role'] == 'requesting') {
+                                $countRequesting++;
+                                $requesting = ($total * $setting->physicians[0]);
+                            } else if ($types_of_doctors['role'] == 'surgeon') {
+                                $countSurgeon++;
+                                $surgeon = ($total * $setting->physicians[1]);
+                            } else if ($types_of_doctors['role'] == 'healthcare') {
+                                $countHealthcare++;
+                                $healthcare = ($total * $setting->physicians[2]);
+                            } else if ($types_of_doctors['role'] == 'er') {
+                                $countEr++;
+                                $er = ($total * $setting->physicians[3]);
+                            } else if ($types_of_doctors['role'] == 'anesthesiologist') {
+                                $countAnesthesiologist++;
+                                $anesthesiologist = ($total * $setting->physicians[4]);
+                            } else if ($types_of_doctors['role'] == 'comanagement') {
+                                $countComanagement++;
+                                $comanage = ($total * $setting->physicians[5]);
+                            } else if ($types_of_doctors['role'] == 'admitting') {
+                                $countAdmitting++;
+                                $admitting = ($total * $setting->physicians[6]);
+                            }
+                        } else {
+                            $doctor->credit_records()->detach([$record->id]);
+                        }
+                    }
+                }
+                foreach ($doctors as $doctor) {
+                    foreach ($request->doctortype as $types_of_doctors) {
+                        if ($doctor->id == $types_of_doctors['id']) {
+                            if ($types_of_doctors['role'] == 'attending') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  ($total -
+                                        (($requesting * $countRequesting)
+                                        + ($surgeon * $countSurgeon)
+                                        + ($healthcare * $countHealthcare)
+                                        + ($er * $countEr)
+                                        + ($anesthesiologist * $countAnesthesiologist)
+                                        + ($comanage * $countComanagement)
+                                        + ($admitting * $countAdmitting))) / $countAttending
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'requesting') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[0]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'surgeon') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[1]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'healthcare') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[2]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'er') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[3]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'anesthesiologist') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[4]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'comanagement') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[5]
+                                    ]);
+                            } else if ($types_of_doctors['role'] == 'admitting') {
+                                $doctor->credit_records()->attach($record->id, [
+                                        'doctor_role' => $types_of_doctors['role'],
+                                        'professional_fee' =>  $request->pf * $setting->physicians[6]
+                                    ]);
+                            }
                         }
                     }
                 }
             } else {
+                $requesting=0;
+                $surgeon=0;
+                $healthcare=0;
+                $er=0;
+                $anesthesiologist=0;
+                $comanage=0;
+                $admitting=0;
+                $countAttending=0;
+                $countRequesting=0;
+                $countSurgeon=0;
+                $countHealthcare=0;
+                $countEr=0;
+                $countAnesthesiologist=0;
+                $countComanagement=0;
+                $countAdmitting=0;
+                $total=$request->pf;
                 $record->record_type = "old";
                 $record->total = $request->pf;
-                $record->non_medical_fee = $request->pf / 2;
-                $record->medical_fee = $record->non_medical_fee;
+                $record->non_medical_fee = $request->pf * $setting->nonmedical;
+                $record->medical_fee = $request->pf * $setting->medical;
                 $record->save();
                 $doctorrecord = DB::table('doctor_records')->select('*')
                 ->where('record_id', $request->id)->get();
@@ -730,11 +1102,12 @@ class UserController extends Controller
                     ->toArray();
                 $part_time_doctors = Doctor::select('id')->where('is_active', true)
                     ->where('is_parttime', true)->pluck('id')->toArray();
+                $deletePooled=DB::table('pooled_records')->where('record_id', $request->id)->delete();
                 $pooled_record = new PooledRecord;
                 $pooled_record->full_time_doctors = json_encode($full_time_doctors);
                 $pooled_record->part_time_doctors = json_encode($part_time_doctors);
-                $total_pooled_fee = $record->non_medical_fee * 0.3;
-                $initial_individual_fee = ($record->non_medical_fee * 0.3) /
+                $total_pooled_fee = $record->non_medical_fee * $setting->pooled;
+                $initial_individual_fee = ($record->non_medical_fee * $setting->pooled) /
                     (count($full_time_doctors) +
                         (count($part_time_doctors) / 2));
                 $pooled_record->full_time_individual_fee = $initial_individual_fee;
@@ -747,16 +1120,94 @@ class UserController extends Controller
                 $doctors = Doctor::where('hospital_id', $record->hospital_id)
                     ->whereIn('id', $request->doctors_id)
                     ->get();
-                foreach ($doctors as $doctor) {
-                    foreach ($request->doctortype as $types_of_doctors) {
-                        if ($doctor->id == $types_of_doctors['id']) {
-                            $doctor->credit_records()->attach($record->id, [
-                                'doctor_role' => $types_of_doctors['role'],
-                                'professional_fee' =>  $request->pf / $doctors->count()
-                            ]);
+                    $countAttending=0;
+                    $total=$request->pf;
+                    foreach ($doctors as $doctor) {
+                        foreach ($request->doctortype as $types_of_doctors) {
+                            if ($doctor->id == $types_of_doctors['id']) {
+                                if ($types_of_doctors['role'] == 'attending') {
+                                    $countAttending++;
+                                } else if ($types_of_doctors['role'] == 'requesting') {
+                                    $countRequesting++;
+                                    $requesting = ($total * $setting->physicians[0]);
+                                } else if ($types_of_doctors['role'] == 'surgeon') {
+                                    $countSurgeon++;
+                                    $surgeon = ($total * $setting->physicians[1]);
+                                } else if ($types_of_doctors['role'] == 'healthcare') {
+                                    $countHealthcare++;
+                                    $healthcare = ($total * $setting->physicians[2]);
+                                } else if ($types_of_doctors['role'] == 'er') {
+                                    $countEr++;
+                                    $er = ($total * $setting->physicians[3]);
+                                } else if ($types_of_doctors['role'] == 'anesthesiologist') {
+                                    $countAnesthesiologist++;
+                                    $anesthesiologist = ($total * $setting->physicians[4]);
+                                } else if ($types_of_doctors['role'] == 'comanagement') {
+                                    $countComanagement++;
+                                    $comanage = ($total * $setting->physicians[5]);
+                                } else if ($types_of_doctors['role'] == 'admitting') {
+                                    $countAdmitting++;
+                                    $admitting = ($total * $setting->physicians[6]);
+                                }
+                            } else {
+                                $doctor->credit_records()->detach([$record->id]);
+                            }
                         }
                     }
-                }
+                    foreach ($doctors as $doctor) {
+                        foreach ($request->doctortype as $types_of_doctors) {
+                            if ($doctor->id == $types_of_doctors['id']) {
+                                if ($types_of_doctors['role'] == 'attending') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  ($total -
+                                            (($requesting * $countRequesting)
+                                            + ($surgeon * $countSurgeon)
+                                            + ($healthcare * $countHealthcare)
+                                            + ($er * $countEr)
+                                            + ($anesthesiologist * $countAnesthesiologist)
+                                            + ($comanage * $countComanagement)
+                                            + ($admitting * $countAdmitting))) / $countAttending
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'requesting') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[0]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'surgeon') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[1]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'healthcare') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[2]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'er') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[3]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'anesthesiologist') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[4]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'comanagement') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[5]
+                                        ]);
+                                } else if ($types_of_doctors['role'] == 'admitting') {
+                                    $doctor->credit_records()->attach($record->id, [
+                                            'doctor_role' => $types_of_doctors['role'],
+                                            'professional_fee' =>  $request->pf * $setting->physicians[6]
+                                        ]);
+                                }
+                            }
+                        }
+                    }
             }
         }
         return $record;
