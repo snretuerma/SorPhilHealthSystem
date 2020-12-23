@@ -495,7 +495,7 @@ class UserController extends Controller
 
     public function addCreditRecord(AddCreditRecordRequest $request)
     {
-        $hospital=Hospital::find(Auth::user()->hospital_id);
+        $hospital = Hospital::find(Auth::user()->hospital_id);
         $setting = json_decode($hospital->setting);
         $record = new CreditRecord;
         $record->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
@@ -522,8 +522,6 @@ class UserController extends Controller
                             if ($types_of_doctors['role'] == 'attending') {
                                 $countAttending++;
                             }
-                        } else {
-                            $doctor->credit_records()->detach([$record->id]);
                         }
                     }
                 }
@@ -568,21 +566,11 @@ class UserController extends Controller
                 $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
                 $pooled_record->record_id = $record->id;
                 $pooled_record->save();
-                $requesting=0;
-                $surgeon=0;
-                $healthcare=0;
-                $er=0;
-                $anesthesiologist=0;
-                $comanage=0;
-                $admitting=0;
-                $countAttending=0;
-                $countRequesting=0;
-                $countSurgeon=0;
-                $countHealthcare=0;
-                $countEr=0;
-                $countAnesthesiologist=0;
-                $countComanagement=0;
-                $countAdmitting=0;
+                $requesting=0; $surgeon=0; $healthcare=0;
+                $er=0; $anesthesiologist=0; $comanage=0;
+                $admitting=0; $countAttending=0; $countRequesting=0;
+                $countSurgeon=0; $countHealthcare=0; $countEr=0;
+                $countAnesthesiologist=0; $countComanagement=0; $countAdmitting=0;
                 $total=$request->pf;
                 foreach ($doctors as $doctor) {
                     foreach ($request->doctortype as $types_of_doctors) {
@@ -621,13 +609,14 @@ class UserController extends Controller
                                 $doctor->credit_records()->attach($record->id, [
                                         'doctor_role' => $types_of_doctors['role'],
                                         'professional_fee' =>  ($total -
-                                        (($requesting * $countRequesting)
-                                        + ($surgeon * $countSurgeon)
-                                        + ($healthcare * $countHealthcare)
-                                        + ($er * $countEr)
-                                        + ($anesthesiologist * $countAnesthesiologist)
-                                        + ($comanage * $countComanagement)
-                                        + ($admitting * $countAdmitting))) / $countAttending
+                                        (($requesting * $countRequesting) +
+                                        ($surgeon * $countSurgeon) +
+                                        ($healthcare * $countHealthcare) +
+                                        ($er * $countEr) +
+                                        ($anesthesiologist * $countAnesthesiologist) +
+                                        ($comanage * $countComanagement) +
+                                        ($admitting * $countAdmitting))) /
+                                        $countAttending
                                     ]);
                             } else if ($types_of_doctors['role'] == 'requesting') {
                                 $doctor->credit_records()->attach($record->id, [
@@ -669,21 +658,11 @@ class UserController extends Controller
                     }
                 }
             } else {
-                $requesting=0;
-                $surgeon=0;
-                $healthcare=0;
-                $er=0;
-                $anesthesiologist=0;
-                $comanage=0;
-                $admitting=0;
-                $countAttending=0;
-                $countRequesting=0;
-                $countSurgeon=0;
-                $countHealthcare=0;
-                $countEr=0;
-                $countAnesthesiologist=0;
-                $countComanagement=0;
-                $countAdmitting=0;
+                $requesting = 0; $surgeon = 0; $healthcare = 0;
+                $er = 0; $anesthesiologist = 0; $comanage = 0;
+                $admitting = 0; $countAttending = 0; $countRequesting = 0;
+                $countSurgeon = 0; $countHealthcare = 0; $countEr = 0;
+                $countAnesthesiologist = 0; $countComanagement = 0; $countAdmitting = 0;
                 $total=$request->pf;
                 $record->record_type = "old";
                 $record->total = $request->pf;
@@ -758,13 +737,13 @@ class UserController extends Controller
                                     $doctor->credit_records()->attach($record->id, [
                                             'doctor_role' => $types_of_doctors['role'],
                                             'professional_fee' =>  ($total -
-                                            (($requesting * $countRequesting)
-                                            + ($surgeon * $countSurgeon)
-                                            + ($healthcare * $countHealthcare)
-                                            + ($er * $countEr)
-                                            + ($anesthesiologist * $countAnesthesiologist)
-                                            + ($comanage * $countComanagement)
-                                            + ($admitting * $countAdmitting))) / $countAttending
+                                            (($requesting * $countRequesting) +
+                                            ($surgeon * $countSurgeon) +
+                                            ($healthcare * $countHealthcare) +
+                                            ($er * $countEr) +
+                                            ($anesthesiologist * $countAnesthesiologist) +
+                                            ($comanage * $countComanagement) +
+                                            ($admitting * $countAdmitting))) / $countAttending
                                         ]);
                                 } else if ($types_of_doctors['role'] == 'requesting') {
                                     $doctor->credit_records()->attach($record->id, [
@@ -805,8 +784,6 @@ class UserController extends Controller
                             }
                         }
                     }
-
-
             }
         }
     }
@@ -879,7 +856,7 @@ class UserController extends Controller
 
     public function editRecord(Request $request): CreditRecord
     {
-        $hospital=Hospital::find(Auth::user()->hospital_id);
+        $hospital = Hospital::find(Auth::user()->hospital_id);
         $setting = json_decode($hospital->setting);
         $record = CreditRecord::find($request->id);
         $record->patient_name=$request->name;
@@ -902,14 +879,9 @@ class UserController extends Controller
             $doctors = Doctor::where('hospital_id', $record->hospital_id)
                 ->whereIn('id', $request->doctors_id)
                 ->get();
-            $countAttending=0;
-            $countRequesting=0;
-            $countSurgeon=0;
-            $countHealthcare=0;
-            $countEr=0;
-            $countAnesthesiologist=0;
-            $countComanagement=0;
-            $countAdmitting=0;
+            $countAttending=0; $countRequesting=0; $countSurgeon=0;
+            $countHealthcare=0; $countEr=0; $countAnesthesiologist=0;
+            $countComanagement=0; $countAdmitting=0;
             $total=$request->pf;
             foreach ($doctors as $doctor) {
                 foreach ($request->doctortype as $types_of_doctors) {
@@ -969,21 +941,11 @@ class UserController extends Controller
                 foreach ($doctorrecord as $dr) {
                     DB::table('doctor_records')->where('id', $dr->id)->delete();
                 }
-                $requesting=0;
-                $surgeon=0;
-                $healthcare=0;
-                $er=0;
-                $anesthesiologist=0;
-                $comanage=0;
-                $admitting=0;
-                $countAttending=0;
-                $countRequesting=0;
-                $countSurgeon=0;
-                $countHealthcare=0;
-                $countEr=0;
-                $countAnesthesiologist=0;
-                $countComanagement=0;
-                $countAdmitting=0;
+                $requesting = 0; $surgeon = 0; $healthcare = 0;
+                $er = 0; $anesthesiologist = 0; $comanage = 0;
+                $admitting = 0; $countAttending = 0; $countRequesting = 0;
+                $countSurgeon = 0; $countHealthcare = 0; $countEr = 0;
+                $countAnesthesiologist = 0; $countComanagement = 0; $countAdmitting = 0;
                 $total=$request->pf;
                 foreach ($doctors as $doctor) {
                     foreach ($request->doctortype as $types_of_doctors) {
@@ -1024,13 +986,14 @@ class UserController extends Controller
                                 $doctor->credit_records()->attach($record->id, [
                                         'doctor_role' => $types_of_doctors['role'],
                                         'professional_fee' =>  ($total -
-                                        (($requesting * $countRequesting)
-                                        + ($surgeon * $countSurgeon)
-                                        + ($healthcare * $countHealthcare)
-                                        + ($er * $countEr)
-                                        + ($anesthesiologist * $countAnesthesiologist)
-                                        + ($comanage * $countComanagement)
-                                        + ($admitting * $countAdmitting))) / $countAttending
+                                        (($requesting * $countRequesting) +
+                                        ($surgeon * $countSurgeon) +
+                                        ($healthcare * $countHealthcare) +
+                                        ($er * $countEr) +
+                                        ($anesthesiologist * $countAnesthesiologist) +
+                                        ($comanage * $countComanagement) +
+                                        ($admitting * $countAdmitting))) /
+                                        $countAttending
                                     ]);
                             } else if ($types_of_doctors['role'] == 'requesting') {
                                 $doctor->credit_records()->attach($record->id, [
@@ -1072,21 +1035,11 @@ class UserController extends Controller
                     }
                 }
             } else {
-                $requesting=0;
-                $surgeon=0;
-                $healthcare=0;
-                $er=0;
-                $anesthesiologist=0;
-                $comanage=0;
-                $admitting=0;
-                $countAttending=0;
-                $countRequesting=0;
-                $countSurgeon=0;
-                $countHealthcare=0;
-                $countEr=0;
-                $countAnesthesiologist=0;
-                $countComanagement=0;
-                $countAdmitting=0;
+                $requesting=0; $surgeon=0; $healthcare=0;
+                $er=0; $anesthesiologist=0; $comanage=0;
+                $admitting=0; $countAttending=0; $countRequesting=0;
+                $countSurgeon=0; $countHealthcare=0; $countEr=0;
+                $countAnesthesiologist=0; $countComanagement=0; $countAdmitting=0;
                 $total=$request->pf;
                 $record->record_type = "old";
                 $record->total = $request->pf;
@@ -1161,13 +1114,14 @@ class UserController extends Controller
                                     $doctor->credit_records()->attach($record->id, [
                                             'doctor_role' => $types_of_doctors['role'],
                                             'professional_fee' =>  ($total -
-                                            (($requesting * $countRequesting)
-                                            + ($surgeon * $countSurgeon)
-                                            + ($healthcare * $countHealthcare)
-                                            + ($er * $countEr)
-                                            + ($anesthesiologist * $countAnesthesiologist)
-                                            + ($comanage * $countComanagement)
-                                            + ($admitting * $countAdmitting))) / $countAttending
+                                            (($requesting * $countRequesting) +
+                                            ($surgeon * $countSurgeon) +
+                                            ($healthcare * $countHealthcare) +
+                                            ($er * $countEr) +
+                                            ($anesthesiologist * $countAnesthesiologist) +
+                                            ($comanage * $countComanagement) +
+                                            ($admitting * $countAdmitting))) /
+                                            $countAttending
                                         ]);
                                 } else if ($types_of_doctors['role'] == 'requesting') {
                                     $doctor->credit_records()->attach($record->id, [
