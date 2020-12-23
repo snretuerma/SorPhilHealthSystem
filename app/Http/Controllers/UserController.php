@@ -303,6 +303,7 @@ class UserController extends Controller
         }])
             ->where('hospital_id', Auth::user()->hospital_id)
             ->get();
+        // dd($summary);
         return response()->json($summary);
     }
 
@@ -394,12 +395,29 @@ class UserController extends Controller
 
     public function getCoPhysicians(Request $request)
     {
-        $records = DB::table("doctor_records")->join("credit_records" , "credit_records.id", "doctor_records.record_id")
-        ->distinct('record_id')->whereIn('record_id', $request->record_id)
-        ->where('doctor_id', '<>', $request->doctor_id)
-        ->where('credit_records.batch', '=' , $request->batch)->get();
+        // $records = DB::table("doctor_records")->join("credit_records" , "credit_records.id", "doctor_records.record_id")
+        // ->distinct('record_id')->whereIn('record_id', $request->record_id)
+        // ->where('doctor_id', '<>', $request->doctor_id)
+        // ->where('credit_records.batch', '=' , $request->batch)->get();
 
-        return $records;
+        $records = DB::table("doctor_records")
+        ->join("doctors" , "doctors.id", "doctor_records.doctor_id")
+        ->join("credit_records" , "credit_records.id", "doctor_records.record_id")
+        ->where("doctor_records.doctor_id", "=", $request->doctor_id)
+        ->where("credit_records.batch", "=", $request->batch)
+        ->get();
+        $cophysician=array();
+        $credit_recordId= $records->pluck('record_id')->all();
+        for ($i=0; $i < sizeof($credit_recordId); $i++) {
+            array_push($cophysician, DB::table("doctor_records")
+            ->join("doctors" , "doctors.id", "doctor_records.doctor_id")
+            ->join("credit_records" , "credit_records.id", "doctor_records.record_id")
+            ->where("doctor_records.record_id", "=", $credit_recordId[$i])
+            ->where("credit_records.batch", "=", $request->batch)
+            ->get());
+
+        }
+        return $cophysician;
     }
 
     /**

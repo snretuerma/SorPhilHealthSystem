@@ -424,8 +424,31 @@
                         </el-table-column>
                         <el-table-column :label="dialogViewTitle">
                             <el-table-column prop="#" label="AP">
+                                <el-table-column prop="att"> </el-table-column>
+                                <el-table-column prop="#"> </el-table-column>
                             </el-table-column>
-                            <el-table-column prop="#" label="REF">
+                            <el-table-column prop="ref" label="REF">
+                                <el-table-column prop="ref"> </el-table-column>
+                                <el-table-column prop="#"> </el-table-column>
+                            </el-table-column>
+                            <el-table-column prop="#" label="ANES">
+                                <el-table-column prop="#"> </el-table-column>
+                                <el-table-column prop="#"> </el-table-column>
+                            </el-table-column>
+                            <el-table-column prop="#" label="CO_MGT">
+                                <el-table-column prop="#"> </el-table-column>
+                                <el-table-column prop="#"> </el-table-column>
+                            </el-table-column>
+                            <el-table-column prop="#" label="ADMIT">
+                                <el-table-column prop="#"> </el-table-column>
+                                <el-table-column prop="#"> </el-table-column>
+                            </el-table-column>
+                        </el-table-column>
+
+                        <el-table-column label="Co-Physician">
+                            <el-table-column prop="allatt" label="AP">
+                            </el-table-column>
+                            <el-table-column prop="allref" label="REF">
                             </el-table-column>
                             <el-table-column prop="#" label="ANES">
                             </el-table-column>
@@ -569,10 +592,11 @@ import _ from "lodash";
 export default {
     data() {
         return {
+            batchData: [],
             value: [],
             batch: [],
             doctors: [],
-            doctor_id: '',
+            doctor_id: "",
             temp: [],
             edit_object: "",
             errors: [],
@@ -676,17 +700,15 @@ export default {
         }
     },
     methods: {
-        getCoPhysicians:function (id) {
-            var temp = [];
-            this.batch_list.forEach(el =>{
-                temp.push(el.id);
-            });
+        getCoPhysicians: function(id) {
             this.form1.doctor_id = id;
-            this.form1.record_id = temp;
             this.form1.batch = this.value[0];
-            axios.post("getCoPhysicians", this.form1).then(response => {
-
-            }).catch(function(error) {});
+            axios
+                .post("getCoPhysicians", this.form1)
+                .then(response => {
+                    this.batchData = response.data;
+                })
+                .catch(function(error) {});
         },
         getBatch() {
             axios
@@ -734,32 +756,94 @@ export default {
                 });
             });
         },
+
         handleView(row_data) {
             this.dialogViewTitle = row_data.name.toUpperCase();
             this.show_doctor_summary = true;
-            this.batch_list = [];
+            var doctorList = this.doctors;
             var batch = [];
             var count = 0;
-            this.doctor_id = row_data.id;
-            row_data.credit_records.forEach(el => {
-                el.netPF = 0;
-                el.grossPF = 0;
+            this.form1.doctor_id = row_data.id;
+            this.form1.batch = this.value[0];
+            axios
+                .post("getCoPhysicians", this.form1)
+                .then(response => {
+                    this.batchData = response.data;
+                    this.batchData.forEach(el => {
+                el.forEach(el1 => {
+                    el1.allatt = "";
+                    el1.allref = "";
+                    el1.allane = "";
+                    el1.allcom = "";
+                    el1.alladm = "";
+                    el1.att = "";
+                    el1.ref = "";
+                    el1.com = "";
+                    el1.adm = "";
+                    el1.ane = "";
+                    if ((row_data.id == el1.doctor_id)) {
+                        if (el1.doctor_role == "attending") {
+                            el1.att = el1.doctor_role+ " " + el1.professional_fee;
+                        } else if (el1.doctor_role == "anesthesiologist") {
+                            el1.ane = el1.doctor_role+ " " + el1.professional_fee;
+                        } else if (el1.doctor_role == "comanagement") {
+                            el1.com = el1.doctor_role+ " " + el1.professional_fee;
+                        } else if (el1.doctor_role == "admitting") {
+                            el1.adm = el1.doctor_role+ " " + el1.professional_fee;
+                        } else {
+                            el1.ref = el1.doctor_role+ " " + el1.professional_fee;
+                        }
+                        if(row_data.id != el1.doctor_id) {
+                            if (el1.doctor_role == "attending") {
+                                el1.allatt+= el1.name+"; ";
+                            } else if (el1.doctor_role == "anesthesiologist") {
+                                el1.allane+= el1.name+"; ";
+                            } else if (el1.doctor_role == "comanagement") {
+                                el1.allcom+= el1.name+"; ";
+                            } else if (el1.doctor_role == "admitting") {
+                                el1.alladm+= el1.name+"; ";
+                            } else {
+                                el1.allref+= el1.name+"; ";
+                            }
+                        }
+                    this.batch_list.push(el1);
 
-                if (el.pooled_record != null) {
-                    el.netPF =
-                        Number(el.pivot.professional_fee) +
-                        Number(el.pooled_record.full_time_individual_fee);
-                    el.grossPF = el.netPF * 2;
-                } else el.netPF = Number(el.pivot.professional_fee + 0);
-                el.grossPF = el.netPF * 2;
-                if (el.batch == this.value[0]) {
-                    this.batch_list.push(el);
-                }
+                    }
 
+
+                });
             });
 
+                })
+                .catch(function(error) {});
+
+            // this.getCoPhysicians(row_data.id);
+            console.log(this.batch_list);
+            // this.getCoPhysicians.forEach(el =>{
+            //     if (el.doctor_id == this.doctor.id) {
+            //         this.batch_list.push(el);
+            //     }
+            // })
+            // console.log('credit', row_data.credit_records)
+            // row_data.credit_records.forEach(el => {
+            //     el.netPF = 0;
+            //     el.grossPF = 0;
+            //     el.coPhysicians = [];
+
+            //     if (el.pooled_record != null) {
+            //         el.netPF =
+            //             Number(el.pivot.professional_fee) +
+            //             Number(el.pooled_record.full_time_individual_fee);
+            //         el.grossPF = el.netPF * 2;
+            //     } else el.netPF = Number(el.pivot.professional_fee + 0);
+            //     el.grossPF = el.netPF * 2;
+            //     if (el.batch == this.value[0]) {
+            //         this.batch_list.push(el);
+            //     }
+            // });
+
+            // console.log(this.batch_list);
             this.getBatch();
-            this.getCoPhysicians(this.doctor_id);
             this.holder = row_data;
         },
         doctorsFormAction() {
