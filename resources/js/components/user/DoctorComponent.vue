@@ -716,8 +716,6 @@ export default {
             this.formResetFields();
         },
         handleView(row_data) {
-            var temp=this.doctors.find(item => item.id == 6);
-            // console.log(temp);
             this.dialogViewTitle = row_data.name.toUpperCase();
             this.show_doctor_summary = true;
             this.batch_list = [];
