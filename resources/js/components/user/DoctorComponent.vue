@@ -773,56 +773,6 @@ export default {
                     var batch = [];
                     var count = 0;
                     this.holder.credit_records.forEach(el => {
-                        el.co_ap_name = '';
-                        el.co_ap_fee = 0;
-                        el.co_ref_name = '';
-                        el.co_ref_fee = 0;
-                        el.co_anes_name = '';
-                        el.co_anes_fee = 0;
-                        el.co_coman_name = '';
-                        el.co_coman_fee = 0;
-                        el.co_admi_name = '';
-                        el.co_admi_fee = 0;
-                        this.co_physician[0].forEach((physician)=>{
-                            if(el.pivot.record_id == physician.record_id && el.pivot.doctor_id == physician.doctor_id){
-                                if(physician.doctor_role == 'requesting' ||
-                                    physician.doctor_role == 'surgeon' ||
-                                    physician.doctor_role == 'healthcare' ||
-                                    physician.doctor_role == 'er'){
-
-                                    el.pivot['ref_name'] = physician.name;
-                                    el.pivot['ref_fee'] = physician.professional_fee;
-                                }else{
-                                    el.pivot[el.pivot.doctor_role + '_name'] = physician.name;
-                                    el.pivot[el.pivot.doctor_role + '_fee'] = physician.professional_fee;
-                                }
-                            }else{
-                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'attending'){
-                                    el.co_ap_name += physician.name + ', ';
-                                    el.co_ap_fee += Number(physician.professional_fee);
-                                }
-                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'requesting' ||
-                                    physician.doctor_role == 'surgeon' ||
-                                    physician.doctor_role == 'healthcare' ||
-                                    physician.doctor_role == 'er'){
-
-                                    el.co_ref_name += physician.name + ', ';
-                                    el.co_ref_fee += Number(physician.professional_fee);
-                                }
-                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'anesthesiologist'){
-                                    el.co_anes_name += physician.name + ', ';
-                                    el.co_anes_fee += Number(physician.professional_fee);
-                                }
-                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'comanagement'){
-                                    el.co_coman_name += physician.name + ', ';
-                                    el.co_coman_fee += Number(physician.professional_fee);
-                                }
-                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'admitting'){
-                                    el.co_admi_name += physician.name + ', ';
-                                    el.co_admi_fee += Number(physician.professional_fee);
-                                }
-                            }
-                        });
                         el.netPF = 0;
                         el.grossPF = 0;
                         if (el.pooled_record != null) {
@@ -833,6 +783,53 @@ export default {
                         } else el.netPF = Number(el.pivot.professional_fee + 0);
                         el.grossPF = el.netPF * 2;
                         if (el.batch == this.value[0]) {
+                            el.co_ap_name = '';
+                            el.co_ap_fee = 0;
+                            el.co_ref_name = '';
+                            el.co_ref_fee = 0;
+                            el.co_anes_name = '';
+                            el.co_anes_fee = 0;
+                            el.co_coman_name = '';
+                            el.co_coman_fee = 0;
+                            el.co_admi_name = '';
+                            el.co_admi_fee = 0;
+                            this.co_physician[0].forEach((physician)=>{
+                                if(el.pivot.record_id == physician.record_id && el.pivot.doctor_id == physician.doctor_id){
+                                    if(physician.doctor_role == 'requesting' ||
+                                        physician.doctor_role == 'surgeon' ||
+                                        physician.doctor_role == 'healthcare' ||
+                                        physician.doctor_role == 'er'){
+
+                                        el.pivot['ref_name'] = physician.name;
+                                        el.pivot['ref_fee'] = physician.professional_fee;
+                                    }else{
+                                        el.pivot[el.pivot.doctor_role + '_name'] = physician.name;
+                                        el.pivot[el.pivot.doctor_role + '_fee'] = physician.professional_fee;
+                                    }
+                                }else{
+                                    if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'attending'){
+                                        el.co_ap_name += physician.name + ', ';
+                                        el.co_ap_fee += Number(physician.professional_fee);
+                                    }
+                                    if(el.pivot.record_id == physician.record_id && ['requesting','surgeon','healthcare','er'].includes(physician.doctor_role)){
+
+                                        el.co_ref_name += physician.name + ', ';
+                                        el.co_ref_fee += Number(physician.professional_fee);
+                                    }
+                                    if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'anesthesiologist'){
+                                        el.co_anes_name += physician.name + ', ';
+                                        el.co_anes_fee += Number(physician.professional_fee);
+                                    }
+                                    if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'comanagement'){
+                                        el.co_coman_name += physician.name + ', ';
+                                        el.co_coman_fee += Number(physician.professional_fee);
+                                    }
+                                    if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'admitting'){
+                                        el.co_admi_name += physician.name + ', ';
+                                        el.co_admi_fee += Number(physician.professional_fee);
+                                    }
+                                }
+                            });
                             this.batch_list.push(el);
                         }
                     });
@@ -900,10 +897,9 @@ export default {
                                     el.co_ap_name += physician.name + ', ';
                                     el.co_ap_fee += Number(physician.professional_fee);
                                 }
-                                if(el.pivot.record_id == physician.record_id && physician.doctor_role == 'requesting' ||
-                                    physician.doctor_role == 'surgeon' ||
-                                    physician.doctor_role == 'healthcare' ||
-                                    physician.doctor_role == 'er'){
+                                //var rr = ['requesting','surgeon','healthcare','er']
+                                if(el.pivot.record_id == physician.record_id && ['requesting','surgeon','healthcare','er'].includes(physician.doctor_role)
+                                    ){
 
                                     el.co_ref_name += physician.name + ', ';
                                     el.co_ref_fee += Number(physician.professional_fee);
