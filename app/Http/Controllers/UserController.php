@@ -325,7 +325,8 @@ class UserController extends Controller
         $doctor_records = DB::table('doctor_records')
             ->join('doctors', 'doctor_records.doctor_id', '=', 'doctors.id')
             ->join('credit_records', 'doctor_records.record_id', '=', 'credit_records.id')
-            ->select('doctor_records.*', 'doctors.name', 'credit_records.batch')->where('credit_records.batch', $request->batch)
+            ->select('doctor_records.*', 'doctors.name', 'credit_records.batch')
+            ->where('credit_records.batch', $request->batch)
             ->get();
         return $doctor_records;
     }
@@ -418,11 +419,6 @@ class UserController extends Controller
 
     public function getCoPhysicians(Request $request)
     {
-        // $records = DB::table("doctor_records")->join("credit_records" , "credit_records.id", "doctor_records.record_id")
-        // ->distinct('record_id')->whereIn('record_id', $request->record_id)
-        // ->where('doctor_id', '<>', $request->doctor_id)
-        // ->where('credit_records.batch', '=' , $request->batch)->get();
-
         $records = DB::table("doctor_records")
         ->join("doctors" , "doctors.id", "doctor_records.doctor_id")
         ->join("credit_records" , "credit_records.id", "doctor_records.record_id")
@@ -433,12 +429,11 @@ class UserController extends Controller
         $credit_recordId= $records->pluck('record_id')->all();
         for ($i=0; $i < sizeof($credit_recordId); $i++) {
             array_push($cophysician, DB::table("doctor_records")
-            ->join("doctors" , "doctors.id", "doctor_records.doctor_id")
-            ->join("credit_records" , "credit_records.id", "doctor_records.record_id")
+            ->join("doctors", "doctors.id", "doctor_records.doctor_id")
+            ->join("credit_records", "credit_records.id", "doctor_records.record_id")
             ->where("doctor_records.record_id", "=", $credit_recordId[$i])
             ->where("credit_records.batch", "=", $request->batch)
             ->get());
-
         }
         return $cophysician;
     }
