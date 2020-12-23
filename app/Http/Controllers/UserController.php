@@ -420,8 +420,8 @@ class UserController extends Controller
     public function getCoPhysicians(Request $request)
     {
         $records = DB::table("doctor_records")
-        ->join("doctors" , "doctors.id", "doctor_records.doctor_id")
-        ->join("credit_records" , "credit_records.id", "doctor_records.record_id")
+        ->join("doctors", "doctors.id", "doctor_records.doctor_id")
+        ->join("credit_records", "credit_records.id", "doctor_records.record_id")
         ->where("doctor_records.doctor_id", "=", $request->doctor_id)
         ->where("credit_records.batch", "=", $request->batch)
         ->get();
