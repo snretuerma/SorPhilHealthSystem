@@ -100,7 +100,7 @@ class UserController extends Controller
             'Admitting_Physician',
             'Requesting_Physician',
             'Co_Management',
-            'Anesthesiology_Physician',
+            'Anesthesiologist_Physician',
             'Surgeon_Physician',
             'HealthCare_Physician',
             'ER_Physician'
@@ -297,10 +297,37 @@ class UserController extends Controller
      */
     public function getDoctors()
     {
-        $summary = Doctor::with('credit_records')
+        $summary = Doctor::with(['credit_records' => function ($query) {
+            $query->with('pooled_record');
+        }])
             ->where('hospital_id', Auth::user()->hospital_id)
             ->get();
+        // dd($summary);
         return response()->json($summary);
+    }
+
+    //Co-Physician
+    /**
+     * Gets the list of co-doctors for the current user's hospital
+     *
+     * @var void
+     * @return Collection
+     */
+    public function getDoctorsWithCoPhysician(Request $request)
+    {
+        //dd($request->batch);
+        /*$summary = Doctor::with(['credit_records')
+            ->where('hospital_id', Auth::user()->hospital_id)
+            ->get();
+        return response()->json($summary);*/
+
+        $doctor_records = DB::table('doctor_records')
+            ->join('doctors', 'doctor_records.doctor_id', '=', 'doctors.id')
+            ->join('credit_records', 'doctor_records.record_id', '=', 'credit_records.id')
+            ->select('doctor_records.*', 'doctors.name', 'credit_records.batch')
+            ->where('credit_records.batch', $request->batch)
+            ->get();
+        return $doctor_records;
     }
 
     /**
@@ -309,6 +336,7 @@ class UserController extends Controller
      * @var Request $request
      * @return Doctor
      */
+
     public function addDoctor(Request $request): Doctor
     {
         $request->validate(
@@ -386,6 +414,27 @@ class UserController extends Controller
                 'status' => 'error',
             ]
         );
+    }
+
+    public function getCoPhysicians(Request $request)
+    {
+        $records = DB::table("doctor_records")
+        ->join("doctors", "doctors.id", "doctor_records.doctor_id")
+        ->join("credit_records", "credit_records.id", "doctor_records.record_id")
+        ->where("doctor_records.doctor_id", "=", $request->doctor_id)
+        ->where("credit_records.batch", "=", $request->batch)
+        ->get();
+        $cophysician=array();
+        $credit_recordId= $records->pluck('record_id')->all();
+        for ($i=0; $i < sizeof($credit_recordId); $i++) {
+            array_push($cophysician, DB::table("doctor_records")
+            ->join("doctors", "doctors.id", "doctor_records.doctor_id")
+            ->join("credit_records", "credit_records.id", "doctor_records.record_id")
+            ->where("doctor_records.record_id", "=", $credit_recordId[$i])
+            ->where("credit_records.batch", "=", $request->batch)
+            ->get());
+        }
+        return $cophysician;
     }
 
     /**
