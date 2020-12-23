@@ -721,6 +721,7 @@ export default {
             this.batch_list = [];
             var batch = [];
             var count = 0;
+            console.log(row_data)
             row_data.credit_records.forEach((el=>{
                 if(batch.includes(el.batch)){
                     this.batch_list.forEach((b)=>{
