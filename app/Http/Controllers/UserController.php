@@ -124,7 +124,7 @@ class UserController extends Controller
                     'Admitting_Physician' => json_decode($setting)->physicians[6],
                     'Requesting_Physician' => json_decode($setting)->physicians[0],
                     'Co_Management' => json_decode($setting)->physicians[5],
-                    'Anesthesiology_Physician' => json_decode($setting)->physicians[4],
+                    'Anesthesiologist_Physician' => json_decode($setting)->physicians[4],
                     'Surgeon_Physician' => json_decode($setting)->physicians[1],
                     'HealthCare_Physician' => json_decode($setting)->physicians[2],
                     'ER_Physician' => json_decode($setting)->physicians[3]
