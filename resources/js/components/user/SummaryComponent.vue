@@ -3,7 +3,7 @@
         <div class="row header-top">
             <div class="header-title-parent">
                 <span class="header-title">
-                    <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Summary of
+                    <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Dashboard / Summary of
                     Doctor's Performance Base
                 </span>
             </div>

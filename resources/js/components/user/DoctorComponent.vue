@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- Header -->
+
         <div class="row header-top">
             <div class="header-title-parent">
                 <span class="header-title">
@@ -8,7 +8,7 @@
                 </span>
             </div>
         </div>
-        <!-- End Header -->
+
         <div id="search-box" class="row">
             <div class="col-xl-9 col-lg-8 col-md-6 col-sm-12">
                 <el-input
@@ -926,127 +926,28 @@ export default {
         terminateZeroValue(row, column, cellValue, index) {
             return cellValue || "";
         },
-        getCoPhysicians: function(id) {
-            var temp = [];
-            this.batch_list.forEach(el => {
-                temp.push(el.id);
-            });
-            this.form1.doctor_id = id;
-            this.form1.batch = this.value[0];
-            axios
-                .post("getCoPhysicians", this.form1)
-                .then(response => {})
-                .catch(function(error) {});
-        },
         getCoDoctor(batch) {
-            //'get_co_physician'
             var _this = this;
             axios
-                .post("get_co_physician/" + batch)
-                .then(response => {
-                    _this.co_physician.push(response.data);
-                })
-                .catch(function(error) {});
+            .post("get_co_physician/" + batch)
+            .then(response => {
+                _this.co_physician.push(response.data);
+            })
+            .catch(function(error) {});
         },
         getBatch() {
             axios
-                .get("get_batch")
-                .then(response => {
-                    this.batch = response.data;
-                    this.value[0] = response.data[0].batch;
-                    this.first_batch = response.data[0].batch;
-                })
-                .catch(function(error) {});
+            .get("get_batch")
+            .then(response => {
+                this.batch = response.data;
+                this.value[0] = response.data[0].batch;
+                this.first_batch = response.data[0].batch;
+            })
+            .catch(function(error) {});
         },
         changes() {
             if (this.value != "") {
-                axios
-                    .post("get_co_physician/" + this.value[0])
-                    .then(response => {
-                        this.co_physician = [];
-                        this.co_physician.push(response.data);
-                        this.batch_list = [];
-                        var batch = [];
-                        var count = 0;
-
-                        this.record_total[0].attending_fee_total = 0;
-                        this.record_total[0].ref_fee_total = 0;
-                        this.record_total[0].anesthesiologist_fee_total = 0;
-                        this.record_total[0].comanagement_fee_total = 0;
-                        this.record_total[0].admitting_fee_total = 0;
-                        this.record_total[0].grand_total = 0;
-
-                        this.holder.credit_records.forEach(el => {
-                            el.netPF = 0;
-                            el.grossPF = 0;
-
-                            if (el.pooled_record != null) {
-                                el.netPF = Number(el.pivot.professional_fee) + Number(el.pooled_record.full_time_individual_fee);
-                                el.grossPF = el.netPF * 2;
-                            } else {
-                                el.netPF = Number(el.pivot.professional_fee + 0);
-                                el.grossPF = el.netPF * 2;
-                            }
-
-                            if (el.batch == this.value[0]) {
-                                el.co_attending_name = "";
-                                el.co_attending_fee = 0;
-                                el.co_ref_name = "";
-                                el.co_ref_fee = 0;
-                                el.co_anesthesiologist_name = "";
-                                el.co_anesthesiologist_fee = 0;
-                                el.co_comanagement_name = "";
-                                el.co_comanagement_fee = 0;
-                                el.co_admitting_name = "";
-                                el.co_admitting_fee = 0;
-                                this.co_physician[0].forEach(physician => {
-                                    var doctor_id = physician.doctor_id;
-                                    var doctor_name = physician.name;
-                                    var doctor_fee = physician.professional_fee;
-                                    var doctor_role = physician.doctor_role;
-                                    var doctor_record_id = physician.record_id;
-
-                                    if (el.pivot.record_id == doctor_record_id ) {
-                                        if(el.pivot.doctor_id == doctor_id){
-                                            if (this.ref_physician.includes(doctor_role)) {
-                                                el.pivot["ref_name"] = doctor_name;
-                                                el.pivot["ref_fee"] = doctor_fee;
-                                                if (Number(doctor_fee) != null) {
-                                                    this.record_total[0].ref_fee_total += Number(doctor_fee);
-                                                } else { 
-                                                    this.record_total[0].ref_fee_total += 0;
-                                                }
-                                            } else {
-                                                el.pivot[doctor_role + "_name"] = doctor_name;
-                                                el.pivot[doctor_role + "_fee"] = doctor_fee;
-                                                if (Number(doctor_fee) != null) {
-                                                    this.record_total[0][doctor_role + "_fee_total"]  += Number(doctor_fee)
-                                                }else{
-                                                    this.record_total[0][doctor_role + "_fee_total"]  += 0;
-                                                }
-                                            }
-                                        }else{
-                                            if(this.main_physician.includes(doctor_role)){
-                                                el['co_' + doctor_role + '_name'] += doctor_name + ", ";
-                                                el['co_' + doctor_role + '_fee'] += Number(doctor_fee);
-                                            }else if(this.ref_physician.includes(doctor_role)){
-                                                el.co_ref_name += doctor_name + ", ";
-                                                el.co_ref_fee += Number(doctor_fee);
-                                            }
-                                        }
-                                    }
-                                });
-                                this.batch_list.push(el);
-                            }
-                        });
-                        this.record_total[0].grand_total =
-                            this.record_total[0].attending_fee_total +
-                            this.record_total[0].ref_fee_total +
-                            this.record_total[0].anesthesiologist_fee_total +
-                            this.record_total[0].comanagement_fee_total +
-                            this.record_total[0].admitting_fee_total;
-                    })
-                    .catch(function(error) {});
+                this.getDoctorRecord(this.holder);
             }
         },
         getDoctors() {
@@ -1063,17 +964,20 @@ export default {
         },
 
         handleView(row_data) {
+            this.getDoctorRecord(row_data);
+            this.dialogViewTitle = row_data.name.toUpperCase();
+            this.show_doctor_summary = true;
+            this.doctor_id = row_data.id;
+        },
+        getDoctorRecord(row_data){
             axios
             .post("get_co_physician/" + this.value[0])
             .then(response => {
                 this.co_physician = [];
                 this.co_physician.push(response.data);
-                this.dialogViewTitle = row_data.name.toUpperCase();
-                this.show_doctor_summary = true;
                 this.batch_list = [];
                 var batch = [];
                 var count = 0;
-                this.doctor_id = row_data.id;
 
                 this.record_total[0].attending_fee_total = 0;
                 this.record_total[0].ref_fee_total = 0;
@@ -1710,8 +1614,13 @@ export default {
             var row = 5;
             this.batch_list.forEach((patient)=>{
                 row += 1;
+                var date = new Date(patient.admission_date);
+                var date1 = new Date(patient.discharge_date);
+                var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' + 
+                    date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() + 
+                    '/' + date1.getFullYear();
                 this.sheet_data["A"+row] = {t: 's', v: patient.patient_name};
-                this.sheet_data["B"+row] = {t: 's', v: (patient.admission_date + ' to ' + patient.discharge_date)};
+                this.sheet_data["B"+row] = {t: 's', v: patient_confinement_date};
                 this.sheet_data["C"+row] = {t: 'n', v: patient.grossPF};
                 this.sheet_data["D"+row] = {t: 'n', v: patient.netPF};
                 this.sheet_data["E"+row] = {t: 'n', v: patient.professional_fee};
@@ -1784,15 +1693,6 @@ export default {
                     message: "Please select batch to proceed",
                 });
             }
-            
-            /*var sheet_name = "hh";
-            this.sheet_data.A2.v = "COVERED PERIOD: " + sheet_name.toUpperCase();
-            var sheet_data_object = {};
-            sheet_data_object[sheet_name] = this.sheet_data;
-            XLSX.writeFile({
-                SheetNames:[sheet_name],
-                Sheets: sheet_data_object
-            }, 'Doctor_Record.xlsx');*/
         },
     },
     mounted() {
