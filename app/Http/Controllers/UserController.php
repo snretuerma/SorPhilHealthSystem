@@ -175,8 +175,8 @@ class UserController extends Controller
                                 'Co_Management'
                             ) ? 'comanagement' :
                             explode(
-                                    '_',
-                                    strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
+                                '_',
+                                strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
                             )[0],
                             'professional_fee' => $record->total,
                         ]);
@@ -201,8 +201,8 @@ class UserController extends Controller
                                     'Co_Management'
                                 ) ? 'comanagement' :
                                 explode(
-                                        '_',
-                                        strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
+                                    '_',
+                                    strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
                                 )[0],
                                 'professional_fee' => ($record->non_medical_fee / $doctor->count())
                             ]);
