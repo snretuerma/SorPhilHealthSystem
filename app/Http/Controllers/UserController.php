@@ -124,7 +124,7 @@ class UserController extends Controller
                 $doctor_as = [];
                 $pf = [];
                 $receive_by_non_attending = 0;
-                $seventy_percent = ($each['Total_PF'] * json_decode($setting)->nonmedical) * 
+                $seventy_percent = ($each['Total_PF'] * json_decode($setting)->nonmedical) *
                     json_decode($setting)->shared;
                 foreach ($cell_physician as $physician) {
                     if ($this->splitTwoComma($each[$physician]) != null) {
@@ -134,14 +134,14 @@ class UserController extends Controller
                                     str_replace(' ', '', strtolower(trim($name)))) {
                                     array_push($doctor_ids, $doctor_info['id']);
                                     array_push($doctor_as, $physician);
-                                    if($physician == "Attending_Physician"){
+                                    if ($physician == "Attending_Physician") {
                                         array_push($pf, $seventy_percent);
-                                    }else{
+                                    } else {
                                         array_push(
-                                            $pf, 
+                                            $pf,
                                             ($seventy_percent * $physician_percentage[$physician])
                                         );
-                                        $receive_by_non_attending += 
+                                        $receive_by_non_attending +=
                                             ($seventy_percent * $physician_percentage[$physician]);
                                     }
                                 }
@@ -174,7 +174,7 @@ class UserController extends Controller
                                 $doctor_as[array_search($doctor->id, $doctor_ids)] ==
                                 'Co_Management'
                             ) ? 'comanagement' :
-                                explode(
+                            explode(
                                     '_',
                                     strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
                             )[0],
@@ -200,7 +200,7 @@ class UserController extends Controller
                                     $doctor_as[array_search($doctor->id, $doctor_ids)] ==
                                     'Co_Management'
                                 ) ? 'comanagement' :
-                                    explode(
+                                explode(
                                         '_',
                                         strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
                                 )[0],
@@ -238,7 +238,7 @@ class UserController extends Controller
                         $pooled_record->save();
                         foreach ($doctors as $doctor) {
                             $computed_pf = 0;
-                            if ($doctor_as[array_search($doctor->id, $doctor_ids)] == 'Attending_Physician'){
+                            if ($doctor_as[array_search($doctor->id, $doctor_ids)] == 'Attending_Physician') {
                                 $computed_pf = (
                                     $pf[array_search($doctor->id, $doctor_ids)] - $receive_by_non_attending) /
                                     array_count_values($doctor_as)[$doctor_as[array_search($doctor->id, $doctor_ids)]]
@@ -349,7 +349,7 @@ class UserController extends Controller
         }])
             ->where('hospital_id', Auth::user()->hospital_id)
             ->get();
-            
+
         return response()->json($summary);
     }
 
@@ -518,7 +518,7 @@ class UserController extends Controller
     public function setting(): View
     {
         $hospital=Hospital::find(Auth::user()->hospital_id);
-        return view('roles.user.setting')->with('setting',$hospital->setting);
+        return view('roles.user.setting')->with('setting', $hospital->setting);
     }
 
     /**
