@@ -1023,7 +1023,7 @@ export default {
                             message: "Please select batch to delete",
                         });
                     } else {
-                        this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+                        this.$confirm(`Are you sure you want to delete,\n selected batch: ${this.value[0]} ?`, "Confirm Delete", {
                                 distinguishCancelAndClose: true,
                                 confirmButtonText: "Delete",
                                 cancelButtonText: "Cancel",
