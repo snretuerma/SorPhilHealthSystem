@@ -362,7 +362,7 @@ export default {
                 this.pooled_total = 0;
                 this.pbs_total_total = 0;
                 this.grand_total = 0;
-                this.getSummary(this.value);
+                this.getSummary(this.value[0]);
             }
         },
         getBatch() {
