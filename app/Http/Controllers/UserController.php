@@ -610,12 +610,12 @@ class UserController extends Controller
         $setting = json_decode($hospital->setting);
 
         $doctorRole = array(
-            'requesting' => $setting->physicians[0], 
-            'surgeon' => $setting->physicians[1], 
-            'healthcare' => $setting->physicians[2], 
-            'er' => $setting->physicians[3], 
-            'anesthesiologist' => $setting->physicians[4], 
-            'comanagement' => $setting->physicians[5], 
+            'requesting' => $setting->physicians[0],
+            'surgeon' => $setting->physicians[1],
+            'healthcare' => $setting->physicians[2],
+            'er' => $setting->physicians[3],
+            'anesthesiologist' => $setting->physicians[4],
+            'comanagement' => $setting->physicians[5],
             'admitting' => $setting->physicians[6]
         );
         $seventyPercent = ($total * $setting->nonmedical) * $setting->shared;
@@ -654,7 +654,7 @@ class UserController extends Controller
                 if ($doctor->id == $types_of_doctors['id']) {
                     if ($types_of_doctors['role'] == 'attending') {
                         $countAttending++;
-                    } else{
+                    } else {
                         if (array_key_exists($types_of_doctors['role'], $doctorRole)) {
                             $sRole = $types_of_doctors['role'];
                             $dRole = 'count'.ucfirst($types_of_doctors['role']);
@@ -725,7 +725,7 @@ class UserController extends Controller
                                             ($admitting * $countAdmitting))) /
                                         $countAttending
                                 ]);
-                            } else{
+                            } else {
                                 if (array_key_exists($types_of_doctors['role'], $doctorRole)) {
                                     $sRole = $types_of_doctors['role'];
                                     $doctor->credit_records()->attach($record->id, [
@@ -777,7 +777,7 @@ class UserController extends Controller
                                             ($comanagement * $countComanagement) +
                                             ($admitting * $countAdmitting))) / $countAttending
                                 ]);
-                            } else{
+                            } else {
                                 if (array_key_exists($types_of_doctors['role'], $doctorRole)) {
                                     $sRole = $types_of_doctors['role'];
                                     $doctor->credit_records()->attach($record->id, [
@@ -865,12 +865,12 @@ class UserController extends Controller
         $setting = json_decode($hospital->setting);
 
         $doctorRole = array(
-            'requesting' => $setting->physicians[0], 
-            'surgeon' => $setting->physicians[1], 
-            'healthcare' => $setting->physicians[2], 
-            'er' => $setting->physicians[3], 
-            'anesthesiologist' => $setting->physicians[4], 
-            'comanagement' => $setting->physicians[5], 
+            'requesting' => $setting->physicians[0],
+            'surgeon' => $setting->physicians[1],
+            'healthcare' => $setting->physicians[2],
+            'er' => $setting->physicians[3],
+            'anesthesiologist' => $setting->physicians[4],
+            'comanagement' => $setting->physicians[5],
             'admitting' => $setting->physicians[6]
         );
         $seventyPercent = ($total * $setting->nonmedical) * $setting->shared;
@@ -911,7 +911,7 @@ class UserController extends Controller
                 if ($doctor->id == $types_of_doctors['id']) {
                     if ($types_of_doctors['role'] == 'attending') {
                         $countAttending++;
-                    } else{
+                    } else {
                         if (array_key_exists($types_of_doctors['role'], $doctorRole)) {
                             $sRole = $types_of_doctors['role'];
                             $dRole = 'count'.ucfirst($types_of_doctors['role']);
@@ -992,7 +992,7 @@ class UserController extends Controller
                                             ($admitting * $countAdmitting))) /
                                         $countAttending
                                 ]);
-                            } else{
+                            } else {
                                 if (array_key_exists($types_of_doctors['role'], $doctorRole)) {
                                     $sRole = $types_of_doctors['role'];
                                     $doctor->credit_records()->attach($record->id, [
@@ -1048,7 +1048,7 @@ class UserController extends Controller
                                             ($admitting * $countAdmitting))) /
                                         $countAttending
                                 ]);
-                            } else{
+                            } else {
                                 if (array_key_exists($types_of_doctors['role'], $doctorRole)) {
                                     $sRole = $types_of_doctors['role'];
                                     $doctor->credit_records()->attach($record->id, [
