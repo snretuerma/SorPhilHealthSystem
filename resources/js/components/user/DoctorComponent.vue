@@ -57,94 +57,134 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <el-table v-loading="loading" :data="tableData">
-                            <el-table-column
-                                label="Name"
-                                prop="name"
-                            ></el-table-column>
-                            <el-table-column
-                                label="Employment Type"
-                                prop="is_parttime"
-                                align="center"
-                                :formatter="employmentType"
-                            ></el-table-column>
-                            <el-table-column
-                                label="Employment Status"
-                                prop="is_active"
-                                align="center"
-                                :formatter="employmentStatus"
-                            ></el-table-column>
-                            <el-table-column
-                                width="135"
-                                align="center"
-                                fixed="right"
-                            >
-                                <template slot="header"> Action </template>
-                                <template slot-scope="scope">
-                                    <el-tooltip
-                                        class="item"
-                                        effect="light"
-                                        content="View"
-                                        placement="top"
-                                        :enterable="false"
+                <el-tabs type="border-card">
+                    <el-tab-pane label="All">
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table v-loading="loading" :data="tableData">
+                                    <el-table-column
+                                        label="Name"
+                                        prop="name"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Type"
+                                        prop="is_parttime"
+                                        align="center"
+                                        :formatter="employmentType"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Status"
+                                        prop="is_active"
+                                        align="center"
+                                        :formatter="employmentStatus"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        width="135"
+                                        align="center"
+                                        fixed="right"
                                     >
-                                        <el-button
-                                            size="mini"
-                                            type="info"
-                                            icon="el-icon-info"
-                                            circle
-                                            @click="handleView(scope.row)"
-                                        ></el-button>
-                                    </el-tooltip>
-                                    <el-tooltip
-                                        class="item"
-                                        effect="light"
-                                        content="Edit"
-                                        placement="top"
-                                        :enterable="false"
-                                    >
-                                        <el-button
-                                            size="mini"
-                                            type="primary"
-                                            icon="el-icon-edit"
-                                            circle
-                                            @click="handleEdit(scope.row)"
-                                        ></el-button>
-                                    </el-tooltip>
-                                    <el-tooltip
-                                        class="item"
-                                        effect="light"
-                                        content="Delete"
-                                        placement="top"
-                                        :enterable="false"
-                                    >
-                                        <el-button
-                                            size="mini"
-                                            type="danger"
-                                            icon="el-icon-delete"
-                                            circle
-                                            @click="handleDelete(scope.row)"
-                                        ></el-button>
-                                    </el-tooltip>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <el-pagination
-                            class="align-middle"
-                            background
-                            layout="prev, pager, next"
-                            @current-change="handleCurrentChange"
-                            :page-size="page_size"
-                            :total="total"
-                        />
-                    </div>
-                </div>
+                                        <template slot="header"> Action </template>
+                                        <template slot-scope="scope">
+                                            <el-tooltip
+                                                class="item"
+                                                effect="light"
+                                                content="View"
+                                                placement="top"
+                                                :enterable="false"
+                                            >
+                                                <el-button
+                                                    size="mini"
+                                                    type="info"
+                                                    icon="el-icon-info"
+                                                    circle
+                                                    @click="handleView(scope.row)"
+                                                ></el-button>
+                                            </el-tooltip>
+                                            <el-tooltip
+                                                class="item"
+                                                effect="light"
+                                                content="Edit"
+                                                placement="top"
+                                                :enterable="false"
+                                            >
+                                                <el-button
+                                                    size="mini"
+                                                    type="primary"
+                                                    icon="el-icon-edit"
+                                                    circle
+                                                    @click="handleEdit(scope.row)"
+                                                ></el-button>
+                                            </el-tooltip>
+                                            <el-tooltip
+                                                class="item"
+                                                effect="light"
+                                                content="Delete"
+                                                placement="top"
+                                                :enterable="false"
+                                            >
+                                                <el-button
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="el-icon-delete"
+                                                    circle
+                                                    @click="handleDelete(scope.row)"
+                                                ></el-button>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <el-pagination
+                                    class="align-middle"
+                                    background
+                                    layout="prev, pager, next"
+                                    @current-change="handleCurrentChange"
+                                    :page-size="page_size"
+                                    :total="total"
+                                />
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane :label="count_active_doctors">
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table v-loading="loading" :data="active_doctors">
+                                    <el-table-column
+                                        label="Name"
+                                        prop="name"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Type"
+                                        prop="is_parttime"
+                                        align="center"
+                                        :formatter="employmentType"
+                                    ></el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane :label="count_inactive_doctors">
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table v-loading="loading" :data="inactive_doctors">
+                                    <el-table-column
+                                        label="Name"
+                                        prop="name"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Type"
+                                        prop="is_parttime"
+                                        align="center"
+                                        :formatter="employmentType"
+                                    ></el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
             </div>
         </div>
         <el-dialog
@@ -745,6 +785,10 @@ export default {
             value: [],
             batch: [],
             doctors: [],
+            active_doctors: [],
+            inactive_doctors: [],
+            count_active_doctors: 'Active',
+            count_inactive_doctors: 'Inactive',
             doctor_id: "",
             temp: [],
             edit_object: "",
@@ -955,11 +999,21 @@ export default {
             axios.get("get_doctors").then(response => {
                 this.doctors = response.data;
                 this.loading = false;
+                this.doctor_list_compress = [];
+                this.active_doctors = [];
+                this.inactive_doctors = [];
                 response.data.forEach(el => {
                     _this.doctor_list_compress.push(
                         _this.trimToCompare(el.name)
                     );
+                    if(el.is_active){
+                        _this.active_doctors.push(el);
+                    }else{
+                        _this.inactive_doctors.push(el);
+                    }
                 });
+                this.count_active_doctors = 'Active (' + this.active_doctors.length + ')';
+                this.count_inactive_doctors = 'Inactive (' + this.inactive_doctors.length + ')';
             });
         },
 
