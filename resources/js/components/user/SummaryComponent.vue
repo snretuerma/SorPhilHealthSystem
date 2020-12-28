@@ -3,7 +3,7 @@
         <div class="row header-top">
             <div class="header-title-parent">
                 <span class="header-title">
-                    <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Summary of
+                    <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Dashboard / Summary of
                     Doctor's Performance Base
                 </span>
             </div>
@@ -280,7 +280,7 @@ export default {
             pageSize: 10,
             sheet_data: {
                     A1:{t:'s', v:"SUMMARY OF DOCTOR'S PERFORMANCE BASE"},
-                    A2:{t:'s', v:"COVERED PERIOD: DATE TO DATE"},
+                    A2:{t:'s', v:"COVERED PERIOD:"},
                     A3:{t:'s', v:"NAME OF PHYSICIAN"},
                     B3:{t:'s', v:"50%"},
                     B4:{t:'s', v:"NURSING SERVICES"},
@@ -303,7 +303,7 @@ export default {
             },
             sheet_data_private: {
                     A1:{t:'s', v:"SUMMARY OF DOCTOR'S PERFORMANCE BASE"},
-                    A2:{t:'s', v:"COVERED PERIOD: DATE TO DATE"},
+                    A2:{t:'s', v:"COVERED PERIOD:"},
                     A3:{t:'s', v:"NAME OF PHYSICIAN"},
                     B3:{t:'s', v:"50%"},
                     B4:{t:'s', v:"NURSING SERVICES"},
@@ -362,7 +362,7 @@ export default {
                 this.pooled_total = 0;
                 this.pbs_total_total = 0;
                 this.grand_total = 0;
-                this.getSummary(this.value);
+                this.getSummary(this.value[0]);
             }
         },
         getBatch() {
@@ -547,6 +547,8 @@ export default {
                     var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
                     var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
                     sheet_name = date_from + " - " + date_to;
+                    this.sheet_data.A2.v = "COVERED PERIOD: " + sheet_name.toUpperCase();
+                    this.sheet_data_private.A2.v = "COVERED PERIOD: " + sheet_name.toUpperCase();
                 }
                 var sheet_data_object = {};
                 sheet_data_object[sheet_name] = this.sheet_data;

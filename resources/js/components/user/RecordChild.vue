@@ -31,7 +31,6 @@
                                         :multiple-limit="1"
                                         filterable
                                         default-first-option
-                                        allow-create
                                         @change="changes">
                                         <el-option
                                             v-for="item in batch"
@@ -49,12 +48,33 @@
             <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12">
                 <div class="row">
                     <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
-                        <el-button
+                        <!-- <el-button
                             class="btn-action block-button"
                             @click="triggerAdd"
                         >
                             Add
-                        </el-button>
+                        </el-button> -->
+                        <el-dropdown @command="formDialog" class="block-button btn-action">
+                            <el-button>
+                                Actions
+                                <i class="el-icon-arrow-down el-icon--right"/>
+                            </el-button>
+                            <el-dropdown-menu slot="dropdown">
+                                <el-dropdown-item
+                                    icon="el-icon-document-add"
+                                    command="add_record"
+                                    >
+                                    Add Record
+                                </el-dropdown-item>
+                                <el-dropdown-item
+                                    icon="el-icon-delete"
+                                    command="delete_batch"
+                                    >
+                                    Delete by batch
+                                </el-dropdown-item
+                                >
+                            </el-dropdown-menu>
+                        </el-dropdown>
                     </div>
                     <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
                         <el-dropdown @command="formDialog" class="block-button btn-action">
@@ -87,7 +107,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div id="test">
-                            <el-table :data="listData">
+                            <el-table v-loading="loading" :data="listData">
                                 <el-table-column
                                     width="200"
                                     label="Patient"
@@ -173,15 +193,15 @@
                                         <el-tooltip
                                             class="item"
                                             effect="light"
-                                            content="Add Contribution"
+                                            content="Edit"
                                             placement="top"
-                                            v-if="scope.row.totalPersonnel == 0"
                                             :enterable = false
                                         >
                                             <el-button
                                                 size="mini"
-                                                type="success"
-                                                icon="el-icon-plus"
+                                                type="primary"
+                                                icon="el-icon-edit"
+                                                @click="handleEditRecord(scope.$index, scope.row)"
                                                 circle
                                             >
                                             </el-button>
@@ -189,23 +209,7 @@
                                         <el-tooltip
                                             class="item"
                                             effect="light"
-                                            content="view"
-                                            placement="top"
-                                            v-if="scope.row.totalPersonnel > 0"
-                                            :enterable = false
-                                        >
-                                            <el-button
-                                                size="mini"
-                                                type="info"
-                                                icon="el-icon-info"
-                                                circle
-                                            >
-                                            </el-button>
-                                        </el-tooltip>
-                                        <el-tooltip
-                                            class="item"
-                                            effect="light"
-                                            content="Delete"
+                                            content="delete"
                                             placement="top"
                                             :enterable = false
                                         >
@@ -213,6 +217,7 @@
                                                 size="mini"
                                                 type="danger"
                                                 icon="el-icon-delete"
+                                                @click="handleDeleteRecord(scope.$index, scope.row)"
                                                 circle
                                             ></el-button>
                                         </el-tooltip>
@@ -437,6 +442,7 @@ export default {
             dialogtitle: 'Import Excel',
             isimport: true,
             export_excel:[],
+            loading:true
         };
     },
     computed: {
@@ -468,18 +474,56 @@ export default {
         }
     },
     methods: {
-         triggerAdd() {
-            this.$emit("add-open", "hi");
+        triggerAdd() {
+            this.$emit("add-open", "", "add");
+        },
+        handleDeleteRecord(index, row) {
+            var data = this.data;
+            this.deleteRecord(row.id, res_value => {
+                if (res_value) {
+                    data.splice(data.indexOf(row), 1);
+                }
+            });
+        },
+        handleEditRecord(index, row) {
+            console.log(row);
+            this.$emit("add-open", row, "edit");
+        },
+        deleteRecord: function(id, res) {
+            this.$confirm("Are you sure you want to delete?", "Confirm Delete", {
+                    distinguishCancelAndClose: true,
+                    confirmButtonText: "Delete",
+                    cancelButtonText: "Cancel",
+                    type: "warning"
+                }
+            ).then(() => {
+                    var _this = this;
+                    axios.delete(`delete_record/${id}`).then(function(response) {
+                        if (response.status > 199 && response.status < 203) {
+                            _this.$notify({
+                                type: 'success',
+                                title: 'Delete',
+                                message: "Successfully deleted",
+                            });
+                            _this.getBatch();
+                            res(id);
+                        }
+                    });
+                })
+                .catch(action => {
+                    this.open_notif("info", "Cancelled", "No Changes");
+                });
         },
         handleCurrentChange(val) {
             this.page = val;
         },
-        changes(){
+        changes() {
             if(this.value != '') {
+                this.loading = true;
                 this.getRecords(this.value);
             }
         },
-        getBatch(){
+        getBatch() {
              axios
                 .get("get_batch")
                 .then(response => {
@@ -491,52 +535,52 @@ export default {
                 })
                 .catch(function(error) {});
         },
-        getRecords(batch){
+        getRecords(batch) {
              axios
                 .get("get_records/" + batch)
                 .then(response => {
                     response.data.forEach(record => {
-                        record.allattending="";
-                        record.allrequesting="";
-                        record.allsurgeon="";
-                        record.allhealthcare="";
-                        record.aller="";
-                        record.allanesthesiologist="";
-                        record.allcomanagement="";
-                        record.alladmitting="";
-                        record.doctors.forEach(doctor=>{
-                            if(doctor.pivot.doctor_role=="attending") {
-                                record.allattending+=doctor.name+"; ";
+                        record.allattending = "";
+                        record.allrequesting = "";
+                        record.allsurgeon = "";
+                        record.allhealthcare = "";
+                        record.aller = "";
+                        record.allanesthesiologist = "";
+                        record.allcomanagement = "";
+                        record.alladmitting = "";
+                        record.doctors.forEach(doctor => {
+                            if (doctor.pivot.doctor_role == "attending") {
+                                record.allattending += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="requesting") {
-                                record.allrequesting+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "requesting") {
+                                record.allrequesting += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="surgeon") {
-                                record.allsurgeon+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "surgeon") {
+                                record.allsurgeon += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="healthcare") {
-                                record.allhealthcare+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "healthcare") {
+                                record.allhealthcare += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="er") {
-                                record.aller+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "er") {
+                                record.aller += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="anesthesiologist") {
+                            if (doctor.pivot.doctor_role == "anesthesiologist") {
                                 record.allanesthesiologist+=doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="comanagement") {
-                                record.allcomanagement+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "comanagement") {
+                                record.allcomanagement += doctor.name+"; ";
                             }
-                            if(doctor.pivot.doctor_role=="admitting") {
-                                record.alladmitting+=doctor.name+"; ";
+                            if (doctor.pivot.doctor_role == "admitting") {
+                                record.alladmitting += doctor.name+"; ";
                             }
                         });
                     });
                     this.data = response.data;
-                    console.log(this.data);
+                    this.loading=false;
                 })
                 .catch(function(error) {});
         },
-        covertDate(row, column, cellValue, index){
+        covertDate(row, column, cellValue, index) {
             var hours = cellValue.getHours();
             var minutes = cellValue.getMinutes();
             var ampm = hours >= 12 ? 'pm' : 'am';
@@ -546,7 +590,7 @@ export default {
             var strTime = hours + ampm;
             return cellValue.getFullYear() + "-" + (cellValue.getMonth() + 1) + "-" + cellValue.getDate() + " " + strTime;
         },
-        covertReadable(row, column, cellValue, index){
+        covertReadable(row, column, cellValue, index) {
             if(cellValue == 1){
                 return 'Yes';
             }else if(cellValue == 0){
@@ -561,11 +605,13 @@ export default {
             this.exceldata = this.current_tab_content[this.current_tab];
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
-        getDoctors(){
+        getDoctors() {
             var _this = this;
             axios
                 .get("get_doctors")
                 .then(function(res) {
+                    _this.doctor_list_compress = [];
+                    _this.doctor_list_complete = [];
                     res.data.forEach(el => {
                         _this.doctor_list_compress.push(_this.trimToCompare(el.name));
                         _this.doctor_list_complete.push(el);
@@ -581,14 +627,17 @@ export default {
                 _this.excel_validation_error[2].length < 1 &&
                 _this.preview_excel_sheet_data.length > 0
             ){
-                var excel_data = [{
+                var excel_data = [];
+                excel_data = [{
                     doctor_record: _this.preview_excel_sheet_data,
                     import_batch: _this.import_batch,
                     doctor_list: _this.doctor_list_complete
                 }];
+                console.log(excel_data);
                 axios
                 .post("import_doctor_record", excel_data)
                 .then(function(res) {
+                    console.log(res.data);
                     _this.$notify({
                         type: 'success',
                         title: 'Import',
@@ -631,10 +680,10 @@ export default {
                 message: file.name + " was removed",
             });
         },
-        trimToCompare(text){
+        trimToCompare(text) {
             return (text).trim().toLowerCase().replace(/\s/g, '');
         },
-        checkSheetName(sheetname, position_in_object){
+        checkSheetName(sheetname, position_in_object) {
             var split_scope = sheetname.split('-');
             var value_from, value_to = "";
             if(new Date(split_scope[0]) != "Invalid Date"){
@@ -664,7 +713,7 @@ export default {
                 return "invalid";
             }
         },
-        fileData(file, fileList){
+        fileData(file, fileList) {
             var _this = this;
             var header_required = [
                 "patient_name",
@@ -675,7 +724,7 @@ export default {
                 "admitting_physician",
                 "requesting_physician",
                 "co_management",
-                "anesthesiology_physician",
+                "anesthesiologist_physician",
                 "surgeon_physician",
                 "healthcare_physician",
                 "er_physician",
@@ -870,20 +919,20 @@ export default {
                 _this.defaultTabSelected();
             }
         },
-        handleClickTab(tab, event){
+        handleClickTab(tab, event) {
             this.current_tab = tab.index;
             this.tablelength = this.current_tab_content[tab.index].length;
             this.exceldata = this.current_tab_content[tab.index];
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
-        defaultTabSelected(){
+        defaultTabSelected() {
             this.current_tab = 0;
             this.tablelength = this.current_tab_content[0].length;
             this.exceldata = this.current_tab_content[0];
             this.tablepage = parseInt(1);
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
-        exportExcel(){
+        exportExcel() {
             this.export_excel = [];
             this.data.forEach((record)=>{
                 this.export_excel.push({
@@ -948,7 +997,7 @@ export default {
             }
             return date;
         },
-        formDialog: function(key) {
+        formDialog(key) {
             switch (key) {
                 case "import_data":
                         this.dialogtitle = 'Import Excel';
@@ -962,13 +1011,53 @@ export default {
                         this.isimport = false;
                         this.dialogExcelFile = true;
                     break;
+                case "add_record":
+                        this.triggerAdd();
+                    break;
+                case "delete_batch":
+                    var _this = this;
+                    if (this.value.length == 0 || this.value[0] == 'All' ) {
+                       this.$notify({
+                            type: 'info',
+                            title: 'info',
+                            message: "Please select batch to delete",
+                        });
+                    } else {
+                        this.$confirm(`Are you sure you want to delete,\n selected batch: ${this.value[0]} ?`, "Confirm Delete", {
+                                distinguishCancelAndClose: true,
+                                confirmButtonText: "Delete",
+                                cancelButtonText: "Cancel",
+                                type: "warning"
+                            }
+                        ).then(() => {
+                                axios.delete(`delete_recordBybatch/${this.value[0]}`)
+                                .then(function(response) {
+                                    if (response.status > 199 && response.status < 203) {
+                                        _this.$notify({
+                                            type: 'success',
+                                            title: 'Delete',
+                                            message: "Successfully deleted",
+                                        });
+                                    }
+                                    _this.getBatch();
+                                });
+                            })
+                            .catch(action => {
+                                _this.$notify({
+                                    type: 'info',
+                                    title: 'Cancelled',
+                                    message: "No Changes",
+                                });
+                            });
+                    }
+                    break;
             }
         },
-        getTemplate(){
+        getTemplate() {
             window.open(window.location.origin+"/template/Import_Record_Template.xlsx");
         }
     },
-    mounted(){
+    mounted() {
         this.getBatch();
         this.getDoctors();
     },

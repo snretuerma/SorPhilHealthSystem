@@ -1,14 +1,14 @@
 <template>
     <div>
-        <!-- Header -->
+
         <div class="row header-top">
             <div class="header-title-parent">
                 <span class="header-title">
-                <i class="fa fa-user-md"></i>&nbsp;&nbsp;Doctors
+                    <i class="fa fa-user-md"></i>&nbsp;&nbsp;Doctors
                 </span>
             </div>
         </div>
-        <!-- End Header -->
+
         <div id="search-box" class="row">
             <div class="col-xl-9 col-lg-8 col-md-6 col-sm-12">
                 <el-input
@@ -28,25 +28,27 @@
                         </el-button>
                     </div>
                     <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
-                        <el-dropdown @command="formDialog" class="block-button btn-action">
+                        <el-dropdown
+                            @command="formDialog"
+                            class="block-button btn-action"
+                        >
                             <el-button>
                                 Excel
-                                <i class="el-icon-arrow-down el-icon--right"/>
+                                <i class="el-icon-arrow-down el-icon--right" />
                             </el-button>
                             <el-dropdown-menu slot="dropdown">
                                 <el-dropdown-item
                                     icon="el-icon-upload2"
                                     command="import_data"
-                                    >
+                                >
                                     Upload Data
                                 </el-dropdown-item>
                                 <el-dropdown-item
                                     icon="el-icon-download"
                                     command="export_data"
-                                    >
-                                    Download ...
-                                </el-dropdown-item
                                 >
+                                    Download ...
+                                </el-dropdown-item>
                             </el-dropdown-menu>
                         </el-dropdown>
                     </div>
@@ -55,87 +57,134 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <el-table v-loading="loading" :data="tableData">
-                            <el-table-column label="Name" prop="name"></el-table-column>
-                            <el-table-column
-                                label="Employment Type"
-                                prop="is_parttime"
-                                align="center"
-                                :formatter="employmentType"
-                            ></el-table-column>
-                            <el-table-column
-                                label="Employment Status"
-                                prop="is_active"
-                                align="center"
-                                :formatter="employmentStatus"
-                            ></el-table-column>
-                            <el-table-column width="135" align="center" fixed="right">
-                                <template slot="header"> Action </template>
-                                <template slot-scope="scope">
-                                    <el-tooltip
-                                        class="item"
-                                        effect="light"
-                                        content="View"
-                                        placement="top"
-                                        :enterable="false"
+                <el-tabs type="border-card">
+                    <el-tab-pane label="All">
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table v-loading="loading" :data="tableData">
+                                    <el-table-column
+                                        label="Name"
+                                        prop="name"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Type"
+                                        prop="is_parttime"
+                                        align="center"
+                                        :formatter="employmentType"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Status"
+                                        prop="is_active"
+                                        align="center"
+                                        :formatter="employmentStatus"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        width="135"
+                                        align="center"
+                                        fixed="right"
                                     >
-                                        <el-button
-                                            size="mini"
-                                            type="info"
-                                            icon="el-icon-info"
-                                            circle
-                                            @click="handleView(scope.row)"
-                                        ></el-button>
-                                    </el-tooltip>
-                                    <el-tooltip
-                                        class="item"
-                                        effect="light"
-                                        content="Edit"
-                                        placement="top"
-                                        :enterable="false"
-                                    >
-                                        <el-button
-                                            size="mini"
-                                            type="primary"
-                                            icon="el-icon-edit"
-                                            circle
-                                            @click="handleEdit(scope.row)"
-                                        ></el-button>
-                                    </el-tooltip>
-                                    <el-tooltip
-                                        class="item"
-                                        effect="light"
-                                        content="Delete"
-                                        placement="top"
-                                        :enterable="false"
-                                    >
-                                        <el-button
-                                            size="mini"
-                                            type="danger"
-                                            icon="el-icon-delete"
-                                            circle
-                                            @click="handleDelete(scope.row)"
-                                        ></el-button>
-                                    </el-tooltip>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <el-pagination
-                            class="align-middle"
-                            background
-                            layout="prev, pager, next"
-                            @current-change="handleCurrentChange"
-                            :page-size="page_size"
-                            :total="total"
-                        />
-                    </div>
-                </div>
+                                        <template slot="header"> Action </template>
+                                        <template slot-scope="scope">
+                                            <el-tooltip
+                                                class="item"
+                                                effect="light"
+                                                content="View"
+                                                placement="top"
+                                                :enterable="false"
+                                            >
+                                                <el-button
+                                                    size="mini"
+                                                    type="info"
+                                                    icon="el-icon-info"
+                                                    circle
+                                                    @click="handleView(scope.row)"
+                                                ></el-button>
+                                            </el-tooltip>
+                                            <el-tooltip
+                                                class="item"
+                                                effect="light"
+                                                content="Edit"
+                                                placement="top"
+                                                :enterable="false"
+                                            >
+                                                <el-button
+                                                    size="mini"
+                                                    type="primary"
+                                                    icon="el-icon-edit"
+                                                    circle
+                                                    @click="handleEdit(scope.row)"
+                                                ></el-button>
+                                            </el-tooltip>
+                                            <el-tooltip
+                                                class="item"
+                                                effect="light"
+                                                content="Delete"
+                                                placement="top"
+                                                :enterable="false"
+                                            >
+                                                <el-button
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="el-icon-delete"
+                                                    circle
+                                                    @click="handleDelete(scope.row)"
+                                                ></el-button>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <el-pagination
+                                    class="align-middle"
+                                    background
+                                    layout="prev, pager, next"
+                                    @current-change="handleCurrentChange"
+                                    :page-size="page_size"
+                                    :total="total"
+                                />
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane :label="count_active_doctors">
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table v-loading="loading" :data="active_doctors">
+                                    <el-table-column
+                                        label="Name"
+                                        prop="name"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Type"
+                                        prop="is_parttime"
+                                        align="center"
+                                        :formatter="employmentType"
+                                    ></el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane :label="count_inactive_doctors">
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table v-loading="loading" :data="inactive_doctors">
+                                    <el-table-column
+                                        label="Name"
+                                        prop="name"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Type"
+                                        prop="is_parttime"
+                                        align="center"
+                                        :formatter="employmentType"
+                                    ></el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
             </div>
         </div>
         <el-dialog
@@ -148,25 +197,39 @@
             <el-form :model="form" :rules="rules" ref="doctors_form">
                 <el-row>
                     <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                        <el-form-item label="Last Name" prop="last_name" ref="form_last_name">
+                        <el-form-item
+                            label="Last Name"
+                            prop="last_name"
+                            ref="form_last_name"
+                        >
                             <el-input
                                 v-model="form.last_name"
                                 autocomplete="off"
                                 @input="buildFullName"
                             />
-                            <span class="font-italic text-danger" v-if="errors.last_name">
+                            <span
+                                class="font-italic text-danger"
+                                v-if="errors.last_name"
+                            >
                                 <small>{{ errors.last_name[0] }}</small>
                             </span>
                         </el-form-item>
                     </el-col>
                     <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                        <el-form-item label="First Name" prop="first_name" ref="form_first_name">
+                        <el-form-item
+                            label="First Name"
+                            prop="first_name"
+                            ref="form_first_name"
+                        >
                             <el-input
                                 v-model="form.first_name"
                                 autocomplete="off"
                                 @input="buildFullName"
                             />
-                            <span class="font-italic text-danger" v-if="errors.first_name">
+                            <span
+                                class="font-italic text-danger"
+                                v-if="errors.first_name"
+                            >
                                 <small>{{ errors.first_name[0] }}</small>
                             </span>
                         </el-form-item>
@@ -174,19 +237,30 @@
                 </el-row>
                 <el-row>
                     <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                        <el-form-item label="Middle Name" prop="middle_name" ref="form_middle_name">
+                        <el-form-item
+                            label="Middle Name"
+                            prop="middle_name"
+                            ref="form_middle_name"
+                        >
                             <el-input
                                 v-model="form.middle_name"
                                 autocomplete="off"
                                 @input="buildFullName"
                             />
-                            <span class="font-italic text-danger" v-if="errors.middle_name">
+                            <span
+                                class="font-italic text-danger"
+                                v-if="errors.middle_name"
+                            >
                                 <small>{{ errors.middle_name[0] }}</small>
                             </span>
                         </el-form-item>
                     </el-col>
                     <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                        <el-form-item label="Suffix" prop="suffix" ref="form_suffix">
+                        <el-form-item
+                            label="Suffix"
+                            prop="suffix"
+                            ref="form_suffix"
+                        >
                             <el-input
                                 v-model="form.suffix"
                                 autocomplete="off"
@@ -208,37 +282,71 @@
                 </el-row>
                 <div class="row">
                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                        <el-form-item prop="is_parttime" label="Employment Type">
-                            <br>
-                            <el-radio-group v-model="form.is_parttime" ref="form_is_parttime">
+                        <el-form-item
+                            prop="is_parttime"
+                            label="Employment Type"
+                        >
+                            <br />
+                            <el-radio-group
+                                v-model="form.is_parttime"
+                                ref="form_is_parttime"
+                            >
                                 <div class="row">
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio :label="false">Full-time</el-radio>
+                                    <div
+                                        class="col-sm-12 col-md-12 col-lg-6 col-xl-6"
+                                    >
+                                        <el-radio :label="false"
+                                            >Full-time</el-radio
+                                        >
                                     </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio :label="true">Part-time</el-radio>
+                                    <div
+                                        class="col-sm-12 col-md-12 col-lg-6 col-xl-6"
+                                    >
+                                        <el-radio :label="true"
+                                            >Part-time</el-radio
+                                        >
                                     </div>
                                 </div>
                             </el-radio-group>
-                            <span class="font-italic text-danger" v-if="errors.is_parttime">
+                            <span
+                                class="font-italic text-danger"
+                                v-if="errors.is_parttime"
+                            >
                                 <small>{{ errors.is_parttime[0] }}</small>
                             </span>
                         </el-form-item>
                     </div>
                     <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                        <el-form-item prop="is_active" label="Employment Status">
-                            <br>
-                            <el-radio-group v-model="form.is_active" ref="form_is_active">
+                        <el-form-item
+                            prop="is_active"
+                            label="Employment Status"
+                        >
+                            <br />
+                            <el-radio-group
+                                v-model="form.is_active"
+                                ref="form_is_active"
+                            >
                                 <div class="row">
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio :label="true">Active</el-radio>
+                                    <div
+                                        class="col-sm-12 col-md-12 col-lg-6 col-xl-6"
+                                    >
+                                        <el-radio :label="true"
+                                            >Active</el-radio
+                                        >
                                     </div>
-                                    <div class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
-                                        <el-radio :label="false">Inactive</el-radio>
+                                    <div
+                                        class="col-sm-12 col-md-12 col-lg-6 col-xl-6"
+                                    >
+                                        <el-radio :label="false"
+                                            >Inactive</el-radio
+                                        >
                                     </div>
                                 </div>
                             </el-radio-group>
-                            <span class="font-italic text-danger" v-if="errors.is_active">
+                            <span
+                                class="font-italic text-danger"
+                                v-if="errors.is_active"
+                            >
                                 <small>{{ errors.is_active[0] }}</small>
                             </span>
                         </el-form-item>
@@ -254,73 +362,310 @@
                 >
                     Save
                 </el-button>
-                <el-button
-                    v-else
-                    type="primary"
-                    @click="doctorsFormAction()"
-                >
+                <el-button v-else type="primary" @click="doctorsFormAction()">
                     Save Changes
                 </el-button>
             </span>
         </el-dialog>
+
         <el-dialog
             :title="dialogViewTitle"
             :visible.sync="show_doctor_summary"
-            width="90%"
-            top="5vh"
+            width="98%"
+            top="1vh"
             :close-on-press-escape="false"
             :close-on-click-modal="false"
         >
             <el-row>
                 <el-col>
-                    <el-collapse v-model="activeName" accordion>
-                        <el-collapse-item v-for="item in batch_list" :key="item.name" :title="item.title" :name="item.name">
-                            <el-table
-                                    :data="item.record"
-                                    style="width: 100%"
+                    <el-row>
+                        <el-col class="col-sm-12 col-md-10 col-lg-10 col-xl-10">
+                            <el-form ref="form">
+                                <el-form-item prop="batch">
+                                    <el-select
+                                        ref="defaultValue"
+                                        :required="true"
+                                        v-model="value"
+                                        class="block-button"
+                                        size="large"
+                                        value-key="batch"
+                                        multiple
+                                        :multiple-limit="1"
+                                        filterable
+                                        default-first-option
+                                        allow-create
+                                        @change="changes"
+                                    >
+                                        <el-option
+                                            v-for="item in batch"
+                                            :key="item.batch"
+                                            :label="item.label"
+                                            :value="item.batch"
+                                        >
+                                            {{ item.batch }}</el-option
+                                        >
+                                    </el-select>
+                                </el-form-item>
+                            </el-form>
+                        </el-col>
+                        <el-col class="col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                            <el-button style="width:100%;" @click="exportDoctorRecordExcel">Export</el-button>
+                        </el-col>
+                    </el-row>
+                    <el-table :data="batch_list" border>
+                        <el-table-column
+                            fixed
+                            prop="patient_name"
+                            min-width="200"
+                            label="Patient Name"
+                        >
+                        </el-table-column>
+                        <el-table-column label="Confinement Period">
+                            <el-table-column
+                                prop="admission_date"
+                                label="Admission Date"
+                                min-width="150"
+                            >
+                            </el-table-column>
+                            <el-table-column
+                                prop="discharge_date"
+                                label="Discharge Date"
+                                min-width="140"
+                            >
+                            </el-table-column>
+                        </el-table-column>
+                        <el-table-column
+                            prop="grossPF"
+                            label="Gross PF"
+                            min-width="80"
+                            :formatter="formatNumber"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="netPF"
+                            label="Net PF"
+                            min-width="80"
+                            :formatter="formatNumber"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="pooled_record.full_time_individual_fee"
+                            label="Pooled"
+                            min-width="80"
+                            :formatter="formatNumber"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                            prop="pivot.professional_fee"
+                            label="Professional fee"
+                            min-width="90"
+                            :formatter="formatNumber"
+                        >
+                        </el-table-column>
+                        <el-table-column :label="dialogViewTitle">
+                            <el-table-column label="AP">
+                                <el-table-column
+                                    prop="pivot.attending_name"
+                                    min-width="90"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="pivot.attending_fee"
+                                    min-width="90"
+                                    :formatter="terminateZeroValue"
+                                >
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="REF">
+                                <el-table-column
+                                    prop="pivot.ref_name"
+                                    min-width="90"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="pivot.ref_fee"
+                                    min-width="90"
+                                    :formatter="terminateZeroValue"
+                                >
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="ANES">
+                                <el-table-column
+                                    prop="pivot.anesthesiologist_name"
+                                    min-width="90"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="pivot.anesthesiologist_fee"
+                                    min-width="90"
+                                    :formatter="terminateZeroValue"
+                                >
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="CO_MGT">
+                                <el-table-column
+                                    prop="pivot.comanagement_name"
+                                    min-width="90"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="pivot.comanagement_fee"
+                                    min-width="90"
+                                    :formatter="terminateZeroValue"
+                                >
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="ADMIT">
+                                <el-table-column
+                                    prop="pivot.admitting_name"
+                                    min-width="90"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="pivot.admitting_fee"
+                                    min-width="90"
+                                    :formatter="terminateZeroValue"
+                                >
+                                </el-table-column>
+                            </el-table-column>
+                        </el-table-column>
+
+                        <el-table-column label="Co-Physicians">
+                            <el-table-column label="AP">
+                                <el-table-column
+                                    prop="co_attending_name"
+                                    min-width="200"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="co_attending_fee"
+                                    min-width="90"
+                                    :formatter="terminateZeroValue"
+                                >
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="REF">
+                                <el-table-column
+                                    prop="co_ref_name"
+                                    min-width="200"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="co_ref_fee"
+                                    min-width="90"
+                                    :formatter="terminateZeroValue"
+                                >
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="ANES">
+                                <el-table-column
+                                    prop="co_anesthesiologist_name"
+                                    min-width="200"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="co_anesthesiologist_fee"
+                                    min-width="90"
+                                    :formatter="terminateZeroValue"
+                                >
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="CO_MGT">
+                                <el-table-column
+                                    prop="co_comanagement_name"
+                                    min-width="200"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="co_comanagement_fee"
+                                    min-width="90"
+                                    :formatter="terminateZeroValue"
+                                >
+                                </el-table-column>
+                            </el-table-column>
+                            <el-table-column label="ADMIT">
+                                <el-table-column
+                                    prop="co_admitting_name"
+                                    min-width="200"
+                                >
+                                </el-table-column>
+                                <el-table-column
+                                    prop="co_admitting_fee"
+                                    min-width="90"
+                                    :formatter="terminateZeroValue"
+                                >
+                                </el-table-column>
+                            </el-table-column>
+                        </el-table-column>
+                    </el-table>
+                    <br />
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table
+                                    :data="record_total"
                                     border
-                                    >
-                                    <el-table-column
-                                    fixed
-                                    prop="patient_name"
-                                    label="Patient Name"
+                                    row-class-name="success-row"
                                 >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="admission_date"
-                                    label="Admission Date"
-                                >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="discharge_date"
-                                    label="Discharge Date"
-                                    >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="pivot.professional_fee"
-                                    label="Professional fee"
-                                    :formatter="formatNumber"
-                                >
-                                    </el-table-column>
-                                    <el-table-column
-                                    prop="pivot.doctor_role"
-                                    label="Role"
-                                    :formatter="firstLetterOfWordUpperCase"
-                                    >
+                                    <el-table-column :label="dialogViewTitle">
+                                        <el-table-column
+                                            label="Attending Physician Total"
+                                            :formatter="formatNumber"
+                                            min-width="150"
+                                            prop="attending_fee_total"
+                                        ></el-table-column>
+                                        <el-table-column
+                                            label="Referred Physician Total"
+                                            :formatter="formatNumber"
+                                            min-width="150"
+                                            prop="ref_fee_total"
+                                        ></el-table-column>
+                                        <el-table-column
+                                            label="Anesthesiologist Total"
+                                            :formatter="formatNumber"
+                                            min-width="140"
+                                            prop="anesthesiologist_fee_total"
+                                        ></el-table-column>
+                                        <el-table-column
+                                            label="Comanagement Total"
+                                            :formatter="formatNumber"
+                                            min-width="170"
+                                            prop="comanagement_fee_total"
+                                        ></el-table-column>
+                                        <el-table-column
+                                            label="Admitting Total"
+                                            :formatter="formatNumber"
+                                            min-width="150"
+                                            prop="admitting_fee_total"
+                                        ></el-table-column>
+                                        <el-table-column
+                                            label="Grand Total"
+                                            :formatter="formatNumber"
+                                            min-width="140"
+                                            prop="grand_total"
+                                        ></el-table-column>
                                     </el-table-column>
                                 </el-table>
-                        </el-collapse-item>
-                    </el-collapse>
+                            </div>
+                        </div>
                 </el-col>
             </el-row>
         </el-dialog>
-        <el-dialog :title="dialogtitle" :visible.sync="dialogExcelFile" :fullscreen="fullscreen">
+        <el-dialog
+            :title="dialogtitle"
+            :visible.sync="dialogExcelFile"
+            :fullscreen="fullscreen"
+        >
             <el-row v-show="!isimport">
                 <el-col>
                     <el-form>
                         <el-form-item>
-                            <el-button @click="getTemplate">Download Sample Excel File / Template</el-button>
-                            <el-button type="primary" @click="exportExcel">Download Data</el-button>
+                            <el-button @click="getTemplate"
+                                >Download Sample Excel File /
+                                Template</el-button
+                            >
+                            <el-button type="primary" @click="exportExcel"
+                                >Download Data</el-button
+                            >
                         </el-form-item>
                     </el-form>
                 </el-col>
@@ -329,42 +674,42 @@
                 <el-form>
                     <el-form-item>
                         <el-upload
-                        class="upload-demo"
-                        ref="upload"
-                        action="import_doctor_record"
-                        :auto-upload="false"
-                        :on-change="fileData"
-                        :limit="1"
-                        :on-exceed="handleExceedFile"
-                        :on-remove="handleRemoveFile"
-                        accept=".xlsx"
+                            class="upload-demo"
+                            ref="upload"
+                            action="import_doctor_record"
+                            :auto-upload="false"
+                            :on-change="fileData"
+                            :limit="1"
+                            :on-exceed="handleExceedFile"
+                            :on-remove="handleRemoveFile"
+                            accept=".xlsx"
                         >
-                            <el-button slot="trigger" type="primary" plain>select supported excel file .xlsx</el-button>
-                            <el-button type="success" @click="uploadToDatabase" :disabled="!is_preview">upload to database</el-button>
+                            <el-button slot="trigger" type="primary" plain
+                                >select supported excel file .xlsx</el-button
+                            >
+                            <el-button
+                                type="success"
+                                @click="uploadToDatabase"
+                                :disabled="!is_preview"
+                                >upload to database</el-button
+                            >
                         </el-upload>
                     </el-form-item>
                 </el-form>
                 <el-row v-show="is_preview && preview_data.length > 0">
                     <el-col>
-                        <el-table
-                            :data="exceldata"
-                            style="width: 100%"
-                            border
+                        <el-table :data="exceldata" style="width: 100%" border>
+                            <el-table-column
+                                fixed
+                                prop="Physician_Name"
+                                label="Physician Name"
                             >
-                            <el-table-column
-                            fixed
-                            prop="Physician_Name"
-                            label="Physician Name"
-                        >
+                            </el-table-column>
+                            <el-table-column prop="Is_active" label="Is active">
                             </el-table-column>
                             <el-table-column
-                            prop="Is_active"
-                            label="Is active"
-                        >
-                            </el-table-column>
-                            <el-table-column
-                            prop="Is_parttime"
-                            label="Is parttime"
+                                prop="Is_parttime"
+                                label="Is parttime"
                             >
                             </el-table-column>
                         </el-table>
@@ -380,29 +725,36 @@
                 </el-row>
                 <div v-show="!is_preview && preview_data.length > 0">
                     <el-alert
-                        title='ERROR FOUND, Please see error log bellow'
+                        title="ERROR FOUND, Please see error log bellow"
                         type="error"
                         :closable="false"
-                        show-icon>
+                        show-icon
+                    >
                     </el-alert>
                     <ul>
                         <dl>
                             <dt>HEADER</dt>
-                                <ol>
-                                    <li v-for="item in excel_validation_error[0]" :key="item.id">
-                                        <strong>{{item.value}}</strong>
-                                                {{item.message}}
-                                        <strong>[{{item.cell_position}}]</strong>
-                                    </li>
-                                </ol>
+                            <ol>
+                                <li
+                                    v-for="item in excel_validation_error[0]"
+                                    :key="item.id"
+                                >
+                                    <strong>{{ item.value }}</strong>
+                                    {{ item.message }}
+                                    <strong>[{{ item.cell_position }}]</strong>
+                                </li>
+                            </ol>
                             <dt>CONTENT</dt>
-                                <ol>
-                                    <li v-for="item in excel_validation_error[1]" :key="item.id">
-                                        <strong>{{item.value}}</strong>
-                                                {{item.message}}
-                                        <strong>[{{item.cell_position}}]</strong>
-                                    </li>
-                                </ol>
+                            <ol>
+                                <li
+                                    v-for="item in excel_validation_error[1]"
+                                    :key="item.id"
+                                >
+                                    <strong>{{ item.value }}</strong>
+                                    {{ item.message }}
+                                    <strong>[{{ item.cell_position }}]</strong>
+                                </li>
+                            </ol>
                         </dl>
                     </ul>
                 </div>
@@ -415,25 +767,43 @@
 /**
  * TODO:
  *  1. Modify the edit function to a better one
-**/
-'use strict'
-import XLSX from 'xlsx';
+ **/
+"use strict";
+import XLSX from "xlsx";
+import _ from "lodash";
 export default {
     data() {
         return {
+            attending_fee_total: 0,
+            ref_fee_total: 0,
+            anesthesiologist_fee_total: 0,
+            comanagement_fee_total: 0,
+            admitting_fee_total: 0,
+            grand_total: 0,
+            doctor_record_total:[],
+            batchData: [],
+            value: [],
+            batch: [],
             doctors: [],
-            edit_object: '',
+            active_doctors: [],
+            inactive_doctors: [],
+            count_active_doctors: 'Active',
+            count_inactive_doctors: 'Inactive',
+            doctor_id: "",
+            temp: [],
+            edit_object: "",
             errors: [],
+            holder: [],
             form: {
-                id: '',
-                name: '',
-                first_name: '',
-                middle_name: '',
-                last_name: '',
-                suffix: '',
+                id: "",
+                name: "",
+                first_name: "",
+                middle_name: "",
+                last_name: "",
+                suffix: "",
                 is_parttime: false,
                 is_active: true,
-                form_type: '',
+                form_type: ""
             },
             loading: true,
             page: 1,
@@ -473,29 +843,108 @@ export default {
                         message: "Please select employment status",
                         trigger: "change"
                     }
-                ],
+                ]
             },
-            search: '',
+            search: "",
             show_dialog: false,
             show_doctor_summary: false,
-            total: '',
+            total: "",
             dialogExcelFile: false,
-            sheet_length: '',
+            sheet_length: "",
             tablepage: 1,
             page_size: 10,
             tablelength: 0,
-            preview_data:[],
-            exceldata:[],
-            excel_validation_error:[[], []],
-            doctor_list_compress:[],
-            doctor_export:[],
+            preview_data: [],
+            exceldata: [],
+            excel_validation_error: [[], []],
+            doctor_list_compress: [],
+            doctor_export: [],
             is_preview: false,
             fullscreen: true,
-            dialogtitle: 'Import Excel',
+            dialogtitle: "Import Excel",
             isimport: true,
             batch_list:[],
             activeName: '1',
-            dialogViewTitle: 'Doctor Record'
+            dialogViewTitle: 'Doctor Record',
+            form1: {
+                doctor_id: "",
+                record_id: [],
+                batch: ""
+            },
+            co_physician: [],
+            sheet_data: {
+                    A1:{t:'s', v:"PROFESSIONAL FEE"},
+                    A2:{t:'s', v:"COVERED PERIOD:"},
+                    A3:{t:'s', v:"DOCTOR NAME:"},
+
+                    A4:{t:'s', v:"NAME OF PATIENT"},
+                    B4:{t:'s', v:"CONFINEMENT PERIOD"},
+                    C4:{t:'s', v:"GROSS PF"},
+                    D4:{t:'s', v:"NET PF (50%)"},
+                    E4:{t:'s', v:"PROFESSIONAL FEE (PF)(35%)"},
+                    F4:{t:'s', v:"POOLED (15%)"},
+
+                    G4:{t:'s', v:"DOCTOR NAME:"},
+                    G5:{t:'s', v:"AP"},
+                    I5:{t:'s', v:"REF"},
+                    K5:{t:'s', v:"ANES"},
+                    M5:{t:'s', v:"CO-MGT"},
+                    O5:{t:'s', v:"ADMIT"},
+
+                    Q4:{t:'s', v:"CO-PHYSICIAN"},
+                    Q5:{t:'s', v:"ATTENDING PHYSICIAN"},
+                    S5:{t:'s', v:"REFFERAL 10% of PF"},
+                    U5:{t:'s', v:"ANES 30% of PF"},
+                    W5:{t:'s', v:"CO-MANAGEMENT 20% of PF"},
+                    Y5:{t:'s', v:"ADMITTING 10% of PF"},
+                    "!merges":[
+                        {s:{r:0,c:0},e:{r:0,c:25}},
+                        {s:{r:1,c:0},e:{r:1,c:25}},
+                        {s:{r:2,c:0},e:{r:2,c:25}},
+
+                        {s:{r:3,c:0},e:{r:4,c:0}},
+                        {s:{r:3,c:1},e:{r:4,c:1}},
+                        {s:{r:3,c:2},e:{r:4,c:2}},
+                        {s:{r:3,c:3},e:{r:4,c:3}},
+                        {s:{r:3,c:4},e:{r:4,c:4}},
+                        {s:{r:3,c:5},e:{r:4,c:5}},
+
+                        {s:{r:3,c:6},e:{r:3,c:15}},
+                        {s:{r:4,c:6},e:{r:4,c:7}},
+                        {s:{r:4,c:8},e:{r:4,c:9}},
+                        {s:{r:4,c:10},e:{r:4,c:11}},
+                        {s:{r:4,c:12},e:{r:4,c:13}},
+                        {s:{r:4,c:14},e:{r:4,c:15}},
+
+                        {s:{r:3,c:16},e:{r:3,c:25}},
+                        {s:{r:4,c:16},e:{r:4,c:17}},
+                        {s:{r:4,c:18},e:{r:4,c:19}},
+                        {s:{r:4,c:20},e:{r:4,c:21}},
+                        {s:{r:4,c:22},e:{r:4,c:23}},
+                        {s:{r:4,c:24},e:{r:4,c:25}},
+                    ],
+                    "!ref": "A1:Z5",
+            },
+            main_physician: [
+                'attending', 
+                'anesthesiologist', 
+                'comanagement', 
+                'admitting'
+            ],
+            ref_physician: [
+                'requesting', 
+                'surgeon', 
+                'healthcare', 
+                'er'
+            ],
+            record_total: [{
+                attending_fee_total: 0,
+                ref_fee_total: 0,
+                anesthesiologist_fee_total: 0,
+                comanagement_fee_total: 0,
+                admitting_fee_total: 0,
+                grand_total: 0,
+            }]
         }
     },
     computed: {
@@ -505,7 +954,9 @@ export default {
                 return this.doctors;
             }
             this.page = 1;
-            return this.doctors.filter(data => data.name.toLowerCase().includes(this.search.toLowerCase()));
+            return this.doctors.filter(data =>
+                data.name.toLowerCase().includes(this.search.toLowerCase())
+            );
         },
         tableData() {
             this.total = this.searching.length;
@@ -516,16 +967,152 @@ export default {
         }
     },
     methods: {
+        terminateZeroValue(row, column, cellValue, index) {
+            return cellValue || "";
+        },
+        getCoDoctor(batch) {
+            var _this = this;
+            axios
+            .post("get_co_physician/" + batch)
+            .then(response => {
+                _this.co_physician.push(response.data);
+            })
+            .catch(function(error) {});
+        },
+        getBatch() {
+            axios
+            .get("get_batch")
+            .then(response => {
+                this.batch = response.data;
+                this.value[0] = response.data[0].batch;
+                this.first_batch = response.data[0].batch;
+            })
+            .catch(function(error) {});
+        },
+        changes() {
+            if (this.value != "") {
+                this.getDoctorRecord(this.holder);
+            }
+        },
         getDoctors() {
-            var _this =  this;
-            axios.get("get_doctors")
-            .then((response) => {
+            var _this = this;
+            axios.get("get_doctors").then(response => {
                 this.doctors = response.data;
                 this.loading = false;
+                this.doctor_list_compress = [];
+                this.active_doctors = [];
+                this.inactive_doctors = [];
                 response.data.forEach(el => {
-                    _this.doctor_list_compress.push(_this.trimToCompare(el.name));
+                    _this.doctor_list_compress.push(
+                        _this.trimToCompare(el.name)
+                    );
+                    if(el.is_active){
+                        _this.active_doctors.push(el);
+                    }else{
+                        _this.inactive_doctors.push(el);
+                    }
                 });
+                this.count_active_doctors = 'Active (' + this.active_doctors.length + ')';
+                this.count_inactive_doctors = 'Inactive (' + this.inactive_doctors.length + ')';
             });
+        },
+
+        handleView(row_data) {
+            this.getDoctorRecord(row_data);
+            this.dialogViewTitle = row_data.name.toUpperCase();
+            this.show_doctor_summary = true;
+            this.doctor_id = row_data.id;
+        },
+        getDoctorRecord(row_data){
+            axios
+            .post("get_co_physician/" + this.value[0])
+            .then(response => {
+                this.co_physician = [];
+                this.co_physician.push(response.data);
+                this.batch_list = [];
+                var batch = [];
+                var count = 0;
+
+                this.record_total[0].attending_fee_total = 0;
+                this.record_total[0].ref_fee_total = 0;
+                this.record_total[0].anesthesiologist_fee_total = 0;
+                this.record_total[0].comanagement_fee_total = 0;
+                this.record_total[0].admitting_fee_total = 0;
+                this.record_total[0].grand_total = 0;
+
+                row_data.credit_records.forEach(el => {
+                    el.netPF = 0;
+                    el.grossPF = 0;
+                    
+                    if (el.pooled_record != null) {
+                        el.netPF = Number(el.pivot.professional_fee) + Number(el.pooled_record.full_time_individual_fee);
+                        el.grossPF = el.netPF * 2;
+                    } else {
+                        el.netPF = Number(el.pivot.professional_fee + 0);
+                        el.grossPF = el.netPF * 2;
+                    }
+
+                    if (el.batch == this.value[0]) {
+                        el.co_attending_name = "";
+                        el.co_attending_fee = 0;
+                        el.co_ref_name = "";
+                        el.co_ref_fee = 0;
+                        el.co_anesthesiologist_name = "";
+                        el.co_anesthesiologist_fee = 0;
+                        el.co_comanagement_name = "";
+                        el.co_comanagement_fee = 0;
+                        el.co_admitting_name = "";
+                        el.co_admitting_fee = 0;
+
+                        this.co_physician[0].forEach(physician => {
+                            var doctor_id = physician.doctor_id;
+                            var doctor_name = physician.name;
+                            var doctor_fee = physician.professional_fee;
+                            var doctor_role = physician.doctor_role;
+                            var doctor_record_id = physician.record_id;
+
+                            if (el.pivot.record_id == doctor_record_id ) {
+                                if(el.pivot.doctor_id == doctor_id){
+                                    if (this.ref_physician.includes(doctor_role)) {
+                                        el.pivot["ref_name"] = doctor_name;
+                                        el.pivot["ref_fee"] = doctor_fee;
+                                        if (Number(doctor_fee) != null) {
+                                            this.record_total[0].ref_fee_total += Number(doctor_fee);
+                                        } else { 
+                                            this.record_total[0].ref_fee_total += 0;
+                                        }
+                                    } else {
+                                        el.pivot[doctor_role + "_name"] = doctor_name;
+                                        el.pivot[doctor_role + "_fee"] = doctor_fee;
+                                        if (Number(doctor_fee) != null) {
+                                            this.record_total[0][doctor_role + "_fee_total"]  += Number(doctor_fee)
+                                        }else{
+                                            this.record_total[0][doctor_role + "_fee_total"]  += 0;
+                                        }
+                                    }
+                                }else{
+                                    if(this.main_physician.includes(doctor_role)){
+                                        el['co_' + doctor_role + '_name'] += doctor_name + ", ";
+                                        el['co_' + doctor_role + '_fee'] += Number(doctor_fee);
+                                    }else if(this.ref_physician.includes(doctor_role)){
+                                        el.co_ref_name += doctor_name + ", ";
+                                        el.co_ref_fee += Number(doctor_fee);
+                                    }
+                                }
+                            }
+                        });
+                        this.batch_list.push(el);
+                    }
+                });
+                this.record_total[0].grand_total =
+                    this.record_total[0].attending_fee_total +
+                    this.record_total[0].ref_fee_total +
+                    this.record_total[0].anesthesiologist_fee_total +
+                    this.record_total[0].comanagement_fee_total +
+                    this.record_total[0].admitting_fee_total;
+                this.holder = row_data;
+            })
+            .catch(function(error) {});
         },
         doctorsFormAction() {
             const loading = this.$loading({
@@ -533,122 +1120,141 @@ export default {
                 spinner: "el-icon-loading",
                 target: "div.el-dialog"
             });
-            switch(this.form.form_type) {
-                case 'add':
-                    if(this.form.name == '' || this.form.is_parttime === '' || this.is_active ==='') {
+            switch (this.form.form_type) {
+                case "add":
+                    if (
+                        this.form.name == "" ||
+                        this.form.is_parttime === "" ||
+                        this.is_active === ""
+                    ) {
                         this.$notify({
-                            type: 'info',
-                            title: 'Adding Doctor Failed',
-                            message: 'All fields are required',
-                            offset: 0,
+                            type: "info",
+                            title: "Adding Doctor Failed",
+                            message: "All fields are required",
+                            offset: 0
                         });
                         this.show_dialog = false;
                         this.formResetFields();
                         loading.close();
-                    }else {
+                    } else {
                         this.form.name = this.form.name.trim();
-                        if(this.testName(this.form.name)) {
-                            axios.post('add_doctor', this.form)
-                            .then(response => {
-                                this.doctors.push(response.data)
-                                this.doctor_list_compress.push(this.trimToCompare(this.form.name));
-                                this.show_dialog = false;
-                                this.formResetFields();
-                                loading.close();
-                                this.$notify({
-                                    type: 'success',
-                                    title: 'Adding Doctor Successful',
-                                    message: `Successfully added ${response.data.name}`,
-                                    offset: 0,
+                        if (this.testName(this.form.name)) {
+                            axios
+                                .post("add_doctor", this.form)
+                                .then(response => {
+                                    this.doctors.push(response.data);
+                                    this.doctor_list_compress.push(
+                                        this.trimToCompare(this.form.name)
+                                    );
+                                    this.show_dialog = false;
+                                    this.formResetFields();
+                                    loading.close();
+                                    this.$notify({
+                                        type: "success",
+                                        title: "Adding Doctor Successful",
+                                        message: `Successfully added ${response.data.name}`,
+                                        offset: 0
+                                    });
+                                })
+                                .catch(error => {
+                                    this.show_dialog = false;
+                                    this.formResetFields();
+                                    loading.close();
+                                    this.$notify({
+                                        type: "error",
+                                        title: "Adding Doctor Failed",
+                                        message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                        offset: 0
+                                    });
                                 });
-                            })
-                            .catch(error => {
-                                this.show_dialog = false;
-                                this.formResetFields();
-                                loading.close();
-                                this.$notify({
-                                    type: 'error',
-                                    title: 'Adding Doctor Failed',
-                                    message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
-                                    offset: 0,
-                                });
-                            });
                         } else {
                             this.show_dialog = false;
                             loading.close();
                             this.$notify({
-                                type: 'error',
-                                title: 'Adding Doctor Failed',
+                                type: "error",
+                                title: "Adding Doctor Failed",
                                 message: `${this.form.name} does not follow the correct naming convention\n (Ex: Dela Cruz, Jose Juan Jr.)`,
-                                offset: 0,
-                            })
+                                offset: 0
+                            });
                             this.formResetFields();
                         }
-
                     }
                     break;
-                case 'edit':
-                    if(
+                case "edit":
+                    if (
                         this.edit_object.name == this.form.name &&
                         this.edit_object.is_active === this.form.is_active &&
                         this.edit_object.is_parttime === this.form.is_parttime
                     ) {
                         this.$notify({
-                            type: 'info',
-                            title: 'Editing Failed',
-                            message: 'No changes are made to the doctor\'s record',
-                            offset: 0,
+                            type: "info",
+                            title: "Editing Failed",
+                            message:
+                                "No changes are made to the doctor's record",
+                            offset: 0
                         });
                         this.show_dialog = false;
                         this.formResetFields();
                         loading.close();
-                    }else {
+                    } else {
                         this.form.name = this.form.name.trim();
                         this.form.id = this.edit_object.id;
-                        axios.put('edit_doctor', this.form)
-                        .then(response => {
-                            if (response.status >= 200 && response.status <=299) {
-                                var index = this.doctors.findIndex(object => object.id == response.data.id);
-                                if (index !== undefined) {
-                                    this.doctors[index].name = response.data.name;
-                                    this.doctors[index].is_parttime = response.data.is_parttime;
-                                    this.doctors[index].is_active = response.data.is_active;
+                        axios
+                            .put("edit_doctor", this.form)
+                            .then(response => {
+                                if (
+                                    response.status >= 200 &&
+                                    response.status <= 299
+                                ) {
+                                    var index = this.doctors.findIndex(
+                                        object => object.id == response.data.id
+                                    );
+                                    if (index !== undefined) {
+                                        this.doctors[index].name =
+                                            response.data.name;
+                                        this.doctors[index].is_parttime =
+                                            response.data.is_parttime;
+                                        this.doctors[index].is_active =
+                                            response.data.is_active;
+                                    }
+                                    this.doctor_list_compress.push(
+                                        this.trimToCompare(response.data.name)
+                                    );
+                                    this.show_dialog = false;
+                                    this.formResetFields();
+                                    this.edit_object = "";
+                                    loading.close();
+                                    this.$notify({
+                                        type: "success",
+                                        title: "Editing Doctor Successful",
+                                        message: `Successfully edited ${response.data.name}`,
+                                        offset: 0
+                                    });
+                                } else {
+                                    this.show_dialog = false;
+                                    this.formResetFields();
+                                    this.edit_object = "";
+                                    loading.close();
+                                    this.$notify({
+                                        type: "error",
+                                        title: "Editing Doctor Failed",
+                                        message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                        offset: 0
+                                    });
                                 }
-                                this.doctor_list_compress.push(this.trimToCompare(response.data.name));
+                            })
+                            .catch(error => {
                                 this.show_dialog = false;
                                 this.formResetFields();
-                                this.edit_object = '';
+                                this.edit_object = "";
                                 loading.close();
                                 this.$notify({
-                                    type: 'success',
-                                    title: 'Editing Doctor Successful',
-                                    message: `Successfully edited ${response.data.name}`,
-                                    offset: 0,
-                                });
-                            }else {
-                                this.show_dialog = false;
-                                this.formResetFields();
-                                this.edit_object = '';
-                                loading.close();
-                                this.$notify({
-                                    type: 'error',
-                                    title: 'Editing Doctor Failed',
+                                    type: "error",
+                                    title: "Editing Doctor Failed",
                                     message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
-                                    offset: 0,
+                                    offset: 0
                                 });
-                            }
-                        }).catch(error => {
-                            this.show_dialog = false;
-                            this.formResetFields();
-                            this.edit_object = '';
-                            loading.close();
-                            this.$notify({
-                                type: 'error',
-                                title: 'Editing Doctor Failed',
-                                message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
-                                offset: 0,
                             });
-                        });
                     }
                     break;
             }
@@ -663,50 +1269,52 @@ export default {
                     cancelButtonText: "Cancel",
                     type: "warning"
                 }
-            ).then(() => {
-                axios.delete(`delete_doctor/${data.id}`)
-                .then(response => {
-                    if (response.status > 199 && response.status < 203) {
-                        if(response.data.status == 'success') {
-                            var index = this.doctors.findIndex(object => object.id == data.id);
-                            if (index !== undefined) {
-                                this.doctors.splice(index, 1);
+            )
+                .then(() => {
+                    axios.delete(`delete_doctor/${data.id}`).then(response => {
+                        if (response.status > 199 && response.status < 203) {
+                            if (response.data.status == "success") {
+                                var index = this.doctors.findIndex(
+                                    object => object.id == data.id
+                                );
+                                if (index !== undefined) {
+                                    this.doctors.splice(index, 1);
+                                }
                             }
+                            this.$notify({
+                                type: response.data.status,
+                                title: response.data.title,
+                                message: response.data.message,
+                                offset: 0
+                            });
                         }
-                        this.$notify({
-                            type: response.data.status,
-                            title: response.data.title,
-                            message: response.data.message,
-                            offset: 0,
-                        });
-                    }
+                    });
+                })
+                .catch(action => {
+                    this.$notify({
+                        type: "info",
+                        title: "Deleting Doctor Cancelled",
+                        message: `Delete method cancelled. No changes were made`,
+                        offset: 0
+                    });
                 });
-            })
-            .catch(action => {
-                this.$notify({
-                    type: 'info',
-                    title: 'Deleting Doctor Cancelled',
-                    message: `Delete method cancelled. No changes were made`,
-                    offset: 0,
-                });
-            });
         },
         formDialog(key) {
             /**
              * TODO: Don't use if else statement here, you can use the parameter as the #id because it is also string
-            **/
+             **/
             switch (key) {
                 case "import_data":
-                        this.dialogtitle = 'Import Excel';
-                        this.fullscreen = true;
-                        this.isimport = true;
-                        this.dialogExcelFile = true;
+                    this.dialogtitle = "Import Excel";
+                    this.fullscreen = true;
+                    this.isimport = true;
+                    this.dialogExcelFile = true;
                     break;
                 case "export_data":
-                        this.dialogtitle = 'Download / Export Excel';
-                        this.fullscreen = false;
-                        this.isimport = false;
-                        this.dialogExcelFile = true;
+                    this.dialogtitle = "Download / Export Excel";
+                    this.fullscreen = false;
+                    this.isimport = false;
+                    this.dialogExcelFile = true;
                     break;
             }
         },
@@ -714,31 +1322,6 @@ export default {
             this.show_dialog = true;
             this.form.form_type = "add";
             this.formResetFields();
-        },
-        handleView(row_data) {
-            this.dialogViewTitle = row_data.name.toUpperCase();
-            this.show_doctor_summary = true;
-            this.batch_list = [];
-            var batch = [];
-            var count = 0;
-            row_data.credit_records.forEach((el=>{
-                if(batch.includes(el.batch)){
-                    this.batch_list.forEach((b)=>{
-                        if(b.title == el.batch){
-                           b.record.push(el);
-                        }
-                    });
-                    batch.push(el.batch);
-                }else{
-                    count += 1;
-                    this.batch_list.push({
-                        title: el.batch,
-                        name: count,
-                        record: []
-                    });
-                    batch.push(el.batch);
-                }
-            }));
         },
         handleEdit(row_data) {
             this.formResetFields();
@@ -753,29 +1336,31 @@ export default {
             this.deleteDoctor(row_data);
         },
         employmentType(data) {
-            if(data.is_parttime) {
-                return 'Part-time'
+            if (data.is_parttime) {
+                return "Part-time";
             }
-            return 'Full-time'
+            return "Full-time";
         },
         employmentStatus(data) {
-            if(data.is_active) {
-                return 'Active'
+            if (data.is_active) {
+                return "Active";
             }
-            return 'Inactive'
+            return "Inactive";
         },
         handleCurrentChange(value) {
             this.page = value;
         },
         formResetFields() {
-            if(this.$refs.doctors_form !== undefined) {
+            if (this.$refs.doctors_form !== undefined) {
                 this.$refs.doctors_form.resetFields();
             }
         },
         testName(name) {
-            var regex = new RegExp(/^([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*,\s([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*$/);
-            if(regex.test(name)) {
-              return true;
+            var regex = new RegExp(
+                /^([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*,\s([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*$/
+            );
+            if (regex.test(name)) {
+                return true;
             }
             return false;
         },
@@ -790,43 +1375,47 @@ export default {
             this.tablepage = value;
             this.tablelength = this.preview_data[0].length;
             this.exceldata = this.preview_data[0];
-            this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
+            this.exceldata = this.exceldata.slice(
+                this.page_size * this.tablepage - this.page_size,
+                this.page_size * this.tablepage
+            );
         },
         uploadToDatabase() {
             var _this = this;
             _this.getDoctors();
-            if(_this.excel_validation_error[0].length < 1 &&
+            if (
+                _this.excel_validation_error[0].length < 1 &&
                 _this.excel_validation_error[1].length < 1 &&
                 _this.preview_data.length > 0
-            ){
+            ) {
                 axios
-                .post("import_doctor_list", _this.preview_data)
-                .then(function(res) {
-                    _this.$notify({
-                        type: 'success',
-                        title: 'Import',
-                        message: "Data imported successfully!",
-                    });
-                })
-                .catch(function(res) { });
-            }else{
+                    .post("import_doctor_list", _this.preview_data)
+                    .then(function(res) {
+                        _this.$notify({
+                            type: "success",
+                            title: "Import",
+                            message: "Data imported successfully!"
+                        });
+                    })
+                    .catch(function(res) {});
+            } else {
                 _this.$notify({
-                    type: 'warning',
-                    title: 'Import',
-                    message: "Upload request error, please check your file.",
+                    type: "warning",
+                    title: "Import",
+                    message: "Upload request error, please check your file."
                 });
             }
         },
         handleExceedFile(files, fileList) {
             this.$notify({
-                type: 'info',
-                title: 'Import',
-                message: "You can only upload one file at a time",
+                type: "info",
+                title: "Import",
+                message: "You can only upload one file at a time"
             });
         },
         handleRemoveFile(file, fileList) {
             this.getDoctors();
-            this.sheet_length = '';
+            this.sheet_length = "";
             this.tablepage = 1;
             this.tablelength = 0;
             this.preview_data = [];
@@ -835,15 +1424,18 @@ export default {
             this.doctor_list_compress = [];
             this.is_preview = false;
             this.$notify({
-                type: 'info',
-                title: 'Cancelled',
-                message: file.name + " was removed",
+                type: "info",
+                title: "Cancelled",
+                message: file.name + " was removed"
             });
         },
-        trimToCompare(text){
-            return (text).trim().toLowerCase().replace(/\s/g, '');
+        trimToCompare(text) {
+            return text
+                .trim()
+                .toLowerCase()
+                .replace(/\s/g, "");
         },
-        fileData(file, fileList){
+        fileData(file, fileList) {
             var _this = this;
             var header_required = [
                 "physician_name",
@@ -854,101 +1446,173 @@ export default {
             reader.readAsArrayBuffer(file.raw);
             reader.onloadend = function(e) {
                 var data = new Uint8Array(reader.result);
-                var wb = XLSX.read(data,{type:'array'});
+                var wb = XLSX.read(data, { type: "array" });
                 var i = 0;
                 let sheetName = wb.SheetNames[i];
                 let worksheet = wb.Sheets[sheetName];
                 try {
-                    var range = XLSX.utils.decode_range(worksheet['!ref']);
-                    if(range.e.r < 1){
+                    var range = XLSX.utils.decode_range(worksheet["!ref"]);
+                    if (range.e.r < 1) {
                         _this.excel_validation_error[1].push({
-                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                            value: '',
-                            message: "It looks like you don't have any data in this page ",
-                            cell_position: 'worksheet #' + (i + 1),
+                            id:
+                                "wsc" +
+                                Math.random()
+                                    .toString(36)
+                                    .substring(7) +
+                                (i + 1),
+                            value: "",
+                            message:
+                                "It looks like you don't have any data in this page ",
+                            cell_position: "worksheet #" + (i + 1)
                         });
                     }
                 } catch (error) {}
-                for(var R = range.s.r; R <= range.e.r; ++R) {
-                    for(var C = range.s.c; C <= range.e.c; ++C) {
-                        var cellref = XLSX.utils.encode_cell({c:C, r:R});
-                        var cell_position = "#"+ (i + 1) + " " + ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
-                        if(!worksheet[cellref]){
-                            if(R == 0 && C < 3 ){
+                for (var R = range.s.r; R <= range.e.r; ++R) {
+                    for (var C = range.s.c; C <= range.e.c; ++C) {
+                        var cellref = XLSX.utils.encode_cell({ c: C, r: R });
+                        var cell_position =
+                            "#" +
+                            (i + 1) +
+                            " " +
+                            (C + 1 + 9).toString(36).toUpperCase() +
+                            (R + 1);
+                        if (!worksheet[cellref]) {
+                            if (R == 0 && C < 3) {
                                 _this.excel_validation_error[0].push({
-                                    id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                    value: '',
+                                    id:
+                                        "wsh" +
+                                        Math.random()
+                                            .toString(36)
+                                            .substring(7) +
+                                        (i + 1),
+                                    value: "",
                                     message: "Header must have 3 column.",
-                                    cell_position: cell_position,
+                                    cell_position: cell_position
                                 });
                             }
-                            if(R > 0 && C < 3){
-                                if(C == 0){
+                            if (R > 0 && C < 3) {
+                                if (C == 0) {
                                     _this.excel_validation_error[1].push({
-                                        id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                        value: '',
-                                        message: "This cell must contain Physician Name, format(LastName, FirstName MiddleName) ",
-                                        cell_position: cell_position,
+                                        id:
+                                            "wsc" +
+                                            Math.random()
+                                                .toString(36)
+                                                .substring(7) +
+                                            (i + 1),
+                                        value: "",
+                                        message:
+                                            "This cell must contain Physician Name, format(LastName, FirstName MiddleName) ",
+                                        cell_position: cell_position
                                     });
-                                }else if(C > 0 && C < 3){
+                                } else if (C > 0 && C < 3) {
                                     _this.excel_validation_error[1].push({
-                                        id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                        value: '',
-                                        message: "This cell must contain 'Yes or No' only ",
-                                        cell_position: cell_position,
+                                        id:
+                                            "wsc" +
+                                            Math.random()
+                                                .toString(36)
+                                                .substring(7) +
+                                            (i + 1),
+                                        value: "",
+                                        message:
+                                            "This cell must contain 'Yes or No' only ",
+                                        cell_position: cell_position
                                     });
                                 }
                             }
                             continue;
                         }
                         var cell = worksheet[cellref];
-                        if(R == 0 && C < 3){
+                        if (R == 0 && C < 3) {
                             var column_cell = _this.trimToCompare(cell.v);
-                            if(header_required.indexOf(column_cell) == "-1"){
+                            if (header_required.indexOf(column_cell) == "-1") {
                                 _this.excel_validation_error[0].push({
-                                    id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                    id:
+                                        "wsh" +
+                                        Math.random()
+                                            .toString(36)
+                                            .substring(7) +
+                                        (i + 1),
                                     value: cell.v,
-                                    message: "Required header did not match, download the sample excel file",
-                                    cell_position: cell_position,
+                                    message:
+                                        "Required header did not match, download the sample excel file",
+                                    cell_position: cell_position
                                 });
                             }
                         }
-                        if(R > 0 && C < 3){
-                            if(C == 0){
-                                if(cell.v.match(/[^,]+,[^,]+/g) == null){
+                        if (R > 0 && C < 3) {
+                            if (C == 0) {
+                                if (cell.v.match(/[^,]+,[^,]+/g) == null) {
                                     _this.excel_validation_error[1].push({
-                                        id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                        id:
+                                            "wsc" +
+                                            Math.random()
+                                                .toString(36)
+                                                .substring(7) +
+                                            (i + 1),
                                         value: cell.v,
-                                        message: "must contain Physician Name, format(LastName, FirstName MiddleName) ",
-                                        cell_position: cell_position,
+                                        message:
+                                            "must contain Physician Name, format(LastName, FirstName MiddleName) ",
+                                        cell_position: cell_position
                                     });
-                                }else if(cell.v.match(/[^,]+,[^,]+/g).length > 0){
-                                    if(cell.v.match(/[^,]+,[^,]+/g).length > 1){
+                                } else if (
+                                    cell.v.match(/[^,]+,[^,]+/g).length > 0
+                                ) {
+                                    if (
+                                        cell.v.match(/[^,]+,[^,]+/g).length > 1
+                                    ) {
                                         _this.excel_validation_error[1].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                            id:
+                                                "wsc" +
+                                                Math.random()
+                                                    .toString(36)
+                                                    .substring(7) +
+                                                (i + 1),
                                             value: cell.v,
-                                            message: "must contain only one Physician Name, format(LastName, FirstName MiddleName) ",
-                                            cell_position: cell_position,
+                                            message:
+                                                "must contain only one Physician Name, format(LastName, FirstName MiddleName) ",
+                                            cell_position: cell_position
                                         });
-                                    }else{
-                                        var compare = cell.v.match(/[^,]+,[^,]+/g);
-                                        if(_this.trimToCompare(compare[0]) != _this.trimToCompare(cell.v)){
-                                            _this.excel_validation_error[1].push({
-                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                                value: cell.v,
-                                                message: "must contain only one Physician Name, format(LastName, FirstName MiddleName) ",
-                                                cell_position: cell_position,
-                                            });
+                                    } else {
+                                        var compare = cell.v.match(
+                                            /[^,]+,[^,]+/g
+                                        );
+                                        if (
+                                            _this.trimToCompare(compare[0]) !=
+                                            _this.trimToCompare(cell.v)
+                                        ) {
+                                            _this.excel_validation_error[1].push(
+                                                {
+                                                    id:
+                                                        "wsc" +
+                                                        Math.random()
+                                                            .toString(36)
+                                                            .substring(7) +
+                                                        (i + 1),
+                                                    value: cell.v,
+                                                    message:
+                                                        "must contain only one Physician Name, format(LastName, FirstName MiddleName) ",
+                                                    cell_position: cell_position
+                                                }
+                                            );
                                         }
                                     }
                                 }
-                            }else if (C > 0 && C < 3) {
-                                if(_this.trimToCompare(cell.v) != "yes" && _this.trimToCompare(cell.v) != "no"){
+                            } else if (C > 0 && C < 3) {
+                                if (
+                                    _this.trimToCompare(cell.v) != "yes" &&
+                                    _this.trimToCompare(cell.v) != "no"
+                                ) {
                                     _this.excel_validation_error[1].push({
-                                        id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                        id:
+                                            "wsc" +
+                                            Math.random()
+                                                .toString(36)
+                                                .substring(7) +
+                                            (i + 1),
                                         value: cell.v,
-                                        message: "This cell must contain 'Yes or No' only ",
-                                        cell_position: cell_position,
+                                        message:
+                                            "This cell must contain 'Yes or No' only ",
+                                        cell_position: cell_position
                                     });
                                 }
                             }
@@ -956,58 +1620,151 @@ export default {
                     }
                 }
                 _this.preview_data.push(XLSX.utils.sheet_to_json(worksheet));
-                if(_this.excel_validation_error[0].length < 1 &&
+                if (
+                    _this.excel_validation_error[0].length < 1 &&
                     _this.excel_validation_error[1].length < 1
-                ){
+                ) {
                     _this.tablelength = _this.preview_data[0].length;
                     _this.exceldata = _this.preview_data[0];
                     _this.tablepage = parseInt(1);
-                    _this.exceldata = _this.exceldata.slice(_this.page_size * _this.tablepage - _this.page_size, _this.page_size * _this.tablepage);
+                    _this.exceldata = _this.exceldata.slice(
+                        _this.page_size * _this.tablepage - _this.page_size,
+                        _this.page_size * _this.tablepage
+                    );
 
                     _this.is_preview = true;
-                }else{
+                } else {
                     _this.is_preview = false;
                 }
-            }
+            };
         },
-        exportExcel(){
+        exportExcel() {
             this.doctor_export = [];
-            this.doctors.forEach((doctor)=>{
+            this.doctors.forEach(doctor => {
                 this.doctor_export.push({
                     Physician_Name: doctor.name,
-                    Is_active: (doctor.is_active) ? 'Yes':'No',
-                    Is_parttime: (doctor.is_parttime) ? 'Yes' : 'No'
+                    Is_active: doctor.is_active ? "Yes" : "No",
+                    Is_parttime: doctor.is_parttime ? "Yes" : "No"
                 });
             });
             var doctors = XLSX.utils.json_to_sheet(this.doctor_export);
             var wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, doctors, 'Physician List');
-            XLSX.writeFile(wb, 'Physician_List.xlsx');
+            XLSX.utils.book_append_sheet(wb, doctors, "Physician List");
+            XLSX.writeFile(wb, "Physician_List.xlsx");
         },
-        getTemplate(){
-            window.open(window.location.origin+"/template/Import_DoctorList_Template.xlsx");
+        getTemplate() {
+            window.open(
+                window.location.origin +
+                    "/template/Import_DoctorList_Template.xlsx"
+            );
         },
-        formatNumber(row, column, cellValue, index){
-           return new Intl.NumberFormat().format(cellValue)
+        formatNumber(row, column, cellValue, index) {
+            return new Intl.NumberFormat().format(cellValue);
         },
-        firstLetterOfWordUpperCase(row, column, cellValue, index){
-           return (cellValue).charAt(0).toUpperCase() + cellValue.slice(1)
+        firstLetterOfWordUpperCase(row, column, cellValue, index) {
+            return cellValue.charAt(0).toUpperCase() + cellValue.slice(1);
+        },
+        exportDoctorRecordExcel() {
+            var row = 5;
+            this.batch_list.forEach((patient)=>{
+                row += 1;
+                var date = new Date(patient.admission_date);
+                var date1 = new Date(patient.discharge_date);
+                var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' + 
+                    date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() + 
+                    '/' + date1.getFullYear();
+                this.sheet_data["A"+row] = {t: 's', v: patient.patient_name};
+                this.sheet_data["B"+row] = {t: 's', v: patient_confinement_date};
+                this.sheet_data["C"+row] = {t: 'n', v: patient.grossPF};
+                this.sheet_data["D"+row] = {t: 'n', v: patient.netPF};
+                this.sheet_data["E"+row] = {t: 'n', v: patient.professional_fee};
+                this.sheet_data["F"+row] = {t: 'n', v: patient.pooled_record.full_time_individual_fee};
+                this.sheet_data["G"+row] = {t: 's', v: patient.pivot.attending_name};
+                this.sheet_data["H"+row] = {t: 'n', v: patient.pivot.attending_fee};
+                this.sheet_data["I"+row] = {t: 's', v: patient.pivot.ref_name};
+                this.sheet_data["J"+row] = {t: 'n', v: patient.pivot.ref_fee};
+                this.sheet_data["K"+row] = {t: 's', v: patient.pivot.anesthesiologist_name};
+                this.sheet_data["L"+row] = {t: 'n', v: patient.pivot.anesthesiologist_fee};
+                this.sheet_data["M"+row] = {t: 's', v: patient.pivot.comanagement_name};
+                this.sheet_data["N"+row] = {t: 'n', v: patient.pivot.comanagement_fee};
+                this.sheet_data["O"+row] = {t: 's', v: patient.pivot.admitting_name};
+                this.sheet_data["P"+row] = {t: 'n', v: patient.pivot.admitting_fee};
+                this.sheet_data["Q"+row] = {t: 's', v: patient.co_attending_name};
+                this.sheet_data["R"+row] = {t: 'n', v: patient.co_attending_fee};
+                this.sheet_data["S"+row] = {t: 's', v: patient.co_ref_name};
+                this.sheet_data["T"+row] = {t: 'n', v: patient.co_ref_fee};
+                this.sheet_data["U"+row] = {t: 's', v: patient.co_anesthesiologist_name};
+                this.sheet_data["V"+row] = {t: 'n', v: patient.co_anesthesiologist_fee};
+                this.sheet_data["W"+row] = {t: 's', v: patient.co_comanagement_name};
+                this.sheet_data["X"+row] = {t: 'n', v: patient.co_comanagement_fee};
+                this.sheet_data["Y"+row] = {t: 's', v: patient.co_admitting_name};
+                this.sheet_data["Z"+row] = {t: 'n', v: patient.co_admitting_fee};
+            });
+
+            row += 2;
+            this.sheet_data["A"+row] = {t: 's', v: "ATTENDING TOTAL"};
+            this.sheet_data["B"+row] = {t: 's', v: "REFERRED TOTAL"};
+            this.sheet_data["C"+row] = {t: 's', v: "ANESTHESIOLOGIST TOTAL"};
+            this.sheet_data["D"+row] = {t: 's', v: "COMANAGEMENT TOTAL"};
+            this.sheet_data["E"+row] = {t: 's', v: "ADMITTING TOTAL"};
+            this.sheet_data["F"+row] = {t: 's', v: "GRAND TOTAL"};
+            
+            row += 1;
+            this.sheet_data["A"+row] = {t: 'n', v: this.record_total[0].attending_fee_total};
+            this.sheet_data["B"+row] = {t: 'n', v: this.record_total[0].ref_fee_total};
+            this.sheet_data["C"+row] = {t: 'n', v: this.record_total[0].anesthesiologist_fee_total};
+            this.sheet_data["D"+row] = {t: 'n', v: this.record_total[0].comanagement_fee_total};
+            this.sheet_data["E"+row] = {t: 'n', v: this.record_total[0].admitting_fee_total};
+            this.sheet_data["F"+row] = {t: 'n', v: this.record_total[0].grand_total};
+
+            row += 1;
+            this.sheet_data['!ref'] = "A1:Z" + row;
+            var sheet_name;
+            if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
+                if (this.value[0] == 'All') {
+                    sheet_name = "All Record";
+                } else {
+                    var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+                    var d = (this.value[0]).trim().split('-');
+                    var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
+                    var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
+                    sheet_name = date_from + " - " + date_to;
+                    this.sheet_data.A2.v = "COVERED PERIOD: " + sheet_name.toUpperCase();
+                    this.sheet_data.A3.v = this.dialogViewTitle;
+                    this.sheet_data.G4.v = this.dialogViewTitle;
+
+                }
+                var sheet_data_object = {};
+                sheet_data_object[sheet_name] = this.sheet_data;
+                XLSX.writeFile({
+                    SheetNames:[sheet_name],
+                    Sheets: sheet_data_object
+                }, 'Doctor_Record_Export.xlsx');
+            } else {
+                this.$notify({
+                    type: 'warning',
+                    title: 'Export',
+                    message: "Please select batch to proceed",
+                });
+            }
         },
     },
     mounted() {
         this.getDoctors();
+        this.getBatch();
     }
-}
+};
 </script>
 
 <style lang="css">
-    #search-box {
-        margin-bottom: 10px;
-    }
-    .block-button, .block-button button {
-        width: 100%;
-    }
-    .doctors-form-radio-button {
-        width: 100%;
-    }
+#search-box {
+    margin-bottom: 10px;
+}
+.block-button,
+.block-button button {
+    width: 100%;
+}
+.doctors-form-radio-button {
+    width: 100%;
+}
 </style>

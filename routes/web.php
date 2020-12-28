@@ -88,6 +88,8 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::post('add_doctor', 'UserController@addDoctor');
     Route::put('edit_doctor', 'UserController@editDoctor');
     Route::delete('delete_doctor/{id}', 'UserController@deleteDoctor');
+    Route::post('get_co_physician/{batch}', 'UserController@getDoctorsWithCoPhysician');
+
     //Records
     // Route::get('/records', 'UserController@records')->name('records');
     Route::post('import_doctor_record', 'UserController@importExcel');
@@ -113,13 +115,16 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
 
     //doctors
     Route::get('get_doctors', 'UserController@getDoctors');
-    Route::get('get_active_doctors', 'UserController@getActiveDoctors');
+    Route::get('getAllDoctors', 'UserController@getAllDoctors');
 
     //user record
     Route::get('/records', 'UserController@records')->name('records');
     Route::get('/get_records/{batch}', 'UserController@getRecords');
     Route::post('/add_records', 'UserController@addCreditRecord');
     Route::get('/get_batch', 'UserController@getBatch');
+    Route::delete('delete_record/{id}', 'UserController@deleteRecord');
+    Route::delete('delete_recordBybatch/{id}', 'UserController@deleteByBatch');
+    Route::put('edit_record', 'UserController@editRecord');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');

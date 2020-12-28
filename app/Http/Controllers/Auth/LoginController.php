@@ -46,7 +46,7 @@ class LoginController extends Controller
             return redirect('/admin');
         }
         if ($user->hasRole('user')) {
-            return redirect('/user');
+            return redirect('/user/summary');
         }
         if ($user->hasRole('observer')) {
             return redirect('/observer');
