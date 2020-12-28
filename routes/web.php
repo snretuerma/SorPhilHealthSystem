@@ -90,7 +90,6 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::delete('delete_doctor/{id}', 'UserController@deleteDoctor');
     Route::post('get_co_physician/{batch}', 'UserController@getDoctorsWithCoPhysician');
 
-    Route::post('getCoPhysicians/', 'UserController@getCoPhysicians');
     //Records
     // Route::get('/records', 'UserController@records')->name('records');
     Route::post('import_doctor_record', 'UserController@importExcel');

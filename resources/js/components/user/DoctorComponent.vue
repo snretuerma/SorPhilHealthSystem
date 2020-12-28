@@ -1,6 +1,6 @@
 <template>
     <div>
-        <!-- Header -->
+
         <div class="row header-top">
             <div class="header-title-parent">
                 <span class="header-title">
@@ -8,7 +8,7 @@
                 </span>
             </div>
         </div>
-        <!-- End Header -->
+
         <div id="search-box" class="row">
             <div class="col-xl-9 col-lg-8 col-md-6 col-sm-12">
                 <el-input
@@ -57,94 +57,134 @@
         </div>
         <div class="card">
             <div class="card-body">
-                <div class="row">
-                    <div class="col-12">
-                        <el-table v-loading="loading" :data="tableData">
-                            <el-table-column
-                                label="Name"
-                                prop="name"
-                            ></el-table-column>
-                            <el-table-column
-                                label="Employment Type"
-                                prop="is_parttime"
-                                align="center"
-                                :formatter="employmentType"
-                            ></el-table-column>
-                            <el-table-column
-                                label="Employment Status"
-                                prop="is_active"
-                                align="center"
-                                :formatter="employmentStatus"
-                            ></el-table-column>
-                            <el-table-column
-                                width="135"
-                                align="center"
-                                fixed="right"
-                            >
-                                <template slot="header"> Action </template>
-                                <template slot-scope="scope">
-                                    <el-tooltip
-                                        class="item"
-                                        effect="light"
-                                        content="View"
-                                        placement="top"
-                                        :enterable="false"
+                <el-tabs type="border-card">
+                    <el-tab-pane label="All">
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table v-loading="loading" :data="tableData">
+                                    <el-table-column
+                                        label="Name"
+                                        prop="name"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Type"
+                                        prop="is_parttime"
+                                        align="center"
+                                        :formatter="employmentType"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Status"
+                                        prop="is_active"
+                                        align="center"
+                                        :formatter="employmentStatus"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        width="135"
+                                        align="center"
+                                        fixed="right"
                                     >
-                                        <el-button
-                                            size="mini"
-                                            type="info"
-                                            icon="el-icon-info"
-                                            circle
-                                            @click="handleView(scope.row)"
-                                        ></el-button>
-                                    </el-tooltip>
-                                    <el-tooltip
-                                        class="item"
-                                        effect="light"
-                                        content="Edit"
-                                        placement="top"
-                                        :enterable="false"
-                                    >
-                                        <el-button
-                                            size="mini"
-                                            type="primary"
-                                            icon="el-icon-edit"
-                                            circle
-                                            @click="handleEdit(scope.row)"
-                                        ></el-button>
-                                    </el-tooltip>
-                                    <el-tooltip
-                                        class="item"
-                                        effect="light"
-                                        content="Delete"
-                                        placement="top"
-                                        :enterable="false"
-                                    >
-                                        <el-button
-                                            size="mini"
-                                            type="danger"
-                                            icon="el-icon-delete"
-                                            circle
-                                            @click="handleDelete(scope.row)"
-                                        ></el-button>
-                                    </el-tooltip>
-                                </template>
-                            </el-table-column>
-                        </el-table>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-12 text-center">
-                        <el-pagination
-                            class="align-middle"
-                            background
-                            layout="prev, pager, next"
-                            @current-change="handleCurrentChange"
-                            :page-size="page_size"
-                            :total="total"
-                        />
-                    </div>
-                </div>
+                                        <template slot="header"> Action </template>
+                                        <template slot-scope="scope">
+                                            <el-tooltip
+                                                class="item"
+                                                effect="light"
+                                                content="View"
+                                                placement="top"
+                                                :enterable="false"
+                                            >
+                                                <el-button
+                                                    size="mini"
+                                                    type="info"
+                                                    icon="el-icon-info"
+                                                    circle
+                                                    @click="handleView(scope.row)"
+                                                ></el-button>
+                                            </el-tooltip>
+                                            <el-tooltip
+                                                class="item"
+                                                effect="light"
+                                                content="Edit"
+                                                placement="top"
+                                                :enterable="false"
+                                            >
+                                                <el-button
+                                                    size="mini"
+                                                    type="primary"
+                                                    icon="el-icon-edit"
+                                                    circle
+                                                    @click="handleEdit(scope.row)"
+                                                ></el-button>
+                                            </el-tooltip>
+                                            <el-tooltip
+                                                class="item"
+                                                effect="light"
+                                                content="Delete"
+                                                placement="top"
+                                                :enterable="false"
+                                            >
+                                                <el-button
+                                                    size="mini"
+                                                    type="danger"
+                                                    icon="el-icon-delete"
+                                                    circle
+                                                    @click="handleDelete(scope.row)"
+                                                ></el-button>
+                                            </el-tooltip>
+                                        </template>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12 text-center">
+                                <el-pagination
+                                    class="align-middle"
+                                    background
+                                    layout="prev, pager, next"
+                                    @current-change="handleCurrentChange"
+                                    :page-size="page_size"
+                                    :total="total"
+                                />
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane :label="count_active_doctors">
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table v-loading="loading" :data="active_doctors">
+                                    <el-table-column
+                                        label="Name"
+                                        prop="name"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Type"
+                                        prop="is_parttime"
+                                        align="center"
+                                        :formatter="employmentType"
+                                    ></el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                    <el-tab-pane :label="count_inactive_doctors">
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table v-loading="loading" :data="inactive_doctors">
+                                    <el-table-column
+                                        label="Name"
+                                        prop="name"
+                                    ></el-table-column>
+                                    <el-table-column
+                                        label="Employment Type"
+                                        prop="is_parttime"
+                                        align="center"
+                                        :formatter="employmentType"
+                                    ></el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
+                    </el-tab-pane>
+                </el-tabs>
             </div>
         </div>
         <el-dialog
@@ -331,15 +371,15 @@
         <el-dialog
             :title="dialogViewTitle"
             :visible.sync="show_doctor_summary"
-            width="90%"
-            top="5vh"
+            width="98%"
+            top="1vh"
             :close-on-press-escape="false"
             :close-on-click-modal="false"
         >
             <el-row>
                 <el-col>
                     <el-row>
-                        <el-col class="col-sm-12 col-md-12 col-lg-8 col-xl-20">
+                        <el-col class="col-sm-12 col-md-10 col-lg-10 col-xl-10">
                             <el-form ref="form">
                                 <el-form-item prop="batch">
                                     <el-select
@@ -368,8 +408,8 @@
                                 </el-form-item>
                             </el-form>
                         </el-col>
-                        <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-4">
-                            <el-button type="primary">Export</el-button>
+                        <el-col class="col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                            <el-button style="width:100%;" @click="exportDoctorRecordExcel">Export</el-button>
                         </el-col>
                     </el-row>
                     <el-table :data="batch_list" border>
@@ -493,12 +533,12 @@
                         <el-table-column label="Co-Physicians">
                             <el-table-column label="AP">
                                 <el-table-column
-                                    prop="co_ap_name"
+                                    prop="co_attending_name"
                                     min-width="200"
                                 >
                                 </el-table-column>
                                 <el-table-column
-                                    prop="co_ap_fee"
+                                    prop="co_attending_fee"
                                     min-width="90"
                                     :formatter="terminateZeroValue"
                                 >
@@ -519,12 +559,12 @@
                             </el-table-column>
                             <el-table-column label="ANES">
                                 <el-table-column
-                                    prop="co_anes_name"
+                                    prop="co_anesthesiologist_name"
                                     min-width="200"
                                 >
                                 </el-table-column>
                                 <el-table-column
-                                    prop="co_anes_fee"
+                                    prop="co_anesthesiologist_fee"
                                     min-width="90"
                                     :formatter="terminateZeroValue"
                                 >
@@ -532,12 +572,12 @@
                             </el-table-column>
                             <el-table-column label="CO_MGT">
                                 <el-table-column
-                                    prop="co_coman_name"
+                                    prop="co_comanagement_name"
                                     min-width="200"
                                 >
                                 </el-table-column>
                                 <el-table-column
-                                    prop="co_coman_fee"
+                                    prop="co_comanagement_fee"
                                     min-width="90"
                                     :formatter="terminateZeroValue"
                                 >
@@ -545,12 +585,12 @@
                             </el-table-column>
                             <el-table-column label="ADMIT">
                                 <el-table-column
-                                    prop="co_admi_name"
+                                    prop="co_admitting_name"
                                     min-width="200"
                                 >
                                 </el-table-column>
                                 <el-table-column
-                                    prop="co_admi_fee"
+                                    prop="co_admitting_fee"
                                     min-width="90"
                                     :formatter="terminateZeroValue"
                                 >
@@ -558,6 +598,55 @@
                             </el-table-column>
                         </el-table-column>
                     </el-table>
+                    <br />
+                        <div class="row">
+                            <div class="col-12">
+                                <el-table
+                                    :data="record_total"
+                                    border
+                                    row-class-name="success-row"
+                                >
+                                    <el-table-column :label="dialogViewTitle">
+                                        <el-table-column
+                                            label="Attending Physician Total"
+                                            :formatter="formatNumber"
+                                            min-width="150"
+                                            prop="attending_fee_total"
+                                        ></el-table-column>
+                                        <el-table-column
+                                            label="Referred Physician Total"
+                                            :formatter="formatNumber"
+                                            min-width="150"
+                                            prop="ref_fee_total"
+                                        ></el-table-column>
+                                        <el-table-column
+                                            label="Anesthesiologist Total"
+                                            :formatter="formatNumber"
+                                            min-width="140"
+                                            prop="anesthesiologist_fee_total"
+                                        ></el-table-column>
+                                        <el-table-column
+                                            label="Comanagement Total"
+                                            :formatter="formatNumber"
+                                            min-width="170"
+                                            prop="comanagement_fee_total"
+                                        ></el-table-column>
+                                        <el-table-column
+                                            label="Admitting Total"
+                                            :formatter="formatNumber"
+                                            min-width="150"
+                                            prop="admitting_fee_total"
+                                        ></el-table-column>
+                                        <el-table-column
+                                            label="Grand Total"
+                                            :formatter="formatNumber"
+                                            min-width="140"
+                                            prop="grand_total"
+                                        ></el-table-column>
+                                    </el-table-column>
+                                </el-table>
+                            </div>
+                        </div>
                 </el-col>
             </el-row>
         </el-dialog>
@@ -691,10 +780,15 @@ export default {
             comanagement_fee_total: 0,
             admitting_fee_total: 0,
             grand_total: 0,
+            doctor_record_total:[],
             batchData: [],
             value: [],
             batch: [],
             doctors: [],
+            active_doctors: [],
+            inactive_doctors: [],
+            count_active_doctors: 'Active',
+            count_inactive_doctors: 'Inactive',
             doctor_id: "",
             temp: [],
             edit_object: "",
@@ -769,16 +863,89 @@ export default {
             fullscreen: true,
             dialogtitle: "Import Excel",
             isimport: true,
-            batch_list: [],
+            batch_list:[],
+            activeName: '1',
+            dialogViewTitle: 'Doctor Record',
             form1: {
                 doctor_id: "",
                 record_id: [],
                 batch: ""
             },
-            activeName: "1",
-            dialogViewTitle: "Doctor Record",
-            co_physician: []
-        };
+            co_physician: [],
+            sheet_data: {
+                    A1:{t:'s', v:"PROFESSIONAL FEE"},
+                    A2:{t:'s', v:"COVERED PERIOD:"},
+                    A3:{t:'s', v:"DOCTOR NAME:"},
+
+                    A4:{t:'s', v:"NAME OF PATIENT"},
+                    B4:{t:'s', v:"CONFINEMENT PERIOD"},
+                    C4:{t:'s', v:"GROSS PF"},
+                    D4:{t:'s', v:"NET PF (50%)"},
+                    E4:{t:'s', v:"PROFESSIONAL FEE (PF)(35%)"},
+                    F4:{t:'s', v:"POOLED (15%)"},
+
+                    G4:{t:'s', v:"DOCTOR NAME:"},
+                    G5:{t:'s', v:"AP"},
+                    I5:{t:'s', v:"REF"},
+                    K5:{t:'s', v:"ANES"},
+                    M5:{t:'s', v:"CO-MGT"},
+                    O5:{t:'s', v:"ADMIT"},
+
+                    Q4:{t:'s', v:"CO-PHYSICIAN"},
+                    Q5:{t:'s', v:"ATTENDING PHYSICIAN"},
+                    S5:{t:'s', v:"REFFERAL 10% of PF"},
+                    U5:{t:'s', v:"ANES 30% of PF"},
+                    W5:{t:'s', v:"CO-MANAGEMENT 20% of PF"},
+                    Y5:{t:'s', v:"ADMITTING 10% of PF"},
+                    "!merges":[
+                        {s:{r:0,c:0},e:{r:0,c:25}},
+                        {s:{r:1,c:0},e:{r:1,c:25}},
+                        {s:{r:2,c:0},e:{r:2,c:25}},
+
+                        {s:{r:3,c:0},e:{r:4,c:0}},
+                        {s:{r:3,c:1},e:{r:4,c:1}},
+                        {s:{r:3,c:2},e:{r:4,c:2}},
+                        {s:{r:3,c:3},e:{r:4,c:3}},
+                        {s:{r:3,c:4},e:{r:4,c:4}},
+                        {s:{r:3,c:5},e:{r:4,c:5}},
+
+                        {s:{r:3,c:6},e:{r:3,c:15}},
+                        {s:{r:4,c:6},e:{r:4,c:7}},
+                        {s:{r:4,c:8},e:{r:4,c:9}},
+                        {s:{r:4,c:10},e:{r:4,c:11}},
+                        {s:{r:4,c:12},e:{r:4,c:13}},
+                        {s:{r:4,c:14},e:{r:4,c:15}},
+
+                        {s:{r:3,c:16},e:{r:3,c:25}},
+                        {s:{r:4,c:16},e:{r:4,c:17}},
+                        {s:{r:4,c:18},e:{r:4,c:19}},
+                        {s:{r:4,c:20},e:{r:4,c:21}},
+                        {s:{r:4,c:22},e:{r:4,c:23}},
+                        {s:{r:4,c:24},e:{r:4,c:25}},
+                    ],
+                    "!ref": "A1:Z5",
+            },
+            main_physician: [
+                'attending', 
+                'anesthesiologist', 
+                'comanagement', 
+                'admitting'
+            ],
+            ref_physician: [
+                'requesting', 
+                'surgeon', 
+                'healthcare', 
+                'er'
+            ],
+            record_total: [{
+                attending_fee_total: 0,
+                ref_fee_total: 0,
+                anesthesiologist_fee_total: 0,
+                comanagement_fee_total: 0,
+                admitting_fee_total: 0,
+                grand_total: 0,
+            }]
+        }
     },
     computed: {
         searching() {
@@ -803,244 +970,28 @@ export default {
         terminateZeroValue(row, column, cellValue, index) {
             return cellValue || "";
         },
-        getCoPhysicians: function(id) {
-            var temp = [];
-            this.batch_list.forEach(el => {
-                temp.push(el.id);
-            });
-            this.form1.doctor_id = id;
-            this.form1.batch = this.value[0];
-            axios
-                .post("getCoPhysicians", this.form1)
-                .then(response => {})
-                .catch(function(error) {});
-        },
         getCoDoctor(batch) {
-            //'get_co_physician'
             var _this = this;
             axios
-                .post("get_co_physician/" + batch)
-                .then(response => {
-                    _this.co_physician.push(response.data);
-                })
-                .catch(function(error) {});
+            .post("get_co_physician/" + batch)
+            .then(response => {
+                _this.co_physician.push(response.data);
+            })
+            .catch(function(error) {});
         },
         getBatch() {
             axios
-                .get("get_batch")
-                .then(response => {
-                    this.batch = response.data;
-                    this.value[0] = response.data[0].batch;
-                    this.first_batch = response.data[0].batch;
-                })
-                .catch(function(error) {});
+            .get("get_batch")
+            .then(response => {
+                this.batch = response.data;
+                this.value[0] = response.data[0].batch;
+                this.first_batch = response.data[0].batch;
+            })
+            .catch(function(error) {});
         },
         changes() {
             if (this.value != "") {
-                axios
-                    .post("get_co_physician/" + this.value[0])
-                    .then(response => {
-                        this.co_physician = [];
-                        this.co_physician.push(response.data);
-                        this.batch_list = [];
-                        var batch = [];
-                        var count = 0;
-                        this.holder.credit_records.forEach(el => {
-                            el.netPF = 0;
-                            el.grossPF = 0;
-                            if (el.pooled_record != null) {
-                                el.netPF =
-                                    Number(el.pivot.professional_fee) +
-                                    Number(
-                                        el.pooled_record
-                                            .full_time_individual_fee
-                                    );
-                                el.grossPF = el.netPF * 2;
-                            } else
-                                el.netPF = Number(
-                                    el.pivot.professional_fee + 0
-                                );
-                            el.grossPF = el.netPF * 2;
-                            if (el.batch == this.value[0]) {
-                                el.co_ap_name = "";
-                                el.co_ap_fee = 0;
-                                el.co_ref_name = "";
-                                el.co_ref_fee = 0;
-                                el.co_anes_name = "";
-                                el.co_anes_fee = 0;
-                                el.co_coman_name = "";
-                                el.co_coman_fee = 0;
-                                el.co_admi_name = "";
-                                el.co_admi_fee = 0;
-                                this.co_physician[0].forEach(physician => {
-                                    if (
-                                        el.pivot.record_id ==
-                                            physician.record_id &&
-                                        el.pivot.doctor_id ==
-                                            physician.doctor_id
-                                    ) {
-                                        if (
-                                            [
-                                                "requesting",
-                                                "surgeon",
-                                                "healthcare",
-                                                "er"
-                                            ].includes(physician.doctor_role)
-                                        ) {
-                                            el.pivot["ref_name"] =
-                                                physician.name;
-                                            el.pivot["ref_fee"] =
-                                                physician.professional_fee;
-                                            if (
-                                                Number(
-                                                    physician.professional_fee
-                                                ) != null
-                                            )
-                                                this.ref_fee_total += Number(
-                                                    physician.professional_fee
-                                                );
-                                            else this.ref_fee_total += 0;
-                                        } else {
-                                            el.pivot[
-                                                el.pivot.doctor_role + "_name"
-                                            ] = physician.name;
-                                            el.pivot[
-                                                el.pivot.doctor_role + "_fee"
-                                            ] = physician.professional_fee;
-                                            if (
-                                                Number(
-                                                    physician.professional_fee
-                                                ) != null
-                                            )
-                                                if (
-                                                    el.pivot.doctor_role ==
-                                                    "attending"
-                                                ) {
-                                                    this.attending_fee_total += Number(
-                                                        physician.professional_fee
-                                                    );
-                                                } else if (
-                                                    el.pivot.doctor_role ==
-                                                    "anesthesiologist"
-                                                ) {
-                                                    this.anesthesiologist_fee_total += Number(
-                                                        physician.professional_fee
-                                                    );
-                                                } else if (
-                                                    el.pivot.doctor_role ==
-                                                    "comanagement"
-                                                ) {
-                                                    this.comanagement_fee_total += Number(
-                                                        physician.professional_fee
-                                                    );
-                                                } else if (
-                                                    el.pivot.doctor_role ==
-                                                    "admitting"
-                                                ) {
-                                                    this.admitting_fee_total += Number(
-                                                        physician.professional_fee
-                                                    );
-                                                }
-                                                // el[el.pivot.doctor_role + "_fee_total"] += Number(physician.professional_fee);
-                                                else if (
-                                                    el.pivot.doctor_role ==
-                                                    "attending"
-                                                ) {
-                                                    this.attending_fee_total += 0;
-                                                } else if (
-                                                    el.pivot.doctor_role ==
-                                                    "anesthesiologist"
-                                                ) {
-                                                    this.anesthesiologist_fee_total += 0;
-                                                } else if (
-                                                    el.pivot.doctor_role ==
-                                                    "comanagement"
-                                                ) {
-                                                    this.comanagement_fee_total += 0;
-                                                } else if (
-                                                    el.pivot.doctor_role ==
-                                                    "admitting"
-                                                ) {
-                                                    this.admitting_fee_total += 0;
-                                                }
-                                        }
-                                    } else {
-                                        if (
-                                            el.pivot.record_id ==
-                                                physician.record_id &&
-                                            physician.doctor_role == "attending"
-                                        ) {
-                                            el.co_ap_name +=
-                                                physician.name + ", ";
-                                            el.co_ap_fee += Number(
-                                                physician.professional_fee
-                                            );
-                                        }
-                                        //var rr = ['requesting','surgeon','healthcare','er']
-                                        if (
-                                            el.pivot.record_id ==
-                                                physician.record_id &&
-                                            [
-                                                "requesting",
-                                                "surgeon",
-                                                "healthcare",
-                                                "er"
-                                            ].includes(physician.doctor_role)
-                                        ) {
-                                            el.co_ref_name +=
-                                                physician.name + ", ";
-                                            el.co_ref_fee += Number(
-                                                physician.professional_fee
-                                            );
-                                        }
-                                        if (
-                                            el.pivot.record_id ==
-                                                physician.record_id &&
-                                            physician.doctor_role ==
-                                                "anesthesiologist"
-                                        ) {
-                                            el.co_anes_name +=
-                                                physician.name + ", ";
-                                            el.co_anes_fee += Number(
-                                                physician.professional_fee
-                                            );
-                                        }
-                                        if (
-                                            el.pivot.record_id ==
-                                                physician.record_id &&
-                                            physician.doctor_role ==
-                                                "comanagement"
-                                        ) {
-                                            el.co_coman_name +=
-                                                physician.name + ", ";
-                                            el.co_coman_fee += Number(
-                                                physician.professional_fee
-                                            );
-                                        }
-                                        if (
-                                            el.pivot.record_id ==
-                                                physician.record_id &&
-                                            physician.doctor_role == "admitting"
-                                        ) {
-                                            el.co_admi_name +=
-                                                physician.name + ", ";
-                                            el.co_admi_fee += Number(
-                                                physician.professional_fee
-                                            );
-                                        }
-                                    }
-                                });
-                                this.batch_list.push(el);
-                            }
-                        });
-                        this.grand_total =
-                            this.attending_fee_total +
-                            this.ref_fee_total +
-                            this.anesthesiologist_fee_total +
-                            this.comanagement_fee_total +
-                            this.admitting_fee_total;
-                    })
-                    .catch(function(error) {});
+                this.getDoctorRecord(this.holder);
             }
         },
         getDoctors() {
@@ -1048,215 +999,120 @@ export default {
             axios.get("get_doctors").then(response => {
                 this.doctors = response.data;
                 this.loading = false;
+                this.doctor_list_compress = [];
+                this.active_doctors = [];
+                this.inactive_doctors = [];
                 response.data.forEach(el => {
                     _this.doctor_list_compress.push(
                         _this.trimToCompare(el.name)
                     );
+                    if(el.is_active){
+                        _this.active_doctors.push(el);
+                    }else{
+                        _this.inactive_doctors.push(el);
+                    }
                 });
+                this.count_active_doctors = 'Active (' + this.active_doctors.length + ')';
+                this.count_inactive_doctors = 'Inactive (' + this.inactive_doctors.length + ')';
             });
         },
 
         handleView(row_data) {
+            this.getDoctorRecord(row_data);
+            this.dialogViewTitle = row_data.name.toUpperCase();
+            this.show_doctor_summary = true;
+            this.doctor_id = row_data.id;
+        },
+        getDoctorRecord(row_data){
             axios
-                .post("get_co_physician/" + this.value[0])
-                .then(response => {
-                    this.co_physician = [];
-                    this.co_physician.push(response.data);
-                    this.dialogViewTitle = row_data.name.toUpperCase();
-                    this.show_doctor_summary = true;
-                    this.batch_list = [];
-                    var batch = [];
-                    var count = 0;
-                    this.doctor_id = row_data.id;
-                    row_data.credit_records.forEach(el => {
-                        el.netPF = 0;
-                        el.grossPF = 0;
+            .post("get_co_physician/" + this.value[0])
+            .then(response => {
+                this.co_physician = [];
+                this.co_physician.push(response.data);
+                this.batch_list = [];
+                var batch = [];
+                var count = 0;
 
-                        if (el.pooled_record != null) {
-                            el.netPF =
-                                Number(el.pivot.professional_fee) +
-                                Number(
-                                    el.pooled_record.full_time_individual_fee
-                                );
-                            el.grossPF = el.netPF * 2;
-                        } else el.netPF = Number(el.pivot.professional_fee + 0);
+                this.record_total[0].attending_fee_total = 0;
+                this.record_total[0].ref_fee_total = 0;
+                this.record_total[0].anesthesiologist_fee_total = 0;
+                this.record_total[0].comanagement_fee_total = 0;
+                this.record_total[0].admitting_fee_total = 0;
+                this.record_total[0].grand_total = 0;
+
+                row_data.credit_records.forEach(el => {
+                    el.netPF = 0;
+                    el.grossPF = 0;
+                    
+                    if (el.pooled_record != null) {
+                        el.netPF = Number(el.pivot.professional_fee) + Number(el.pooled_record.full_time_individual_fee);
                         el.grossPF = el.netPF * 2;
+                    } else {
+                        el.netPF = Number(el.pivot.professional_fee + 0);
+                        el.grossPF = el.netPF * 2;
+                    }
 
-                        if (el.batch == this.value[0]) {
-                            el.co_ap_name = "";
-                            el.co_ap_fee = 0;
-                            el.co_ref_name = "";
-                            el.co_ref_fee = 0;
-                            el.co_anes_name = "";
-                            el.co_anes_fee = 0;
-                            el.co_coman_name = "";
-                            el.co_coman_fee = 0;
-                            el.co_admi_name = "";
-                            el.co_admi_fee = 0;
-                            this.co_physician[0].forEach(physician => {
-                                if (
-                                    el.pivot.record_id == physician.record_id &&
-                                    el.pivot.doctor_id == physician.doctor_id
-                                ) {
-                                    if (
-                                        [
-                                            "requesting",
-                                            "surgeon",
-                                            "healthcare",
-                                            "er"
-                                        ].includes(physician.doctor_role)
-                                    ) {
-                                        el.pivot["ref_name"] = physician.name;
-                                        el.pivot["ref_fee"] =
-                                            physician.professional_fee;
-                                        if (
-                                            Number(
-                                                physician.professional_fee
-                                            ) != null
-                                        )
-                                            this.ref_fee_total += Number(
-                                                physician.professional_fee
-                                            );
-                                        else this.ref_fee_total += 0;
+                    if (el.batch == this.value[0]) {
+                        el.co_attending_name = "";
+                        el.co_attending_fee = 0;
+                        el.co_ref_name = "";
+                        el.co_ref_fee = 0;
+                        el.co_anesthesiologist_name = "";
+                        el.co_anesthesiologist_fee = 0;
+                        el.co_comanagement_name = "";
+                        el.co_comanagement_fee = 0;
+                        el.co_admitting_name = "";
+                        el.co_admitting_fee = 0;
+
+                        this.co_physician[0].forEach(physician => {
+                            var doctor_id = physician.doctor_id;
+                            var doctor_name = physician.name;
+                            var doctor_fee = physician.professional_fee;
+                            var doctor_role = physician.doctor_role;
+                            var doctor_record_id = physician.record_id;
+
+                            if (el.pivot.record_id == doctor_record_id ) {
+                                if(el.pivot.doctor_id == doctor_id){
+                                    if (this.ref_physician.includes(doctor_role)) {
+                                        el.pivot["ref_name"] = doctor_name;
+                                        el.pivot["ref_fee"] = doctor_fee;
+                                        if (Number(doctor_fee) != null) {
+                                            this.record_total[0].ref_fee_total += Number(doctor_fee);
+                                        } else { 
+                                            this.record_total[0].ref_fee_total += 0;
+                                        }
                                     } else {
-                                        el.pivot[
-                                            el.pivot.doctor_role + "_name"
-                                        ] = physician.name;
-                                        el.pivot[
-                                            el.pivot.doctor_role + "_fee"
-                                        ] = physician.professional_fee;
-                                        if (
-                                            Number(
-                                                physician.professional_fee
-                                            ) != null
-                                        )
-                                            if (
-                                                el.pivot.doctor_role ==
-                                                "attending"
-                                            ) {
-                                                this.attending_fee_total += Number(
-                                                    physician.professional_fee
-                                                );
-                                            } else if (
-                                                el.pivot.doctor_role ==
-                                                "anesthesiologist"
-                                            ) {
-                                                this.anesthesiologist_fee_total += Number(
-                                                    physician.professional_fee
-                                                );
-                                            } else if (
-                                                el.pivot.doctor_role ==
-                                                "comanagement"
-                                            ) {
-                                                this.comanagement_fee_total += Number(
-                                                    physician.professional_fee
-                                                );
-                                            } else if (
-                                                el.pivot.doctor_role ==
-                                                "admitting"
-                                            ) {
-                                                this.admitting_fee_total += Number(
-                                                    physician.professional_fee
-                                                );
-                                            }
-                                            // el[el.pivot.doctor_role + "_fee_total"] += Number(physician.professional_fee);
-                                            else if (
-                                                el.pivot.doctor_role ==
-                                                "attending"
-                                            ) {
-                                                this.attending_fee_total += 0;
-                                            } else if (
-                                                el.pivot.doctor_role ==
-                                                "anesthesiologist"
-                                            ) {
-                                                this.anesthesiologist_fee_total += 0;
-                                            } else if (
-                                                el.pivot.doctor_role ==
-                                                "comanagement"
-                                            ) {
-                                                this.comanagement_fee_total += 0;
-                                            } else if (
-                                                el.pivot.doctor_role ==
-                                                "admitting"
-                                            ) {
-                                                this.admitting_fee_total += 0;
-                                            }
+                                        el.pivot[doctor_role + "_name"] = doctor_name;
+                                        el.pivot[doctor_role + "_fee"] = doctor_fee;
+                                        if (Number(doctor_fee) != null) {
+                                            this.record_total[0][doctor_role + "_fee_total"]  += Number(doctor_fee)
+                                        }else{
+                                            this.record_total[0][doctor_role + "_fee_total"]  += 0;
+                                        }
                                     }
-                                } else {
-                                    if (
-                                        el.pivot.record_id ==
-                                            physician.record_id &&
-                                        physician.doctor_role == "attending"
-                                    ) {
-                                        el.co_ap_name += physician.name + ", ";
-                                        el.co_ap_fee += Number(
-                                            physician.professional_fee
-                                        );
-                                    }
-                                    //var rr = ['requesting','surgeon','healthcare','er']
-                                    if (
-                                        el.pivot.record_id ==
-                                            physician.record_id &&
-                                        [
-                                            "requesting",
-                                            "surgeon",
-                                            "healthcare",
-                                            "er"
-                                        ].includes(physician.doctor_role)
-                                    ) {
-                                        el.co_ref_name += physician.name + ", ";
-                                        el.co_ref_fee += Number(
-                                            physician.professional_fee
-                                        );
-                                    }
-                                    if (
-                                        el.pivot.record_id ==
-                                            physician.record_id &&
-                                        physician.doctor_role ==
-                                            "anesthesiologist"
-                                    ) {
-                                        el.co_anes_name +=
-                                            physician.name + ", ";
-                                        el.co_anes_fee += Number(
-                                            physician.professional_fee
-                                        );
-                                    }
-                                    if (
-                                        el.pivot.record_id ==
-                                            physician.record_id &&
-                                        physician.doctor_role == "comanagement"
-                                    ) {
-                                        el.co_coman_name +=
-                                            physician.name + ", ";
-                                        el.co_coman_fee += Number(
-                                            physician.professional_fee
-                                        );
-                                    }
-                                    if (
-                                        el.pivot.record_id ==
-                                            physician.record_id &&
-                                        physician.doctor_role == "admitting"
-                                    ) {
-                                        el.co_admi_name +=
-                                            physician.name + ", ";
-                                        el.co_admi_fee += Number(
-                                            physician.professional_fee
-                                        );
+                                }else{
+                                    if(this.main_physician.includes(doctor_role)){
+                                        el['co_' + doctor_role + '_name'] += doctor_name + ", ";
+                                        el['co_' + doctor_role + '_fee'] += Number(doctor_fee);
+                                    }else if(this.ref_physician.includes(doctor_role)){
+                                        el.co_ref_name += doctor_name + ", ";
+                                        el.co_ref_fee += Number(doctor_fee);
                                     }
                                 }
-                            });
-                            this.batch_list.push(el);
-                        }
-                    });
-                    this.grand_total =
-                        this.attending_fee_total +
-                        this.ref_fee_total +
-                        this.anesthesiologist_fee_total +
-                        this.comanagement_fee_total +
-                        this.admitting_fee_total;
-                    this.holder = row_data;
-                })
-                .catch(function(error) {});
+                            }
+                        });
+                        this.batch_list.push(el);
+                    }
+                });
+                this.record_total[0].grand_total =
+                    this.record_total[0].attending_fee_total +
+                    this.record_total[0].ref_fee_total +
+                    this.record_total[0].anesthesiologist_fee_total +
+                    this.record_total[0].comanagement_fee_total +
+                    this.record_total[0].admitting_fee_total;
+                this.holder = row_data;
+            })
+            .catch(function(error) {});
         },
         doctorsFormAction() {
             const loading = this.$loading({
@@ -1807,7 +1663,91 @@ export default {
         },
         firstLetterOfWordUpperCase(row, column, cellValue, index) {
             return cellValue.charAt(0).toUpperCase() + cellValue.slice(1);
-        }
+        },
+        exportDoctorRecordExcel() {
+            var row = 5;
+            this.batch_list.forEach((patient)=>{
+                row += 1;
+                var date = new Date(patient.admission_date);
+                var date1 = new Date(patient.discharge_date);
+                var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' + 
+                    date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() + 
+                    '/' + date1.getFullYear();
+                this.sheet_data["A"+row] = {t: 's', v: patient.patient_name};
+                this.sheet_data["B"+row] = {t: 's', v: patient_confinement_date};
+                this.sheet_data["C"+row] = {t: 'n', v: patient.grossPF};
+                this.sheet_data["D"+row] = {t: 'n', v: patient.netPF};
+                this.sheet_data["E"+row] = {t: 'n', v: patient.professional_fee};
+                this.sheet_data["F"+row] = {t: 'n', v: patient.pooled_record.full_time_individual_fee};
+                this.sheet_data["G"+row] = {t: 's', v: patient.pivot.attending_name};
+                this.sheet_data["H"+row] = {t: 'n', v: patient.pivot.attending_fee};
+                this.sheet_data["I"+row] = {t: 's', v: patient.pivot.ref_name};
+                this.sheet_data["J"+row] = {t: 'n', v: patient.pivot.ref_fee};
+                this.sheet_data["K"+row] = {t: 's', v: patient.pivot.anesthesiologist_name};
+                this.sheet_data["L"+row] = {t: 'n', v: patient.pivot.anesthesiologist_fee};
+                this.sheet_data["M"+row] = {t: 's', v: patient.pivot.comanagement_name};
+                this.sheet_data["N"+row] = {t: 'n', v: patient.pivot.comanagement_fee};
+                this.sheet_data["O"+row] = {t: 's', v: patient.pivot.admitting_name};
+                this.sheet_data["P"+row] = {t: 'n', v: patient.pivot.admitting_fee};
+                this.sheet_data["Q"+row] = {t: 's', v: patient.co_attending_name};
+                this.sheet_data["R"+row] = {t: 'n', v: patient.co_attending_fee};
+                this.sheet_data["S"+row] = {t: 's', v: patient.co_ref_name};
+                this.sheet_data["T"+row] = {t: 'n', v: patient.co_ref_fee};
+                this.sheet_data["U"+row] = {t: 's', v: patient.co_anesthesiologist_name};
+                this.sheet_data["V"+row] = {t: 'n', v: patient.co_anesthesiologist_fee};
+                this.sheet_data["W"+row] = {t: 's', v: patient.co_comanagement_name};
+                this.sheet_data["X"+row] = {t: 'n', v: patient.co_comanagement_fee};
+                this.sheet_data["Y"+row] = {t: 's', v: patient.co_admitting_name};
+                this.sheet_data["Z"+row] = {t: 'n', v: patient.co_admitting_fee};
+            });
+
+            row += 2;
+            this.sheet_data["A"+row] = {t: 's', v: "ATTENDING TOTAL"};
+            this.sheet_data["B"+row] = {t: 's', v: "REFERRED TOTAL"};
+            this.sheet_data["C"+row] = {t: 's', v: "ANESTHESIOLOGIST TOTAL"};
+            this.sheet_data["D"+row] = {t: 's', v: "COMANAGEMENT TOTAL"};
+            this.sheet_data["E"+row] = {t: 's', v: "ADMITTING TOTAL"};
+            this.sheet_data["F"+row] = {t: 's', v: "GRAND TOTAL"};
+            
+            row += 1;
+            this.sheet_data["A"+row] = {t: 'n', v: this.record_total[0].attending_fee_total};
+            this.sheet_data["B"+row] = {t: 'n', v: this.record_total[0].ref_fee_total};
+            this.sheet_data["C"+row] = {t: 'n', v: this.record_total[0].anesthesiologist_fee_total};
+            this.sheet_data["D"+row] = {t: 'n', v: this.record_total[0].comanagement_fee_total};
+            this.sheet_data["E"+row] = {t: 'n', v: this.record_total[0].admitting_fee_total};
+            this.sheet_data["F"+row] = {t: 'n', v: this.record_total[0].grand_total};
+
+            row += 1;
+            this.sheet_data['!ref'] = "A1:Z" + row;
+            var sheet_name;
+            if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
+                if (this.value[0] == 'All') {
+                    sheet_name = "All Record";
+                } else {
+                    var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+                    var d = (this.value[0]).trim().split('-');
+                    var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
+                    var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
+                    sheet_name = date_from + " - " + date_to;
+                    this.sheet_data.A2.v = "COVERED PERIOD: " + sheet_name.toUpperCase();
+                    this.sheet_data.A3.v = this.dialogViewTitle;
+                    this.sheet_data.G4.v = this.dialogViewTitle;
+
+                }
+                var sheet_data_object = {};
+                sheet_data_object[sheet_name] = this.sheet_data;
+                XLSX.writeFile({
+                    SheetNames:[sheet_name],
+                    Sheets: sheet_data_object
+                }, 'Doctor_Record_Export.xlsx');
+            } else {
+                this.$notify({
+                    type: 'warning',
+                    title: 'Export',
+                    message: "Please select batch to proceed",
+                });
+            }
+        },
     },
     mounted() {
         this.getDoctors();
