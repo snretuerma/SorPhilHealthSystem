@@ -483,7 +483,7 @@ class UserController extends Controller
     public function getRestore()
     {
         $deleted = CreditRecord::withTrashed()
-            ->where('deleted_at', '<>', '', 'and')
+            ->whereNotNull('deleted_at', 'and')
             ->where('hospital_id', Auth::user()->hospital_id)
             ->getQuery()
             ->get();
@@ -645,7 +645,7 @@ class UserController extends Controller
             ->setTimezone('Asia/Manila');
         $record->discharge_date = Carbon::parse($request->discharge)
             ->setTimezone('Asia/Manila');
-        
+
         $doctors = Doctor::where('hospital_id', $record->hospital_id)
             ->whereIn('id', $request->doctors_id)
             ->get();
@@ -891,7 +891,7 @@ class UserController extends Controller
         $countComanagement = 0;
         $countAdmitting = 0;
         $total = $request->pf;
-        
+
         $record = CreditRecord::find($request->id);
         $record->patient_name = $request->name;
         $record->batch = $request->batch[0];
