@@ -487,7 +487,6 @@ class UserController extends Controller
             ->where('hospital_id', Auth::user()->hospital_id)
             ->getQuery()
             ->get();
-
         return $deleted;
     }
 
