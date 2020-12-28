@@ -240,14 +240,12 @@
             </div>
         </div>
         <el-dialog :title="dialogtitle" :visible.sync="dialogExcelFile" :fullscreen="fullscreen">
-            <el-row v-show="!isimport">
-                <el-col>
-                    <el-form>
-                        <el-form-item>
-                            <el-button @click="getTemplate">Download Sample Excel File / Template</el-button>
-                            <el-button type="primary" @click="exportExcel">Download Data</el-button>
-                        </el-form-item>
-                    </el-form>
+            <el-row :gutter="10" v-show="!isimport">
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                    <el-button style="width:100%;" @click="getTemplate">Sample Excel File / Template</el-button>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                    <el-button type="primary" style="width:100%;" @click="exportExcel">Export Selected Batch Data</el-button>
                 </el-col>
             </el-row>
             <el-row v-show="isimport">
@@ -264,8 +262,8 @@
                         :on-remove="handleRemoveFile"
                         accept=".xlsx"
                         >
-                            <el-button slot="trigger" type="primary" plain>select supported excel file .xlsx</el-button>
-                            <el-button type="success" @click="uploadToDatabase" :disabled="!is_preview">upload to database</el-button>
+                            <el-button slot="trigger" type="primary" :disabled="is_hasfile" plain>Browse Supported Excel File .xlsx</el-button>
+                            <el-button type="success" @click="uploadToDatabase" :disabled="!is_preview" :loading="is_import">Upload to Database</el-button>
                         </el-upload>
                     </el-form-item>
                 </el-form>
@@ -442,7 +440,9 @@ export default {
             dialogtitle: 'Import Excel',
             isimport: true,
             export_excel:[],
-            loading:true
+            loading:true,
+            is_import: false,
+            is_hasfile: false,
         };
     },
     computed: {
@@ -620,6 +620,8 @@ export default {
                 .catch(function(res) { });
         },
         uploadToDatabase() {
+            this.is_hasfile = true;
+            this.is_import = true;
             var _this = this;
             _this.getDoctors();
             if(_this.excel_validation_error[0].length < 1 &&
@@ -642,15 +644,41 @@ export default {
                         type: 'success',
                         title: 'Import',
                         message: "Data imported successfully!",
+                        duration: 0
                     });
+                    _this.preview_excel_sheet_data = [];
+                    _this.sheet_length = '';
+                    _this.tablepage = 1;
+                    _this.tablelength = 0;
+                    _this.current_tab_content = [];
+                    _this.exceldata = [];
+                    _this.current_tab = '';
+                    _this.excel_validation_error = [[], [], []];
+                    _this.import_batch = [];
+                    _this.is_preview = false;
+                    _this.is_hasfile = false;
+                    _this.is_import = false;
+                    _this.$refs.upload.clearFiles()
+                    _this.getRecords(_this.value[0]);
                 })
-                .catch(function(res) { });
+                .catch(function(error) {
+                    _this.$notify({
+                        type: "error",
+                        title: "Import Record Failed",
+                        message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                        duration: 0
+                    });
+                    _this.is_hasfile = true;
+                    _this.is_import = false;
+                });
             }else{
                 _this.$notify({
                     type: 'warning',
                     title: 'Import',
                     message: "Upload request error, please check your file.",
                 });
+                _this.is_hasfile = true;
+                _this.is_import = false;
             }
         },
         handleExceedFile(files, fileList) {
@@ -679,6 +707,8 @@ export default {
                 title: 'Cancelled',
                 message: file.name + " was removed",
             });
+            this.is_hasfile = false;
+            this.is_import = false;
         },
         trimToCompare(text) {
             return (text).trim().toLowerCase().replace(/\s/g, '');
@@ -917,6 +947,8 @@ export default {
                     _this.is_preview = false;
                 }
                 _this.defaultTabSelected();
+                _this.is_hasfile = true;
+                _this.is_import = false;
             }
         },
         handleClickTab(tab, event) {
@@ -1000,7 +1032,7 @@ export default {
         formDialog(key) {
             switch (key) {
                 case "import_data":
-                        this.dialogtitle = 'Import Excel';
+                        this.dialogtitle = 'Import Excel - Can read multiple worksheets';
                         this.fullscreen = true;
                         this.isimport = true;
                         this.dialogExcelFile = true;

@@ -655,19 +655,12 @@
             :visible.sync="dialogExcelFile"
             :fullscreen="fullscreen"
         >
-            <el-row v-show="!isimport">
-                <el-col>
-                    <el-form>
-                        <el-form-item>
-                            <el-button @click="getTemplate"
-                                >Download Sample Excel File /
-                                Template</el-button
-                            >
-                            <el-button type="primary" @click="exportExcel"
-                                >Download Data</el-button
-                            >
-                        </el-form-item>
-                    </el-form>
+            <el-row :gutter="10" v-show="!isimport">
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                    <el-button style="width:100%;" @click="getTemplate" :loading="is_download_template">Sample Excel File / Template</el-button>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                    <el-button type="primary" style="width:100%;" @click="exportExcel" :loading="is_download_data">Export Selected Batch Data</el-button>
                 </el-col>
             </el-row>
             <el-row v-show="isimport">
@@ -684,14 +677,13 @@
                             :on-remove="handleRemoveFile"
                             accept=".xlsx"
                         >
-                            <el-button slot="trigger" type="primary" plain
-                                >select supported excel file .xlsx</el-button
-                            >
+                            <el-button slot="trigger" type="primary" :disabled="is_hasfile"  plain>Browse Supported Excel File .xlsx</el-button>
                             <el-button
                                 type="success"
                                 @click="uploadToDatabase"
                                 :disabled="!is_preview"
-                                >upload to database</el-button
+                                :loading="is_import"
+                                >Upload to Database</el-button
                             >
                         </el-upload>
                     </el-form-item>
@@ -926,15 +918,15 @@ export default {
                     "!ref": "A1:Z5",
             },
             main_physician: [
-                'attending', 
-                'anesthesiologist', 
-                'comanagement', 
+                'attending',
+                'anesthesiologist',
+                'comanagement',
                 'admitting'
             ],
             ref_physician: [
-                'requesting', 
-                'surgeon', 
-                'healthcare', 
+                'requesting',
+                'surgeon',
+                'healthcare',
                 'er'
             ],
             record_total: [{
@@ -944,7 +936,11 @@ export default {
                 comanagement_fee_total: 0,
                 admitting_fee_total: 0,
                 grand_total: 0,
-            }]
+            }],
+            is_import: false,
+            is_hasfile: false,
+            is_download_template: false,
+            is_download_data: false
         }
     },
     computed: {
@@ -1043,7 +1039,7 @@ export default {
                 row_data.credit_records.forEach(el => {
                     el.netPF = 0;
                     el.grossPF = 0;
-                    
+
                     if (el.pooled_record != null) {
                         el.netPF = Number(el.pivot.professional_fee) + Number(el.pooled_record.full_time_individual_fee);
                         el.grossPF = el.netPF * 2;
@@ -1078,7 +1074,7 @@ export default {
                                         el.pivot["ref_fee"] = doctor_fee;
                                         if (Number(doctor_fee) != null) {
                                             this.record_total[0].ref_fee_total += Number(doctor_fee);
-                                        } else { 
+                                        } else {
                                             this.record_total[0].ref_fee_total += 0;
                                         }
                                     } else {
@@ -1305,7 +1301,7 @@ export default {
              **/
             switch (key) {
                 case "import_data":
-                    this.dialogtitle = "Import Excel";
+                    this.dialogtitle = "Import Excel - Can read single worksheet";
                     this.fullscreen = true;
                     this.isimport = true;
                     this.dialogExcelFile = true;
@@ -1381,6 +1377,8 @@ export default {
             );
         },
         uploadToDatabase() {
+            this.is_hasfile = true;
+            this.is_import = true;
             var _this = this;
             _this.getDoctors();
             if (
@@ -1396,14 +1394,36 @@ export default {
                             title: "Import",
                             message: "Data imported successfully!"
                         });
+                        _this.sheet_length = "";
+                        _this.tablepage = 1;
+                        _this.tablelength = 0;
+                        _this.preview_data = [];
+                        _this.exceldata = [];
+                        _this.excel_validation_error = [[], []];
+                        _this.is_preview = false;
+                        _this.is_hasfile = false;
+                        _this.is_import = false;
+                        _this.$refs.upload.clearFiles()
+                        _this.getDoctors();
                     })
-                    .catch(function(res) {});
+                    .catch(function(error) {
+                        _this.$notify({
+                            type: "error",
+                            title: "Import Physician List Failed",
+                            message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                            duration: 0
+                        });
+                        _this.is_hasfile = true;
+                        _this.is_import = false;
+                    });
             } else {
                 _this.$notify({
                     type: "warning",
                     title: "Import",
                     message: "Upload request error, please check your file."
                 });
+                _this.is_hasfile = true;
+                _this.is_import = false;
             }
         },
         handleExceedFile(files, fileList) {
@@ -1428,6 +1448,8 @@ export default {
                 title: "Cancelled",
                 message: file.name + " was removed"
             });
+            this.is_hasfile = false;
+            this.is_import = false;
         },
         trimToCompare(text) {
             return text
@@ -1636,27 +1658,39 @@ export default {
                 } else {
                     _this.is_preview = false;
                 }
+                _this.is_hasfile = true;
+                _this.is_import = false;
             };
         },
         exportExcel() {
-            this.doctor_export = [];
-            this.doctors.forEach(doctor => {
-                this.doctor_export.push({
-                    Physician_Name: doctor.name,
-                    Is_active: doctor.is_active ? "Yes" : "No",
-                    Is_parttime: doctor.is_parttime ? "Yes" : "No"
+            this.is_download_data = true;
+            var _this = this;
+            setTimeout(function(){
+                _this.doctor_export = [];
+                _this.doctors.forEach(doctor => {
+                    _this.doctor_export.push({
+                        Physician_Name: doctor.name,
+                        Is_active: doctor.is_active ? "Yes" : "No",
+                        Is_parttime: doctor.is_parttime ? "Yes" : "No"
+                    });
                 });
-            });
-            var doctors = XLSX.utils.json_to_sheet(this.doctor_export);
-            var wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, doctors, "Physician List");
-            XLSX.writeFile(wb, "Physician_List.xlsx");
+                var doctors = XLSX.utils.json_to_sheet(_this.doctor_export);
+                var wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, doctors, "Physician List");
+                XLSX.writeFile(wb, "Physician_List.xlsx");
+                _this.is_download_data = false;
+            }, 1000);
         },
-        getTemplate() {
-            window.open(
-                window.location.origin +
-                    "/template/Import_DoctorList_Template.xlsx"
-            );
+        getTemplate(item) {
+           this.is_download_template = true;
+            var _this = this;
+            setTimeout(function(){
+                window.open(
+                    window.location.origin +
+                        "/template/Import_DoctorList_Template.xlsx"
+                );
+                _this.is_download_template = false;
+            }, 1000);
         },
         formatNumber(row, column, cellValue, index) {
             return new Intl.NumberFormat().format(cellValue);
@@ -1670,8 +1704,8 @@ export default {
                 row += 1;
                 var date = new Date(patient.admission_date);
                 var date1 = new Date(patient.discharge_date);
-                var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' + 
-                    date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() + 
+                var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' +
+                    date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() +
                     '/' + date1.getFullYear();
                 this.sheet_data["A"+row] = {t: 's', v: patient.patient_name};
                 this.sheet_data["B"+row] = {t: 's', v: patient_confinement_date};
@@ -1708,7 +1742,7 @@ export default {
             this.sheet_data["D"+row] = {t: 's', v: "COMANAGEMENT TOTAL"};
             this.sheet_data["E"+row] = {t: 's', v: "ADMITTING TOTAL"};
             this.sheet_data["F"+row] = {t: 's', v: "GRAND TOTAL"};
-            
+
             row += 1;
             this.sheet_data["A"+row] = {t: 'n', v: this.record_total[0].attending_fee_total};
             this.sheet_data["B"+row] = {t: 'n', v: this.record_total[0].ref_fee_total};
