@@ -231,7 +231,8 @@ class UserController extends Controller
                         foreach ($doctors as $doctor) {
                             $computed_pf = 0;
                             if ($doctor_as[array_search($doctor->id, $doctor_ids)] == 'Attending_Physician') {
-                                $computed_pf = ($pf[array_search($doctor->id, $doctor_ids)] - $receive_by_non_attending) /
+                                $computed_pf = ($pf[array_search($doctor->id, $doctor_ids)] -
+                                    $receive_by_non_attending) /
                                     array_count_values($doctor_as)[$doctor_as[array_search($doctor->id, $doctor_ids)]];
                             } else {
                                 $computed_pf = $pf[array_search($doctor->id, $doctor_ids)];
