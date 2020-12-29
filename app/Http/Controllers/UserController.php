@@ -130,8 +130,7 @@ class UserController extends Controller
                     if ($this->splitTwoComma($each[$physician]) != null) {
                         foreach ($this->splitTwoComma($each[$physician])[0] as $name) {
                             foreach ($doctor_list_complete as $doctor_info) {
-                                if (
-                                    str_replace(' ', '', strtolower(trim($doctor_info['name']))) ==
+                                if (str_replace(' ', '', strtolower(trim($doctor_info['name']))) ==
                                     str_replace(' ', '', strtolower(trim($name)))
                                 ) {
                                     array_push($doctor_ids, $doctor_info['id']);
