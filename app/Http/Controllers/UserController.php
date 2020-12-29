@@ -149,9 +149,6 @@ class UserController extends Controller
                         }
                     }
                 }
-                $doctors = Doctor::where('hospital_id', $record->hospital_id)
-                    ->whereIn('id', $doctor_ids)
-                    ->get();
                 $record = new CreditRecord;
                 $record->hospital()->associate(Auth::user()->hospital_id);
                 $record->patient_name = $each['Patient_Name'];
@@ -162,6 +159,9 @@ class UserController extends Controller
                 $record->discharge_date = Carbon::parse($each['Discharge_Date'])
                     ->setTimeZone('Asia/Manila')
                     ->format('Y-m-d h:i:s');
+                $doctors = Doctor::where('hospital_id', $record->hospital_id)
+                    ->whereIn('id', $doctor_ids)
+                    ->get();
                 if ($each['Is_Private'] == "1") {
                     $record->record_type = 'private';
                     $record->total = $each['Total_PF'];
@@ -572,7 +572,7 @@ class UserController extends Controller
     }
     public function getSummary($batch)
     {
-        if ($batch != "All") {
+        if ($batch != "All" || $batch != "all") {
             $summary = Doctor::with(['credit_records' => function ($query) use ($batch) {
                 $query
                     ->where('batch', $batch)
@@ -589,6 +589,7 @@ class UserController extends Controller
                 ->get();
             return response()->json($summary);
         }
+
     }
     public function getRecords($batch)
     {
@@ -617,7 +618,6 @@ class UserController extends Controller
             'comanagement' => $setting->physicians[5],
             'admitting' => $setting->physicians[6]
         );
-        $seventyPercent = ($total * $setting->nonmedical) * $setting->shared;
 
         $requesting = 0;
         $surgeon = 0;
@@ -635,6 +635,7 @@ class UserController extends Controller
         $countComanagement = 0;
         $countAdmitting = 0;
         $total = $request->pf;
+        $seventyPercent = ($total * $setting->nonmedical) * $setting->shared;
 
         $record = new CreditRecord;
         $record->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);

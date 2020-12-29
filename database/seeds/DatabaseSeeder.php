@@ -15,8 +15,6 @@ class DatabaseSeeder extends Seeder
             HospitalSeeder::class,
             RolesAndPermissionsSeeder::class,
             UserSeeder::class,
-            DoctorSeeder::class,
-            CreditRecordSeeder::class,
         ]);
     }
 }
