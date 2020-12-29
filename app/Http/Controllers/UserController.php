@@ -94,7 +94,7 @@ class UserController extends Controller
      */
     public function importExcel(Request $request)
     {
-        $hospital=Hospital::find(Auth::user()->hospital_id);
+        $hospital = Hospital::find(Auth::user()->hospital_id);
         $setting = $hospital->setting;
         $doctor_list_complete = $request[0]['doctor_list'];
         $cell_physician = [
@@ -130,8 +130,10 @@ class UserController extends Controller
                     if ($this->splitTwoComma($each[$physician]) != null) {
                         foreach ($this->splitTwoComma($each[$physician])[0] as $name) {
                             foreach ($doctor_list_complete as $doctor_info) {
-                                if (str_replace(' ', '', strtolower(trim($doctor_info['name']))) ==
-                                    str_replace(' ', '', strtolower(trim($name)))) {
+                                if (
+                                    str_replace(' ', '', strtolower(trim($doctor_info['name']))) ==
+                                    str_replace(' ', '', strtolower(trim($name)))
+                                ) {
                                     array_push($doctor_ids, $doctor_info['id']);
                                     array_push($doctor_as, $physician);
                                     if ($physician == "Attending_Physician") {
@@ -170,14 +172,12 @@ class UserController extends Controller
                     $record->save();
                     foreach ($doctors as $doctor) {
                         $doctor->credit_records()->attach($record->id, [
-                            'doctor_role' => (
-                                $doctor_as[array_search($doctor->id, $doctor_ids)] ==
-                                'Co_Management'
-                            ) ? 'comanagement' :
-                            explode(
-                                '_',
-                                strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
-                            )[0],
+                            'doctor_role' => ($doctor_as[array_search($doctor->id, $doctor_ids)] ==
+                                'Co_Management') ? 'comanagement' :
+                                explode(
+                                    '_',
+                                    strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
+                                )[0],
                             'professional_fee' => $record->total,
                         ]);
                     }
@@ -193,14 +193,12 @@ class UserController extends Controller
                         $record->save();
                         foreach ($doctors as $doctor) {
                             $doctor->credit_records()->attach($record->id, [
-                                'doctor_role' => (
-                                    $doctor_as[array_search($doctor->id, $doctor_ids)] ==
-                                    'Co_Management'
-                                ) ? 'comanagement' :
-                                explode(
-                                    '_',
-                                    strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
-                                )[0],
+                                'doctor_role' => ($doctor_as[array_search($doctor->id, $doctor_ids)] ==
+                                    'Co_Management') ? 'comanagement' :
+                                    explode(
+                                        '_',
+                                        strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
+                                    )[0],
                                 'professional_fee' => ($record->non_medical_fee / $doctor->count())
                             ]);
                         }
@@ -233,18 +231,14 @@ class UserController extends Controller
                         foreach ($doctors as $doctor) {
                             $computed_pf = 0;
                             if ($doctor_as[array_search($doctor->id, $doctor_ids)] == 'Attending_Physician') {
-                                $computed_pf = (
-                                    $pf[array_search($doctor->id, $doctor_ids)] - $receive_by_non_attending) /
-                                    array_count_values($doctor_as)[$doctor_as[array_search($doctor->id, $doctor_ids)]]
-                                ;
+                                $computed_pf = ($pf[array_search($doctor->id, $doctor_ids)] - $receive_by_non_attending) /
+                                    array_count_values($doctor_as)[$doctor_as[array_search($doctor->id, $doctor_ids)]];
                             } else {
                                 $computed_pf = $pf[array_search($doctor->id, $doctor_ids)];
                             }
                             $doctor->credit_records()->attach($record->id, [
-                                'doctor_role' => (
-                                    $doctor_as[array_search($doctor->id, $doctor_ids)] ==
-                                    'Co_Management'
-                                ) ? 'comanagement' :
+                                'doctor_role' => ($doctor_as[array_search($doctor->id, $doctor_ids)] ==
+                                    'Co_Management') ? 'comanagement' :
                                     explode(
                                         '_',
                                         strtolower($doctor_as[array_search($doctor->id, $doctor_ids)])
@@ -510,7 +504,7 @@ class UserController extends Controller
      */
     public function setting(): View
     {
-        $hospital=Hospital::find(Auth::user()->hospital_id);
+        $hospital = Hospital::find(Auth::user()->hospital_id);
         return view('roles.user.setting')->with('setting', $hospital->setting);
     }
 
@@ -570,6 +564,7 @@ class UserController extends Controller
 
         return;
     }
+
     public function getSummary($batch)
     {
         if ($batch != "All" || $batch != "all") {
@@ -589,7 +584,6 @@ class UserController extends Controller
                 ->get();
             return response()->json($summary);
         }
-
     }
     public function getRecords($batch)
     {
@@ -657,7 +651,7 @@ class UserController extends Controller
                     } else {
                         if (array_key_exists($types_of_doctors['role'], $doctorRole)) {
                             $sRole = $types_of_doctors['role'];
-                            $dRole = 'count'.ucfirst($types_of_doctors['role']);
+                            $dRole = 'count' . ucfirst($types_of_doctors['role']);
                             ${$dRole}++;
                             ${$sRole} = ($seventyPercent * $doctorRole[$sRole]);
                         }
@@ -914,7 +908,7 @@ class UserController extends Controller
                     } else {
                         if (array_key_exists($types_of_doctors['role'], $doctorRole)) {
                             $sRole = $types_of_doctors['role'];
-                            $dRole = 'count'.ucfirst($types_of_doctors['role']);
+                            $dRole = 'count' . ucfirst($types_of_doctors['role']);
                             ${$dRole}++;
                             ${$sRole} = ($seventyPercent * $doctorRole[$sRole]);
                         }

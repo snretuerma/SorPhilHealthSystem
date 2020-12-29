@@ -517,23 +517,39 @@ export default {
                                     doctor.privateDoctorShare += Number(
                                         patient.total
                                     );
-                                    doctor.privatePbsTotal = doctor.privateDoctorShare;
-
+                                    doctor.privatePbsTotal =
+                                        doctor.privateDoctorShare;
                                 } else doctor.privateDoctorShare += 0;
                             } else if (patient.total != "") {
-                                doctor.publicDoctorShare += Number(patient.total);
-                                doctor.publicNursingServices += Number(patient.medical_fee);
-                                doctor.publicNonMedical += Number(patient.non_medical_fee);
-                                doctor.publicFiftyTotal = doctor.publicNursingServices + doctor.publicNonMedical;
+                                doctor.publicDoctorShare += Number(
+                                    patient.total
+                                );
+                                doctor.publicNursingServices += Number(
+                                    patient.medical_fee
+                                );
+                                doctor.publicNonMedical += Number(
+                                    patient.non_medical_fee
+                                );
+                                doctor.publicFiftyTotal =
+                                    doctor.publicNursingServices +
+                                    doctor.publicNonMedical;
 
                                 if (patient.pooled_record != null) {
-                                    var holder = JSON.parse(patient.pooled_record.full_time_doctors).includes(doctor.id);
-                                    if(holder) { // fulltime
-                                        doctor.publicPooled = Number(patient.pooled_record.full_time_individual_fee);
+                                    var holder = JSON.parse(
+                                        patient.pooled_record.full_time_doctors
+                                    ).includes(doctor.id);
+                                    if (holder) {
+                                        // fulltime
+                                        doctor.publicPooled = Number(
+                                            patient.pooled_record
+                                                .full_time_individual_fee
+                                        );
                                     }
                                 }
 
-                                doctor.publicPbsTotal = doctor.publicPooled + doctor.publicDoctorShare;
+                                doctor.publicPbsTotal =
+                                    doctor.publicPooled +
+                                    doctor.publicDoctorShare;
 
                                 // var holder = JSON.parse(patient.pooled_record.full_time_doctors).includes(doctor.id);
                                 // // if(holder) { // fulltime
@@ -551,7 +567,9 @@ export default {
                                 doctor.publicDoctorShare
                             );
                             this.pooled_total += Number(doctor.publicPooled);
-                            this.pbs_total_total += Number(doctor.publicPbsTotal);
+                            this.pbs_total_total += Number(
+                                doctor.publicPbsTotal
+                            );
                             this.grand_total =
                                 this.fifty_total_total + this.pbs_total_total;
                         }
