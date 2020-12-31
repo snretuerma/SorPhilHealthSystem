@@ -3,8 +3,8 @@
         <div class="row header-top">
             <div class="header-title-parent">
                 <span class="header-title">
-                    <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Dashboard / Summary of
-                    Doctor's Performance Base
+                    <i class="fa fa-list-alt"></i>&nbsp;&nbsp;Dashboard /
+                    Summary of Doctor's Performance Base
                 </span>
             </div>
         </div>
@@ -47,7 +47,12 @@
                 </el-form>
             </div>
             <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12">
-                <el-button icon="el-icon-download" style="width:100%" @click="exportSummary">Export</el-button>
+                <el-button
+                    icon="el-icon-download"
+                    style="width:100%"
+                    @click="exportSummary"
+                    >Export</el-button
+                >
             </div>
         </div>
 
@@ -58,11 +63,12 @@
                         <div class="row">
                             <div class="col-12">
                                 <el-table
-                                    :data="listData"
+                                    :data="listDataPublic"
                                     :sort-by="['name']"
                                     @sort-change="changeTableSort1"
                                     border
                                 >
+                                    <!-- <div v-if="publicDoctorShare != 0"> -->
                                     <el-table-column
                                         min-width="300"
                                         label="Name of Physician"
@@ -74,19 +80,19 @@
                                             min-width="150"
                                             label="Nursing Services"
                                             :formatter="formatNumber"
-                                            prop="nursing_services"
+                                            prop="publicNursingServices"
                                         ></el-table-column>
                                         <el-table-column
                                             min-width="150"
                                             label="Non-medical"
                                             :formatter="formatNumber"
-                                            prop="non_medical"
+                                            prop="publicNonMedical"
                                         ></el-table-column>
                                         <el-table-column
                                             min-width="140"
                                             label="Total"
                                             :formatter="formatNumber"
-                                            prop="fifty_total"
+                                            prop="publicFiftyTotal"
                                             :sortable="'custom'"
                                         ></el-table-column>
                                     </el-table-column>
@@ -97,22 +103,23 @@
                                             min-width="170"
                                             label="Doctors Share (35%)"
                                             :formatter="formatNumber"
-                                            prop="doctors_share"
+                                            prop="publicDoctorShare"
                                             :sortable="'custom'"
                                         ></el-table-column>
                                         <el-table-column
                                             min-width="150"
                                             label="Pooled (15%)"
                                             :formatter="formatNumber"
-                                            prop="pooled"
+                                            prop="publicPooled"
                                         ></el-table-column>
                                         <el-table-column
                                             min-width="140"
                                             label="Total"
                                             :formatter="formatNumber"
-                                            prop="pbs_total"
+                                            prop="publicPbsTotal"
                                         ></el-table-column>
                                     </el-table-column>
+                                    <!-- </div> -->
                                 </el-table>
                                 <div style="text-align: center">
                                     <el-pagination
@@ -185,7 +192,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <el-table
-                                    :data="privateDoctors"
+                                    :data="listDataPrivate"
                                     @sort-change="changeTableSort3"
                                     border
                                 >
@@ -203,19 +210,19 @@
                                                 min-width="150"
                                                 label="Nursing Services"
                                                 :formatter="formatNumber"
-                                                prop="nursing_services"
+                                                prop="privateNursingServices"
                                             ></el-table-column>
                                             <el-table-column
                                                 min-width="150"
                                                 label="Non-medical"
                                                 :formatter="formatNumber"
-                                                prop="non_medical"
+                                                prop="privateNonMedical"
                                             ></el-table-column>
                                             <el-table-column
                                                 min-width="140"
                                                 label="Total"
                                                 :formatter="formatNumber"
-                                                prop="fifty_total"
+                                                prop="privateFiftyTotal"
                                                 :sortable="'custom'"
                                             ></el-table-column>
                                         </el-table-column>
@@ -226,20 +233,20 @@
                                                 min-width="170"
                                                 label="Doctors Share (35%)"
                                                 :formatter="formatNumber"
-                                                prop="doctors_share"
+                                                prop="privateDoctorShare"
                                                 :sortable="'custom'"
                                             ></el-table-column>
                                             <el-table-column
                                                 min-width="150"
                                                 label="Pooled (15%)"
                                                 :formatter="formatNumber"
-                                                prop="pooled"
+                                                prop="privatePooled"
                                             ></el-table-column>
                                             <el-table-column
                                                 min-width="140"
                                                 label="Total"
                                                 :formatter="formatNumber"
-                                                prop="pbs_total"
+                                                prop="privatePbsTotal"
                                             ></el-table-column>
                                         </el-table-column>
                                     </el-table-column>
@@ -259,10 +266,11 @@
 </style>
 
 <script>
-import XLSX from 'xlsx';
+import XLSX from "xlsx";
 export default {
     data() {
         return {
+            data: [],
             active: [],
             sumOfAll: [],
             batch: [],
@@ -278,77 +286,111 @@ export default {
             search: "",
             page: 1,
             pageSize: 10,
+            page1: 1,
+            pageSize1: 10,
             sheet_data: {
-                    A1:{t:'s', v:"SUMMARY OF DOCTOR'S PERFORMANCE BASE"},
-                    A2:{t:'s', v:"COVERED PERIOD:"},
-                    A3:{t:'s', v:"NAME OF PHYSICIAN"},
-                    B3:{t:'s', v:"50%"},
-                    B4:{t:'s', v:"NURSING SERVICES"},
-                    C4:{t:'s', v:"NONE-MEDICAL"},
-                    D4:{t:'s', v:"TOTAL"},
-                    E3:{t:'s', v:"PERFORMANCE BASED SHARING"},
-                    E4:{t:'s', v:"DOCTORS SHARE (35%)"},
-                    F4:{t:'s', v:"POOLED (15%)"},
-                    G4:{t:'s', v:"TOTAL"},
-                    H3:{t:'s', v:"SIGNATURE"},
-                    "!merges":[
-                        {s:{r:0,c:0},e:{r:0,c:7}},
-                        {s:{r:1,c:0},e:{r:1,c:7}},
-                        {s:{r:2,c:0},e:{r:3,c:0}},
-                        {s:{r:2,c:1},e:{r:2,c:3}},
-                        {s:{r:2,c:4},e:{r:2,c:6}},
-                        {s:{r:2,c:7},e:{r:3,c:7}},
-                    ],
-                    "!ref": "A1:H5",
+                A1: { t: "s", v: "SUMMARY OF DOCTOR'S PERFORMANCE BASE" },
+                A2: { t: "s", v: "COVERED PERIOD:" },
+                A3: { t: "s", v: "NAME OF PHYSICIAN" },
+                B3: { t: "s", v: "50%" },
+                B4: { t: "s", v: "NURSING SERVICES" },
+                C4: { t: "s", v: "NONE-MEDICAL" },
+                D4: { t: "s", v: "TOTAL" },
+                E3: { t: "s", v: "PERFORMANCE BASED SHARING" },
+                E4: { t: "s", v: "DOCTORS SHARE (35%)" },
+                F4: { t: "s", v: "POOLED (15%)" },
+                G4: { t: "s", v: "TOTAL" },
+                H3: { t: "s", v: "SIGNATURE" },
+                "!merges": [
+                    { s: { r: 0, c: 0 }, e: { r: 0, c: 7 } },
+                    { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } },
+                    { s: { r: 2, c: 0 }, e: { r: 3, c: 0 } },
+                    { s: { r: 2, c: 1 }, e: { r: 2, c: 3 } },
+                    { s: { r: 2, c: 4 }, e: { r: 2, c: 6 } },
+                    { s: { r: 2, c: 7 }, e: { r: 3, c: 7 } }
+                ],
+                "!ref": "A1:H5"
             },
             sheet_data_private: {
-                    A1:{t:'s', v:"SUMMARY OF DOCTOR'S PERFORMANCE BASE"},
-                    A2:{t:'s', v:"COVERED PERIOD:"},
-                    A3:{t:'s', v:"NAME OF PHYSICIAN"},
-                    B3:{t:'s', v:"50%"},
-                    B4:{t:'s', v:"NURSING SERVICES"},
-                    C4:{t:'s', v:"NONE-MEDICAL"},
-                    D4:{t:'s', v:"TOTAL"},
-                    E3:{t:'s', v:"PERFORMANCE BASED SHARING"},
-                    E4:{t:'s', v:"DOCTORS SHARE (35%)"},
-                    F4:{t:'s', v:"POOLED (15%)"},
-                    G4:{t:'s', v:"TOTAL"},
-                    H3:{t:'s', v:"SIGNATURE"},
-                    "!merges":[
-                        {s:{r:0,c:0},e:{r:0,c:7}},
-                        {s:{r:1,c:0},e:{r:1,c:7}},
-                        {s:{r:2,c:0},e:{r:3,c:0}},
-                        {s:{r:2,c:1},e:{r:2,c:3}},
-                        {s:{r:2,c:4},e:{r:2,c:6}},
-                        {s:{r:2,c:7},e:{r:3,c:7}},
-                    ],
-                    "!ref": "A1:H5",
+                A1: { t: "s", v: "SUMMARY OF DOCTOR'S PERFORMANCE BASE" },
+                A2: { t: "s", v: "COVERED PERIOD:" },
+                A3: { t: "s", v: "NAME OF PHYSICIAN" },
+                B3: { t: "s", v: "50%" },
+                B4: { t: "s", v: "NURSING SERVICES" },
+                C4: { t: "s", v: "NONE-MEDICAL" },
+                D4: { t: "s", v: "TOTAL" },
+                E3: { t: "s", v: "PERFORMANCE BASED SHARING" },
+                E4: { t: "s", v: "DOCTORS SHARE (35%)" },
+                F4: { t: "s", v: "POOLED (15%)" },
+                G4: { t: "s", v: "TOTAL" },
+                H3: { t: "s", v: "SIGNATURE" },
+                "!merges": [
+                    { s: { r: 0, c: 0 }, e: { r: 0, c: 7 } },
+                    { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } },
+                    { s: { r: 2, c: 0 }, e: { r: 3, c: 0 } },
+                    { s: { r: 2, c: 1 }, e: { r: 2, c: 3 } },
+                    { s: { r: 2, c: 4 }, e: { r: 2, c: 6 } },
+                    { s: { r: 2, c: 7 }, e: { r: 3, c: 7 } }
+                ],
+                "!ref": "A1:H5"
             }
         };
     },
     computed: {
-        searching() {
+        searchingPublic() {
             if (!this.search) {
-                this.total = this.active.length;
-                return this.active;
+                return this.data.filter(el => {
+                    if (el.publicDoctorShare != 0) {
+                        return el;
+                    }
+                });
             }
             this.page = 1;
-            return this.active.filter(active =>
-                active.name.toLowerCase().includes(this.search.toLowerCase())
-            );
+            return this.data.filter(el => {
+                if (el.publicDoctorShare > 0) {
+                    return el.name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase());
+                }
+            });
         },
-        listData() {
-            this.total = this.searching.length;
+        listDataPublic() {
+            this.total = this.searchingPublic.length;
 
-            return this.searching.slice(
+            return this.searchingPublic.slice(
                 this.pageSize * this.page - this.pageSize,
                 this.pageSize * this.page
+            );
+        },
+        searchingPrivate() {
+            if (!this.search) {
+                return this.data.filter(el => {
+                    if (el.privateDoctorShare != 0) {
+                        return el;
+                    }
+                });
+            }
+            this.page1 = 1;
+            return this.data.filter(el => {
+                if (el.privateDoctorShare > 0) {
+                    return el.name
+                        .toLowerCase()
+                        .includes(this.search.toLowerCase());
+                }
+            });
+        },
+        listDataPrivate() {
+            this.total1 = this.searchingPrivate.length;
+
+            return this.searchingPrivate.slice(
+                this.pageSize1 * this.page1 - this.pageSize1,
+                this.pageSize1 * this.page1
             );
         }
     },
     methods: {
-        formatNumber(row, column, cellValue, index){
-           return new Intl.NumberFormat().format(cellValue)
+        formatNumber(row, column, cellValue, index) {
+            return new Intl.NumberFormat().format(cellValue);
         },
         changes() {
             if (this.value != "") {
@@ -365,17 +407,17 @@ export default {
                 this.getSummary(this.value[0]);
             }
         },
-        getBatch() {
-            axios
-            .get("get_batch")
-            .then(response => {
-                response.data.push({ batch: "All" });
-                this.batch = response.data;
-                this.value[0] = response.data[0].batch;
-                this.first_batch = response.data[0].batch;
-                this.getSummary(response.data[0].batch);
-            })
-            .catch(function(error) {});
+        async getBatch() {
+            await axios
+                .get("get_batch")
+                .then(response => {
+                    response.data.push({ batch: "All" });
+                    this.batch = response.data;
+                    this.value[0] = response.data[0].batch;
+                    this.first_batch = response.data[0].batch;
+                    this.getSummary(this.value);
+                })
+                .catch(function(error) {});
         },
         tableRowClassName({ row, rowIndex }) {
             return "success-row";
@@ -402,101 +444,152 @@ export default {
                 this.data = this.privateDoctors.sort(
                     (a, b) => b[fieldName] - a[fieldName]
                 );
-            }else {
+            } else {
                 this.data = this.privateDoctors.sort(
                     (a, b) => a[fieldName] - b[fieldName]
                 );
             }
         },
-        getSummary: function(batch) {
-            axios
-            .get(`get_summary/${batch}`)
-            .then(response => {
-                response.data.forEach(doctor => {
-                    doctor.nursing_services = 0;
-                    doctor.non_medical = 0;
-                    doctor.fifty_total = 0;
-                    doctor.doctors_share = 0;
-                    doctor.pooled = 0;
-                    doctor.pbs_total = 0;
-                    doctor.record_type = "";
-                    doctor.credit_records.forEach(patient => {
-                        doctor.doctors_share += Number(
-                            patient.pivot.professional_fee
-                        );
-                        if (patient.pooled_record == null) {
-                            doctor.pooled = 0;
-                        } else {
-                            if (
-                                doctor.is_parttime == 0 &&
-                                JSON.parse(
-                                    doctor.credit_records[0].pooled_record
-                                        .full_time_doctors
-                                ).includes(doctor.id)
-                            ) {
-                                doctor.pooled = Number(
-                                    patient.pooled_record
-                                        .full_time_individual_fee
-                                );
+        async getSummary(batch) {
+            await axios
+                .get(`get_summary/${batch}`)
+                .then(response => {
+                    response.data.forEach(doctor => {
+                        doctor.publicNursingServices = 0;
+                        doctor.privateNursingServices = 0;
+
+                        doctor.publicNonMedical = 0;
+                        doctor.privateNonMedical = 0;
+
+                        doctor.publicFiftyTotal = 0;
+                        doctor.privateFiftyTotal = 0;
+
+                        // doctor.doctors_share = 0;
+                        doctor.publicPooled = 0;
+                        doctor.privatePooled = 0;
+
+                        doctor.publicPbsTotal = 0;
+                        doctor.privatePbsTotal = 0;
+
+                        doctor.privateDoctorShare = 0;
+                        doctor.publicDoctorShare = 0;
+
+                        doctor.record_type = "";
+
+                        doctor.credit_records.forEach(patient => {
+                            if (patient.pooled_record == null) {
+                                doctor.pooled = 0;
                             } else {
-                                doctor.pooled = Number(
-                                    patient.pooled_record
-                                        .part_time_individual_fee
+                                // if (
+                                //     doctor.is_parttime == 0 &&
+                                //     JSON.parse(
+                                //         doctor.credit_records[0].pooled_record
+                                //             .full_time_doctors
+                                //     ).includes(doctor.id)
+                                // ) {
+                                //     doctor.pooled = Number(
+                                //         patient.pooled_record
+                                //             .full_time_individual_fee
+                                //     );
+                                // } else {
+                                //     doctor.pooled = Number(
+                                //         patient.pooled_record
+                                //             .part_time_individual_fee
+                                //     );
+                                // }
+                            }
+                            // doctor.pbs_total = Number(
+                            //     doctor.doctors_share + doctor.pooled
+                            // );
+                            // doctor.nursing_services += Number(
+                            //     patient.medical_fee
+                            // );
+                            // doctor.non_medical += Number(
+                            //     patient.non_medical_fee
+                            // );
+                            // doctor.fifty_total = Number(
+                            //     doctor.nursing_services + doctor.non_medical
+                            // );
+                            // doctor.record_type = patient.record_type;
+
+                            if (patient["record_type"] == "private") {
+                                if (patient.total != "") {
+                                    doctor.privateDoctorShare += Number(
+                                        patient.total
+                                    );
+                                    doctor.privatePbsTotal =
+                                        doctor.privateDoctorShare;
+                                } else doctor.privateDoctorShare += 0;
+                            } else if (patient.total != "") {
+                                doctor.publicDoctorShare += Number(
+                                    patient.total
                                 );
-                            }
+                                doctor.publicNursingServices += Number(
+                                    patient.medical_fee
+                                );
+                                doctor.publicNonMedical += Number(
+                                    patient.non_medical_fee
+                                );
+                                doctor.publicFiftyTotal =
+                                    doctor.publicNursingServices +
+                                    doctor.publicNonMedical;
+
+                                if (patient.pooled_record != null) {
+                                    var holder = JSON.parse(
+                                        patient.pooled_record.full_time_doctors
+                                    ).includes(doctor.id);
+                                    if (holder) {
+                                        // fulltime
+                                        doctor.publicPooled = Number(
+                                            patient.pooled_record
+                                                .full_time_individual_fee
+                                        );
+                                    }
+                                }
+
+                                doctor.publicPbsTotal =
+                                    doctor.publicPooled +
+                                    doctor.publicDoctorShare;
+
+                                // var holder = JSON.parse(patient.pooled_record.full_time_doctors).includes(doctor.id);
+                                // // if(holder) { // fulltime
+                                //    doctor.publicPooled += Number(patient.pooled_record.full_time_individual_fee);
+                                // // }
+                                // console.log(patient.pooled_record.full_time_individual_fee);
+                            } else doctor.publicDoctorShare += 0;
+                        });
+                        if (doctor.pooled != 0) {
+                            this.nursing_services_total +=
+                                doctor.publicNursingServices;
+                            this.non_medical_total += doctor.publicNonMedical;
+                            this.fifty_total_total += doctor.publicFiftyTotal;
+                            this.doctors_share_total += Number(
+                                doctor.publicDoctorShare
+                            );
+                            this.pooled_total += Number(doctor.publicPooled);
+                            this.pbs_total_total += Number(
+                                doctor.publicPbsTotal
+                            );
+                            this.grand_total =
+                                this.fifty_total_total + this.pbs_total_total;
                         }
-                        doctor.pbs_total = Number(
-                            doctor.doctors_share + doctor.pooled
-                        );
-                        doctor.nursing_services += Number(
-                            patient.medical_fee
-                        );
-                        doctor.non_medical += Number(
-                            patient.non_medical_fee
-                        );
-                        doctor.fifty_total = Number(
-                            doctor.nursing_services + doctor.non_medical
-                        );
-                        doctor.record_type = patient.record_type;
                     });
-                    if (doctor.pooled != 0) {
-                        this.nursing_services_total +=
-                            doctor.nursing_services;
-                        this.non_medical_total += doctor.non_medical;
-                        this.fifty_total_total += doctor.fifty_total;
-                        this.doctors_share_total += Number(
-                            doctor.doctors_share
-                        );
-                        this.pooled_total += Number(doctor.pooled);
-                        this.pbs_total_total += Number(doctor.pbs_total);
-                        this.grand_total =
-                            this.fifty_total_total + this.pbs_total_total;
-                    }
-                        if(doctor.record_type == "private"){
-                            if (doctor.fifty_total || doctor.pbs_total != 0) {
-                                this.privateDoctors.push(doctor);
-                            }
-                        }
-                        else
-                         if (doctor.fifty_total || doctor.pbs_total != 0) {
-                            this.active.push(doctor);
-                         }
-                });
-                console.log(this.privateDoctors);
-                this.sumOfAll.push({
-                    nursing_services_total: this.nursing_services_total,
-                    non_medical_total: this.non_medical_total,
-                    fifty_total_total: this.fifty_total_total,
-                    doctors_share_total: this.doctors_share_total.toFixed(
-                        4
-                    ),
-                    pooled_total: this.pooled_total.toFixed(4),
-                    pbs_total_total: this.pbs_total_total.toFixed(4),
-                    grand_total: this.grand_total.toFixed(4)
-                });
-                this.data = response.data;
-            })
-            .catch(function(error) {});
+                    this.sumOfAll.push({
+                        nursing_services_total: this.nursing_services_total,
+                        non_medical_total: this.non_medical_total,
+                        fifty_total_total: this.fifty_total_total,
+                        doctors_share_total: this.doctors_share_total.toFixed(
+                            4
+                        ),
+                        pooled_total: this.pooled_total.toFixed(4),
+                        pbs_total_total: this.pbs_total_total.toFixed(4),
+                        grand_total: this.grand_total.toFixed(4)
+                    });
+
+                    this.data = response.data;
+                    // console.log(this.data)
+                })
+                .catch(function(error) {});
         },
         handleCurrentChange(val) {
             this.page = val;
@@ -504,64 +597,142 @@ export default {
         exportSummary() {
             var row = 4;
             var prow = 4;
-            this.active.forEach((physician)=>{
+            this.active.forEach(physician => {
                 row += 1;
-                this.sheet_data["A"+row] = {t: 's', v: physician.name};
-                this.sheet_data["B"+row] = {t: 'n', v: physician.nursing_services};
-                this.sheet_data["C"+row] = {t: 'n', v: physician.non_medical};
-                this.sheet_data["D"+row] = {t: 'n', v: physician.fifty_total};
-                this.sheet_data["E"+row] = {t: 'n', v: physician.doctors_share};
-                this.sheet_data["F"+row] = {t: 'n', v: physician.pooled};
-                this.sheet_data["G"+row] = {t: 'n', v: physician.pbs_total};
+                this.sheet_data["A" + row] = { t: "s", v: physician.name };
+                this.sheet_data["B" + row] = {
+                    t: "n",
+                    v: physician.nursing_services
+                };
+                this.sheet_data["C" + row] = {
+                    t: "n",
+                    v: physician.non_medical
+                };
+                this.sheet_data["D" + row] = {
+                    t: "n",
+                    v: physician.fifty_total
+                };
+                this.sheet_data["E" + row] = {
+                    t: "n",
+                    v: physician.doctors_share
+                };
+                this.sheet_data["F" + row] = { t: "n", v: physician.pooled };
+                this.sheet_data["G" + row] = { t: "n", v: physician.pbs_total };
             });
-            this.privateDoctors.forEach((physician)=>{
+            this.privateDoctors.forEach(physician => {
                 prow += 1;
-                this.sheet_data_private["A"+prow] = {t: 's', v: physician.name};
-                this.sheet_data_private["B"+prow] = {t: 'n', v: physician.nursing_services};
-                this.sheet_data_private["C"+prow] = {t: 'n', v: physician.non_medical};
-                this.sheet_data_private["D"+prow] = {t: 'n', v: physician.fifty_total};
-                this.sheet_data_private["E"+prow] = {t: 'n', v: physician.doctors_share};
-                this.sheet_data_private["F"+prow] = {t: 'n', v: physician.pooled};
-                this.sheet_data_private["G"+prow] = {t: 'n', v: physician.pbs_total};
+                this.sheet_data_private["A" + prow] = {
+                    t: "s",
+                    v: physician.name
+                };
+                this.sheet_data_private["B" + prow] = {
+                    t: "n",
+                    v: physician.nursing_services
+                };
+                this.sheet_data_private["C" + prow] = {
+                    t: "n",
+                    v: physician.non_medical
+                };
+                this.sheet_data_private["D" + prow] = {
+                    t: "n",
+                    v: physician.fifty_total
+                };
+                this.sheet_data_private["E" + prow] = {
+                    t: "n",
+                    v: physician.doctors_share
+                };
+                this.sheet_data_private["F" + prow] = {
+                    t: "n",
+                    v: physician.pooled
+                };
+                this.sheet_data_private["G" + prow] = {
+                    t: "n",
+                    v: physician.pbs_total
+                };
             });
             row += 2;
-            this.sheet_data["A"+row] = {t: 's', v: "TOTAL"};
-            this.sheet_data["B"+row] = {t: 'n', v: this.nursing_services_total};
-            this.sheet_data["C"+row] = {t: 'n', v: this.non_medical_total};
-            this.sheet_data["D"+row] = {t: 'n', v: this.fifty_total_total};
-            this.sheet_data["E"+row] = {t: 'n', v: this.doctors_share_total};
-            this.sheet_data["F"+row] = {t: 'n', v: this.pooled_total};
-            this.sheet_data["G"+row] = {t: 'n', v: this.pbs_total_total};
+            this.sheet_data["A" + row] = { t: "s", v: "TOTAL" };
+            this.sheet_data["B" + row] = {
+                t: "n",
+                v: this.nursing_services_total
+            };
+            this.sheet_data["C" + row] = { t: "n", v: this.non_medical_total };
+            this.sheet_data["D" + row] = { t: "n", v: this.fifty_total_total };
+            this.sheet_data["E" + row] = {
+                t: "n",
+                v: this.doctors_share_total
+            };
+            this.sheet_data["F" + row] = { t: "n", v: this.pooled_total };
+            this.sheet_data["G" + row] = { t: "n", v: this.pbs_total_total };
             row += 1;
-            this.sheet_data["G"+row] = {t: 's', v: "GRAND TOTAL"};
-            this.sheet_data["H"+row] = {t: 'n', v: this.grand_total};
-            this.sheet_data['!ref'] = "A1:H" + row;
-            this.sheet_data_private['!ref'] = "A1:H" + prow;
+            this.sheet_data["G" + row] = { t: "s", v: "GRAND TOTAL" };
+            this.sheet_data["H" + row] = { t: "n", v: this.grand_total };
+            this.sheet_data["!ref"] = "A1:H" + row;
+            this.sheet_data_private["!ref"] = "A1:H" + prow;
             var sheet_name;
-            if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
-                if (this.value[0] == 'All') {
+            if (
+                typeof this.value[0] !== "undefined" ||
+                this.value[0] == "All"
+            ) {
+                if (this.value[0] == "All") {
                     sheet_name = "All Record";
                 } else {
-                    var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
-                    var d = (this.value[0]).trim().split('-');
-                    var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
-                    var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
+                    var month_name = [
+                        "Jan",
+                        "Feb",
+                        "Mar",
+                        "Apr",
+                        "May",
+                        "Jun",
+                        "Jul",
+                        "Aug",
+                        "Sept",
+                        "Oct",
+                        "Nov",
+                        "Dec"
+                    ];
+                    var d = this.value[0].trim().split("-");
+                    var date_from =
+                        month_name[parseInt(d[0][2] + d[0][3]) - 1] +
+                        " " +
+                        d[0][0] +
+                        d[0][1] +
+                        " " +
+                        d[0][4] +
+                        d[0][5] +
+                        d[0][6] +
+                        d[0][7];
+                    var date_to =
+                        month_name[parseInt(d[1][2] + d[1][3]) - 1] +
+                        " " +
+                        d[1][0] +
+                        d[1][1] +
+                        " " +
+                        d[1][4] +
+                        d[1][5] +
+                        d[1][6] +
+                        d[1][7];
                     sheet_name = date_from + " - " + date_to;
-                    this.sheet_data.A2.v = "COVERED PERIOD: " + sheet_name.toUpperCase();
-                    this.sheet_data_private.A2.v = "COVERED PERIOD: " + sheet_name.toUpperCase();
+                    this.sheet_data.A2.v =
+                        "COVERED PERIOD: " + sheet_name.toUpperCase();
+                    this.sheet_data_private.A2.v =
+                        "COVERED PERIOD: " + sheet_name.toUpperCase();
                 }
                 var sheet_data_object = {};
                 sheet_data_object[sheet_name] = this.sheet_data;
-                sheet_data_object['Private'] = this.sheet_data_private;
-                XLSX.writeFile({
-                    SheetNames:[sheet_name, 'Private'],
-                    Sheets: sheet_data_object
-                }, 'Summary_Export.xlsx');
+                sheet_data_object["Private"] = this.sheet_data_private;
+                XLSX.writeFile(
+                    {
+                        SheetNames: [sheet_name, "Private"],
+                        Sheets: sheet_data_object
+                    },
+                    "Summary_Export.xlsx"
+                );
             } else {
                 this.$notify({
-                    type: 'warning',
-                    title: 'Export',
-                    message: "Please select batch to proceed",
+                    type: "warning",
+                    title: "Export",
+                    message: "Please select batch to proceed"
                 });
             }
         }
