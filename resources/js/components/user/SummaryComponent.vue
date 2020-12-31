@@ -48,7 +48,8 @@
             </div>
             <div class="col-xl-2 col-lg-2 col-md-12 col-sm-12">
                 <el-button
-                    icon="el-icon-download"
+                    ref="summary"
+                    id="summary"
                     style="width:100%"
                     @click="exportSummary"
                     >Export</el-button
@@ -288,52 +289,8 @@ export default {
             pageSize: 10,
             page1: 1,
             pageSize1: 10,
-            sheet_data: {
-                A1: { t: "s", v: "SUMMARY OF DOCTOR'S PERFORMANCE BASE" },
-                A2: { t: "s", v: "COVERED PERIOD:" },
-                A3: { t: "s", v: "NAME OF PHYSICIAN" },
-                B3: { t: "s", v: "50%" },
-                B4: { t: "s", v: "NURSING SERVICES" },
-                C4: { t: "s", v: "NONE-MEDICAL" },
-                D4: { t: "s", v: "TOTAL" },
-                E3: { t: "s", v: "PERFORMANCE BASED SHARING" },
-                E4: { t: "s", v: "DOCTORS SHARE (35%)" },
-                F4: { t: "s", v: "POOLED (15%)" },
-                G4: { t: "s", v: "TOTAL" },
-                H3: { t: "s", v: "SIGNATURE" },
-                "!merges": [
-                    { s: { r: 0, c: 0 }, e: { r: 0, c: 7 } },
-                    { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } },
-                    { s: { r: 2, c: 0 }, e: { r: 3, c: 0 } },
-                    { s: { r: 2, c: 1 }, e: { r: 2, c: 3 } },
-                    { s: { r: 2, c: 4 }, e: { r: 2, c: 6 } },
-                    { s: { r: 2, c: 7 }, e: { r: 3, c: 7 } }
-                ],
-                "!ref": "A1:H5"
-            },
-            sheet_data_private: {
-                A1: { t: "s", v: "SUMMARY OF DOCTOR'S PERFORMANCE BASE" },
-                A2: { t: "s", v: "COVERED PERIOD:" },
-                A3: { t: "s", v: "NAME OF PHYSICIAN" },
-                B3: { t: "s", v: "50%" },
-                B4: { t: "s", v: "NURSING SERVICES" },
-                C4: { t: "s", v: "NONE-MEDICAL" },
-                D4: { t: "s", v: "TOTAL" },
-                E3: { t: "s", v: "PERFORMANCE BASED SHARING" },
-                E4: { t: "s", v: "DOCTORS SHARE (35%)" },
-                F4: { t: "s", v: "POOLED (15%)" },
-                G4: { t: "s", v: "TOTAL" },
-                H3: { t: "s", v: "SIGNATURE" },
-                "!merges": [
-                    { s: { r: 0, c: 0 }, e: { r: 0, c: 7 } },
-                    { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } },
-                    { s: { r: 2, c: 0 }, e: { r: 3, c: 0 } },
-                    { s: { r: 2, c: 1 }, e: { r: 2, c: 3 } },
-                    { s: { r: 2, c: 4 }, e: { r: 2, c: 6 } },
-                    { s: { r: 2, c: 7 }, e: { r: 3, c: 7 } }
-                ],
-                "!ref": "A1:H5"
-            }
+            sheet_data: [],
+            sheet_data_private: []
         };
     },
     computed: {
@@ -394,8 +351,8 @@ export default {
         },
         changes() {
             if (this.value != "") {
-                this.privateDoctors = [];
-                this.active = [];
+                //this.privateDoctors = [];
+                //this.active = [];
                 this.sumOfAll = [];
                 this.nursing_services_total = 0;
                 this.non_medical_total = 0;
@@ -594,148 +551,191 @@ export default {
         handleCurrentChange(val) {
             this.page = val;
         },
-        exportSummary() {
-            var row = 4;
-            var prow = 4;
-            this.active.forEach(physician => {
-                row += 1;
-                this.sheet_data["A" + row] = { t: "s", v: physician.name };
-                this.sheet_data["B" + row] = {
-                    t: "n",
-                    v: physician.nursing_services
-                };
-                this.sheet_data["C" + row] = {
-                    t: "n",
-                    v: physician.non_medical
-                };
-                this.sheet_data["D" + row] = {
-                    t: "n",
-                    v: physician.fifty_total
-                };
-                this.sheet_data["E" + row] = {
-                    t: "n",
-                    v: physician.doctors_share
-                };
-                this.sheet_data["F" + row] = { t: "n", v: physician.pooled };
-                this.sheet_data["G" + row] = { t: "n", v: physician.pbs_total };
-            });
-            this.privateDoctors.forEach(physician => {
-                prow += 1;
-                this.sheet_data_private["A" + prow] = {
-                    t: "s",
-                    v: physician.name
-                };
-                this.sheet_data_private["B" + prow] = {
-                    t: "n",
-                    v: physician.nursing_services
-                };
-                this.sheet_data_private["C" + prow] = {
-                    t: "n",
-                    v: physician.non_medical
-                };
-                this.sheet_data_private["D" + prow] = {
-                    t: "n",
-                    v: physician.fifty_total
-                };
-                this.sheet_data_private["E" + prow] = {
-                    t: "n",
-                    v: physician.doctors_share
-                };
-                this.sheet_data_private["F" + prow] = {
-                    t: "n",
-                    v: physician.pooled
-                };
-                this.sheet_data_private["G" + prow] = {
-                    t: "n",
-                    v: physician.pbs_total
-                };
-            });
-            row += 2;
-            this.sheet_data["A" + row] = { t: "s", v: "TOTAL" };
-            this.sheet_data["B" + row] = {
-                t: "n",
-                v: this.nursing_services_total
+        exportSummary($event) {
+            var header = {
+                A1: { t: "s", v: "SUMMARY OF DOCTOR'S PERFORMANCE BASE" },
+                A2: { t: "s", v: "COVERED PERIOD:" },
+                A3: { t: "s", v: "NAME OF PHYSICIAN" },
+                B3: { t: "s", v: "50%" },
+                B4: { t: "s", v: "NURSING SERVICES" },
+                C4: { t: "s", v: "NONE-MEDICAL" },
+                D4: { t: "s", v: "TOTAL" },
+                E3: { t: "s", v: "PERFORMANCE BASED SHARING" },
+                E4: { t: "s", v: "DOCTORS SHARE (35%)" },
+                F4: { t: "s", v: "POOLED (15%)" },
+                G4: { t: "s", v: "TOTAL" },
+                H3: { t: "s", v: "SIGNATURE" },
+                "!merges": [
+                    { s: { r: 0, c: 0 }, e: { r: 0, c: 7 } },
+                    { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } },
+                    { s: { r: 2, c: 0 }, e: { r: 3, c: 0 } },
+                    { s: { r: 2, c: 1 }, e: { r: 2, c: 3 } },
+                    { s: { r: 2, c: 4 }, e: { r: 2, c: 6 } },
+                    { s: { r: 2, c: 7 }, e: { r: 3, c: 7 } }
+                ],
+                "!ref": "A1:H5"
             };
-            this.sheet_data["C" + row] = { t: "n", v: this.non_medical_total };
-            this.sheet_data["D" + row] = { t: "n", v: this.fifty_total_total };
-            this.sheet_data["E" + row] = {
-                t: "n",
-                v: this.doctors_share_total
+            var header1 = {
+                A1: { t: "s", v: "SUMMARY OF DOCTOR'S PERFORMANCE BASE" },
+                A2: { t: "s", v: "COVERED PERIOD:" },
+                A3: { t: "s", v: "NAME OF PHYSICIAN" },
+                B3: { t: "s", v: "50%" },
+                B4: { t: "s", v: "NURSING SERVICES" },
+                C4: { t: "s", v: "NONE-MEDICAL" },
+                D4: { t: "s", v: "TOTAL" },
+                E3: { t: "s", v: "PERFORMANCE BASED SHARING" },
+                E4: { t: "s", v: "DOCTORS SHARE (35%)" },
+                F4: { t: "s", v: "POOLED (15%)" },
+                G4: { t: "s", v: "TOTAL" },
+                H3: { t: "s", v: "SIGNATURE" },
+                "!merges": [
+                    { s: { r: 0, c: 0 }, e: { r: 0, c: 7 } },
+                    { s: { r: 1, c: 0 }, e: { r: 1, c: 7 } },
+                    { s: { r: 2, c: 0 }, e: { r: 3, c: 0 } },
+                    { s: { r: 2, c: 1 }, e: { r: 2, c: 3 } },
+                    { s: { r: 2, c: 4 }, e: { r: 2, c: 6 } },
+                    { s: { r: 2, c: 7 }, e: { r: 3, c: 7 } }
+                ],
+                "!ref": "A1:H5"
             };
-            this.sheet_data["F" + row] = { t: "n", v: this.pooled_total };
-            this.sheet_data["G" + row] = { t: "n", v: this.pbs_total_total };
-            row += 1;
-            this.sheet_data["G" + row] = { t: "s", v: "GRAND TOTAL" };
-            this.sheet_data["H" + row] = { t: "n", v: this.grand_total };
-            this.sheet_data["!ref"] = "A1:H" + row;
-            this.sheet_data_private["!ref"] = "A1:H" + prow;
-            var sheet_name;
-            if (
-                typeof this.value[0] !== "undefined" ||
-                this.value[0] == "All"
-            ) {
-                if (this.value[0] == "All") {
-                    sheet_name = "All Record";
-                } else {
-                    var month_name = [
-                        "Jan",
-                        "Feb",
-                        "Mar",
-                        "Apr",
-                        "May",
-                        "Jun",
-                        "Jul",
-                        "Aug",
-                        "Sept",
-                        "Oct",
-                        "Nov",
-                        "Dec"
-                    ];
-                    var d = this.value[0].trim().split("-");
-                    var date_from =
-                        month_name[parseInt(d[0][2] + d[0][3]) - 1] +
-                        " " +
-                        d[0][0] +
-                        d[0][1] +
-                        " " +
-                        d[0][4] +
-                        d[0][5] +
-                        d[0][6] +
-                        d[0][7];
-                    var date_to =
-                        month_name[parseInt(d[1][2] + d[1][3]) - 1] +
-                        " " +
-                        d[1][0] +
-                        d[1][1] +
-                        " " +
-                        d[1][4] +
-                        d[1][5] +
-                        d[1][6] +
-                        d[1][7];
-                    sheet_name = date_from + " - " + date_to;
-                    this.sheet_data.A2.v =
-                        "COVERED PERIOD: " + sheet_name.toUpperCase();
-                    this.sheet_data_private.A2.v =
-                        "COVERED PERIOD: " + sheet_name.toUpperCase();
+            this.sheet_data = [];
+            this.sheet_data.push(header);
+            this.sheet_data_private = [];
+            this.sheet_data_private.push(header1);
+            this.proccessLoading($event, function(loading_response){
+                if(loading_response == "done"){
+                    this.active = [];
+                    this.privateDoctors = [];
+                    this.page = 1;
+                    this.page1 = 1;
+                    this.search = "";
+                    this.pageSize = 1000;
+                    this.pageSize1 = 1000;
+                    try {
+                        this.listDataPublic.forEach((data)=>{
+                            this.active.push(data);
+                        })
+                        this.listDataPrivate.forEach((data)=>{
+                            this.privateDoctors.push(data);
+                        })
+                        this.pageSize = 10;
+                        this.pageSize1 = 10;
+                    } catch (error) {
+                        this.pageSize = 10;
+                        this.pageSize1 = 10;
+                    }
+                    var row = 4;
+                    var prow = 4;
+                    this.active.forEach(physician => {
+                        row += 1;
+                        this.sheet_data[0]["A" + row] = { t: "s", v: physician.name };
+                        this.sheet_data[0]["B" + row] = { t: "n", v: physician.publicNursingServices };
+                        this.sheet_data[0]["C" + row] = { t: "n", v: physician.publicNonMedical };
+                        this.sheet_data[0]["D" + row] = { t: "n", v: physician.publicFiftyTotal };
+                        this.sheet_data[0]["E" + row] = { t: "n", v: physician.publicDoctorShare };
+                        this.sheet_data[0]["F" + row] = { t: "n", v: physician.publicPooled };
+                        this.sheet_data[0]["G" + row] = { t: "n", v: physician.publicPbsTotal };
+                    });
+                    this.privateDoctors.forEach(physician => {
+                        prow += 1;
+                        this.sheet_data_private[0]["A" + prow] = { t: "s", v: physician.name };
+                        this.sheet_data_private[0]["B" + prow] = { t: "n", v: physician.privateNursingServices };
+                        this.sheet_data_private[0]["C" + prow] = { t: "n", v: physician.privateNonMedical };
+                        this.sheet_data_private[0]["D" + prow] = { t: "n", v: physician.privateFiftyTotal };
+                        this.sheet_data_private[0]["E" + prow] = { t: "n", v: physician.privateDoctorShare };
+                        this.sheet_data_private[0]["F" + prow] = { t: "n", v: physician.privatePooled };
+                        this.sheet_data_private[0]["G" + prow] = { t: "n", v: physician.privatePbsTotal };
+                    });
+                    row += 2;
+                    this.sheet_data[0]["A" + row] = { t: "s", v: "TOTAL" };
+                    this.sheet_data[0]["B" + row] = { t: "n", v: this.nursing_services_total };
+                    this.sheet_data[0]["C" + row] = { t: "n", v: this.non_medical_total };
+                    this.sheet_data[0]["D" + row] = { t: "n", v: this.fifty_total_total };
+                    this.sheet_data[0]["E" + row] = { t: "n", v: this.doctors_share_total };
+                    this.sheet_data[0]["F" + row] = { t: "n", v: this.pooled_total };
+                    this.sheet_data[0]["G" + row] = { t: "n", v: this.pbs_total_total };
+                    row += 1;
+                    this.sheet_data[0]["G" + row] = { t: "s", v: "GRAND TOTAL" };
+                    this.sheet_data[0]["H" + row] = { t: "n", v: this.grand_total };
+                    this.sheet_data[0]["!ref"] = "A1:H" + row;
+                    this.sheet_data_private[0]["!ref"] = "A1:H" + prow;
+                    var sheet_name;
+                    if (
+                        typeof this.value[0] !== "undefined" ||
+                        this.value[0] == "All"
+                    ) {
+                        if (this.value[0] == "All") {
+                            sheet_name = "All Record";
+                        } else {
+                            var month_name = [
+                                "Jan",
+                                "Feb",
+                                "Mar",
+                                "Apr",
+                                "May",
+                                "Jun",
+                                "Jul",
+                                "Aug",
+                                "Sept",
+                                "Oct",
+                                "Nov",
+                                "Dec"
+                            ];
+                            var d = this.value[0].trim().split("-");
+                            var date_from =
+                                month_name[parseInt(d[0][2] + d[0][3]) - 1] +
+                                " " +
+                                d[0][0] +
+                                d[0][1] +
+                                " " +
+                                d[0][4] +
+                                d[0][5] +
+                                d[0][6] +
+                                d[0][7];
+                            var date_to =
+                                month_name[parseInt(d[1][2] + d[1][3]) - 1] +
+                                " " +
+                                d[1][0] +
+                                d[1][1] +
+                                " " +
+                                d[1][4] +
+                                d[1][5] +
+                                d[1][6] +
+                                d[1][7];
+                            sheet_name = date_from + " - " + date_to;
+                            this.sheet_data[0].A2.v =
+                                "COVERED PERIOD: " + sheet_name.toUpperCase();
+                            this.sheet_data_private[0].A2.v =
+                                "COVERED PERIOD: " + sheet_name.toUpperCase();
+                        }
+                        var sheet_data_object = {};
+                        sheet_data_object[sheet_name] = this.sheet_data[0];
+                        sheet_data_object["Private"] = this.sheet_data_private[0];
+                        XLSX.writeFile(
+                            {
+                                SheetNames: [sheet_name, "Private"],
+                                Sheets: sheet_data_object
+                            },
+                            "Summary_Export.xlsx"
+                        );
+                    } else {
+                        this.$notify({
+                            type: "warning",
+                            title: "Export",
+                            message: "Please select batch to proceed"
+                        });
+                    }
                 }
-                var sheet_data_object = {};
-                sheet_data_object[sheet_name] = this.sheet_data;
-                sheet_data_object["Private"] = this.sheet_data_private;
-                XLSX.writeFile(
-                    {
-                        SheetNames: [sheet_name, "Private"],
-                        Sheets: sheet_data_object
-                    },
-                    "Summary_Export.xlsx"
-                );
-            } else {
-                this.$notify({
-                    type: "warning",
-                    title: "Export",
-                    message: "Please select batch to proceed"
-                });
-            }
-        }
+            }.bind(this))
+        },
+        proccessLoading(event, cb){
+            var btn = event.currentTarget.id;
+            this.$refs[btn].loading = true;
+            setTimeout(function () {
+                cb('done');
+                this.$refs[btn].loading = false;
+            }.bind(this), 1000)
+        },
     },
     mounted() {
         this.getBatch();

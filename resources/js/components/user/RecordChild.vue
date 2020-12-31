@@ -242,10 +242,10 @@
         <el-dialog :title="dialogtitle" :visible.sync="dialogExcelFile" :fullscreen="fullscreen">
             <el-row :gutter="10" v-show="!isimport">
                 <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                    <el-button style="width:100%;" @click="getTemplate">Sample Excel File / Template</el-button>
+                    <el-button style="width:100%;" @click="getTemplate" ref="drecord" id="drecord">Sample Excel File / Template</el-button>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
-                    <el-button type="primary" style="width:100%;" @click="exportExcel">Export Selected Batch Data</el-button>
+                    <el-button type="primary" style="width:100%;" @click="exportExcel" ref="template" id="template">Export Selected Batch Data</el-button>
                 </el-col>
             </el-row>
             <el-row v-show="isimport">
@@ -964,47 +964,51 @@ export default {
             this.tablepage = parseInt(1);
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
-        exportExcel() {
-            this.export_excel = [];
-            this.data.forEach((record)=>{
-                this.export_excel.push({
-                    Patient_Name: record.patient_name,
-                    Admission_Date: this.getDateTime(record.admission_date),
-                    Discharge_Date: this.getDateTime(record.discharge_date),
-                    Total_PF: record.total,
-                    Attending_Physician: this.changeDelimeter(record.allattending),
-                    Admitting_Physician: this.changeDelimeter(record.alladmitting),
-                    Requesting_Physician: this.changeDelimeter(record.allrequesting),
-                    Co_Management: this.changeDelimeter(record.allcomanagement),
-                    Anesthesiology_Physician: this.changeDelimeter(record.allanesthesiologist),
-                    Surgeon_Physician: this.changeDelimeter(record.allsurgeon),
-                    HealthCare_Physician: this.changeDelimeter(record.allhealthcare),
-                    ER_Physician: this.changeDelimeter(record.aller),
-                    Is_Private: (record.record_type == "private")? 1 : 0,
-                });
-            });
-            var sheet_name;
-            if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
-                if (this.value[0] == 'All') {
-                    sheet_name = "All Record";
-                } else {
-                    var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
-                    var d = (this.value[0]).trim().split('-');
-                    var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
-                    var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
-                    sheet_name = date_from + " - " + date_to;
+        exportExcel($event) {
+            this.proccessLoading($event, function(loading_response){
+                if(loading_response == "done"){
+                    this.export_excel = [];
+                    this.data.forEach((record)=>{
+                        this.export_excel.push({
+                            Patient_Name: record.patient_name,
+                            Admission_Date: this.getDateTime(record.admission_date),
+                            Discharge_Date: this.getDateTime(record.discharge_date),
+                            Total_PF: record.total,
+                            Attending_Physician: this.changeDelimeter(record.allattending),
+                            Admitting_Physician: this.changeDelimeter(record.alladmitting),
+                            Requesting_Physician: this.changeDelimeter(record.allrequesting),
+                            Co_Management: this.changeDelimeter(record.allcomanagement),
+                            Anesthesiologist_Physician: this.changeDelimeter(record.allanesthesiologist),
+                            Surgeon_Physician: this.changeDelimeter(record.allsurgeon),
+                            HealthCare_Physician: this.changeDelimeter(record.allhealthcare),
+                            ER_Physician: this.changeDelimeter(record.aller),
+                            Is_Private: (record.record_type == "private")? 1 : 0,
+                        });
+                    });
+                    var sheet_name;
+                    if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
+                        if (this.value[0] == 'All') {
+                            sheet_name = "All Record";
+                        } else {
+                            var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+                            var d = (this.value[0]).trim().split('-');
+                            var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
+                            var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
+                            sheet_name = date_from + " - " + date_to;
+                        }
+                        var acpn_rec = XLSX.utils.json_to_sheet(this.export_excel);
+                        var wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, acpn_rec, sheet_name);
+                        XLSX.writeFile(wb, 'Record_List.xlsx');
+                    } else {
+                        this.$notify({
+                            type: 'warning',
+                            title: 'Export',
+                            message: "Please select batch to proceed",
+                        });
+                    }
                 }
-                var acpn_rec = XLSX.utils.json_to_sheet(this.export_excel);
-                var wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, acpn_rec, sheet_name);
-                XLSX.writeFile(wb, 'Record_List.xlsx');
-            } else {
-                this.$notify({
-                    type: 'warning',
-                    title: 'Export',
-                    message: "Please select batch to proceed",
-                });
-            }
+            }.bind(this))
         },
         changeDelimeter(physician) {
             if(physician != "" && physician != "; " && physician != ";"){
@@ -1085,9 +1089,21 @@ export default {
                     break;
             }
         },
-        getTemplate() {
-            window.open(window.location.origin+"/template/Import_Record_Template.xlsx");
-        }
+        getTemplate($event) {
+            this.proccessLoading($event, function(loading_response){
+                if(loading_response == "done"){
+                    window.open(window.location.origin+"/template/Import_Record_Template.xlsx");
+                }
+            }.bind(this))
+        },
+        proccessLoading(event, cb){
+            var btn = event.currentTarget.id;
+            this.$refs[btn].loading = true;
+            setTimeout(function () {
+                cb('done');
+                this.$refs[btn].loading = false;
+            }.bind(this), 1000)
+        },
     },
     mounted() {
         this.getBatch();

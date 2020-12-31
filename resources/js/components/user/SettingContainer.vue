@@ -175,7 +175,7 @@ export default {
                         this.$notify({
                             type: 'success',
                             title: 'Updated',
-                            message: "Setting changes has been save/updated",
+                            message: "Setting changes has been save/updated, it will automatically reload the page within 5sec to take effect",
                         });
                         setTimeout(function(){ location.reload(); }, 5000);
                     }

@@ -1705,12 +1705,17 @@ export default {
                         var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' +
                             date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() +
                             '/' + date1.getFullYear();
+                        try {
+                            var full_time_individual_fee = patient.pooled_record.full_time_individual_fee;   
+                        } catch (error) {
+                            var full_time_individual_fee = 0;
+                        }
                         this.sheet_data["A"+row] = {t: 's', v: patient.patient_name};
                         this.sheet_data["B"+row] = {t: 's', v: patient_confinement_date};
                         this.sheet_data["C"+row] = {t: 'n', v: patient.grossPF};
                         this.sheet_data["D"+row] = {t: 'n', v: patient.netPF};
                         this.sheet_data["E"+row] = {t: 'n', v: patient.professional_fee};
-                        this.sheet_data["F"+row] = {t: 'n', v: patient.pooled_record.full_time_individual_fee};
+                        this.sheet_data["F"+row] = {t: 'n', v: full_time_individual_fee};
                         this.sheet_data["G"+row] = {t: 's', v: patient.pivot.attending_name};
                         this.sheet_data["H"+row] = {t: 'n', v: patient.pivot.attending_fee};
                         this.sheet_data["I"+row] = {t: 's', v: patient.pivot.ref_name};
