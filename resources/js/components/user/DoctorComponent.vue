@@ -535,6 +535,7 @@
                                 <el-table-column
                                     prop="co_attending_name"
                                     min-width="200"
+                                    :formatter="terminateExtraComma"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -548,6 +549,7 @@
                                 <el-table-column
                                     prop="co_ref_name"
                                     min-width="200"
+                                    :formatter="terminateExtraComma"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -561,6 +563,7 @@
                                 <el-table-column
                                     prop="co_anesthesiologist_name"
                                     min-width="200"
+                                    :formatter="terminateExtraComma"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -574,6 +577,7 @@
                                 <el-table-column
                                     prop="co_comanagement_name"
                                     min-width="200"
+                                    :formatter="terminateExtraComma"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -587,6 +591,7 @@
                                 <el-table-column
                                     prop="co_admitting_name"
                                     min-width="200"
+                                    :formatter="terminateExtraComma"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -911,6 +916,9 @@ export default {
     methods: {
         terminateZeroValue(row, column, cellValue, index) {
             return cellValue || "";
+        },
+        terminateExtraComma(row, column, cellValue, index) {
+            return cellValue.replace(/,\s*$/, "")
         },
         getCoDoctor(batch) {
             var _this = this;
@@ -1729,15 +1737,15 @@ export default {
                         this.sheet_data[0]["N"+row] = {t: 'n', v: patient.pivot.comanagement_fee};
                         this.sheet_data[0]["O"+row] = {t: 's', v: patient.pivot.admitting_name};
                         this.sheet_data[0]["P"+row] = {t: 'n', v: patient.pivot.admitting_fee};
-                        this.sheet_data[0]["Q"+row] = {t: 's', v: patient.co_attending_name};
+                        this.sheet_data[0]["Q"+row] = {t: 's', v: this.terminateExtraComma('', '', patient.co_attending_name, '')};
                         this.sheet_data[0]["R"+row] = {t: 'n', v: patient.co_attending_fee};
-                        this.sheet_data[0]["S"+row] = {t: 's', v: patient.co_ref_name};
+                        this.sheet_data[0]["S"+row] = {t: 's', v: this.terminateExtraComma('', '', patient.co_ref_name, '')};
                         this.sheet_data[0]["T"+row] = {t: 'n', v: patient.co_ref_fee};
-                        this.sheet_data[0]["U"+row] = {t: 's', v: patient.co_anesthesiologist_name};
+                        this.sheet_data[0]["U"+row] = {t: 's', v: this.terminateExtraComma('', '', patient.co_anesthesiologist_name, '')};
                         this.sheet_data[0]["V"+row] = {t: 'n', v: patient.co_anesthesiologist_fee};
-                        this.sheet_data[0]["W"+row] = {t: 's', v: patient.co_comanagement_name};
+                        this.sheet_data[0]["W"+row] = {t: 's', v: this.terminateExtraComma('', '', patient.co_comanagement_name, '')};
                         this.sheet_data[0]["X"+row] = {t: 'n', v: patient.co_comanagement_fee};
-                        this.sheet_data[0]["Y"+row] = {t: 's', v: patient.co_admitting_name};
+                        this.sheet_data[0]["Y"+row] = {t: 's', v: this.terminateExtraComma('', '', patient.co_admitting_name, '')};
                         this.sheet_data[0]["Z"+row] = {t: 'n', v: patient.co_admitting_fee};
                     });
 
