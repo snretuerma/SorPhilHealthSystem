@@ -744,211 +744,220 @@ export default {
             }
         },
         fileData(file, fileList) {
-            var _this = this;
-            var header_required = [
-                "patient_name",
-                "admission_date",
-                "discharge_date",
-                "total_pf",
-                "attending_physician",
-                "admitting_physician",
-                "requesting_physician",
-                "co_management",
-                "anesthesiologist_physician",
-                "surgeon_physician",
-                "healthcare_physician",
-                "er_physician",
-                "is_private"
-            ];
-            var reader = new FileReader();
-            reader.readAsArrayBuffer(file.raw);
-            reader.onloadend = function(e) {
-                var data = new Uint8Array(reader.result);
-                var wb = XLSX.read(data,{type:'array', cellDates:true, dateNF:'dd.mm.yyyy h:mm:ss AM/PM'});
-                _this.sheet_length = wb.SheetNames.length;
-                for (let i = 0; i < wb.SheetNames.length; i++) {
-                    let sheetName = wb.SheetNames[i];
-                    let worksheet = wb.Sheets[sheetName];
-                    if(_this.checkSheetName(sheetName ,i) == "invalid"){
-                        _this.excel_validation_error[0].push({
-                            id: 'ws' + (Math.random().toString(36).substring(7)) + (i + 1),
-                            value: sheetName + " - ",
-                            message: "invalid format ",
-                            cell_position: 'worksheet #' + (i + 1),
-                        });
-                    }
-                    try {
-                        var range = XLSX.utils.decode_range(worksheet['!ref']);
-                        if(range.e.r < 1){
-                            _this.excel_validation_error[2].push({
-                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                value: '',
-                                message: "It looks like you don't have any data in this page ",
+            if (file.name.split(".").pop().toLowerCase() == 'xlsx'){
+                var _this = this;
+                var header_required = [
+                    "patient_name",
+                    "admission_date",
+                    "discharge_date",
+                    "total_pf",
+                    "attending_physician",
+                    "admitting_physician",
+                    "requesting_physician",
+                    "co_management",
+                    "anesthesiologist_physician",
+                    "surgeon_physician",
+                    "healthcare_physician",
+                    "er_physician",
+                    "is_private"
+                ];
+                var reader = new FileReader();
+                reader.readAsArrayBuffer(file.raw);
+                reader.onloadend = function(e) {
+                    var data = new Uint8Array(reader.result);
+                    var wb = XLSX.read(data,{type:'array', cellDates:true, dateNF:'dd.mm.yyyy h:mm:ss AM/PM'});
+                    _this.sheet_length = wb.SheetNames.length;
+                    for (let i = 0; i < wb.SheetNames.length; i++) {
+                        let sheetName = wb.SheetNames[i];
+                        let worksheet = wb.Sheets[sheetName];
+                        if(_this.checkSheetName(sheetName ,i) == "invalid"){
+                            _this.excel_validation_error[0].push({
+                                id: 'ws' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                value: sheetName + " - ",
+                                message: "invalid format ",
                                 cell_position: 'worksheet #' + (i + 1),
                             });
                         }
-                    } catch (error) {}
-                    for(var R = range.s.r; R <= range.e.r; ++R) {
-                        for(var C = range.s.c; C <= range.e.c; ++C) {
-                            var cellref = XLSX.utils.encode_cell({c:C, r:R});
-                            var cell_position = "#"+ (i + 1) + " " + ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
-                            if(!worksheet[cellref]){
-                                if(R == 0 && C < 13 ){
-                                    _this.excel_validation_error[1].push({
-                                        id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                        value: '',
-                                        message: "Header must have 13 column.",
-                                        cell_position: cell_position,
-                                    });
+                        try {
+                            var range = XLSX.utils.decode_range(worksheet['!ref']);
+                            if(range.e.r < 1){
+                                _this.excel_validation_error[2].push({
+                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                    value: '',
+                                    message: "It looks like you don't have any data in this page ",
+                                    cell_position: 'worksheet #' + (i + 1),
+                                });
+                            }
+                        } catch (error) {}
+                        for(var R = range.s.r; R <= range.e.r; ++R) {
+                            for(var C = range.s.c; C <= range.e.c; ++C) {
+                                var cellref = XLSX.utils.encode_cell({c:C, r:R});
+                                var cell_position = "#"+ (i + 1) + " " + ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
+                                if(!worksheet[cellref]){
+                                    if(R == 0 && C < 13 ){
+                                        _this.excel_validation_error[1].push({
+                                            id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                            value: '',
+                                            message: "Header must have 13 column.",
+                                            cell_position: cell_position,
+                                        });
+                                    }
+                                    if(R > 0 && C < 13){
+                                        if(C == 3){
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell can only contain numbers",
+                                                cell_position: cell_position,
+                                            });
+                                        }else if(C == 12){
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell must contain '0 or 1' only ",
+                                                cell_position: cell_position,
+                                            });
+                                        }else if(C == 0){
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell must contain Patient Name, format(LastName, FirstName MiddleName) ",
+                                                cell_position: cell_position,
+                                            });
+                                        }else if(C == 1 || C == 2){
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell must contain 'DATETIME' format(Month/Day/Year Hour:Minutes:Second AM or PM) ",
+                                                cell_position: cell_position,
+                                            });
+                                        }else{
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
+                                                cell_position: cell_position,
+                                            });
+                                        }
+                                    }
+                                    continue;
+                                }
+                                var cell = worksheet[cellref];
+                                if(R == 0 && C < 13){
+                                    var column_cell = _this.trimToCompare(cell.v);
+                                    if(header_required.indexOf(column_cell) == "-1"){
+                                        _this.excel_validation_error[1].push({
+                                            id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                            value: cell.v,
+                                            message: "Required header did not match, download the sample excel file",
+                                            cell_position: cell_position,
+                                        });
+                                    }
                                 }
                                 if(R > 0 && C < 13){
-                                    if(C == 3){
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: '',
-                                            message: "This cell can only contain numbers",
-                                            cell_position: cell_position,
-                                        });
-                                    }else if(C == 12){
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: '',
-                                            message: "This cell must contain '0 or 1' only ",
-                                            cell_position: cell_position,
-                                        });
-                                    }else if(C == 0){
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: '',
-                                            message: "This cell must contain Patient Name, format(LastName, FirstName MiddleName) ",
-                                            cell_position: cell_position,
-                                        });
-                                    }else if(C == 1 || C == 2){
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: '',
-                                            message: "This cell must contain 'DATETIME' format(Month/Day/Year Hour:Minutes:Second AM or PM) ",
-                                            cell_position: cell_position,
-                                        });
-                                    }else{
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: '',
-                                            message: "This cell must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
-                                            cell_position: cell_position,
-                                        });
-                                    }
-                                }
-                                continue;
-                            }
-                            var cell = worksheet[cellref];
-                            if(R == 0 && C < 13){
-                                var column_cell = _this.trimToCompare(cell.v);
-                                if(header_required.indexOf(column_cell) == "-1"){
-                                    _this.excel_validation_error[1].push({
-                                        id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                        value: cell.v,
-                                        message: "Required header did not match, download the sample excel file",
-                                        cell_position: cell_position,
-                                    });
-                                }
-                            }
-                            if(R > 0 && C < 13){
-                                if(C == 1){
-                                }else if (C == 3) {
-                                    if(isNaN(cell.v % 1)){
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: cell.v,
-                                            message: "must only contain numbers",
-                                            cell_position: cell_position,
-                                        });
-                                    }
-                                }else if(C > 3 && C < 12){
-                                    if(cell.v == "NULL"){
-                                    }else{
-                                        if(cell.v.match(/[^,]+,[^,]+/g) == null){
+                                    if(C == 1){
+                                    }else if (C == 3) {
+                                        if(isNaN(cell.v % 1)){
                                             _this.excel_validation_error[2].push({
                                                 id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                 value: cell.v,
-                                                message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName) ",
+                                                message: "must only contain numbers",
                                                 cell_position: cell_position,
                                             });
-                                        }else if(cell.v.match(/[^,]+,[^,]+/g).length > 1){
-                                            var compress_to_compare = "";
-                                            for (let index = 0; index < cell.v.match(/[^,]+,[^,]+/g).length; index++) {
-                                                compress_to_compare += cell.v.match(/[^,]+,[^,]+/g)[index] + ",";
-                                                if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[index]))){
+                                        }
+                                    }else if(C > 3 && C < 12){
+                                        if(cell.v == "NULL"){
+                                        }else{
+                                            if(cell.v.match(/[^,]+,[^,]+/g) == null){
+                                                _this.excel_validation_error[2].push({
+                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                    value: cell.v,
+                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName) ",
+                                                    cell_position: cell_position,
+                                                });
+                                            }else if(cell.v.match(/[^,]+,[^,]+/g).length > 1){
+                                                var compress_to_compare = "";
+                                                for (let index = 0; index < cell.v.match(/[^,]+,[^,]+/g).length; index++) {
+                                                    compress_to_compare += cell.v.match(/[^,]+,[^,]+/g)[index] + ",";
+                                                    if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[index]))){
+                                                        _this.excel_validation_error[2].push({
+                                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                            value: (cell.v.match(/[^,]+,[^,]+/g)[index]),
+                                                            message: "does not exist in the database please add it manually to proceed ",
+                                                            cell_position: cell_position,
+                                                        });
+                                                    }
+                                                }
+                                                if(_this.trimToCompare(compress_to_compare) != _this.trimToCompare((cell.v + ","))){
                                                     _this.excel_validation_error[2].push({
                                                         id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                                        value: (cell.v.match(/[^,]+,[^,]+/g)[index]),
-                                                        message: "does not exist in the database please add it manually to proceed ",
+                                                        value: cell.v,
+                                                        message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
                                                         cell_position: cell_position,
                                                     });
                                                 }
-                                            }
-                                            if(_this.trimToCompare(compress_to_compare) != _this.trimToCompare((cell.v + ","))){
-                                                _this.excel_validation_error[2].push({
-                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                                    value: cell.v,
-                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
-                                                    cell_position: cell_position,
-                                                });
-                                            }
-                                        }else if(cell.v.match(/[^,]+,[^,]+/g).length == 1){
-                                            if(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]) != _this.trimToCompare((cell.v))){
-                                                _this.excel_validation_error[2].push({
-                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                                    value: cell.v,
-                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
-                                                    cell_position: cell_position,
-                                                });
-                                            }else{
-                                                if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]))){
+                                            }else if(cell.v.match(/[^,]+,[^,]+/g).length == 1){
+                                                if(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]) != _this.trimToCompare((cell.v))){
                                                     _this.excel_validation_error[2].push({
                                                         id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                                        value: (cell.v.match(/[^,]+,[^,]+/g)[0]),
-                                                        message: "does not exist in the database please add it manually to proceed ",
+                                                        value: cell.v,
+                                                        message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
                                                         cell_position: cell_position,
                                                     });
+                                                }else{
+                                                    if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]))){
+                                                        _this.excel_validation_error[2].push({
+                                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                            value: (cell.v.match(/[^,]+,[^,]+/g)[0]),
+                                                            message: "does not exist in the database please add it manually to proceed ",
+                                                            cell_position: cell_position,
+                                                        });
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                }else if(C == 12){
-                                    if(cell.v == 0 || cell.v == 1){
-                                    }else{
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: cell.v,
-                                            message: "must contain '0 or 1' only",
-                                            cell_position: cell_position,
-                                        });
+                                    }else if(C == 12){
+                                        if(cell.v == 0 || cell.v == 1){
+                                        }else{
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: cell.v,
+                                                message: "must contain '0 or 1' only",
+                                                cell_position: cell_position,
+                                            });
+                                        }
                                     }
                                 }
                             }
                         }
+                        _this.preview_excel_sheet_data.push({
+                            title: sheetName,
+                            name: i,
+                            content: XLSX.utils.sheet_to_json(worksheet),
+                            nameoftab: sheetName.replace(/\s/g, ''),
+                            batch: ''
+                        });
+                        _this.current_tab_content.push(XLSX.utils.sheet_to_json(worksheet));
                     }
-                    _this.preview_excel_sheet_data.push({
-                        title: sheetName,
-                        name: i,
-                        content: XLSX.utils.sheet_to_json(worksheet),
-                        nameoftab: sheetName.replace(/\s/g, ''),
-                        batch: ''
-                    });
-                    _this.current_tab_content.push(XLSX.utils.sheet_to_json(worksheet));
+                    if(_this.excel_validation_error[0].length < 1 &&
+                        _this.excel_validation_error[1].length < 1 &&
+                        _this.excel_validation_error[2].length < 1
+                    ){
+                        _this.is_preview = true;
+                    }else{
+                        _this.is_preview = false;
+                    }
+                    _this.defaultTabSelected();
+                    _this.is_hasfile = true;
+                    _this.is_import = false;
                 }
-                if(_this.excel_validation_error[0].length < 1 &&
-                    _this.excel_validation_error[1].length < 1 &&
-                    _this.excel_validation_error[2].length < 1
-                ){
-                    _this.is_preview = true;
-                }else{
-                    _this.is_preview = false;
-                }
-                _this.defaultTabSelected();
-                _this.is_hasfile = true;
-                _this.is_import = false;
+            }else{
+                this.$notify({
+                    type: 'warning',
+                    title: 'Import: Invalid File Format',
+                    message: "To avoid error in delimeter required file extension 'xlsx'",
+                });
+                this.$refs.upload.clearFiles()
             }
         },
         handleClickTab(tab, event) {
