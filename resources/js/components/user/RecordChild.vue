@@ -137,48 +137,56 @@
                                     width="140"
                                     label="Attending"
                                     prop="allattending"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     width="115"
                                     label="Requesting"
                                     prop="allrequesting"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="115"
                                     label="Surgeon"
                                     prop="allsurgeon"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="115"
                                     label="Healthcare"
                                     prop="allhealthcare"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="115"
                                     label="ER"
                                     prop="aller"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="130"
                                     label="Anesthesiologist"
                                     prop="allanesthesiologist"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="130"
                                     label="Co-management"
                                     prop="allcomanagement"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="115"
                                     label="Admitting"
                                     prop="alladmitting"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -1099,6 +1107,9 @@ export default {
                 cb('done');
                 this.$refs[btn].loading = false;
             }.bind(this), 1000)
+        },
+        terminateExtraSimicolon(row, column, cellValue, index) {
+            return cellValue.replace(/;\s*$/, "")
         },
     },
     mounted() {
