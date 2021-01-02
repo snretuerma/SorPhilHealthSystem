@@ -536,49 +536,39 @@ export default {
                 .catch(function(error) {});
         },
         getRecords(batch) {
-             axios
-                .get("get_records/" + batch)
-                .then(response => {
-                    response.data.forEach(record => {
-                        record.allattending = "";
-                        record.allrequesting = "";
-                        record.allsurgeon = "";
-                        record.allhealthcare = "";
-                        record.aller = "";
-                        record.allanesthesiologist = "";
-                        record.allcomanagement = "";
-                        record.alladmitting = "";
-                        record.doctors.forEach(doctor => {
-                            if (doctor.pivot.doctor_role == "attending") {
-                                record.allattending += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "requesting") {
-                                record.allrequesting += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "surgeon") {
-                                record.allsurgeon += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "healthcare") {
-                                record.allhealthcare += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "er") {
-                                record.aller += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "anesthesiologist") {
-                                record.allanesthesiologist+=doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "comanagement") {
-                                record.allcomanagement += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "admitting") {
-                                record.alladmitting += doctor.name+"; ";
-                            }
-                        });
+            var drole = [
+                'attending',
+                'requesting',
+                'surgeon',
+                'healthcare',
+                'er',
+                'anesthesiologist',
+                'comanagement',
+                'admitting'
+            ];
+            axios
+            .get("get_records/" + batch)
+            .then(response => {
+                response.data.forEach(record => {
+                    record.allattending = "";
+                    record.allrequesting = "";
+                    record.allsurgeon = "";
+                    record.allhealthcare = "";
+                    record.aller = "";
+                    record.allanesthesiologist = "";
+                    record.allcomanagement = "";
+                    record.alladmitting = "";
+                    record.doctors.forEach(doctor => {
+                        if (drole.includes(doctor.pivot.doctor_role)){
+                            var role = "all" + doctor.pivot.doctor_role;
+                            record[role] += doctor.name + "; ";
+                        }
                     });
-                    this.data = response.data;
-                    this.loading=false;
-                })
-                .catch(function(error) {});
+                });
+                this.data = response.data;
+                this.loading=false;
+            })
+            .catch(function(error) {});
         },
         covertDate(row, column, cellValue, index) {
             var hours = cellValue.getHours();
@@ -622,63 +612,60 @@ export default {
         uploadToDatabase() {
             this.is_hasfile = true;
             this.is_import = true;
-            var _this = this;
-            _this.getDoctors();
-            if(_this.excel_validation_error[0].length < 1 &&
-                _this.excel_validation_error[1].length < 1 &&
-                _this.excel_validation_error[2].length < 1 &&
-                _this.preview_excel_sheet_data.length > 0
+            this.getDoctors();
+            if(this.excel_validation_error[0].length < 1 &&
+                this.excel_validation_error[1].length < 1 &&
+                this.excel_validation_error[2].length < 1 &&
+                this.preview_excel_sheet_data.length > 0
             ){
                 var excel_data = [];
                 excel_data = [{
-                    doctor_record: _this.preview_excel_sheet_data,
-                    import_batch: _this.import_batch,
-                    doctor_list: _this.doctor_list_complete
+                    doctor_record: this.preview_excel_sheet_data,
+                    import_batch: this.import_batch,
+                    doctor_list: this.doctor_list_complete
                 }];
-                console.log(excel_data);
                 axios
                 .post("import_doctor_record", excel_data)
                 .then(function(res) {
-                    console.log(res.data);
-                    _this.$notify({
+                    this.$notify({
                         type: 'success',
                         title: 'Import',
                         message: "Data imported successfully!",
                         duration: 0
                     });
-                    _this.preview_excel_sheet_data = [];
-                    _this.sheet_length = '';
-                    _this.tablepage = 1;
-                    _this.tablelength = 0;
-                    _this.current_tab_content = [];
-                    _this.exceldata = [];
-                    _this.current_tab = '';
-                    _this.excel_validation_error = [[], [], []];
-                    _this.import_batch = [];
-                    _this.is_preview = false;
-                    _this.is_hasfile = false;
-                    _this.is_import = false;
-                    _this.$refs.upload.clearFiles()
-                    _this.getRecords(_this.value[0]);
-                })
+                    this.preview_excel_sheet_data = [];
+                    this.sheet_length = '';
+                    this.tablepage = 1;
+                    this.tablelength = 0;
+                    this.current_tab_content = [];
+                    this.exceldata = [];
+                    this.current_tab = '';
+                    this.excel_validation_error = [[], [], []];
+                    this.import_batch = [];
+                    this.is_preview = false;
+                    this.is_hasfile = false;
+                    this.is_import = false;
+                    this.$refs.upload.clearFiles()
+                    this.getRecords(this.value[0]);
+                }.bind(this))
                 .catch(function(error) {
-                    _this.$notify({
+                    this.$notify({
                         type: "error",
                         title: "Import Record Failed",
                         message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
                         duration: 0
                     });
-                    _this.is_hasfile = true;
-                    _this.is_import = false;
-                });
+                    this.is_hasfile = true;
+                    this.is_import = false;
+                }.bind(this));
             }else{
-                _this.$notify({
+                this.$notify({
                     type: 'warning',
                     title: 'Import',
                     message: "Upload request error, please check your file.",
                 });
-                _this.is_hasfile = true;
-                _this.is_import = false;
+                this.is_hasfile = true;
+                this.is_import = false;
             }
         },
         handleExceedFile(files, fileList) {
