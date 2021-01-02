@@ -151,7 +151,7 @@
                     <el-tab-pane :label="count_active_doctors">
                         <div class="row">
                             <div class="col-12">
-                                <el-table v-loading="loading" :data="active_doctors">
+                                <el-table v-loading="loading" :data="activeTableData">
                                     <el-table-column
                                         label="Name"
                                         prop="name"
@@ -169,7 +169,7 @@
                     <el-tab-pane :label="count_inactive_doctors">
                         <div class="row">
                             <div class="col-12">
-                                <el-table v-loading="loading" :data="inactive_doctors">
+                                <el-table v-loading="loading" :data="inactiveTableData">
                                     <el-table-column
                                         label="Name"
                                         prop="name"
@@ -926,15 +926,15 @@ export default {
                     "!ref": "A1:Z5",
             },
             main_physician: [
-                'attending', 
-                'anesthesiologist', 
-                'comanagement', 
+                'attending',
+                'anesthesiologist',
+                'comanagement',
                 'admitting'
             ],
             ref_physician: [
-                'requesting', 
-                'surgeon', 
-                'healthcare', 
+                'requesting',
+                'surgeon',
+                'healthcare',
                 'er'
             ],
             record_total: [{
@@ -961,6 +961,50 @@ export default {
         tableData() {
             this.total = this.searching.length;
             return this.searching.slice(
+                this.page_size * this.page - this.page_size,
+                this.page_size * this.page
+            );
+        },
+        activeSearching() {
+            if (!this.search) {
+                return this.doctors.filter(data => {
+                    if(data.is_active) {
+                        return data
+                    }
+                });
+            }
+            this.page = 1;
+            return this.doctors.filter(data => {
+                if(data.is_active) {
+                    return data.name.toLowerCase().includes(this.search.toLowerCase())
+                }
+            });
+        },
+        activeTableData() {
+            this.count_active_doctors = `Active ${this.activeSearching.length}`;
+            return this.activeSearching.slice(
+                this.page_size * this.page - this.page_size,
+                this.page_size * this.page
+            );
+        },
+        inactiveSearching() {
+            if (!this.search) {
+                return this.doctors.filter(data => {
+                    if(!data.is_active) {
+                        return data
+                    }
+                });
+            }
+            this.page = 1;
+            return this.doctors.filter(data => {
+                if(!data.is_active) {
+                    return data.name.toLowerCase().includes(this.search.toLowerCase())
+                }
+            });
+        },
+        inactiveTableData() {
+            this.count_inactive_doctors = `Inactive ${this.inactiveSearching.length}`;
+            return this.inactiveSearching.slice(
                 this.page_size * this.page - this.page_size,
                 this.page_size * this.page
             );
@@ -1043,7 +1087,7 @@ export default {
                 row_data.credit_records.forEach(el => {
                     el.netPF = 0;
                     el.grossPF = 0;
-                    
+
                     if (el.pooled_record != null) {
                         el.netPF = Number(el.pivot.professional_fee) + Number(el.pooled_record.full_time_individual_fee);
                         el.grossPF = el.netPF * 2;
@@ -1078,7 +1122,7 @@ export default {
                                         el.pivot["ref_fee"] = doctor_fee;
                                         if (Number(doctor_fee) != null) {
                                             this.record_total[0].ref_fee_total += Number(doctor_fee);
-                                        } else { 
+                                        } else {
                                             this.record_total[0].ref_fee_total += 0;
                                         }
                                     } else {
@@ -1670,8 +1714,8 @@ export default {
                 row += 1;
                 var date = new Date(patient.admission_date);
                 var date1 = new Date(patient.discharge_date);
-                var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' + 
-                    date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() + 
+                var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' +
+                    date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() +
                     '/' + date1.getFullYear();
                 this.sheet_data["A"+row] = {t: 's', v: patient.patient_name};
                 this.sheet_data["B"+row] = {t: 's', v: patient_confinement_date};
@@ -1708,7 +1752,7 @@ export default {
             this.sheet_data["D"+row] = {t: 's', v: "COMANAGEMENT TOTAL"};
             this.sheet_data["E"+row] = {t: 's', v: "ADMITTING TOTAL"};
             this.sheet_data["F"+row] = {t: 's', v: "GRAND TOTAL"};
-            
+
             row += 1;
             this.sheet_data["A"+row] = {t: 'n', v: this.record_total[0].attending_fee_total};
             this.sheet_data["B"+row] = {t: 'n', v: this.record_total[0].ref_fee_total};

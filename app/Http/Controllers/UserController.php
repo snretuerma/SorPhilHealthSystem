@@ -867,7 +867,6 @@ class UserController extends Controller
             'comanagement' => $setting->physicians[5],
             'admitting' => $setting->physicians[6]
         );
-        $seventyPercent = ($total * $setting->nonmedical) * $setting->shared;
 
         $requesting = 0;
         $surgeon = 0;
@@ -885,6 +884,7 @@ class UserController extends Controller
         $countComanagement = 0;
         $countAdmitting = 0;
         $total = $request->pf;
+        $seventyPercent = ($total * $setting->nonmedical) * $setting->shared;
 
         $record = CreditRecord::find($request->id);
         $record->patient_name = $request->name;
