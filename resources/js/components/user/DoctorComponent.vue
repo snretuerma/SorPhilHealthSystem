@@ -151,7 +151,7 @@
                     <el-tab-pane :label="count_active_doctors">
                         <div class="row">
                             <div class="col-12">
-                                <el-table v-loading="loading" :data="active_doctors">
+                                <el-table v-loading="loading" :data="activeTableData">
                                     <el-table-column
                                         label="Name"
                                         prop="name"
@@ -169,7 +169,7 @@
                     <el-tab-pane :label="count_inactive_doctors">
                         <div class="row">
                             <div class="col-12">
-                                <el-table v-loading="loading" :data="inactive_doctors">
+                                <el-table v-loading="loading" :data="inactiveTableData">
                                     <el-table-column
                                         label="Name"
                                         prop="name"
@@ -908,6 +908,50 @@ export default {
         tableData() {
             this.total = this.searching.length;
             return this.searching.slice(
+                this.page_size * this.page - this.page_size,
+                this.page_size * this.page
+            );
+        },
+        activeSearching() {
+            if (!this.search) {
+                return this.doctors.filter(data => {
+                    if(data.is_active) {
+                        return data
+                    }
+                });
+            }
+            this.page = 1;
+            return this.doctors.filter(data => {
+                if(data.is_active) {
+                    return data.name.toLowerCase().includes(this.search.toLowerCase())
+                }
+            });
+        },
+        activeTableData() {
+            this.count_active_doctors = `Active ${this.activeSearching.length}`;
+            return this.activeSearching.slice(
+                this.page_size * this.page - this.page_size,
+                this.page_size * this.page
+            );
+        },
+        inactiveSearching() {
+            if (!this.search) {
+                return this.doctors.filter(data => {
+                    if(!data.is_active) {
+                        return data
+                    }
+                });
+            }
+            this.page = 1;
+            return this.doctors.filter(data => {
+                if(!data.is_active) {
+                    return data.name.toLowerCase().includes(this.search.toLowerCase())
+                }
+            });
+        },
+        inactiveTableData() {
+            this.count_inactive_doctors = `Inactive ${this.inactiveSearching.length}`;
+            return this.inactiveSearching.slice(
                 this.page_size * this.page - this.page_size,
                 this.page_size * this.page
             );
