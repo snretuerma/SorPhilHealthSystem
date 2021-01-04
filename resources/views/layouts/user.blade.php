@@ -8,6 +8,7 @@
 
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link href="{{ asset('css/custom.css') }}" rel="stylesheet">
+    <link rel="icon" href="{{asset('images/favicon.ico') }}" type="image/x-icon"/>
     <title>PF Management System</title>
 </head>
 
