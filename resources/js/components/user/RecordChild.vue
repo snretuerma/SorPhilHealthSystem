@@ -137,48 +137,56 @@
                                     width="140"
                                     label="Attending"
                                     prop="allattending"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     width="115"
                                     label="Requesting"
                                     prop="allrequesting"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="115"
                                     label="Surgeon"
                                     prop="allsurgeon"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="115"
                                     label="Healthcare"
                                     prop="allhealthcare"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="115"
                                     label="ER"
                                     prop="aller"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="130"
                                     label="Anesthesiologist"
                                     prop="allanesthesiologist"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="130"
                                     label="Co-management"
                                     prop="allcomanagement"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
                                     min-width="115"
                                     label="Admitting"
                                     prop="alladmitting"
+                                    :formatter="terminateExtraSimicolon"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -240,14 +248,12 @@
             </div>
         </div>
         <el-dialog :title="dialogtitle" :visible.sync="dialogExcelFile" :fullscreen="fullscreen">
-            <el-row v-show="!isimport">
-                <el-col>
-                    <el-form>
-                        <el-form-item>
-                            <el-button @click="getTemplate">Download Sample Excel File / Template</el-button>
-                            <el-button type="primary" @click="exportExcel">Download Data</el-button>
-                        </el-form-item>
-                    </el-form>
+            <el-row :gutter="10" v-show="!isimport">
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                    <el-button style="width:100%;" @click="getTemplate" ref="drecord" id="drecord">Sample Excel File / Template</el-button>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                    <el-button type="primary" style="width:100%;" @click="exportExcel" ref="template" id="template">Export Selected Batch Data</el-button>
                 </el-col>
             </el-row>
             <el-row v-show="isimport">
@@ -264,8 +270,8 @@
                         :on-remove="handleRemoveFile"
                         accept=".xlsx"
                         >
-                            <el-button slot="trigger" type="primary" plain>select supported excel file .xlsx</el-button>
-                            <el-button type="success" @click="uploadToDatabase" :disabled="!is_preview">upload to database</el-button>
+                            <el-button slot="trigger" type="primary" :disabled="is_hasfile" plain>Browse Supported Excel File .xlsx</el-button>
+                            <el-button type="success" @click="uploadToDatabase" :disabled="!is_preview" :loading="is_import">Upload to Database</el-button>
                         </el-upload>
                     </el-form-item>
                 </el-form>
@@ -442,7 +448,9 @@ export default {
             dialogtitle: 'Import Excel',
             isimport: true,
             export_excel:[],
-            loading:true
+            loading:true,
+            is_import: false,
+            is_hasfile: false,
         };
     },
     computed: {
@@ -536,49 +544,39 @@ export default {
                 .catch(function(error) {});
         },
         getRecords(batch) {
-             axios
-                .get("get_records/" + batch)
-                .then(response => {
-                    response.data.forEach(record => {
-                        record.allattending = "";
-                        record.allrequesting = "";
-                        record.allsurgeon = "";
-                        record.allhealthcare = "";
-                        record.aller = "";
-                        record.allanesthesiologist = "";
-                        record.allcomanagement = "";
-                        record.alladmitting = "";
-                        record.doctors.forEach(doctor => {
-                            if (doctor.pivot.doctor_role == "attending") {
-                                record.allattending += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "requesting") {
-                                record.allrequesting += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "surgeon") {
-                                record.allsurgeon += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "healthcare") {
-                                record.allhealthcare += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "er") {
-                                record.aller += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "anesthesiologist") {
-                                record.allanesthesiologist+=doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "comanagement") {
-                                record.allcomanagement += doctor.name+"; ";
-                            }
-                            if (doctor.pivot.doctor_role == "admitting") {
-                                record.alladmitting += doctor.name+"; ";
-                            }
-                        });
+            var drole = [
+                'attending',
+                'requesting',
+                'surgeon',
+                'healthcare',
+                'er',
+                'anesthesiologist',
+                'comanagement',
+                'admitting'
+            ];
+            axios
+            .get("get_records/" + batch)
+            .then(response => {
+                response.data.forEach(record => {
+                    record.allattending = "";
+                    record.allrequesting = "";
+                    record.allsurgeon = "";
+                    record.allhealthcare = "";
+                    record.aller = "";
+                    record.allanesthesiologist = "";
+                    record.allcomanagement = "";
+                    record.alladmitting = "";
+                    record.doctors.forEach(doctor => {
+                        if (drole.includes(doctor.pivot.doctor_role)){
+                            var role = "all" + doctor.pivot.doctor_role;
+                            record[role] += doctor.name + "; ";
+                        }
                     });
-                    this.data = response.data;
-                    this.loading=false;
-                })
-                .catch(function(error) {});
+                });
+                this.data = response.data;
+                this.loading=false;
+            })
+            .catch(function(error) {});
         },
         covertDate(row, column, cellValue, index) {
             var hours = cellValue.getHours();
@@ -620,37 +618,62 @@ export default {
                 .catch(function(res) { });
         },
         uploadToDatabase() {
-            var _this = this;
-            _this.getDoctors();
-            if(_this.excel_validation_error[0].length < 1 &&
-                _this.excel_validation_error[1].length < 1 &&
-                _this.excel_validation_error[2].length < 1 &&
-                _this.preview_excel_sheet_data.length > 0
+            this.is_hasfile = true;
+            this.is_import = true;
+            this.getDoctors();
+            if(this.excel_validation_error[0].length < 1 &&
+                this.excel_validation_error[1].length < 1 &&
+                this.excel_validation_error[2].length < 1 &&
+                this.preview_excel_sheet_data.length > 0
             ){
                 var excel_data = [];
                 excel_data = [{
-                    doctor_record: _this.preview_excel_sheet_data,
-                    import_batch: _this.import_batch,
-                    doctor_list: _this.doctor_list_complete
+                    doctor_record: this.preview_excel_sheet_data,
+                    import_batch: this.import_batch,
+                    doctor_list: this.doctor_list_complete
                 }];
-                console.log(excel_data);
                 axios
                 .post("import_doctor_record", excel_data)
                 .then(function(res) {
-                    console.log(res.data);
-                    _this.$notify({
+                    this.$notify({
                         type: 'success',
                         title: 'Import',
                         message: "Data imported successfully!",
+                        duration: 0
                     });
-                })
-                .catch(function(res) { });
+                    this.preview_excel_sheet_data = [];
+                    this.sheet_length = '';
+                    this.tablepage = 1;
+                    this.tablelength = 0;
+                    this.current_tab_content = [];
+                    this.exceldata = [];
+                    this.current_tab = '';
+                    this.excel_validation_error = [[], [], []];
+                    this.import_batch = [];
+                    this.is_preview = false;
+                    this.is_hasfile = false;
+                    this.is_import = false;
+                    this.$refs.upload.clearFiles()
+                    this.getRecords(this.value[0]);
+                }.bind(this))
+                .catch(function(error) {
+                    this.$notify({
+                        type: "error",
+                        title: "Import Record Failed",
+                        message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                        duration: 0
+                    });
+                    this.is_hasfile = true;
+                    this.is_import = false;
+                }.bind(this));
             }else{
-                _this.$notify({
+                this.$notify({
                     type: 'warning',
                     title: 'Import',
                     message: "Upload request error, please check your file.",
                 });
+                this.is_hasfile = true;
+                this.is_import = false;
             }
         },
         handleExceedFile(files, fileList) {
@@ -679,6 +702,8 @@ export default {
                 title: 'Cancelled',
                 message: file.name + " was removed",
             });
+            this.is_hasfile = false;
+            this.is_import = false;
         },
         trimToCompare(text) {
             return (text).trim().toLowerCase().replace(/\s/g, '');
@@ -714,209 +739,220 @@ export default {
             }
         },
         fileData(file, fileList) {
-            var _this = this;
-            var header_required = [
-                "patient_name",
-                "admission_date",
-                "discharge_date",
-                "total_pf",
-                "attending_physician",
-                "admitting_physician",
-                "requesting_physician",
-                "co_management",
-                "anesthesiologist_physician",
-                "surgeon_physician",
-                "healthcare_physician",
-                "er_physician",
-                "is_private"
-            ];
-            var reader = new FileReader();
-            reader.readAsArrayBuffer(file.raw);
-            reader.onloadend = function(e) {
-                var data = new Uint8Array(reader.result);
-                var wb = XLSX.read(data,{type:'array', cellDates:true, dateNF:'dd.mm.yyyy h:mm:ss AM/PM'});
-                _this.sheet_length = wb.SheetNames.length;
-                for (let i = 0; i < wb.SheetNames.length; i++) {
-                    let sheetName = wb.SheetNames[i];
-                    let worksheet = wb.Sheets[sheetName];
-                    if(_this.checkSheetName(sheetName ,i) == "invalid"){
-                        _this.excel_validation_error[0].push({
-                            id: 'ws' + (Math.random().toString(36).substring(7)) + (i + 1),
-                            value: sheetName + " - ",
-                            message: "invalid format ",
-                            cell_position: 'worksheet #' + (i + 1),
-                        });
-                    }
-                    try {
-                        var range = XLSX.utils.decode_range(worksheet['!ref']);
-                        if(range.e.r < 1){
-                            _this.excel_validation_error[2].push({
-                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                value: '',
-                                message: "It looks like you don't have any data in this page ",
+            if (file.name.split(".").pop().toLowerCase() == 'xlsx'){
+                var _this = this;
+                var header_required = [
+                    "patient_name",
+                    "admission_date",
+                    "discharge_date",
+                    "total_pf",
+                    "attending_physician",
+                    "admitting_physician",
+                    "requesting_physician",
+                    "co_management",
+                    "anesthesiologist_physician",
+                    "surgeon_physician",
+                    "healthcare_physician",
+                    "er_physician",
+                    "is_private"
+                ];
+                var reader = new FileReader();
+                reader.readAsArrayBuffer(file.raw);
+                reader.onloadend = function(e) {
+                    var data = new Uint8Array(reader.result);
+                    var wb = XLSX.read(data,{type:'array', cellDates:true, dateNF:'dd.mm.yyyy h:mm:ss AM/PM'});
+                    _this.sheet_length = wb.SheetNames.length;
+                    for (let i = 0; i < wb.SheetNames.length; i++) {
+                        let sheetName = wb.SheetNames[i];
+                        let worksheet = wb.Sheets[sheetName];
+                        if(_this.checkSheetName(sheetName ,i) == "invalid"){
+                            _this.excel_validation_error[0].push({
+                                id: 'ws' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                value: sheetName + " - ",
+                                message: "invalid format ",
                                 cell_position: 'worksheet #' + (i + 1),
                             });
                         }
-                    } catch (error) {}
-                    for(var R = range.s.r; R <= range.e.r; ++R) {
-                        for(var C = range.s.c; C <= range.e.c; ++C) {
-                            var cellref = XLSX.utils.encode_cell({c:C, r:R});
-                            var cell_position = "#"+ (i + 1) + " " + ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
-                            if(!worksheet[cellref]){
-                                if(R == 0 && C < 13 ){
-                                    _this.excel_validation_error[1].push({
-                                        id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                        value: '',
-                                        message: "Header must have 13 column.",
-                                        cell_position: cell_position,
-                                    });
+                        try {
+                            var range = XLSX.utils.decode_range(worksheet['!ref']);
+                            if(range.e.r < 1){
+                                _this.excel_validation_error[2].push({
+                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                    value: '',
+                                    message: "It looks like you don't have any data in this page ",
+                                    cell_position: 'worksheet #' + (i + 1),
+                                });
+                            }
+                        } catch (error) {}
+                        for(var R = range.s.r; R <= range.e.r; ++R) {
+                            for(var C = range.s.c; C <= range.e.c; ++C) {
+                                var cellref = XLSX.utils.encode_cell({c:C, r:R});
+                                var cell_position = "#"+ (i + 1) + " " + ((C + 1) + 9).toString(36).toUpperCase() + (R + 1);
+                                if(!worksheet[cellref]){
+                                    if(R == 0 && C < 13 ){
+                                        _this.excel_validation_error[1].push({
+                                            id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                            value: '',
+                                            message: "Header must have 13 column.",
+                                            cell_position: cell_position,
+                                        });
+                                    }
+                                    if(R > 0 && C < 13){
+                                        if(C == 3){
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell can only contain numbers",
+                                                cell_position: cell_position,
+                                            });
+                                        }else if(C == 12){
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell must contain '0 or 1' only ",
+                                                cell_position: cell_position,
+                                            });
+                                        }else if(C == 0){
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell must contain Patient Name, format(LastName, FirstName MiddleName) ",
+                                                cell_position: cell_position,
+                                            });
+                                        }else if(C == 1 || C == 2){
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell must contain 'DATETIME' format(Month/Day/Year Hour:Minutes:Second AM or PM) ",
+                                                cell_position: cell_position,
+                                            });
+                                        }else{
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
+                                                cell_position: cell_position,
+                                            });
+                                        }
+                                    }
+                                    continue;
+                                }
+                                var cell = worksheet[cellref];
+                                if(R == 0 && C < 13){
+                                    var column_cell = _this.trimToCompare(cell.v);
+                                    if(header_required.indexOf(column_cell) == "-1"){
+                                        _this.excel_validation_error[1].push({
+                                            id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                            value: cell.v,
+                                            message: "Required header did not match, download the sample excel file",
+                                            cell_position: cell_position,
+                                        });
+                                    }
                                 }
                                 if(R > 0 && C < 13){
-                                    if(C == 3){
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: '',
-                                            message: "This cell can only contain numbers",
-                                            cell_position: cell_position,
-                                        });
-                                    }else if(C == 12){
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: '',
-                                            message: "This cell must contain '0 or 1' only ",
-                                            cell_position: cell_position,
-                                        });
-                                    }else if(C == 0){
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: '',
-                                            message: "This cell must contain Patient Name, format(LastName, FirstName MiddleName) ",
-                                            cell_position: cell_position,
-                                        });
-                                    }else if(C == 1 || C == 2){
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: '',
-                                            message: "This cell must contain 'DATETIME' format(Month/Day/Year Hour:Minutes:Second AM or PM) ",
-                                            cell_position: cell_position,
-                                        });
-                                    }else{
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: '',
-                                            message: "This cell must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
-                                            cell_position: cell_position,
-                                        });
-                                    }
-                                }
-                                continue;
-                            }
-                            var cell = worksheet[cellref];
-                            if(R == 0 && C < 13){
-                                var column_cell = _this.trimToCompare(cell.v);
-                                if(header_required.indexOf(column_cell) == "-1"){
-                                    _this.excel_validation_error[1].push({
-                                        id: 'wsh' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                        value: cell.v,
-                                        message: "Required header did not match, download the sample excel file",
-                                        cell_position: cell_position,
-                                    });
-                                }
-                            }
-                            if(R > 0 && C < 13){
-                                if(C == 1){
-                                }else if (C == 3) {
-                                    if(isNaN(cell.v % 1)){
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: cell.v,
-                                            message: "must only contain numbers",
-                                            cell_position: cell_position,
-                                        });
-                                    }
-                                }else if(C > 3 && C < 12){
-                                    if(cell.v == "NULL"){
-                                    }else{
-                                        if(cell.v.match(/[^,]+,[^,]+/g) == null){
+                                    if(C == 1){
+                                    }else if (C == 3) {
+                                        if(isNaN(cell.v % 1)){
                                             _this.excel_validation_error[2].push({
                                                 id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
                                                 value: cell.v,
-                                                message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName) ",
+                                                message: "must only contain numbers",
                                                 cell_position: cell_position,
                                             });
-                                        }else if(cell.v.match(/[^,]+,[^,]+/g).length > 1){
-                                            var compress_to_compare = "";
-                                            for (let index = 0; index < cell.v.match(/[^,]+,[^,]+/g).length; index++) {
-                                                compress_to_compare += cell.v.match(/[^,]+,[^,]+/g)[index] + ",";
-                                                if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[index]))){
+                                        }
+                                    }else if(C > 3 && C < 12){
+                                        if(cell.v == "NULL"){
+                                        }else{
+                                            if(cell.v.match(/[^,]+,[^,]+/g) == null){
+                                                _this.excel_validation_error[2].push({
+                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                    value: cell.v,
+                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName) ",
+                                                    cell_position: cell_position,
+                                                });
+                                            }else if(cell.v.match(/[^,]+,[^,]+/g).length > 1){
+                                                var compress_to_compare = "";
+                                                for (let index = 0; index < cell.v.match(/[^,]+,[^,]+/g).length; index++) {
+                                                    compress_to_compare += cell.v.match(/[^,]+,[^,]+/g)[index] + ",";
+                                                    if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[index]))){
+                                                        _this.excel_validation_error[2].push({
+                                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                            value: (cell.v.match(/[^,]+,[^,]+/g)[index]),
+                                                            message: "does not exist in the database please add it manually to proceed ",
+                                                            cell_position: cell_position,
+                                                        });
+                                                    }
+                                                }
+                                                if(_this.trimToCompare(compress_to_compare) != _this.trimToCompare((cell.v + ","))){
                                                     _this.excel_validation_error[2].push({
                                                         id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                                        value: (cell.v.match(/[^,]+,[^,]+/g)[index]),
-                                                        message: "does not exist in the database please add it manually to proceed ",
+                                                        value: cell.v,
+                                                        message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
                                                         cell_position: cell_position,
                                                     });
                                                 }
-                                            }
-                                            if(_this.trimToCompare(compress_to_compare) != _this.trimToCompare((cell.v + ","))){
-                                                _this.excel_validation_error[2].push({
-                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                                    value: cell.v,
-                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
-                                                    cell_position: cell_position,
-                                                });
-                                            }
-                                        }else if(cell.v.match(/[^,]+,[^,]+/g).length == 1){
-                                            if(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]) != _this.trimToCompare((cell.v))){
-                                                _this.excel_validation_error[2].push({
-                                                    id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                                    value: cell.v,
-                                                    message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
-                                                    cell_position: cell_position,
-                                                });
-                                            }else{
-                                                if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]))){
+                                            }else if(cell.v.match(/[^,]+,[^,]+/g).length == 1){
+                                                if(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]) != _this.trimToCompare((cell.v))){
                                                     _this.excel_validation_error[2].push({
                                                         id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                                        value: (cell.v.match(/[^,]+,[^,]+/g)[0]),
-                                                        message: "does not exist in the database please add it manually to proceed ",
+                                                        value: cell.v,
+                                                        message: "must contain 'NULL' or Physician Name, format(LastName, FirstName MiddleName). If you need to add more physician, a comma delimeter ',' is required.",
                                                         cell_position: cell_position,
                                                     });
+                                                }else{
+                                                    if(!_this.doctor_list_compress.includes(_this.trimToCompare(cell.v.match(/[^,]+,[^,]+/g)[0]))){
+                                                        _this.excel_validation_error[2].push({
+                                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                            value: (cell.v.match(/[^,]+,[^,]+/g)[0]),
+                                                            message: "does not exist in the database please add it manually to proceed ",
+                                                            cell_position: cell_position,
+                                                        });
+                                                    }
                                                 }
                                             }
                                         }
-                                    }
-                                }else if(C == 12){
-                                    if(cell.v == 0 || cell.v == 1){
-                                    }else{
-                                        _this.excel_validation_error[2].push({
-                                            id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
-                                            value: cell.v,
-                                            message: "must contain '0 or 1' only",
-                                            cell_position: cell_position,
-                                        });
+                                    }else if(C == 12){
+                                        if(cell.v == 0 || cell.v == 1){
+                                        }else{
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: cell.v,
+                                                message: "must contain '0 or 1' only",
+                                                cell_position: cell_position,
+                                            });
+                                        }
                                     }
                                 }
                             }
                         }
+                        _this.preview_excel_sheet_data.push({
+                            title: sheetName,
+                            name: i,
+                            content: XLSX.utils.sheet_to_json(worksheet),
+                            nameoftab: sheetName.replace(/\s/g, ''),
+                            batch: ''
+                        });
+                        _this.current_tab_content.push(XLSX.utils.sheet_to_json(worksheet));
                     }
-                    _this.preview_excel_sheet_data.push({
-                        title: sheetName,
-                        name: i,
-                        content: XLSX.utils.sheet_to_json(worksheet),
-                        nameoftab: sheetName.replace(/\s/g, ''),
-                        batch: ''
-                    });
-                    _this.current_tab_content.push(XLSX.utils.sheet_to_json(worksheet));
+                    if(_this.excel_validation_error[0].length < 1 &&
+                        _this.excel_validation_error[1].length < 1 &&
+                        _this.excel_validation_error[2].length < 1
+                    ){
+                        _this.is_preview = true;
+                    }else{
+                        _this.is_preview = false;
+                    }
+                    _this.defaultTabSelected();
+                    _this.is_hasfile = true;
+                    _this.is_import = false;
                 }
-                if(_this.excel_validation_error[0].length < 1 &&
-                    _this.excel_validation_error[1].length < 1 &&
-                    _this.excel_validation_error[2].length < 1
-                ){
-                    _this.is_preview = true;
-                }else{
-                    _this.is_preview = false;
-                }
-                _this.defaultTabSelected();
+            }else{
+                this.$notify({
+                    type: 'warning',
+                    title: 'Import: Invalid File Format',
+                    message: "To avoid error in delimeter required file extension 'xlsx'",
+                });
+                this.$refs.upload.clearFiles()
             }
         },
         handleClickTab(tab, event) {
@@ -932,47 +968,51 @@ export default {
             this.tablepage = parseInt(1);
             this.exceldata = this.exceldata.slice(this.page_size * this.tablepage - this.page_size, this.page_size * this.tablepage);
         },
-        exportExcel() {
-            this.export_excel = [];
-            this.data.forEach((record)=>{
-                this.export_excel.push({
-                    Patient_Name: record.patient_name,
-                    Admission_Date: this.getDateTime(record.admission_date),
-                    Discharge_Date: this.getDateTime(record.discharge_date),
-                    Total_PF: record.total,
-                    Attending_Physician: this.changeDelimeter(record.allattending),
-                    Admitting_Physician: this.changeDelimeter(record.alladmitting),
-                    Requesting_Physician: this.changeDelimeter(record.allrequesting),
-                    Co_Management: this.changeDelimeter(record.allcomanagement),
-                    Anesthesiology_Physician: this.changeDelimeter(record.allanesthesiologist),
-                    Surgeon_Physician: this.changeDelimeter(record.allsurgeon),
-                    HealthCare_Physician: this.changeDelimeter(record.allhealthcare),
-                    ER_Physician: this.changeDelimeter(record.aller),
-                    Is_Private: (record.record_type == "private")? 1 : 0,
-                });
-            });
-            var sheet_name;
-            if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
-                if (this.value[0] == 'All') {
-                    sheet_name = "All Record";
-                } else {
-                    var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
-                    var d = (this.value[0]).trim().split('-');
-                    var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
-                    var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
-                    sheet_name = date_from + " - " + date_to;
+        exportExcel($event) {
+            this.proccessLoading($event, function(loading_response){
+                if(loading_response == "done"){
+                    this.export_excel = [];
+                    this.data.forEach((record)=>{
+                        this.export_excel.push({
+                            Patient_Name: record.patient_name,
+                            Admission_Date: this.getDateTime(record.admission_date),
+                            Discharge_Date: this.getDateTime(record.discharge_date),
+                            Total_PF: record.total,
+                            Attending_Physician: this.changeDelimeter(record.allattending),
+                            Admitting_Physician: this.changeDelimeter(record.alladmitting),
+                            Requesting_Physician: this.changeDelimeter(record.allrequesting),
+                            Co_Management: this.changeDelimeter(record.allcomanagement),
+                            Anesthesiologist_Physician: this.changeDelimeter(record.allanesthesiologist),
+                            Surgeon_Physician: this.changeDelimeter(record.allsurgeon),
+                            HealthCare_Physician: this.changeDelimeter(record.allhealthcare),
+                            ER_Physician: this.changeDelimeter(record.aller),
+                            Is_Private: (record.record_type == "private")? 1 : 0,
+                        });
+                    });
+                    var sheet_name;
+                    if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
+                        if (this.value[0] == 'All') {
+                            sheet_name = "All Record";
+                        } else {
+                            var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+                            var d = (this.value[0]).trim().split('-');
+                            var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
+                            var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
+                            sheet_name = date_from + " - " + date_to;
+                        }
+                        var acpn_rec = XLSX.utils.json_to_sheet(this.export_excel);
+                        var wb = XLSX.utils.book_new();
+                        XLSX.utils.book_append_sheet(wb, acpn_rec, sheet_name);
+                        XLSX.writeFile(wb, 'Record_List.xlsx');
+                    } else {
+                        this.$notify({
+                            type: 'warning',
+                            title: 'Export',
+                            message: "Please select batch to proceed",
+                        });
+                    }
                 }
-                var acpn_rec = XLSX.utils.json_to_sheet(this.export_excel);
-                var wb = XLSX.utils.book_new();
-                XLSX.utils.book_append_sheet(wb, acpn_rec, sheet_name);
-                XLSX.writeFile(wb, 'Record_List.xlsx');
-            } else {
-                this.$notify({
-                    type: 'warning',
-                    title: 'Export',
-                    message: "Please select batch to proceed",
-                });
-            }
+            }.bind(this))
         },
         changeDelimeter(physician) {
             if(physician != "" && physician != "; " && physician != ";"){
@@ -1000,7 +1040,7 @@ export default {
         formDialog(key) {
             switch (key) {
                 case "import_data":
-                        this.dialogtitle = 'Import Excel';
+                        this.dialogtitle = 'Import Excel - Can read multiple worksheets';
                         this.fullscreen = true;
                         this.isimport = true;
                         this.dialogExcelFile = true;
@@ -1053,9 +1093,24 @@ export default {
                     break;
             }
         },
-        getTemplate() {
-            window.open(window.location.origin+"/template/Import_Record_Template.xlsx");
-        }
+        getTemplate($event) {
+            this.proccessLoading($event, function(loading_response){
+                if(loading_response == "done"){
+                    window.open(window.location.origin+"/template/Import_Record_Template.xlsx");
+                }
+            }.bind(this))
+        },
+        proccessLoading(event, cb){
+            var btn = event.currentTarget.id;
+            this.$refs[btn].loading = true;
+            setTimeout(function () {
+                cb('done');
+                this.$refs[btn].loading = false;
+            }.bind(this), 1000)
+        },
+        terminateExtraSimicolon(row, column, cellValue, index) {
+            return cellValue.replace(/;\s*$/, "")
+        },
     },
     mounted() {
         this.getBatch();
