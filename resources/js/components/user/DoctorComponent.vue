@@ -409,7 +409,7 @@
                             </el-form>
                         </el-col>
                         <el-col class="col-sm-12 col-md-2 col-lg-2 col-xl-2">
-                            <el-button style="width:100%;" @click="exportDoctorRecordExcel">Export</el-button>
+                            <el-button style="width:100%;" @click="exportDoctorRecordExcel" ref="drecord" id="drecord">Export</el-button>
                         </el-col>
                     </el-row>
                     <el-table :data="batch_list" border>
@@ -449,16 +449,16 @@
                         >
                         </el-table-column>
                         <el-table-column
-                            prop="pooled_record.full_time_individual_fee"
-                            label="Pooled"
-                            min-width="80"
+                            prop="pivot.professional_fee"
+                            label="Professional fee"
+                            min-width="90"
                             :formatter="formatNumber"
                         >
                         </el-table-column>
                         <el-table-column
-                            prop="pivot.professional_fee"
-                            label="Professional fee"
-                            min-width="90"
+                            prop="pooled_record.full_time_individual_fee"
+                            label="Pooled"
+                            min-width="80"
                             :formatter="formatNumber"
                         >
                         </el-table-column>
@@ -535,6 +535,7 @@
                                 <el-table-column
                                     prop="co_attending_name"
                                     min-width="200"
+                                    :formatter="terminateExtraComma"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -548,6 +549,7 @@
                                 <el-table-column
                                     prop="co_ref_name"
                                     min-width="200"
+                                    :formatter="terminateExtraComma"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -561,6 +563,7 @@
                                 <el-table-column
                                     prop="co_anesthesiologist_name"
                                     min-width="200"
+                                    :formatter="terminateExtraComma"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -574,6 +577,7 @@
                                 <el-table-column
                                     prop="co_comanagement_name"
                                     min-width="200"
+                                    :formatter="terminateExtraComma"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -587,6 +591,7 @@
                                 <el-table-column
                                     prop="co_admitting_name"
                                     min-width="200"
+                                    :formatter="terminateExtraComma"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -655,19 +660,12 @@
             :visible.sync="dialogExcelFile"
             :fullscreen="fullscreen"
         >
-            <el-row v-show="!isimport">
-                <el-col>
-                    <el-form>
-                        <el-form-item>
-                            <el-button @click="getTemplate"
-                                >Download Sample Excel File /
-                                Template</el-button
-                            >
-                            <el-button type="primary" @click="exportExcel"
-                                >Download Data</el-button
-                            >
-                        </el-form-item>
-                    </el-form>
+            <el-row :gutter="10" v-show="!isimport">
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                    <el-button style="width:100%;" @click="getTemplate" ref="template" id="template">Sample Excel File / Template</el-button>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="12" :lg="12" :xl="12">
+                    <el-button type="primary" style="width:100%;" @click="exportExcel" ref="dlist" id="dlist">Export Selected Batch Data</el-button>
                 </el-col>
             </el-row>
             <el-row v-show="isimport">
@@ -684,14 +682,13 @@
                             :on-remove="handleRemoveFile"
                             accept=".xlsx"
                         >
-                            <el-button slot="trigger" type="primary" plain
-                                >select supported excel file .xlsx</el-button
-                            >
+                            <el-button slot="trigger" type="primary" :disabled="is_hasfile"  plain>Browse Supported Excel File .xlsx</el-button>
                             <el-button
                                 type="success"
                                 @click="uploadToDatabase"
                                 :disabled="!is_preview"
-                                >upload to database</el-button
+                                :loading="is_import"
+                                >Upload to Database</el-button
                             >
                         </el-upload>
                     </el-form-item>
@@ -872,59 +869,7 @@ export default {
                 batch: ""
             },
             co_physician: [],
-            sheet_data: {
-                    A1:{t:'s', v:"PROFESSIONAL FEE"},
-                    A2:{t:'s', v:"COVERED PERIOD:"},
-                    A3:{t:'s', v:"DOCTOR NAME:"},
-
-                    A4:{t:'s', v:"NAME OF PATIENT"},
-                    B4:{t:'s', v:"CONFINEMENT PERIOD"},
-                    C4:{t:'s', v:"GROSS PF"},
-                    D4:{t:'s', v:"NET PF (50%)"},
-                    E4:{t:'s', v:"PROFESSIONAL FEE (PF)(35%)"},
-                    F4:{t:'s', v:"POOLED (15%)"},
-
-                    G4:{t:'s', v:"DOCTOR NAME:"},
-                    G5:{t:'s', v:"AP"},
-                    I5:{t:'s', v:"REF"},
-                    K5:{t:'s', v:"ANES"},
-                    M5:{t:'s', v:"CO-MGT"},
-                    O5:{t:'s', v:"ADMIT"},
-
-                    Q4:{t:'s', v:"CO-PHYSICIAN"},
-                    Q5:{t:'s', v:"ATTENDING PHYSICIAN"},
-                    S5:{t:'s', v:"REFFERAL 10% of PF"},
-                    U5:{t:'s', v:"ANES 30% of PF"},
-                    W5:{t:'s', v:"CO-MANAGEMENT 20% of PF"},
-                    Y5:{t:'s', v:"ADMITTING 10% of PF"},
-                    "!merges":[
-                        {s:{r:0,c:0},e:{r:0,c:25}},
-                        {s:{r:1,c:0},e:{r:1,c:25}},
-                        {s:{r:2,c:0},e:{r:2,c:25}},
-
-                        {s:{r:3,c:0},e:{r:4,c:0}},
-                        {s:{r:3,c:1},e:{r:4,c:1}},
-                        {s:{r:3,c:2},e:{r:4,c:2}},
-                        {s:{r:3,c:3},e:{r:4,c:3}},
-                        {s:{r:3,c:4},e:{r:4,c:4}},
-                        {s:{r:3,c:5},e:{r:4,c:5}},
-
-                        {s:{r:3,c:6},e:{r:3,c:15}},
-                        {s:{r:4,c:6},e:{r:4,c:7}},
-                        {s:{r:4,c:8},e:{r:4,c:9}},
-                        {s:{r:4,c:10},e:{r:4,c:11}},
-                        {s:{r:4,c:12},e:{r:4,c:13}},
-                        {s:{r:4,c:14},e:{r:4,c:15}},
-
-                        {s:{r:3,c:16},e:{r:3,c:25}},
-                        {s:{r:4,c:16},e:{r:4,c:17}},
-                        {s:{r:4,c:18},e:{r:4,c:19}},
-                        {s:{r:4,c:20},e:{r:4,c:21}},
-                        {s:{r:4,c:22},e:{r:4,c:23}},
-                        {s:{r:4,c:24},e:{r:4,c:25}},
-                    ],
-                    "!ref": "A1:Z5",
-            },
+            sheet_data: [],
             main_physician: [
                 'attending',
                 'anesthesiologist',
@@ -944,7 +889,9 @@ export default {
                 comanagement_fee_total: 0,
                 admitting_fee_total: 0,
                 grand_total: 0,
-            }]
+            }],
+            is_import: false,
+            is_hasfile: false
         }
     },
     computed: {
@@ -1013,6 +960,9 @@ export default {
     methods: {
         terminateZeroValue(row, column, cellValue, index) {
             return cellValue || "";
+        },
+        terminateExtraComma(row, column, cellValue, index) {
+            return cellValue.replace(/,\s*$/, "")
         },
         getCoDoctor(batch) {
             var _this = this;
@@ -1349,7 +1299,7 @@ export default {
              **/
             switch (key) {
                 case "import_data":
-                    this.dialogtitle = "Import Excel";
+                    this.dialogtitle = "Import Excel - Can read single worksheet";
                     this.fullscreen = true;
                     this.isimport = true;
                     this.dialogExcelFile = true;
@@ -1425,6 +1375,8 @@ export default {
             );
         },
         uploadToDatabase() {
+            this.is_hasfile = true;
+            this.is_import = true;
             var _this = this;
             _this.getDoctors();
             if (
@@ -1440,14 +1392,36 @@ export default {
                             title: "Import",
                             message: "Data imported successfully!"
                         });
+                        _this.sheet_length = "";
+                        _this.tablepage = 1;
+                        _this.tablelength = 0;
+                        _this.preview_data = [];
+                        _this.exceldata = [];
+                        _this.excel_validation_error = [[], []];
+                        _this.is_preview = false;
+                        _this.is_hasfile = false;
+                        _this.is_import = false;
+                        _this.$refs.upload.clearFiles()
+                        _this.getDoctors();
                     })
-                    .catch(function(res) {});
+                    .catch(function(error) {
+                        _this.$notify({
+                            type: "error",
+                            title: "Import Physician List Failed",
+                            message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                            duration: 0
+                        });
+                        _this.is_hasfile = true;
+                        _this.is_import = false;
+                    });
             } else {
                 _this.$notify({
                     type: "warning",
                     title: "Import",
                     message: "Upload request error, please check your file."
                 });
+                _this.is_hasfile = true;
+                _this.is_import = false;
             }
         },
         handleExceedFile(files, fileList) {
@@ -1472,6 +1446,8 @@ export default {
                 title: "Cancelled",
                 message: file.name + " was removed"
             });
+            this.is_hasfile = false;
+            this.is_import = false;
         },
         trimToCompare(text) {
             return text
@@ -1680,27 +1656,37 @@ export default {
                 } else {
                     _this.is_preview = false;
                 }
+                _this.is_hasfile = true;
+                _this.is_import = false;
             };
         },
-        exportExcel() {
-            this.doctor_export = [];
-            this.doctors.forEach(doctor => {
-                this.doctor_export.push({
-                    Physician_Name: doctor.name,
-                    Is_active: doctor.is_active ? "Yes" : "No",
-                    Is_parttime: doctor.is_parttime ? "Yes" : "No"
-                });
-            });
-            var doctors = XLSX.utils.json_to_sheet(this.doctor_export);
-            var wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, doctors, "Physician List");
-            XLSX.writeFile(wb, "Physician_List.xlsx");
+        exportExcel($event) {
+            this.proccessLoading($event, function(loading_response){
+                if(loading_response == "done"){
+                    this.doctor_export = [];
+                    this.doctors.forEach(doctor => {
+                        this.doctor_export.push({
+                            Physician_Name: doctor.name,
+                            Is_active: doctor.is_active ? "Yes" : "No",
+                            Is_parttime: doctor.is_parttime ? "Yes" : "No"
+                        });
+                    });
+                    var doctors = XLSX.utils.json_to_sheet(this.doctor_export);
+                    var wb = XLSX.utils.book_new();
+                    XLSX.utils.book_append_sheet(wb, doctors, "Physician List");
+                    XLSX.writeFile(wb, "Physician_List.xlsx");
+                }
+            }.bind(this))
         },
-        getTemplate() {
-            window.open(
-                window.location.origin +
-                    "/template/Import_DoctorList_Template.xlsx"
-            );
+        getTemplate($event) {
+            this.proccessLoading($event, function(loading_response){
+                if(loading_response == "done"){
+                    window.open(
+                        window.location.origin +
+                            "/template/Import_DoctorList_Template.xlsx"
+                    );
+                }
+            }.bind(this))
         },
         formatNumber(row, column, cellValue, index) {
             return new Intl.NumberFormat().format(cellValue);
@@ -1708,89 +1694,161 @@ export default {
         firstLetterOfWordUpperCase(row, column, cellValue, index) {
             return cellValue.charAt(0).toUpperCase() + cellValue.slice(1);
         },
-        exportDoctorRecordExcel() {
-            var row = 5;
-            this.batch_list.forEach((patient)=>{
-                row += 1;
-                var date = new Date(patient.admission_date);
-                var date1 = new Date(patient.discharge_date);
-                var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' +
-                    date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() +
-                    '/' + date1.getFullYear();
-                this.sheet_data["A"+row] = {t: 's', v: patient.patient_name};
-                this.sheet_data["B"+row] = {t: 's', v: patient_confinement_date};
-                this.sheet_data["C"+row] = {t: 'n', v: patient.grossPF};
-                this.sheet_data["D"+row] = {t: 'n', v: patient.netPF};
-                this.sheet_data["E"+row] = {t: 'n', v: patient.professional_fee};
-                this.sheet_data["F"+row] = {t: 'n', v: patient.pooled_record.full_time_individual_fee};
-                this.sheet_data["G"+row] = {t: 's', v: patient.pivot.attending_name};
-                this.sheet_data["H"+row] = {t: 'n', v: patient.pivot.attending_fee};
-                this.sheet_data["I"+row] = {t: 's', v: patient.pivot.ref_name};
-                this.sheet_data["J"+row] = {t: 'n', v: patient.pivot.ref_fee};
-                this.sheet_data["K"+row] = {t: 's', v: patient.pivot.anesthesiologist_name};
-                this.sheet_data["L"+row] = {t: 'n', v: patient.pivot.anesthesiologist_fee};
-                this.sheet_data["M"+row] = {t: 's', v: patient.pivot.comanagement_name};
-                this.sheet_data["N"+row] = {t: 'n', v: patient.pivot.comanagement_fee};
-                this.sheet_data["O"+row] = {t: 's', v: patient.pivot.admitting_name};
-                this.sheet_data["P"+row] = {t: 'n', v: patient.pivot.admitting_fee};
-                this.sheet_data["Q"+row] = {t: 's', v: patient.co_attending_name};
-                this.sheet_data["R"+row] = {t: 'n', v: patient.co_attending_fee};
-                this.sheet_data["S"+row] = {t: 's', v: patient.co_ref_name};
-                this.sheet_data["T"+row] = {t: 'n', v: patient.co_ref_fee};
-                this.sheet_data["U"+row] = {t: 's', v: patient.co_anesthesiologist_name};
-                this.sheet_data["V"+row] = {t: 'n', v: patient.co_anesthesiologist_fee};
-                this.sheet_data["W"+row] = {t: 's', v: patient.co_comanagement_name};
-                this.sheet_data["X"+row] = {t: 'n', v: patient.co_comanagement_fee};
-                this.sheet_data["Y"+row] = {t: 's', v: patient.co_admitting_name};
-                this.sheet_data["Z"+row] = {t: 'n', v: patient.co_admitting_fee};
-            });
+        exportDoctorRecordExcel($event) {
+            var header = {
+                    A1:{t:'s', v:"PROFESSIONAL FEE"},
+                    A2:{t:'s', v:"COVERED PERIOD:"},
+                    A3:{t:'s', v:"DOCTOR NAME:"},
 
-            row += 2;
-            this.sheet_data["A"+row] = {t: 's', v: "ATTENDING TOTAL"};
-            this.sheet_data["B"+row] = {t: 's', v: "REFERRED TOTAL"};
-            this.sheet_data["C"+row] = {t: 's', v: "ANESTHESIOLOGIST TOTAL"};
-            this.sheet_data["D"+row] = {t: 's', v: "COMANAGEMENT TOTAL"};
-            this.sheet_data["E"+row] = {t: 's', v: "ADMITTING TOTAL"};
-            this.sheet_data["F"+row] = {t: 's', v: "GRAND TOTAL"};
+                    A4:{t:'s', v:"NAME OF PATIENT"},
+                    B4:{t:'s', v:"CONFINEMENT PERIOD"},
+                    C4:{t:'s', v:"GROSS PF"},
+                    D4:{t:'s', v:"NET PF (50%)"},
+                    E4:{t:'s', v:"PROFESSIONAL FEE (PF)(35%)"},
+                    F4:{t:'s', v:"POOLED (15%)"},
 
-            row += 1;
-            this.sheet_data["A"+row] = {t: 'n', v: this.record_total[0].attending_fee_total};
-            this.sheet_data["B"+row] = {t: 'n', v: this.record_total[0].ref_fee_total};
-            this.sheet_data["C"+row] = {t: 'n', v: this.record_total[0].anesthesiologist_fee_total};
-            this.sheet_data["D"+row] = {t: 'n', v: this.record_total[0].comanagement_fee_total};
-            this.sheet_data["E"+row] = {t: 'n', v: this.record_total[0].admitting_fee_total};
-            this.sheet_data["F"+row] = {t: 'n', v: this.record_total[0].grand_total};
+                    G4:{t:'s', v:"DOCTOR NAME:"},
+                    G5:{t:'s', v:"AP"},
+                    I5:{t:'s', v:"REF"},
+                    K5:{t:'s', v:"ANES"},
+                    M5:{t:'s', v:"CO-MGT"},
+                    O5:{t:'s', v:"ADMIT"},
 
-            row += 1;
-            this.sheet_data['!ref'] = "A1:Z" + row;
-            var sheet_name;
-            if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
-                if (this.value[0] == 'All') {
-                    sheet_name = "All Record";
-                } else {
-                    var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
-                    var d = (this.value[0]).trim().split('-');
-                    var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
-                    var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
-                    sheet_name = date_from + " - " + date_to;
-                    this.sheet_data.A2.v = "COVERED PERIOD: " + sheet_name.toUpperCase();
-                    this.sheet_data.A3.v = this.dialogViewTitle;
-                    this.sheet_data.G4.v = this.dialogViewTitle;
+                    Q4:{t:'s', v:"CO-PHYSICIAN"},
+                    Q5:{t:'s', v:"ATTENDING PHYSICIAN"},
+                    S5:{t:'s', v:"REFFERAL 10% of PF"},
+                    U5:{t:'s', v:"ANES 30% of PF"},
+                    W5:{t:'s', v:"CO-MANAGEMENT 20% of PF"},
+                    Y5:{t:'s', v:"ADMITTING 10% of PF"},
+                    "!merges":[
+                        {s:{r:0,c:0},e:{r:0,c:25}},
+                        {s:{r:1,c:0},e:{r:1,c:25}},
+                        {s:{r:2,c:0},e:{r:2,c:25}},
 
+                        {s:{r:3,c:0},e:{r:4,c:0}},
+                        {s:{r:3,c:1},e:{r:4,c:1}},
+                        {s:{r:3,c:2},e:{r:4,c:2}},
+                        {s:{r:3,c:3},e:{r:4,c:3}},
+                        {s:{r:3,c:4},e:{r:4,c:4}},
+                        {s:{r:3,c:5},e:{r:4,c:5}},
+
+                        {s:{r:3,c:6},e:{r:3,c:15}},
+                        {s:{r:4,c:6},e:{r:4,c:7}},
+                        {s:{r:4,c:8},e:{r:4,c:9}},
+                        {s:{r:4,c:10},e:{r:4,c:11}},
+                        {s:{r:4,c:12},e:{r:4,c:13}},
+                        {s:{r:4,c:14},e:{r:4,c:15}},
+
+                        {s:{r:3,c:16},e:{r:3,c:25}},
+                        {s:{r:4,c:16},e:{r:4,c:17}},
+                        {s:{r:4,c:18},e:{r:4,c:19}},
+                        {s:{r:4,c:20},e:{r:4,c:21}},
+                        {s:{r:4,c:22},e:{r:4,c:23}},
+                        {s:{r:4,c:24},e:{r:4,c:25}},
+                    ],
+                    "!ref": "A1:Z5",
+            };
+            this.sheet_data = [];
+            this.sheet_data.push(header);
+            this.proccessLoading($event, function(loading_response){
+                if(loading_response == "done"){
+                    var row = 5;
+                    this.batch_list.forEach((patient)=>{
+                        row += 1;
+                        var date = new Date(patient.admission_date);
+                        var date1 = new Date(patient.discharge_date);
+                        var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' +
+                            date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() +
+                            '/' + date1.getFullYear();
+                        try {
+                            var full_time_individual_fee = patient.pooled_record.full_time_individual_fee;   
+                        } catch (error) {
+                            var full_time_individual_fee = 0;
+                        }
+                        this.sheet_data[0]["A"+row] = {t: 's', v: patient.patient_name};
+                        this.sheet_data[0]["B"+row] = {t: 's', v: patient_confinement_date};
+                        this.sheet_data[0]["C"+row] = {t: 'n', v: patient.grossPF};
+                        this.sheet_data[0]["D"+row] = {t: 'n', v: patient.netPF};
+                        this.sheet_data[0]["E"+row] = {t: 'n', v: patient.pivot.professional_fee};
+                        this.sheet_data[0]["F"+row] = {t: 'n', v: full_time_individual_fee};
+                        this.sheet_data[0]["G"+row] = {t: 's', v: patient.pivot.attending_name};
+                        this.sheet_data[0]["H"+row] = {t: 'n', v: patient.pivot.attending_fee};
+                        this.sheet_data[0]["I"+row] = {t: 's', v: patient.pivot.ref_name};
+                        this.sheet_data[0]["J"+row] = {t: 'n', v: patient.pivot.ref_fee};
+                        this.sheet_data[0]["K"+row] = {t: 's', v: patient.pivot.anesthesiologist_name};
+                        this.sheet_data[0]["L"+row] = {t: 'n', v: patient.pivot.anesthesiologist_fee};
+                        this.sheet_data[0]["M"+row] = {t: 's', v: patient.pivot.comanagement_name};
+                        this.sheet_data[0]["N"+row] = {t: 'n', v: patient.pivot.comanagement_fee};
+                        this.sheet_data[0]["O"+row] = {t: 's', v: patient.pivot.admitting_name};
+                        this.sheet_data[0]["P"+row] = {t: 'n', v: patient.pivot.admitting_fee};
+                        this.sheet_data[0]["Q"+row] = {t: 's', v: this.terminateExtraComma('', '', patient.co_attending_name, '')};
+                        this.sheet_data[0]["R"+row] = {t: 'n', v: patient.co_attending_fee};
+                        this.sheet_data[0]["S"+row] = {t: 's', v: this.terminateExtraComma('', '', patient.co_ref_name, '')};
+                        this.sheet_data[0]["T"+row] = {t: 'n', v: patient.co_ref_fee};
+                        this.sheet_data[0]["U"+row] = {t: 's', v: this.terminateExtraComma('', '', patient.co_anesthesiologist_name, '')};
+                        this.sheet_data[0]["V"+row] = {t: 'n', v: patient.co_anesthesiologist_fee};
+                        this.sheet_data[0]["W"+row] = {t: 's', v: this.terminateExtraComma('', '', patient.co_comanagement_name, '')};
+                        this.sheet_data[0]["X"+row] = {t: 'n', v: patient.co_comanagement_fee};
+                        this.sheet_data[0]["Y"+row] = {t: 's', v: this.terminateExtraComma('', '', patient.co_admitting_name, '')};
+                        this.sheet_data[0]["Z"+row] = {t: 'n', v: patient.co_admitting_fee};
+                    });
+
+                    row += 2;
+                    this.sheet_data[0]["A"+row] = {t: 's', v: "ATTENDING TOTAL"};
+                    this.sheet_data[0]["B"+row] = {t: 's', v: "REFERRED TOTAL"};
+                    this.sheet_data[0]["C"+row] = {t: 's', v: "ANESTHESIOLOGIST TOTAL"};
+                    this.sheet_data[0]["D"+row] = {t: 's', v: "COMANAGEMENT TOTAL"};
+                    this.sheet_data[0]["E"+row] = {t: 's', v: "ADMITTING TOTAL"};
+                    this.sheet_data[0]["F"+row] = {t: 's', v: "GRAND TOTAL"};
+
+                    row += 1;
+                    this.sheet_data[0]["A"+row] = {t: 'n', v: this.record_total[0].attending_fee_total};
+                    this.sheet_data[0]["B"+row] = {t: 'n', v: this.record_total[0].ref_fee_total};
+                    this.sheet_data[0]["C"+row] = {t: 'n', v: this.record_total[0].anesthesiologist_fee_total};
+                    this.sheet_data[0]["D"+row] = {t: 'n', v: this.record_total[0].comanagement_fee_total};
+                    this.sheet_data[0]["E"+row] = {t: 'n', v: this.record_total[0].admitting_fee_total};
+                    this.sheet_data[0]["F"+row] = {t: 'n', v: this.record_total[0].grand_total};
+
+                    row += 1;
+                    this.sheet_data[0]['!ref'] = "A1:Z" + row;
+                    var sheet_name;
+                    if (typeof this.value[0] !== 'undefined' || this.value[0] == 'All') {
+                        if (this.value[0] == 'All') {
+                            sheet_name = "All Record";
+                        } else {
+                            var month_name = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sept','Oct','Nov','Dec'];
+                            var d = (this.value[0]).trim().split('-');
+                            var date_from = month_name[parseInt(d[0][2]+d[0][3]) - 1] + " " + d[0][0]+d[0][1]+" "+d[0][4]+d[0][5]+d[0][6]+d[0][7];
+                            var date_to = month_name[parseInt(d[1][2]+d[1][3]) - 1] + " " + d[1][0]+d[1][1]+" "+d[1][4]+d[1][5]+d[1][6]+d[1][7];
+                            sheet_name = date_from + " - " + date_to;
+                            this.sheet_data[0].A2.v = "COVERED PERIOD: " + sheet_name.toUpperCase();
+                            this.sheet_data[0].A3.v = this.dialogViewTitle;
+                            this.sheet_data[0].G4.v = this.dialogViewTitle;
+
+                        }
+                        var sheet_data_object = {};
+                        sheet_data_object[sheet_name] = this.sheet_data[0];
+                        XLSX.writeFile({
+                            SheetNames:[sheet_name],
+                            Sheets: sheet_data_object
+                        }, 'Doctor_Record_Export.xlsx');
+                    } else {
+                        this.$notify({
+                            type: 'warning',
+                            title: 'Export',
+                            message: "Please select batch to proceed",
+                        });
+                    }
                 }
-                var sheet_data_object = {};
-                sheet_data_object[sheet_name] = this.sheet_data;
-                XLSX.writeFile({
-                    SheetNames:[sheet_name],
-                    Sheets: sheet_data_object
-                }, 'Doctor_Record_Export.xlsx');
-            } else {
-                this.$notify({
-                    type: 'warning',
-                    title: 'Export',
-                    message: "Please select batch to proceed",
-                });
-            }
+            }.bind(this))
+        },
+        proccessLoading(event, cb){
+            var btn = event.currentTarget.id;
+            this.$refs[btn].loading = true;
+            setTimeout(function () {
+                cb('done');
+                this.$refs[btn].loading = false;
+            }.bind(this), 1000)
         },
     },
     mounted() {
