@@ -368,7 +368,7 @@ export default {
             await axios
                 .get("get_batch")
                 .then(response => {
-                    response.data.push({ batch: "All" });
+                    // response.data.push({ batch: "All" });
                     this.batch = response.data;
                     this.value[0] = response.data[0].batch;
                     this.first_batch = response.data[0].batch;
