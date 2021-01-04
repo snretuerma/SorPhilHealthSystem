@@ -689,14 +689,23 @@ export default {
                     });
                     if (this.form.lname =="" || this.form.fname =="" ||
                     this.form.admission =="" || this.form.discharge =="" ||
-                    this.form.batch =="" || this.form.pf =="")
+                    this.form.batch =="" || this.form.pf =="" || this.form.attending.length  == 0)
                     {
-                        this.$notify({
-                            type: 'info',
-                            title: 'Adding Record Failed',
-                            message: 'All fields with * are required',
-                            offset: 0,
-                        });
+                        if (this.form.attending.length  == 0) {
+                            this.$notify({
+                                type: 'info',
+                                title: 'Adding Record Failed',
+                                message: 'Please select attending physician',
+                                offset: 0,
+                            });
+                        } else {
+                            this.$notify({
+                                type: 'info',
+                                title: 'Adding Record Failed',
+                                message: 'All fields with * are required',
+                                offset: 0,
+                            });
+                        }
                         loading.close();
                         this.btnLoading=false;
                     }
@@ -763,16 +772,27 @@ export default {
                     this.form.id=this.data.id;
                     this.form.hospital_id=this.data.hospital_id;
                     if (this.form.admission =="" || this.form.discharge =="" ||
-                    this.form.batch =="" || this.form.pf =="")
+                    this.form.batch =="" || this.form.pf =="" || this.form.doctortype.length == 0)
                     {
-                        this.$notify({
-                            type: 'info',
-                            title: 'Adding Record Failed',
-                            message: 'All fields with * are required',
-                            offset: 0,
-                        });
-                        loading.close();
-                        this.btnLoading=false;
+                        if (this.form.doctortype.length == 0) {
+                            this.$notify({
+                                type: 'info',
+                                title: 'Adding Record Failed',
+                                message: 'Please select physician',
+                                offset: 0,
+                            });
+                            // loading.close();
+                            this.btnLoading=false;
+                        } else {
+                            this.$notify({
+                                type: 'info',
+                                title: 'Adding Record Failed',
+                                message: 'All fields with * are required',
+                                offset: 0,
+                            });
+                            // loading.close();
+                            this.btnLoading=false;
+                        }
                     } else {
                         axios.put('edit_record', this.form)
                         .then(response => {
