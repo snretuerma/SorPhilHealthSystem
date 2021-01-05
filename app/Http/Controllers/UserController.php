@@ -1044,20 +1044,34 @@ class UserController extends Controller
                 $record->non_medical_fee = $request->pf * $setting->nonmedical;
                 $record->medical_fee = $request->pf * $setting->medical;
                 $record->save();
-                $pooled_record = PooledRecord::where('record_id', $request->id)->first();
-                if($fullPooled == 1){
-                    $pooled_record->full_time_doctors = json_encode($full_time_id);
+                if ($has_existing_pooled) {
+                    if ($fullPooled == 1 || $partPooled == 1) {
+                        $pooled_record = PooledRecord::where('record_id', $request->id)->first();
+                        $pooled_record->full_time_doctors = json_encode($full_time_id);
+                        $pooled_record->part_time_doctors = json_encode($part_time_id);
+                        $total_pooled_fee = $record->non_medical_fee * $setting->pooled;
+                        $initial_individual_fee = ($record->non_medical_fee * $setting->pooled) /
+                            (count($full_time_id) +
+                                (count($part_time_id) / 2));
+                        $pooled_record->full_time_individual_fee = $initial_individual_fee;
+                        $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
+                        $pooled_record->save();
+                    }
+                } else {
+                    if ($fullPooled == 1 || $partPooled == 1) {
+                        $pooled_record = new PooledRecord;
+                        $pooled_record->full_time_doctors = json_encode($full_time_id);
+                        $pooled_record->part_time_doctors = json_encode($part_time_id);
+                        $total_pooled_fee = $record->non_medical_fee * $setting->pooled;
+                        $initial_individual_fee = ($record->non_medical_fee * $setting->pooled) /
+                            (count($full_time_id) +
+                                (count($part_time_id) / 2));
+                        $pooled_record->full_time_individual_fee = $initial_individual_fee;
+                        $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
+                        $pooled_record->record_id = $record->id;
+                        $pooled_record->save();
+                    }
                 }
-                if($partPooled == 1){
-                    $pooled_record->part_time_doctors = json_encode($part_time_id);
-                }
-                $total_pooled_fee = $record->non_medical_fee * $setting->pooled;
-                $initial_individual_fee = ($record->non_medical_fee * $setting->pooled) /
-                    (count($full_time_id) +
-                        (count($part_time_id) / 2));
-                $pooled_record->full_time_individual_fee = $initial_individual_fee;
-                $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
-                $pooled_record->save();
                 foreach ($doctorrecord as $dr) {
                     DB::table('doctor_records')->where('id', $dr->id)->delete();
                 }
