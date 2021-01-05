@@ -63,7 +63,8 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="{id:item.id,name:item.name,role:'attending'}"
+                                    :value="{id:item.id,name:item.name,role:'attending',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -81,10 +82,22 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="{id:item.id,name:item.name,role:'attending'}"
+                                    :value="{id:item.id,name:item.name,role:'attending',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
+                                <div v-if="processType == 'edit'">
+                                    <el-card class="box-card" :body-style="{ padding: '0px 2px 0px 2px' }" v-for="(item, index) in
+                                    form.attending" :key="item.id">
+                                        <li style="padding:0 10px 0 10px" class="row">
+                                        <div class="col-8"> {{index + 1}} {{'. '}} {{item.name}} </div>
+                                        <div class="col-4"> <el-checkbox @change="updateParttime($event, index, item.role)"
+                                        :checked="(item.is_parttime)?false:true">Fullltime</el-checkbox> </div>
+                                        </li>
+                                    </el-card>
+                                </div>
+
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -105,10 +118,21 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'requesting'}"
+                                    :value="{id:item.id,name:item.name,role:'requesting',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
+                                <div v-if="processType == 'edit'">
+                                    <el-card class="box-card" :body-style="{ padding: '0px 2px 0px 2px' }" v-for="(item, index) in
+                                    form.requesting" :key="item.id">
+                                    <li style="padding:0 10px 0 10px" class="row">
+                                        <div class="col-8"> {{index + 1}} {{'. '}} {{item.name}} </div>
+                                        <div class="col-4"> <el-checkbox @change="updateParttime($event, index, item.role)"
+                                        :checked="(item.is_parttime)?false:true">Fullltime</el-checkbox> </div>
+                                        </li>
+                                    </el-card>
+                                </div>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -129,10 +153,21 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'surgeon'}"
+                                    :value="{id:item.id,name:item.name,role:'surgeon',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
+                                <div v-if="processType == 'edit'">
+                                    <el-card class="box-card" :body-style="{ padding: '0px 2px 0px 2px' }" v-for="(item, index) in
+                                    form.surgeon" :key="item.id">
+                                    <li style="padding:0 10px 0 10px" class="row">
+                                        <div class="col-8"> {{index + 1}} {{'. '}} {{item.name}} </div>
+                                        <div class="col-4"> <el-checkbox @change="updateParttime($event, index, item.role)"
+                                        :checked="(item.is_parttime)?false:true">Fullltime</el-checkbox> </div>
+                                        </li>
+                                    </el-card>
+                                </div>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -153,10 +188,21 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'healthcare'}"
+                                    :value="{id:item.id,name:item.name,role:'healthcare',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
+                                <div v-if="processType == 'edit'">
+                                    <el-card class="box-card" :body-style="{ padding: '0px 2px 0px 2px' }" v-for="(item, index) in
+                                    form.healthcare" :key="item.id">
+                                    <li style="padding:0 10px 0 10px" class="row">
+                                        <div class="col-8"> {{index + 1}} {{'. '}} {{item.name}} </div>
+                                        <div class="col-4"> <el-checkbox @change="updateParttime($event, index, item.role)"
+                                        :checked="(item.is_parttime)?false:true">Fullltime</el-checkbox> </div>
+                                        </li>
+                                    </el-card>
+                                </div>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -177,10 +223,21 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'er'}"
+                                    :value="{id:item.id,name:item.name,role:'er',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
+                                <div v-if="processType == 'edit'">
+                                    <el-card class="box-card" :body-style="{ padding: '0px 2px 0px 2px' }" v-for="(item, index) in
+                                    form.er" :key="item.id">
+                                    <li style="padding:0 10px 0 10px" class="row">
+                                        <div class="col-8"> {{index + 1}} {{'. '}} {{item.name}} </div>
+                                        <div class="col-4"> <el-checkbox @change="updateParttime($event, index, item.role)"
+                                        :checked="(item.is_parttime)?false:true">Fullltime</el-checkbox> </div>
+                                        </li>
+                                    </el-card>
+                                </div>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -201,10 +258,21 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'anesthesiologist'}"
+                                    :value="{id:item.id,name:item.name,role:'anesthesiologist',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
+                                <div v-if="processType == 'edit'">
+                                    <el-card class="box-card" :body-style="{ padding: '0px 2px 0px 2px' }" v-for="(item, index) in
+                                    form.anesthesiologist" :key="item.id">
+                                    <li style="padding:0 10px 0 10px" class="row">
+                                        <div class="col-8"> {{index + 1}} {{'. '}} {{item.name}} </div>
+                                        <div class="col-4"> <el-checkbox @change="updateParttime($event, index, item.role)"
+                                        :checked="(item.is_parttime)?false:true">Fullltime</el-checkbox> </div>
+                                        </li>
+                                    </el-card>
+                                </div>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -225,10 +293,21 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'comanagement'}"
+                                    :value="{id:item.id,name:item.name,role:'comanagement',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
+                                <div v-if="processType == 'edit'">
+                                    <el-card class="box-card" :body-style="{ padding: '0px 2px 0px 2px' }" v-for="(item, index) in
+                                    form.comanagement" :key="item.id">
+                                    <li style="padding:0 10px 0 10px" class="row">
+                                        <div class="col-8"> {{index + 1}} {{'. '}} {{item.name}} </div>
+                                        <div class="col-4"> <el-checkbox @change="updateParttime($event, index, item.role)"
+                                        :checked="(item.is_parttime)?false:true">Fullltime</el-checkbox> </div>
+                                        </li>
+                                    </el-card>
+                                </div>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -250,7 +329,70 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'admitting'}"
+                                    :value="{id:item.id,name:item.name,role:'admitting',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
+                                    >
+                                    </el-option>
+                                </el-select>
+                                <div v-if="processType == 'edit'">
+                                    <el-card class="box-card" :body-style="{ padding: '0px 2px 0px 2px' }" v-for="(item, index) in
+                                    form.admitting" :key="item.id">
+                                    <li style="padding:0 10px 0 10px" class="row">
+                                        <div class="col-8"> {{index + 1}} {{'. '}} {{item.name}} </div>
+                                        <div class="col-4"> <el-checkbox @change="updateParttime($event, index, item.role)"
+                                        :checked="(item.is_parttime)?false:true">Fullltime</el-checkbox> </div>
+                                        </li>
+                                    </el-card>
+                                </div>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row v-if="form.is_private==false">
+                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <el-form-item label="Fulltime" prop="fulltime">
+                                <el-select
+                                    style="width:100%"
+                                    size="large"
+                                    v-model="form.doctorsFullTime"
+                                    value-key="id"
+                                    @input="asd()"
+                                    multiple
+                                    filterable
+                                    default-first-option
+                                    placeholder="Choose physician">
+                                    <el-option
+                                    v-for="item in doctors"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value-key="item.id"
+                                    :value="{id:item.id,name:item.name,
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
+                                    >
+                                    </el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row v-if="form.is_private==false">
+                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <el-form-item label="Parttime" prop="parttime">
+                                <el-select
+                                    style="width:100%"
+                                    size="large"
+                                    v-model="form.doctorsPartTime"
+                                    value-key="id"
+                                    @input="asd()"
+                                    multiple
+                                    filterable
+                                    default-first-option
+                                    placeholder="Choose physician">
+                                    <el-option
+                                    v-for="item in doctors"
+                                    :key="item.id"
+                                    :label="item.name"
+                                    :value-key="item.id"
+                                    :value="{id:item.id,name:item.name,
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -372,6 +514,17 @@
                         </el-col>
                     </el-row>
                     <el-row>
+                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <el-form-item label="Name will appear like this on the database" prop="name">
+                                <el-input
+                                    v-model="form.name"
+                                    autocomplete="off"
+                                    :readonly="true"
+                                />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
                         <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                             <el-form-item label="Admission" prop="admission">
                                 <div class="block">
@@ -400,17 +553,6 @@
                                     :picker-options="pickerOptions">
                                     </el-date-picker>
                                 </div>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <el-form-item label="Name will appear like this on the database" prop="name">
-                                <el-input
-                                    v-model="form.name"
-                                    autocomplete="off"
-                                    :readonly="true"
-                                />
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -456,6 +598,8 @@ export default {
     props:['data','processType'],
     data() {
         return {
+            doctorsFullTime:[],
+            doctorsPartTime:[],
             is_private:false,
             btnLoading:false,
             errors:[],
@@ -484,6 +628,10 @@ export default {
                 }]
             },
             form: {
+                doctorsFullTime:[],
+                doctorsPartTime:[],
+                fullTimeId:[],
+                PartTimeId:[],
                 fname: '',
                 mname: '',
                 lname: '',
@@ -546,6 +694,14 @@ export default {
                 console.log(this.form.attending.length)
             }
         },
+        updateParttime(event, index, role) {
+            if (event) {
+                this.form[role][index].is_parttime = 0;
+            } else {
+                this.form[role][index].is_parttime = 1;
+            }
+            console.log(this.form[role][index])
+        },
         privateRecord() {
             this.form.requesting=[];
             this.form.surgeon=[];
@@ -592,7 +748,8 @@ export default {
                 this.data.doctors.forEach(name => {
                     allattending.forEach(ap => {
                         if (ap.trim() == name.name) {
-                            this.form.attending.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                            this.form.attending.push({id:name.id,name:name.name,role:name.pivot.doctor_role,
+                            is_active:name.is_active,is_parttime:name.is_parttime});
                         }
                     })
                     allrequesting.forEach(ap => {
@@ -637,6 +794,41 @@ export default {
                 this.form.discharge = this.data.discharge_date;
                 if (this.data.record_type == "private") {
                     this.form.is_private=true;
+                }else{
+                    axios
+                    .post("get_pooled/" + this.data.id)
+                    .then(function(pooled) {
+                        try {
+                            pooled.data.full_time_doctors.forEach((exist_polled)=>{
+                                this.doctors.forEach((name)=>{
+                                    if(exist_polled == name.id){
+                                        this.form.doctorsFullTime.push({
+                                            id: name.id,
+                                            is_active: name.is_active,
+                                            is_parttime: name.is_parttime,
+                                            name: name.name
+                                        });
+                                    }
+                                });
+                            });
+                            pooled.data.part_time_doctors.forEach((exist_polled)=>{
+                                this.doctors.forEach((name)=>{
+                                    if(exist_polled == name.id){
+                                        this.form.doctorsPartTime.push({
+                                            id: name.id,
+                                            is_active: name.is_active,
+                                            is_parttime: name.is_parttime,
+                                            name: name.name
+                                        });
+                                    }
+                                });
+                            });
+                        } catch (error) {
+                            this.form.doctorsFullTime = [];
+                            this.form.doctorsPartTime = [];
+                        }
+                    }.bind(this))
+                    .catch(error=> {});
                 }
             } catch (error) {
                // console.log(error)
@@ -851,6 +1043,15 @@ export default {
                 .get("getAllDoctors")
                 .then(response => {
                     this.doctors = response.data;
+                    this.doctors.forEach(name => {
+                        if (name.is_parttime) {
+                            this.doctorsPartTime.push({id:name.id,name:name.name,
+                                is_active:name.is_active,is_parttime:name.is_parttime});
+                        } else {
+                            this.doctorsFullTime.push({id:name.id,name:name.name,
+                                is_active:name.is_active,is_parttime:name.is_parttime});
+                        }
+                    })
                 })
                 .catch(function(error) {});
         },
@@ -865,7 +1066,7 @@ export default {
         },
         asd(){
             // this.form.batch.forEach(el=>{
-                console.log(this.form.admitting);
+                console.log(this.form.doctorsPartTime);
             // })
         }
     },
