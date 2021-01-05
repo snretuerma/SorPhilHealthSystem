@@ -266,7 +266,7 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row v-if="form.is_private==false">
+                    <el-row v-if="form.is_private==false && processType=='edit'">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Fulltime" prop="fulltime">
                                 <el-row>
@@ -299,7 +299,7 @@
                             </el-form-item>
                         </el-col>
                     </el-row>
-                    <el-row v-if="form.is_private==false">
+                    <el-row v-if="form.is_private==false && processType=='edit'">
                         <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
                             <el-form-item label="Parttime" prop="parttime">
                                 <el-row>
@@ -643,7 +643,6 @@ export default {
         clearField() {
             if(this.$refs.form !== undefined) {
                 this.$refs.form.resetFields();
-                console.log(this.form.attending.length)
             }
         },
         privateRecord() {
@@ -659,9 +658,6 @@ export default {
                     this.form.attending.pop();
                 }
             }
-        },
-        onSubmit() {
-        console.log('submit!');
         },
         testName(name) {
             // ^([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*,\s([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*$
@@ -776,14 +772,12 @@ export default {
                         }
                     }.bind(this))
                     .catch(function(error) {
-                        //console.log("err:", error);
                         this.form.has_existing_pooled = false;
                         this.form.doctorsFullTime = [];
                         this.form.doctorsPartTime = [];
                     }.bind(this));
                 }
             } catch (error) {
-               // console.log(error)
             }
         },
         addCreditRecord(mode){
@@ -1021,21 +1015,16 @@ export default {
                 .get("get_batch")
                 .then(response => {
                     this.batch = response.data;
-                    // console.log(this.batch);
                 })
                 .catch(function(error) {});
         },
         asd(){
-            // this.form.batch.forEach(el=>{
-                console.log(this.form.doctorsPartTime);
-            // })
         }
     },
     mounted(){
         this.getDoctors();
         this.getBatch();
         this.loadRecord();
-        // console.log(this.form);
     },
 }
 </script>
