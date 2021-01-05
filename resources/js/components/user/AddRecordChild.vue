@@ -63,7 +63,8 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="{id:item.id,name:item.name,role:'attending'}"
+                                    :value="{id:item.id,name:item.name,role:'attending',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -81,7 +82,8 @@
                                     v-for="item in doctors"
                                     :key="item.id"
                                     :label="item.name"
-                                    :value="{id:item.id,name:item.name,role:'attending'}"
+                                    :value="{id:item.id,name:item.name,role:'attending',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -105,7 +107,8 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'requesting'}"
+                                    :value="{id:item.id,name:item.name,role:'requesting',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -129,7 +132,8 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'surgeon'}"
+                                    :value="{id:item.id,name:item.name,role:'surgeon',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -153,7 +157,8 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'healthcare'}"
+                                    :value="{id:item.id,name:item.name,role:'healthcare',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -177,7 +182,8 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'er'}"
+                                    :value="{id:item.id,name:item.name,role:'er',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -201,7 +207,8 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'anesthesiologist'}"
+                                    :value="{id:item.id,name:item.name,role:'anesthesiologist',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -225,7 +232,8 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'comanagement'}"
+                                    :value="{id:item.id,name:item.name,role:'comanagement',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
@@ -250,10 +258,77 @@
                                     :key="item.id"
                                     :label="item.name"
                                     :value-key="item.id"
-                                    :value="{id:item.id,name:item.name,role:'admitting'}"
+                                    :value="{id:item.id,name:item.name,role:'admitting',
+                                    is_active:item.is_active,is_parttime:item.is_parttime}"
                                     >
                                     </el-option>
                                 </el-select>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row v-if="form.is_private==false">
+                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <el-form-item label="Fulltime" prop="fulltime">
+                                <el-row>
+                                    <el-col>
+                                        <el-select
+                                            style="width:100%"
+                                            size="large"
+                                            v-model="form.doctorsFullTime"
+                                            value-key="id"
+                                            @input="asd()"
+                                            multiple
+                                            filterable
+                                            default-first-option
+                                            placeholder="Choose physician">
+                                            <el-option
+                                            v-for="item in doctors"
+                                            :key="item.id"
+                                            :label="item.name"
+                                            :value-key="item.id"
+                                            :value="{id:item.id,name:item.name,
+                                            is_active:item.is_active,is_parttime:item.is_parttime}"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                    </el-col>
+                                    <el-col>
+                                        <el-checkbox @change="getCurrentState($event,'fulltime')">Use current doctors state</el-checkbox>
+                                    </el-col>
+                                </el-row>
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row v-if="form.is_private==false">
+                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <el-form-item label="Parttime" prop="parttime">
+                                <el-row>
+                                    <el-col>
+                                        <el-select
+                                            style="width:100%"
+                                            size="large"
+                                            v-model="form.doctorsPartTime"
+                                            value-key="id"
+                                            @input="asd()"
+                                            multiple
+                                            filterable
+                                            default-first-option
+                                            placeholder="Choose physician">
+                                            <el-option
+                                            v-for="item in doctors"
+                                            :key="item.id"
+                                            :label="item.name"
+                                            :value-key="item.id"
+                                            :value="{id:item.id,name:item.name,
+                                            is_active:item.is_active,is_parttime:item.is_parttime}"
+                                            >
+                                            </el-option>
+                                        </el-select>
+                                    </el-col>
+                                    <el-col>
+                                        <el-checkbox @change="getCurrentState($event,'parttime')">Use current doctors state</el-checkbox>
+                                    </el-col>
+                                </el-row>
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -372,6 +447,17 @@
                         </el-col>
                     </el-row>
                     <el-row>
+                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
+                            <el-form-item label="Name will appear like this on the database" prop="name">
+                                <el-input
+                                    v-model="form.name"
+                                    autocomplete="off"
+                                    :readonly="true"
+                                />
+                            </el-form-item>
+                        </el-col>
+                    </el-row>
+                    <el-row>
                         <el-col class="col-sm-12 col-md-12 col-lg-6 col-xl-6">
                             <el-form-item label="Admission" prop="admission">
                                 <div class="block">
@@ -400,17 +486,6 @@
                                     :picker-options="pickerOptions">
                                     </el-date-picker>
                                 </div>
-                            </el-form-item>
-                        </el-col>
-                    </el-row>
-                    <el-row>
-                        <el-col class="col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                            <el-form-item label="Name will appear like this on the database" prop="name">
-                                <el-input
-                                    v-model="form.name"
-                                    autocomplete="off"
-                                    :readonly="true"
-                                />
                             </el-form-item>
                         </el-col>
                     </el-row>
@@ -456,6 +531,8 @@ export default {
     props:['data','processType'],
     data() {
         return {
+            doctorsFullTime:[],
+            doctorsPartTime:[],
             is_private:false,
             btnLoading:false,
             errors:[],
@@ -484,6 +561,11 @@ export default {
                 }]
             },
             form: {
+                doctorsFullTime:[],
+                doctorsPartTime:[],
+                has_existing_pooled: false,
+                fullTimeId:[],
+                PartTimeId:[],
                 fname: '',
                 mname: '',
                 lname: '',
@@ -534,6 +616,24 @@ export default {
         };
     },
     methods: {
+        getCurrentState(value, foremp){
+            switch(foremp){
+                case 'fulltime':
+                    if(value){
+                        this.form.doctorsFullTime = this.doctorsFullTime;
+                    }else{
+                        this.form.doctorsFullTime = [];
+                    }
+                  break;
+                case 'parttime':
+                    if(value){
+                        this.form.doctorsPartTime = this.doctorsPartTime;
+                    }else{
+                        this.form.doctorsPartTime = [];
+                    }
+                  break;
+            }
+        },
         //function to hide addrecordchild.vue
         triggerClose() {
             //add-close was invoke in recordparent.vue so the emit will
@@ -592,7 +692,8 @@ export default {
                 this.data.doctors.forEach(name => {
                     allattending.forEach(ap => {
                         if (ap.trim() == name.name) {
-                            this.form.attending.push({id:name.id,name:name.name,role:name.pivot.doctor_role});
+                            this.form.attending.push({id:name.id,name:name.name,role:name.pivot.doctor_role,
+                            is_active:name.is_active,is_parttime:name.is_parttime});
                         }
                     })
                     allrequesting.forEach(ap => {
@@ -637,6 +738,49 @@ export default {
                 this.form.discharge = this.data.discharge_date;
                 if (this.data.record_type == "private") {
                     this.form.is_private=true;
+                }
+                if(this.data.record_type != "private"){
+                    axios
+                    .post("get_pooled/" + this.data.id)
+                    .then(function(pooled) {
+                        try {
+                            this.form.has_existing_pooled = true;
+                            pooled.data.full_time_doctors.forEach((exist_polled)=>{
+                                this.doctors.forEach((name)=>{
+                                    if(exist_polled == name.id){
+                                        this.form.doctorsFullTime.push({
+                                            id: name.id,
+                                            is_active: name.is_active,
+                                            is_parttime: name.is_parttime,
+                                            name: name.name
+                                        });
+                                    }
+                                });
+                            });
+                            pooled.data.part_time_doctors.forEach((exist_polled)=>{
+                                this.doctors.forEach((name)=>{
+                                    if(exist_polled == name.id){
+                                        this.form.doctorsPartTime.push({
+                                            id: name.id,
+                                            is_active: name.is_active,
+                                            is_parttime: name.is_parttime,
+                                            name: name.name
+                                        });
+                                    }
+                                });
+                            });
+                        } catch (error) {
+                            this.form.has_existing_pooled = false;
+                            this.form.doctorsFullTime = [];
+                            this.form.doctorsPartTime = [];
+                        }
+                    }.bind(this))
+                    .catch(function(error) {
+                        //console.log("err:", error);
+                        this.form.has_existing_pooled = false;
+                        this.form.doctorsFullTime = [];
+                        this.form.doctorsPartTime = [];
+                    }.bind(this));
                 }
             } catch (error) {
                // console.log(error)
@@ -689,14 +833,23 @@ export default {
                     });
                     if (this.form.lname =="" || this.form.fname =="" ||
                     this.form.admission =="" || this.form.discharge =="" ||
-                    this.form.batch =="" || this.form.pf =="")
+                    this.form.batch =="" || this.form.pf =="" || this.form.attending.length  == 0)
                     {
-                        this.$notify({
-                            type: 'info',
-                            title: 'Adding Record Failed',
-                            message: 'All fields with * are required',
-                            offset: 0,
-                        });
+                        if (this.form.attending.length  == 0) {
+                            this.$notify({
+                                type: 'info',
+                                title: 'Adding Record Failed',
+                                message: 'Please select attending physician',
+                                offset: 0,
+                            });
+                        } else {
+                            this.$notify({
+                                type: 'info',
+                                title: 'Adding Record Failed',
+                                message: 'All fields with * are required',
+                                offset: 0,
+                            });
+                        }
                         loading.close();
                         this.btnLoading=false;
                     }
@@ -763,41 +916,65 @@ export default {
                     this.form.id=this.data.id;
                     this.form.hospital_id=this.data.hospital_id;
                     if (this.form.admission =="" || this.form.discharge =="" ||
-                    this.form.batch =="" || this.form.pf =="")
+                    this.form.batch =="" || this.form.pf =="" || this.form.doctortype.length == 0)
                     {
-                        this.$notify({
-                            type: 'info',
-                            title: 'Adding Record Failed',
-                            message: 'All fields with * are required',
-                            offset: 0,
-                        });
-                        loading.close();
-                        this.btnLoading=false;
+                        if (this.form.doctortype.length == 0) {
+                            this.$notify({
+                                type: 'info',
+                                title: 'Adding Record Failed',
+                                message: 'Please select physician',
+                                offset: 0,
+                            });
+                            // loading.close();
+                            this.btnLoading=false;
+                        } else {
+                            this.$notify({
+                                type: 'info',
+                                title: 'Adding Record Failed',
+                                message: 'All fields with * are required',
+                                offset: 0,
+                            });
+                            // loading.close();
+                            this.btnLoading=false;
+                        }
                     } else {
-                        axios.put('edit_record', this.form)
-                        .then(response => {
-                            if (response.status >= 200 && response.status <=299) {
-                                // console.log(response)
-                                // var index = this.doctors.findIndex(object => object.id == response.data.id);
-                                // if (index !== undefined) {
-                                //     this.doctors[index].name = response.data.name;
-                                //     this.doctors[index].is_parttime = response.data.is_parttime;
-                                //     this.doctors[index].is_active = response.data.is_active;
-                                // }
-                                // this.show_dialog = false;
-                                // this.formResetFields();
-                                // this.edit_object = '';
-                                // loading.close();
-                                this.$notify({
-                                    type: 'success',
-                                    title: 'Editing Record Successful',
-                                    message: `Successfully edited ${this.form.name}`,
-                                    offset: 0,
-                                });
-                                _this.form.doctortype=[];
-                                _this.form.doctors_id=[];
-                                this.triggerClose();
-                            }else {
+                        if(this.form.doctorsFullTime.length > 0 || this.form.doctorsPartTime.length > 0){
+                            axios.put('edit_record', this.form)
+                            .then(response => {
+                                if (response.status >= 200 && response.status <=299) {
+                                    // console.log(response)
+                                    // var index = this.doctors.findIndex(object => object.id == response.data.id);
+                                    // if (index !== undefined) {
+                                    //     this.doctors[index].name = response.data.name;
+                                    //     this.doctors[index].is_parttime = response.data.is_parttime;
+                                    //     this.doctors[index].is_active = response.data.is_active;
+                                    // }
+                                    // this.show_dialog = false;
+                                    // this.formResetFields();
+                                    // this.edit_object = '';
+                                    // loading.close();
+                                    this.$notify({
+                                        type: 'success',
+                                        title: 'Editing Record Successful',
+                                        message: `Successfully edited ${this.form.name}`,
+                                        offset: 0,
+                                    });
+                                    _this.form.doctortype=[];
+                                    _this.form.doctors_id=[];
+                                    this.triggerClose();
+                                }else {
+                                    // this.show_dialog = false;
+                                    // this.formResetFields();
+                                    // this.edit_object = '';
+                                    // loading.close();
+                                    this.$notify({
+                                        type: 'error',
+                                        title: 'Editing Record Failed',
+                                        message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                        offset: 0,
+                                    });
+                                }
+                            }).catch(error => {
                                 // this.show_dialog = false;
                                 // this.formResetFields();
                                 // this.edit_object = '';
@@ -808,20 +985,16 @@ export default {
                                     message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
                                     offset: 0,
                                 });
-                            }
-                        }).catch(error => {
-                            // this.show_dialog = false;
-                            // this.formResetFields();
-                            // this.edit_object = '';
-                            // loading.close();
+                                this.form.doctortype=[];
+                            });
+                        }else{
                             this.$notify({
-                                type: 'error',
+                                type: 'warning',
                                 title: 'Editing Record Failed',
-                                message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                                message: 'Fulltime or parttime physician pooled is required',
                                 offset: 0,
                             });
-                            this.form.doctortype=[];
-                        });
+                        }
                     }
                     break;
             }
@@ -831,6 +1004,15 @@ export default {
                 .get("getAllDoctors")
                 .then(response => {
                     this.doctors = response.data;
+                    this.doctors.forEach(name => {
+                        if (name.is_parttime) {
+                            this.doctorsPartTime.push({id:name.id,name:name.name,
+                                is_active:name.is_active,is_parttime:name.is_parttime});
+                        } else {
+                            this.doctorsFullTime.push({id:name.id,name:name.name,
+                                is_active:name.is_active,is_parttime:name.is_parttime});
+                        }
+                    })
                 })
                 .catch(function(error) {});
         },
@@ -845,7 +1027,7 @@ export default {
         },
         asd(){
             // this.form.batch.forEach(el=>{
-                console.log(this.form.admitting);
+                console.log(this.form.doctorsPartTime);
             // })
         }
     },

@@ -1377,51 +1377,50 @@ export default {
         uploadToDatabase() {
             this.is_hasfile = true;
             this.is_import = true;
-            var _this = this;
-            _this.getDoctors();
+            this.getDoctors();
             if (
-                _this.excel_validation_error[0].length < 1 &&
-                _this.excel_validation_error[1].length < 1 &&
-                _this.preview_data.length > 0
+                this.excel_validation_error[0].length < 1 &&
+                this.excel_validation_error[1].length < 1 &&
+                this.preview_data.length > 0
             ) {
                 axios
-                    .post("import_doctor_list", _this.preview_data)
-                    .then(function(res) {
-                        _this.$notify({
-                            type: "success",
-                            title: "Import",
-                            message: "Data imported successfully!"
-                        });
-                        _this.sheet_length = "";
-                        _this.tablepage = 1;
-                        _this.tablelength = 0;
-                        _this.preview_data = [];
-                        _this.exceldata = [];
-                        _this.excel_validation_error = [[], []];
-                        _this.is_preview = false;
-                        _this.is_hasfile = false;
-                        _this.is_import = false;
-                        _this.$refs.upload.clearFiles()
-                        _this.getDoctors();
-                    })
-                    .catch(function(error) {
-                        _this.$notify({
-                            type: "error",
-                            title: "Import Physician List Failed",
-                            message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
-                            duration: 0
-                        });
-                        _this.is_hasfile = true;
-                        _this.is_import = false;
+                .post("import_doctor_list", this.preview_data)
+                .then(function(res) {
+                    this.$notify({
+                        type: "success",
+                        title: "Import",
+                        message: "Data imported successfully!"
                     });
+                    this.sheet_length = "";
+                    this.tablepage = 1;
+                    this.tablelength = 0;
+                    this.preview_data = [];
+                    this.exceldata = [];
+                    this.excel_validation_error = [[], []];
+                    this.is_preview = false;
+                    this.is_hasfile = false;
+                    this.is_import = false;
+                    this.$refs.upload.clearFiles()
+                    this.getDoctors();
+                }.bind(this))
+                .catch(function(error) {
+                    this.$notify({
+                        type: "error",
+                        title: "Import Physician List Failed",
+                        message: `Error Code: ${error.response.status} : ${error.response.data.message}`,
+                        duration: 0
+                    });
+                    this.is_hasfile = true;
+                    this.is_import = false;
+                }.bind(this));
             } else {
-                _this.$notify({
+                this.$notify({
                     type: "warning",
                     title: "Import",
                     message: "Upload request error, please check your file."
                 });
-                _this.is_hasfile = true;
-                _this.is_import = false;
+                this.is_hasfile = true;
+                this.is_import = false;
             }
         },
         handleExceedFile(files, fileList) {
@@ -1614,6 +1613,15 @@ export default {
                                                     cell_position: cell_position
                                                 }
                                             );
+                                        }else{
+                                            if(_this.doctor_list_compress.includes(_this.trimToCompare(compare[0]))){
+                                                _this.excel_validation_error[1].push({
+                                                    id: "wsc" + Math.random().toString(36).substring(7) + (i + 1),
+                                                    value: cell.v,
+                                                    message: "Already exist in the database ",
+                                                    cell_position: cell_position
+                                                });
+                                            }
                                         }
                                     }
                                 }
@@ -1761,7 +1769,7 @@ export default {
                             date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() +
                             '/' + date1.getFullYear();
                         try {
-                            var full_time_individual_fee = patient.pooled_record.full_time_individual_fee;   
+                            var full_time_individual_fee = patient.pooled_record.full_time_individual_fee;
                         } catch (error) {
                             var full_time_individual_fee = 0;
                         }
