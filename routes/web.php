@@ -125,6 +125,7 @@ Route::group(['prefix' => 'user', 'middleware' => 'auth'], function () {
     Route::delete('delete_record/{id}', 'UserController@deleteRecord');
     Route::delete('delete_recordBybatch/{id}', 'UserController@deleteByBatch');
     Route::put('edit_record', 'UserController@editRecord');
+    Route::post('get_pooled/{recordid}', 'UserController@getRecordPooled');
 });
 Route::group(['prefix' => 'observer', 'middleware' => 'auth'], function () {
     Route::get('/', 'ObserverController@index')->name('observer');
