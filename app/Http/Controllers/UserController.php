@@ -19,7 +19,8 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use DB;
+//use DB;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Hospital;
@@ -853,11 +854,20 @@ class UserController extends Controller
         );
     }
 
+    public function getRecordPooled(Request $request)
+    {
+        $pooled = PooledRecord::select('*')
+        ->where('record_id', $request->recordid)
+        ->first();
+        $pooled->full_time_doctors = json_decode($pooled->full_time_doctors);
+        $pooled->part_time_doctors = json_decode($pooled->part_time_doctors);
+        return $pooled;
+    }
+
     public function editRecord(Request $request): CreditRecord
     {
         $hospital = Hospital::find(Auth::user()->hospital_id);
         $setting = json_decode($hospital->setting);
-
         $doctorRole = array(
             'requesting' => $setting->physicians[0],
             'surgeon' => $setting->physicians[1],
@@ -942,30 +952,29 @@ class UserController extends Controller
             }
             DB::table('pooled_records')->where('record_id', $request->id)->delete();
         } else {
+            $full_time_id = [];
+            $part_time_id = [];
+            foreach ($request->doctorsFullTime as $fulltime) {
+                array_push($full_time_id, $fulltime['id']);
+            }
+            foreach ($request->doctorsPartTime as $parttime) {
+                array_push($part_time_id, $parttime['id']);
+            }
             if ($request->admission >= '2020-03-1') {
                 $record->record_type = "new";
                 $record->total = $request->pf;
                 $record->non_medical_fee = $request->pf * $setting->nonmedical;
                 $record->medical_fee = $request->pf * $setting->medical;
                 $record->save();
-                $full_time_doctors = Doctor::select('id')
-                    ->where('is_active', true)
-                    ->where('is_parttime', false)
-                    ->pluck('id')
-                    ->toArray();
-                $part_time_doctors = Doctor::select('id')->where('is_active', true)
-                    ->where('is_parttime', true)->pluck('id')->toArray();
-                $deletePooled = DB::table('pooled_records')->where('record_id', $request->id)->delete();
-                $pooled_record = new PooledRecord;
-                $pooled_record->full_time_doctors = json_encode($full_time_doctors);
-                $pooled_record->part_time_doctors = json_encode($part_time_doctors);
+                $pooled_record = PooledRecord::where('record_id', $request->id)->first();
+                $pooled_record->full_time_doctors = json_encode($full_time_id);
+                $pooled_record->part_time_doctors = json_encode($part_time_id);
                 $total_pooled_fee = $record->non_medical_fee * $setting->pooled;
                 $initial_individual_fee = ($record->non_medical_fee * $setting->pooled) /
-                    (count($full_time_doctors) +
-                        (count($part_time_doctors) / 2));
+                    (count($full_time_id) +
+                        (count($part_time_id) / 2));
                 $pooled_record->full_time_individual_fee = $initial_individual_fee;
                 $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
-                $pooled_record->record_id = $record->id;
                 $pooled_record->save();
                 foreach ($doctorrecord as $dr) {
                     DB::table('doctor_records')->where('id', $dr->id)->delete();
@@ -1004,24 +1013,15 @@ class UserController extends Controller
                 $record->non_medical_fee = $request->pf * $setting->nonmedical;
                 $record->medical_fee = $request->pf * $setting->medical;
                 $record->save();
-                $full_time_doctors = Doctor::select('id')
-                    ->where('is_active', true)
-                    ->where('is_parttime', false)
-                    ->pluck('id')
-                    ->toArray();
-                $part_time_doctors = Doctor::select('id')->where('is_active', true)
-                    ->where('is_parttime', true)->pluck('id')->toArray();
-                $deletePooled = DB::table('pooled_records')->where('record_id', $request->id)->delete();
-                $pooled_record = new PooledRecord;
-                $pooled_record->full_time_doctors = json_encode($full_time_doctors);
-                $pooled_record->part_time_doctors = json_encode($part_time_doctors);
+                $pooled_record = PooledRecord::where('record_id', $request->id)->first();
+                $pooled_record->full_time_doctors = json_encode($full_time_id);
+                $pooled_record->part_time_doctors = json_encode($part_time_id);
                 $total_pooled_fee = $record->non_medical_fee * $setting->pooled;
                 $initial_individual_fee = ($record->non_medical_fee * $setting->pooled) /
-                    (count($full_time_doctors) +
-                        (count($part_time_doctors) / 2));
+                    (count($full_time_id) +
+                        (count($part_time_id) / 2));
                 $pooled_record->full_time_individual_fee = $initial_individual_fee;
                 $pooled_record->part_time_individual_fee = $initial_individual_fee / 2;
-                $pooled_record->record_id = $record->id;
                 $pooled_record->save();
                 foreach ($doctorrecord as $dr) {
                     DB::table('doctor_records')->where('id', $dr->id)->delete();
