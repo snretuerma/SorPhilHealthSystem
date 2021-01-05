@@ -328,11 +328,6 @@
                                 >
                                     </el-table-column>
                                     <el-table-column
-                                    prop="Reffered_Physician"
-                                    label="Reffered Physician"
-                                    >
-                                    </el-table-column>
-                                    <el-table-column
                                     prop="Co_Management"
                                     label="Co Management"
                                 >
@@ -586,6 +581,7 @@ export default {
             hours = hours ? hours : 12;
             minutes = minutes < 10 ? '0'+minutes : minutes;
             var strTime = hours + ampm;
+
             return cellValue.getFullYear() + "-" + (cellValue.getMonth() + 1) + "-" + cellValue.getDate() + " " + strTime;
         },
         covertReadable(row, column, cellValue, index) {
@@ -851,6 +847,27 @@ export default {
                                 }
                                 if(R > 0 && C < 13){
                                     if(C == 1){
+                                        try {
+                                            var dateformat = cell.v.getHours()
+                                        } catch (error) {
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: cell.v,
+                                                message: "must correct Datetime format, please check/download to sample excel file ",
+                                                cell_position: cell_position,
+                                            });
+                                        }
+                                    }else if(C == 2){
+                                        try {
+                                            var dateformat = cell.v.getHours()
+                                        } catch (error) {
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: cell.v,
+                                                message: "must correct Datetime format, please check/download to sample excel file ",
+                                                cell_position: cell_position,
+                                            });
+                                        }
                                     }else if (C == 3) {
                                         if(isNaN(cell.v % 1)){
                                             _this.excel_validation_error[2].push({
