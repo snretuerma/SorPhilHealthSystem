@@ -368,7 +368,7 @@ export default {
             await axios
                 .get("get_batch")
                 .then(response => {
-                    response.data.push({ batch: "All" });
+                    // response.data.push({ batch: "All" });
                     this.batch = response.data;
                     this.value[0] = response.data[0].batch;
                     this.first_batch = response.data[0].batch;
@@ -440,14 +440,14 @@ export default {
                             if (patient["record_type"] == "private") {
                                 if (patient.total != "") {
                                     doctor.privateDoctorShare += Number(
-                                        patient.total
+                                        patient.pivot.professional_fee
                                     );
                                     doctor.privatePbsTotal =
                                         doctor.privateDoctorShare;
                                 } else doctor.privateDoctorShare += 0;
                             } else if (patient.total != "") {
                                 doctor.publicDoctorShare += Number(
-                                    patient.total
+                                    patient.pivot.professional_fee
                                 );
                                 doctor.publicNursingServices += Number(
                                     patient.medical_fee
