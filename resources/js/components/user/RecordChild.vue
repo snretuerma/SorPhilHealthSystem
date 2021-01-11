@@ -733,8 +733,8 @@ export default {
                 .then(function(res) {
                     this.$notify({
                         type: 'success',
-                        title: 'Import',
-                        message: "Data imported successfully!",
+                        title: 'Import Proccessing...',
+                        message: "This may take time to reflict to the user interface, you can visit other page while waiting",
                         duration: 0
                     });
                     this.preview_excel_sheet_data = [];
@@ -1232,6 +1232,7 @@ export default {
     mounted() {
         this.getBatch();
         this.getDoctors();
+        this.filter.push('Patient Name');
     },
 }
 </script>
