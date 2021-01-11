@@ -8,16 +8,47 @@
             </div>
         </div>
         <div class="row" id="search_box" style="margin-bottom: 10px">
-            <div class="col-xl-8 col-lg-7 col-md-12 col-sm-12">
+            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
                 <div class="row">
-                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
                         <el-input
                             prefix-icon="el-icon-search"
                             v-model="search"
                             placeholder="Type to search"
                         />
                     </div>
-                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12">
+                        <el-form ref="form">
+                            <el-form-item prop="filter">
+                                    <el-select
+                                        placeholder="Filter by"
+                                        ref="defaultValue"
+                                        :required="true"
+                                        v-model="filter"
+                                        class="block-button"
+                                        size="large"
+                                        value-key="batch"
+                                        multiple
+                                        :multiple-limit="1"
+                                        filterable
+                                        default-first-option
+                                        >
+                                        <el-option
+                                            v-for="(item, index) in toFilter"
+                                            :key="index"
+                                            :label="item.filter"
+                                            :value="item.filter"
+                                            >
+                                        {{item.filter}}</el-option>
+                                    </el-select>
+                            </el-form-item>
+                        </el-form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                <div class="row">
+                    <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12">
                         <el-form ref="form">
                             <el-form-item prop="batch">
                                     <el-select
@@ -43,11 +74,7 @@
                             </el-form-item>
                         </el-form>
                     </div>
-                </div>
-            </div>
-            <div class="col-xl-4 col-lg-5 col-md-12 col-sm-12">
-                <div class="row">
-                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12">
                         <!-- <el-button
                             class="btn-action block-button"
                             @click="triggerAdd"
@@ -76,7 +103,7 @@
                             </el-dropdown-menu>
                         </el-dropdown>
                     </div>
-                    <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12">
+                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-12">
                         <el-dropdown @command="formDialog" class="block-button btn-action">
                             <el-button>
                                 Excel
@@ -416,6 +443,11 @@ import XLSX from 'xlsx';
 export default {
     data() {
         return {
+            toFilter:[{filter:'Patient Name'}, {filter:'Attending Physician'}
+            , {filter:'Requesting Physician'}, {filter:'Surgeon Physician'}
+            , {filter:'ER Physician'}, {filter:'Anesthesiology Physician'}
+            , {filter:'Co-management Physician'}, {filter:'Admitting Physician'}],
+            filter:[],
             search: "",
             data:[],
             batch:[],
@@ -455,18 +487,86 @@ export default {
                 return this.data;
             }
             this.page = 1;
-            return this.data.filter(
-                data =>
-                    data.patient_name
-                        .toLowerCase()
-                        .includes(this.search.toLowerCase()) ||
-                    data.admission_date
-                        .toLowerCase()
-                        .includes(this.search.toLowerCase()) ||
-                    data.discharge_date
-                        .toLowerCase()
-                        .includes(this.search.toLowerCase())
-            );
+            switch (this.filter[0]) {
+                case "Attending Physician":
+                    return this.data.filter(
+                    data =>
+                        data.allattending
+                            .toLowerCase()
+                            .includes(this.search.toLowerCase())
+                    );
+                    break;
+                case "Requesting Physician":
+                    return this.data.filter(
+                    data =>
+                        data.allrequesting
+                            .toLowerCase()
+                            .includes(this.search.toLowerCase())
+                    );
+                    break;
+                case "Surgeon Physician":
+                    return this.data.filter(
+                    data =>
+                        data.allsurgeon
+                            .toLowerCase()
+                            .includes(this.search.toLowerCase())
+                    );
+                    break;
+                case "Healthcare Physician":
+                    return this.data.filter(
+                    data =>
+                        data.allhealthcare
+                            .toLowerCase()
+                            .includes(this.search.toLowerCase())
+                    );
+                    break;
+                case "ER Physician":
+                    return this.data.filter(
+                    data =>
+                        data.aller
+                            .toLowerCase()
+                            .includes(this.search.toLowerCase())
+                    );
+                    break;
+                case "Anesthesiologist Physician":
+                    return this.data.filter(
+                    data =>
+                        data.allanesthesiologist
+                            .toLowerCase()
+                            .includes(this.search.toLowerCase())
+                    );
+                    break;
+                case "Co-management Physician":
+                    return this.data.filter(
+                    data =>
+                        data.allcomanagement
+                            .toLowerCase()
+                            .includes(this.search.toLowerCase())
+                    );
+                    break;
+                case "Admitting Physician":
+                    return this.data.filter(
+                    data =>
+                        data.alladmitting
+                            .toLowerCase()
+                            .includes(this.search.toLowerCase())
+                    );
+                    break;
+                default:
+                    return this.data.filter(
+                        data =>
+                            data.patient_name
+                                .toLowerCase()
+                                .includes(this.search.toLowerCase()) ||
+                            data.admission_date
+                                .toLowerCase()
+                                .includes(this.search.toLowerCase()) ||
+                            data.discharge_date
+                                .toLowerCase()
+                                .includes(this.search.toLowerCase())
+                    );
+
+            }
         },
         listData() {
             this.total = this.searching.length;

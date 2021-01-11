@@ -231,7 +231,7 @@ class UserController extends Controller
         );
 
         $doctor = new Doctor;
-        $doctor->name = $request->name;
+        $doctor->name = strtoupper($request->name);
         $doctor->is_active = $request->is_active;
         $doctor->is_parttime = $request->is_parttime;
         $doctor->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
@@ -486,7 +486,7 @@ class UserController extends Controller
 
         $record = new CreditRecord;
         $record->hospital()->associate(Hospital::find(auth()->user()->hospital_id)->id);
-        $record->patient_name = $request->name;
+        $record->patient_name = strtoupper($request->name);
         $record->batch = $request->batch[0];
         $record->admission_date = Carbon::parse($request->admission)
             ->setTimezone('Asia/Manila');
@@ -750,7 +750,7 @@ class UserController extends Controller
         $seventyPercent = ($total * $setting->nonmedical) * $setting->shared;
 
         $record = CreditRecord::find($request->id);
-        $record->patient_name = $request->name;
+        $record->patient_name = strtoupper($request->name);
         $record->batch = $request->batch[0];
         $record->admission_date = Carbon::parse($request->admission)
             ->setTimezone('Asia/Manila');
