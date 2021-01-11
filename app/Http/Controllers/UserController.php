@@ -81,9 +81,10 @@ class UserController extends Controller
         $batch = $request->all()[0]['import_batch'];
         $doctor_list = $request->all()[0]['doctor_list'];
 
-        for ($i=0; $i < count($request->all()[0]['import_batch']) ; $i++) {
-            foreach(array_chunk($request->all()[0]['doctor_record'][$i]['content'], 100) as $doctor_record){
-                array_push($request_chunk,
+        for ($i=0; $i < count($request->all()[0]['import_batch']); $i++) {
+            foreach (array_chunk($request->all()[0]['doctor_record'][$i]['content'], 100) as $doctor_record) {
+                array_push(
+                    $request_chunk,
                     [
                         [
                             "import_batch" => [$batch[$i]],
