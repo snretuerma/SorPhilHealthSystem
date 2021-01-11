@@ -1232,6 +1232,7 @@ export default {
     mounted() {
         this.getBatch();
         this.getDoctors();
+        this.filter.push('Patient Name');
     },
 }
 </script>
