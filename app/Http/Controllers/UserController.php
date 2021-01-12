@@ -191,6 +191,7 @@ class UserController extends Controller
             $query->with('pooled_record');
         }])
             ->where('hospital_id', Auth::user()->hospital_id)
+            ->orderBy('name', 'ASC')
             ->get();
 
         return response()->json($summary);
@@ -423,7 +424,7 @@ class UserController extends Controller
     public function getSummary($batch)
     {
         if ($batch != "All" || $batch != "all") {
-            $summary = Doctor::with(['credit_records' => function ($query) use ($batch) {
+            $summary = Doctor::orderBy('name', 'ASC')->with(['credit_records' => function ($query) use ($batch) {
                 $query
                     ->where('batch', $batch)
                     ->with('pooled_record');
@@ -432,7 +433,7 @@ class UserController extends Controller
                 ->get();
             return response()->json($summary);
         } else {
-            $summary = Doctor::with(['credit_records' => function ($query) {
+            $summary = Doctor::orderBy('name', 'ASC')->with(['credit_records' => function ($query) {
                 $query->with('pooled_record');
             }])
                 ->where('hospital_id', Auth::user()->hospital_id)
@@ -444,10 +445,13 @@ class UserController extends Controller
     {
         if ($batch != "All") {
             $records = CreditRecord::with('hospital', 'doctors')
-                ->where('batch', $batch)->get();
+                ->where('batch', $batch)
+                ->orderBy('patient_name', 'ASC')
+                ->get();
             return response()->json($records);
         } else {
             $records = CreditRecord::with('hospital', 'doctors')
+                ->orderBy('patient_name', 'ASC')
                 ->get();
             return response()->json($records);
         }
@@ -645,6 +649,7 @@ class UserController extends Controller
     public function getAllDoctors()
     {
         return Doctor::where('hospital_id', Auth::user()->hospital_id)
+            ->orderBy('name', 'ASC')
             ->get();
     }
 

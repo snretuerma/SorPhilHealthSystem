@@ -379,7 +379,14 @@
             <el-row>
                 <el-col>
                     <el-row>
-                        <el-col class="col-sm-12 col-md-10 col-lg-10 col-xl-10">
+                        <el-col class="col-sm-12 col-md-12 col-lg-5 col-xl-5">
+                            <el-input
+                                prefix-icon="el-icon-search"
+                                v-model="doc_rec_search"
+                                placeholder="Type to search"
+                            />
+                        </el-col>
+                        <el-col class="col-sm-12 col-md-12 col-lg-5 col-xl-5">
                             <el-form ref="form">
                                 <el-form-item prop="batch">
                                     <el-select
@@ -408,11 +415,11 @@
                                 </el-form-item>
                             </el-form>
                         </el-col>
-                        <el-col class="col-sm-12 col-md-2 col-lg-2 col-xl-2">
+                        <el-col class="col-sm-12 col-md-12 col-lg-2 col-xl-2">
                             <el-button style="width:100%;" @click="exportDoctorRecordExcel" ref="drecord" id="drecord">Export</el-button>
                         </el-col>
                     </el-row>
-                    <el-table :data="batch_list" border>
+                    <el-table :data="tableDataDoctorRecord" :default-sort = "{prop: 'patient_name'}" border>
                         <el-table-column
                             fixed
                             prop="patient_name"
@@ -424,13 +431,13 @@
                             <el-table-column
                                 prop="admission_date"
                                 label="Admission Date"
-                                min-width="150"
+                                min-width="155"
                             >
                             </el-table-column>
                             <el-table-column
                                 prop="discharge_date"
                                 label="Discharge Date"
-                                min-width="140"
+                                min-width="155"
                             >
                             </el-table-column>
                         </el-table-column>
@@ -466,7 +473,7 @@
                             <el-table-column label="AP">
                                 <el-table-column
                                     prop="pivot.attending_name"
-                                    min-width="90"
+                                    min-width="220"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -479,7 +486,7 @@
                             <el-table-column label="REF">
                                 <el-table-column
                                     prop="pivot.ref_name"
-                                    min-width="90"
+                                    min-width="220"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -492,7 +499,7 @@
                             <el-table-column label="ANES">
                                 <el-table-column
                                     prop="pivot.anesthesiologist_name"
-                                    min-width="90"
+                                    min-width="220"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -505,7 +512,7 @@
                             <el-table-column label="CO_MGT">
                                 <el-table-column
                                     prop="pivot.comanagement_name"
-                                    min-width="90"
+                                    min-width="220"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -518,7 +525,7 @@
                             <el-table-column label="ADMIT">
                                 <el-table-column
                                     prop="pivot.admitting_name"
-                                    min-width="90"
+                                    min-width="220"
                                 >
                                 </el-table-column>
                                 <el-table-column
@@ -603,6 +610,18 @@
                             </el-table-column>
                         </el-table-column>
                     </el-table>
+                    <div class="row">
+                        <div class="col-12 text-center">
+                            <el-pagination
+                                class="align-middle"
+                                background
+                                layout="prev, pager, next"
+                                @current-change="handleCurrentChangeDoctorRecord"
+                                :page-size="page_size"
+                                :total="doc_rec_total"
+                            />
+                        </div>
+                    </div>
                     <br />
                         <div class="row">
                             <div class="col-12">
@@ -612,12 +631,6 @@
                                     row-class-name="success-row"
                                 >
                                     <el-table-column :label="dialogViewTitle">
-                                        <el-table-column
-                                            label="Net PF Total"
-                                            :formatter="formatNumber"
-                                            min-width="150"
-                                            prop="net_pf_total"
-                                        ></el-table-column>
                                         <el-table-column
                                             label="Attending Physician Total"
                                             :formatter="formatNumber"
@@ -856,7 +869,6 @@ export default {
             dialogExcelFile: false,
             sheet_length: "",
             tablepage: 1,
-            page_size: 10,
             tablelength: 0,
             preview_data: [],
             exceldata: [],
@@ -899,7 +911,10 @@ export default {
                 grand_total: 0,
             }],
             is_import: false,
-            is_hasfile: false
+            is_hasfile: false,
+            doc_rec_page: 1,
+            doc_rec_search: "",
+            doc_rec_total: "",
         }
     },
     computed: {
@@ -963,6 +978,34 @@ export default {
                 this.page_size * this.page - this.page_size,
                 this.page_size * this.page
             );
+        },
+        searchingDoctorRecord() {
+            var batch_list = this.batch_list.sort(function(a, b) {
+                                    var nameA = a.patient_name.toUpperCase();
+                                    var nameB = b.patient_name.toUpperCase();
+                                    if (nameA < nameB) {
+                                        return -1;
+                                    }
+                                    if (nameA > nameB) {
+                                        return 1;
+                                    }
+                                return 0;
+                            });
+            if (!this.doc_rec_search) {
+                this.doc_rec_total = batch_list.length;
+                return batch_list;
+            }
+            this.doc_rec_page = 1;
+            return batch_list.filter(data =>
+                data.patient_name.toLowerCase().includes(this.doc_rec_search.toLowerCase())
+            );
+        },
+        tableDataDoctorRecord() {
+            this.doc_rec_total = this.searchingDoctorRecord.length;
+            return this.searchingDoctorRecord.slice(
+                this.page_size * this.doc_rec_page - this.page_size,
+                this.page_size * this.doc_rec_page
+            );
         }
     },
     methods: {
@@ -1024,6 +1067,7 @@ export default {
             this.dialogViewTitle = row_data.name.toUpperCase();
             this.show_doctor_summary = true;
             this.doctor_id = row_data.id;
+            this.doc_rec_page = 1;
         },
         getDoctorRecord(row_data){
             axios
@@ -1356,6 +1400,9 @@ export default {
         },
         handleCurrentChange(value) {
             this.page = value;
+        },
+        handleCurrentChangeDoctorRecord(value) {
+            this.doc_rec_page = value;
         },
         formResetFields() {
             if (this.$refs.doctors_form !== undefined) {
@@ -1774,24 +1821,31 @@ export default {
             this.proccessLoading($event, function(loading_response){
                 if(loading_response == "done"){
                     var row = 5;
-                    this.batch_list.forEach((patient)=>{
+                    var batch_list_sorted = this.batch_list.sort(function(a, b) {
+                            var nameA = a.patient_name.toUpperCase();
+                            var nameB = b.patient_name.toUpperCase();
+                            if (nameA < nameB) {
+                                return -1;
+                            }
+                            if (nameA > nameB) {
+                                return 1;
+                            }
+                        return 0;
+                    });
+                    batch_list_sorted.forEach((patient)=>{
                         row += 1;
                         var date = new Date(patient.admission_date);
                         var date1 = new Date(patient.discharge_date);
                         var patient_confinement_date = (date.getMonth() + 1) + '/' + date.getDate() + '/' +
                             date.getFullYear() + ' to ' + (date1.getMonth() + 1) + '/' + date1.getDate() +
                             '/' + date1.getFullYear();
-                        try {
-                            var full_time_individual_fee = patient.pooled_record.full_time_individual_fee;
-                        } catch (error) {
-                            var full_time_individual_fee = 0;
-                        }
+
                         this.sheet_data[0]["A"+row] = {t: 's', v: patient.patient_name};
                         this.sheet_data[0]["B"+row] = {t: 's', v: patient_confinement_date};
                         this.sheet_data[0]["C"+row] = {t: 'n', v: patient.grossPF};
                         this.sheet_data[0]["D"+row] = {t: 'n', v: patient.netPF};
                         this.sheet_data[0]["E"+row] = {t: 'n', v: patient.pivot.professional_fee};
-                        this.sheet_data[0]["F"+row] = {t: 'n', v: full_time_individual_fee};
+                        this.sheet_data[0]["F"+row] = {t: 'n', v: patient.pooled};
                         this.sheet_data[0]["G"+row] = {t: 's', v: patient.pivot.attending_name};
                         this.sheet_data[0]["H"+row] = {t: 'n', v: patient.pivot.attending_fee};
                         this.sheet_data[0]["I"+row] = {t: 's', v: patient.pivot.ref_name};

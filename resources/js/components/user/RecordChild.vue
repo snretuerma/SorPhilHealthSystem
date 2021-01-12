@@ -134,7 +134,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div id="test">
-                            <el-table v-loading="loading" :data="listData">
+                            <el-table v-loading="loading" :data="listData" :default-sort = "{prop: 'patient_name'}">
                                 <el-table-column
                                     width="200"
                                     label="Patient"
@@ -900,6 +900,13 @@ export default {
                                                 message: "This cell can only contain numbers",
                                                 cell_position: cell_position,
                                             });
+                                        }else if(C == 4){
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell is required ",
+                                                cell_position: cell_position,
+                                            });
                                         }else if(C == 12){
                                             _this.excel_validation_error[2].push({
                                                 id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
@@ -977,7 +984,14 @@ export default {
                                             });
                                         }
                                     }else if(C > 3 && C < 12){
-                                        if(cell.v == "NULL"){
+                                        if(cell.v == "NULL" && C != 4){
+                                        }else if(C == 4 && cell.v == "NULL"){
+                                            _this.excel_validation_error[2].push({
+                                                id: 'wsc' + (Math.random().toString(36).substring(7)) + (i + 1),
+                                                value: '',
+                                                message: "This cell is required, must not contain 'NULL' or empty ",
+                                                cell_position: cell_position,
+                                            });
                                         }else{
                                             if(cell.v.match(/[^,]+,[^,]+/g) == null){
                                                 _this.excel_validation_error[2].push({
