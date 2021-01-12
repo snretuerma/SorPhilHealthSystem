@@ -170,7 +170,6 @@ class UserController extends Controller
     {
         $hospital = Hospital::find(Auth::user()->hospital_id);
         return view('roles.user.doctors')->with('setting', $hospital->setting);
-
     }
     //Summary
     public function summary()
