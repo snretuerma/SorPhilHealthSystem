@@ -194,7 +194,7 @@ export default {
         getRestore: function() {
             axios
             .get("restore_get")
-            .then(response => { console.log(response.data);
+            .then(response => {
                 this.data = response.data;
                 this.loading = false;
             })

@@ -1,5 +1,5 @@
 @extends('layouts.user')
 
 @section('content')
-<doctors-component/>
+<doctors-component :setting-data="{{$setting}}"/>
 @endsection

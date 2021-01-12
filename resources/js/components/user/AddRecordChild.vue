@@ -634,10 +634,7 @@ export default {
                   break;
             }
         },
-        //function to hide addrecordchild.vue
         triggerClose() {
-            //add-close was invoke in recordparent.vue so the emit will
-            //same just call 'add-close'
             this.$emit("add-close");
         },
         clearField() {
@@ -660,7 +657,6 @@ export default {
             }
         },
         testName(name) {
-            // ^([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*,\s([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*$
             var regex = new RegExp(/^([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*,\s([a-zA-ZñÑ.]+)((?:\s|-)([a-zA-ZñÑ.]+))*$/);
             if(regex.test(name)) {
               return true;
@@ -919,7 +915,6 @@ export default {
                                 message: 'Please select physician',
                                 offset: 0,
                             });
-                            // loading.close();
                             this.btnLoading=false;
                         } else {
                             this.$notify({
@@ -928,7 +923,6 @@ export default {
                                 message: 'All fields with * are required',
                                 offset: 0,
                             });
-                            // loading.close();
                             this.btnLoading=false;
                         }
                     } else {
@@ -936,17 +930,6 @@ export default {
                             axios.put('edit_record', this.form)
                             .then(response => {
                                 if (response.status >= 200 && response.status <=299) {
-                                    // console.log(response)
-                                    // var index = this.doctors.findIndex(object => object.id == response.data.id);
-                                    // if (index !== undefined) {
-                                    //     this.doctors[index].name = response.data.name;
-                                    //     this.doctors[index].is_parttime = response.data.is_parttime;
-                                    //     this.doctors[index].is_active = response.data.is_active;
-                                    // }
-                                    // this.show_dialog = false;
-                                    // this.formResetFields();
-                                    // this.edit_object = '';
-                                    // loading.close();
                                     this.$notify({
                                         type: 'success',
                                         title: 'Editing Record Successful',
@@ -957,10 +940,6 @@ export default {
                                     _this.form.doctors_id=[];
                                     this.triggerClose();
                                 }else {
-                                    // this.show_dialog = false;
-                                    // this.formResetFields();
-                                    // this.edit_object = '';
-                                    // loading.close();
                                     this.$notify({
                                         type: 'error',
                                         title: 'Editing Record Failed',
@@ -969,10 +948,6 @@ export default {
                                     });
                                 }
                             }).catch(error => {
-                                // this.show_dialog = false;
-                                // this.formResetFields();
-                                // this.edit_object = '';
-                                // loading.close();
                                 this.$notify({
                                     type: 'error',
                                     title: 'Editing Record Failed',
