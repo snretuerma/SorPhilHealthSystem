@@ -423,7 +423,7 @@ class UserController extends Controller
     public function getSummary($batch)
     {
         if ($batch != "All" || $batch != "all") {
-            $summary = Doctor::with(['credit_records' => function ($query) use ($batch) {
+            $summary = Doctor::orderBy('name', 'ASC')->with(['credit_records' => function ($query) use ($batch) {
                 $query
                     ->where('batch', $batch)
                     ->with('pooled_record');
@@ -432,7 +432,7 @@ class UserController extends Controller
                 ->get();
             return response()->json($summary);
         } else {
-            $summary = Doctor::with(['credit_records' => function ($query) {
+            $summary = Doctor::orderBy('name', 'ASC')->with(['credit_records' => function ($query) {
                 $query->with('pooled_record');
             }])
                 ->where('hospital_id', Auth::user()->hospital_id)
