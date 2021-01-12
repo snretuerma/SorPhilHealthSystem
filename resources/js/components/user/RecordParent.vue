@@ -17,11 +17,9 @@ export default {
         };
     },
     methods: {
-        //parent trigger and data is parameter to pass
         addFormTrigger(data, type) {
             this.data=data;
             this.trigger = true;
-            console.log(type);
             if (type == "edit") {
                 this.processType="edit";
             } else {

@@ -456,7 +456,7 @@
                         >
                         </el-table-column>
                         <el-table-column
-                            prop="pooled_record.full_time_individual_fee"
+                            prop="pooled"
                             label="Pooled"
                             min-width="80"
                             :formatter="formatNumber"
@@ -612,6 +612,12 @@
                                     row-class-name="success-row"
                                 >
                                     <el-table-column :label="dialogViewTitle">
+                                        <el-table-column
+                                            label="Net PF Total"
+                                            :formatter="formatNumber"
+                                            min-width="150"
+                                            prop="net_pf_total"
+                                        ></el-table-column>
                                         <el-table-column
                                             label="Attending Physician Total"
                                             :formatter="formatNumber"
@@ -769,6 +775,7 @@
 import XLSX from "xlsx";
 import _ from "lodash";
 export default {
+    props: ['settingData'],
     data() {
         return {
             attending_fee_total: 0,
@@ -883,6 +890,7 @@ export default {
                 'er'
             ],
             record_total: [{
+                net_pf_total: 0,
                 attending_fee_total: 0,
                 ref_fee_total: 0,
                 anesthesiologist_fee_total: 0,
@@ -1027,6 +1035,7 @@ export default {
                 var batch = [];
                 var count = 0;
 
+                this.record_total[0].net_pf_total = 0;
                 this.record_total[0].attending_fee_total = 0;
                 this.record_total[0].ref_fee_total = 0;
                 this.record_total[0].anesthesiologist_fee_total = 0;
@@ -1037,13 +1046,17 @@ export default {
                 row_data.credit_records.forEach(el => {
                     el.netPF = 0;
                     el.grossPF = 0;
+                    el.pooled = 0;
 
-                    if (el.pooled_record != null) {
-                        el.netPF = Number(el.pivot.professional_fee) + Number(el.pooled_record.full_time_individual_fee);
-                        el.grossPF = el.netPF * 2;
-                    } else {
-                        el.netPF = Number(el.pivot.professional_fee + 0);
-                        el.grossPF = el.netPF * 2;
+                    if (el.record_type == "private") {
+                        el.grossPF = el.total;
+                        el.pivot.professional_fee = el.total;
+                    }
+                    else {
+                        el.grossPF = el.total;
+                        el.netPF = el.grossPF*this.settingData.nonmedical;
+                        el.pivot.professional_fee = el.netPF*this.settingData.shared;
+                        el.pooled = el.netPF*this.settingData.pooled;
                     }
 
                     if (el.batch == this.value[0]) {

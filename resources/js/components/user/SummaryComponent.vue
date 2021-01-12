@@ -351,8 +351,6 @@ export default {
         },
         changes() {
             if (this.value != "") {
-                //this.privateDoctors = [];
-                //this.active = [];
                 this.sumOfAll = [];
                 this.nursing_services_total = 0;
                 this.non_medical_total = 0;
@@ -368,7 +366,6 @@ export default {
             await axios
                 .get("get_batch")
                 .then(response => {
-                    // response.data.push({ batch: "All" });
                     this.batch = response.data;
                     this.value[0] = response.data[0].batch;
                     this.first_batch = response.data[0].batch;
@@ -421,7 +418,6 @@ export default {
                         doctor.publicFiftyTotal = 0;
                         doctor.privateFiftyTotal = 0;
 
-                        // doctor.doctors_share = 0;
                         doctor.publicPooled = 0;
                         doctor.privatePooled = 0;
 
