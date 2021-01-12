@@ -733,7 +733,7 @@ export default {
                     this.$notify({
                         type: 'success',
                         title: 'Import Proccessing...',
-                        message: "This may take time to reflict to the user interface, you can visit other page while waiting",
+                        message: "This may take time to reflect to the user interface, you can visit other page while waiting",
                         duration: 0
                     });
                     this.preview_excel_sheet_data = [];
