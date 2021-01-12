@@ -190,6 +190,7 @@ class UserController extends Controller
             $query->with('pooled_record');
         }])
             ->where('hospital_id', Auth::user()->hospital_id)
+            ->orderBy('name', 'ASC')
             ->get();
 
         return response()->json($summary);
@@ -443,10 +444,13 @@ class UserController extends Controller
     {
         if ($batch != "All") {
             $records = CreditRecord::with('hospital', 'doctors')
-                ->where('batch', $batch)->get();
+                ->where('batch', $batch)
+                ->orderBy('patient_name', 'ASC')
+                ->get();
             return response()->json($records);
         } else {
             $records = CreditRecord::with('hospital', 'doctors')
+                ->orderBy('patient_name', 'ASC')
                 ->get();
             return response()->json($records);
         }
@@ -644,6 +648,7 @@ class UserController extends Controller
     public function getAllDoctors()
     {
         return Doctor::where('hospital_id', Auth::user()->hospital_id)
+            ->orderBy('name', 'ASC')
             ->get();
     }
 

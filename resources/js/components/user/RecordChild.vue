@@ -134,7 +134,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div id="test">
-                            <el-table v-loading="loading" :data="listData">
+                            <el-table v-loading="loading" :data="listData" :default-sort = "{prop: 'patient_name'}">
                                 <el-table-column
                                     width="200"
                                     label="Patient"

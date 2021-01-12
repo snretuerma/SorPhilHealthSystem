@@ -412,7 +412,7 @@
                             <el-button style="width:100%;" @click="exportDoctorRecordExcel" ref="drecord" id="drecord">Export</el-button>
                         </el-col>
                     </el-row>
-                    <el-table :data="batch_list" border>
+                    <el-table :data="batch_list" :default-sort = "{prop: 'patient_name'}" border>
                         <el-table-column
                             fixed
                             prop="patient_name"
@@ -1761,7 +1761,18 @@ export default {
             this.proccessLoading($event, function(loading_response){
                 if(loading_response == "done"){
                     var row = 5;
-                    this.batch_list.forEach((patient)=>{
+                    var batch_list_sorted = this.batch_list.sort(function(a, b) {
+                            var nameA = a.patient_name.toUpperCase();
+                            var nameB = b.patient_name.toUpperCase();
+                            if (nameA < nameB) {
+                                return -1;
+                            }
+                            if (nameA > nameB) {
+                                return 1;
+                            }
+                        return 0;
+                    });
+                    batch_list_sorted.forEach((patient)=>{
                         row += 1;
                         var date = new Date(patient.admission_date);
                         var date1 = new Date(patient.discharge_date);
