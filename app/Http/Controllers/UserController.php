@@ -168,7 +168,8 @@ class UserController extends Controller
      */
     public function doctors(): View
     {
-        return view('roles.user.doctors');
+        $hospital = Hospital::find(Auth::user()->hospital_id);
+        return view('roles.user.doctors')->with('setting', $hospital->setting);
     }
     //Summary
     public function summary()

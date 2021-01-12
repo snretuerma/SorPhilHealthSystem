@@ -589,7 +589,6 @@ export default {
             });
         },
         handleEditRecord(index, row) {
-            console.log(row);
             this.$emit("add-open", row, "edit");
         },
         deleteRecord: function(id, res) {
